@@ -1,0 +1,23 @@
+.panel {
+  margin-top: 2px;
+  margin-bottom: 2px;
+  font-size: 17px;
+  border-radius: 0;
+}
+
+.panel button {
+  margin-left: 5px;
+  text-align: center;
+}
+
+.active-panel {
+  background: #fff;
+}
+
+.inactive-panel {
+  background: #ececec;
+}
+
+.inactive-panel button {
+  background: #ececec;
+}
