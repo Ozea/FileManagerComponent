@@ -194,6 +194,44 @@ class FileManager extends Component {
     window.removeEventListener("keydown", this.handleSwitchList);
   }
 
+  onDeleteFileHandler = (cursor) => {
+    const { leftList, rightList, active } = this.state;
+
+    if (active === "left") {
+      return leftList.listing.splice(cursor, 1);
+    } else {
+      return rightList.listing.splice(cursor, 1);
+    }
+  }
+
+  addNewFileHandler = () => {
+    const { leftList, rightList, active } = this.state;
+
+    if (active === "left") {
+      leftList.listing.push({
+        type: "f",
+        permissions: "771",
+        date: new Date().getDate(),
+        time: new Date().getTime(),
+        owner: "admin",
+        group: "admin",
+        size: "1000",
+        name: "test"
+      })
+    } else {
+      rightList.listing.push({
+        type: "f",
+        permissions: "771",
+        date: new Date().getDate,
+        time: new Date().getTime,
+        owner: "admin",
+        group: "admin",
+        size: "1000",
+        name: "test"
+      })
+    }
+  }
+
   render() {
     const { leftList, rightList, active } = this.state;
     return (
@@ -202,11 +240,15 @@ class FileManager extends Component {
           data={leftList}
           isActive={active === "left"}
           onClick={this.handleActiveList}
+          deleteFile={this.onDeleteFileHandler}
+          addNewFile={this.addNewFileHandler}
           list="left" />
         <RightDirectoryList
           data={rightList}
           isActive={active === "right"}
           onClick={this.handleActiveList}
+          deleteFile={this.onDeleteFileHandler}
+          addNewFile={this.addNewFileHandler}
           list="right" />
       </div>
     );

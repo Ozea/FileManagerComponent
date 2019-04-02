@@ -88,13 +88,24 @@ class LeftDirectoryList extends Component {
     }
   }
 
+  deleteSelectedFile = () => {
+    this.props.deleteFile(this.state.cursor);
+  }
+
+  addNewFile = () => {
+    this.props.addNewFile();
+  }
+
   render() {
     const { cursor } = this.state;
     const { isActive, data } = this.props;
     return (
       <div className={isActive ? "left-list active" : "left-list"} onClick={this.handleClick}>
         <Path class={isActive ? "active-head" : "head"} />
-        <Menu isActive={isActive} />
+        <Menu
+          handleDelete={this.deleteSelectedFile}
+          handleAddNewFile={this.addNewFile}
+          isActive={isActive} />
         <div className="list-container">
           <ul>
             {data.listing.map((item, key) =>

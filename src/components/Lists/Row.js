@@ -19,10 +19,14 @@ class Row extends Component {
   }
 
   render() {
+    const { glyph, name, owner, permissions, size } = this.props;
     return (
       <li className={this.liClassName(this.props.active, this.props.selected)} onClick={this.handleCursor} >
-        {this.props.glyph}
-        {this.props.name}
+        <span>{glyph}</span>
+        <span className="fName">{name}</span>
+        <span className="fPermissions">{permissions}</span>
+        <span className="fOwner">{owner}</span>
+        <span className="fSize">{size}</span>
       </li>
     );
   }
