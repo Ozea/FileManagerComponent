@@ -75,6 +75,14 @@ class RightList extends Component {
     }
   }
 
+  deleteSelectedFile = () => {
+    this.props.deleteFile(this.state.cursor);
+  }
+
+  addNewFile = () => {
+    this.props.addNewFile();
+  }
+
   componentDidMount = () => {
     document.addEventListener("keydown", (e) => this.handleLiSelection(e));
   }
@@ -90,7 +98,10 @@ class RightList extends Component {
     return (
       <div className={className} onClick={this.handleClick}>
         <Head class={isActive ? "active-head" : "head"} />
-        <Menu isActive={isActive} />
+        <Menu 
+          handleDelete={this.deleteSelectedFile}
+          handleAddNewFile={this.addNewFile}
+          isActive={isActive} />
         <div className="list-container">
           <ul>
             {data.listing.map((item, key) =>
