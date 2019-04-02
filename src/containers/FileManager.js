@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import LeftList from '../components/Lists/LeftList';
-import RightList from '../components/Lists/RightList';
+import LeftDirectoryList from '../components/Lists/LeftDirectoryList';
+import RightDirectoryList from '../components/Lists/RightDirectoryList';
+import Modal from '../components/Modal/Modal';
 // import axios from 'axios';
 import '../App.css';
 
@@ -155,24 +156,7 @@ class FileManager extends Component {
         }
       ]
     },
-    activeWindow: "left"
-  }
-
-  toggleClass = (list) => {
-    this.setState({ activeWindow: list });
-  }
-
-  handleSwitchList = () => {
-    window.onkeydown = (e) => {
-      switch (e.keyCode) {
-        case 39: this.setState({ activeWindow: "right" });
-          break;
-        case 37: this.setState({ activeWindow: "left" });
-          break;
-        default:
-          break;
-      }
-    }
+    active: "left"
   }
 
   // componentDidMount = () => {
@@ -187,17 +171,42 @@ class FileManager extends Component {
   //     })
   // };
 
+  handleActiveList = (list) => {
+    this.setState({ active: list });
+  }
+
+  handleSwitchList = (e) => {
+    switch (e.keyCode) {
+      case 39: this.setState({ active: "right" });
+        break;
+      case 37: this.setState({ active: "left" });
+        break;
+      default:
+        break;
+    }
+  }
+
+  componentDidMount = () => {
+    window.addEventListener("keydown", this.handleSwitchList);
+  }
+
+  componentWillUnmount = () => {
+    window.removeEventListener("keydown", this.handleSwitchList);
+  }
+
   render() {
+    const { leftList, rightList, active } = this.state;
     return (
       <div className="window">
-        {this.handleSwitchList()}
-        <LeftList data={this.state.leftList}
-          onClick={this.toggleClass}
-          isActive={this.state.activeWindow === "left"}
+        <LeftDirectoryList
+          data={leftList}
+          isActive={active === "left"}
+          onClick={this.handleActiveList}
           list="left" />
-        <RightList data={this.state.leftList}
-          onClick={this.toggleClass}
-          isActive={this.state.activeWindow === "right"}
+        <RightDirectoryList
+          data={rightList}
+          isActive={active === "right"}
+          onClick={this.handleActiveList}
           list="right" />
       </div>
     );
