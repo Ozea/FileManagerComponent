@@ -5,23 +5,28 @@
 
 .window {
   background: #ececec;
-  height: 100vh;;
+  height: 100vh;
   width: 100%;
-  display: inline-block;
+  display: flex;
+  flex-direction: row;
+  overflow: hidden;
 }
 
 .right-list {
-  overflow: scroll;
-  display: inline-block;
   width: 50%;
   height: 100vh;
+  flex: 1 1 50%;
 }
 
 .left-list {
-  overflow: scroll;
-  display: inline-block;
   width: 50%;
   height: 100vh;
+  flex: 1 1 50%;
+}
+
+.list-container {
+  height: calc(100% - 120px);
+  overflow: auto;
 }
 
 ul {
@@ -86,6 +91,13 @@ span {
   color: rgb(12, 218, 218);
 }
 
-ul li:nth-child(1)::after {
-  content: " ..";
+.fOwner,
+.fPermissions,
+.fSize {
+  float: right;
+  width: 100px;
+}
+
+.cancel {
+  float: left;
 }
