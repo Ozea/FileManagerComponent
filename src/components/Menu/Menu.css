@@ -1,0 +1,12 @@
+.panel {
+  margin: 0;
+  font-size: 17px;
+  border-radius: 0;
+  box-shadow: 0 2px 6px -2px gray;
+}
+
+.panel button {
+  margin: 2px;
+  margin-right: 30px;
+  text-align: center;
+}
