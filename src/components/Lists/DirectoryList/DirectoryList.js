@@ -98,16 +98,21 @@ class DirectoryList extends Component {
     const { cursor } = this.state;
     return (
       data.listing.map((item, key) =>
-        <Row key={key}
+        (key !== 0) ?
+        (<Row key={key}
           glyph={this.handleGlyphIcon(item.type)}
           name={item.name}
-          handleCursor={() => this.setState({ cursor: key })}
+          handleCursor={() => {
+            this.setState({ cursor: key });
+            this.props.cursorChangeHandler(key);
+          }}
           active={key === cursor}
           selected={this.isSelected(key)}
           activeList={isActive}
           owner={item.owner}
           permissions={item.permissions}
-          size={item.size} />)
+          size={item.size} />) :
+        (<Row key={key} glyph={this.handleGlyphIcon(item.type)} name=".." handleCursor={() => {this.setState({ cursor: key }); this.props.cursorChangeHandler(key)}} active={key === cursor} activeList={isActive} />))
     );
   }
 

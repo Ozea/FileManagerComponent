@@ -3,7 +3,7 @@ import './Row.css';
 
 class Row extends Component {
 
-  handleCursor = () => {
+  handleClick = () => {
     this.props.handleCursor(this.props.name);
   }
 
@@ -21,7 +21,7 @@ class Row extends Component {
   render() {
     const { glyph, name, owner, permissions, size } = this.props;
     return (
-      <li className={this.liClassName(this.props.active, this.props.selected)} onClick={this.handleCursor} >
+      <li className={this.liClassName(this.props.active, this.props.selected)} onClick={this.handleClick} >
         <span>{glyph}</span>
         <span className="fName">{name}</span>
         <span className="fPermissions">{permissions}</span>
