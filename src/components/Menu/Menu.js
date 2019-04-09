@@ -11,8 +11,11 @@ class Menu extends Component {
     this.props.openModal("Add directory", true);
   }
 
+  onDeleteHandler = () => {
+    this.props.openModal("Delete", true);
+  }
+
   render() {
-    const { onDelete } = this.props;
     return (
       <ul className="panel">
         <button type="button" className="btn btn-outline-secondary">Upload</button>
@@ -24,7 +27,7 @@ class Menu extends Component {
         <button type="button" className="btn btn-outline-secondary">Copy</button>
         <button type="button" className="btn btn-outline-secondary">Move</button>
         <button type="button" className="btn btn-outline-secondary">Archive</button>
-        <button type="button" className="btn btn-outline-secondary" onClick={onDelete} >Delete</button>
+        <button type="button" className="btn btn-outline-secondary" onClick={this.onDeleteHandler} >Delete</button>
       </ul>
     );
   }
