@@ -1,0 +1,18 @@
+span {
+  margin-right: 10px;
+}
+
+.glyphicon-folder-close {
+  color: #e29741;
+}
+
+.glyphicon-file {
+  color: #0cdada;
+}
+
+.fOwner,
+.fPermissions,
+.fSize {
+  float: right;
+  width: 100px;
+}
