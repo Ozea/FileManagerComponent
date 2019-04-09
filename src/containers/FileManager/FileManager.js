@@ -271,18 +271,14 @@ class FileManager extends Component {
   }
 
   modal = (type, visible) => {
-
-    if (this.state.cursor === 0) {
-      this.setState({ modal: <Modal modalVisible={this.state.modalVisible} name='Nothing selected' visible={visible} onClick={this.onDeleteFileHandler} onClose={this.closeModal} />, modalVisible: visible  });
-      return;
-    }
-
     switch (type) {
       case 'Add file': this.setState({ modal: <Modal modalVisible={this.state.modalVisible} name={type} visible={visible} onClick={this.addNewFileHandler} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: visible });
         break;
       case 'Add directory': this.setState({ modal: <Modal modalVisible={this.state.modalVisible} name={type} visible={visible} onClick={this.addNewDirHandler} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: visible });
         break;
       case 'Delete': this.setState({ modal: <Modal modalVisible={this.state.modalVisible} name={type} visible={visible} onClick={this.onDeleteFileHandler} onClose={this.closeModal} />, modalVisible: visible });
+        break;
+      case 'Nothing selected': this.setState({ modal: <Modal modalVisible={this.state.modalVisible} name={type} visible={visible} onClick={this.onDeleteFileHandler} onClose={this.closeModal} />, modalVisible: visible });
         break;
       default:
         break;
@@ -294,6 +290,7 @@ class FileManager extends Component {
     return (
       <div className="window">
         <Menu
+          cursor={this.state.cursor}
           openModal={this.modal}
           onDelete={this.onDeleteFileHandler} />
         <div className="lists-container">

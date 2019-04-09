@@ -44,13 +44,13 @@ class Modal extends Component {
   modalFooter = () => {
     switch (this.props.name) {
       case 'Delete': return (
-        <div className="modal-footer">
+        <div className="modal-footer lower">
           <button type="button" className="btn btn-danger cancel" onClick={this.closeModal}>Close</button>
           <button type="button" className="btn btn-primary" onClick={this.onClick}>Delete</button>
         </div>
       );
       case 'Nothing selected': return (
-        <div className="modal-footer">
+        <div className="modal-footer lower">
           <button type="button" className="btn btn-danger cancel" onClick={this.closeModal}>Close</button>
         </div>);
       default: return (

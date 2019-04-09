@@ -12,7 +12,11 @@ class Menu extends Component {
   }
 
   onDeleteHandler = () => {
-    this.props.openModal("Delete", true);
+    if (this.props.cursor === 0) {
+      this.props.openModal("Nothing selected", true);
+    } else {
+      this.props.openModal("Delete", true);
+    }
   }
 
   render() {
