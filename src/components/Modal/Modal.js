@@ -8,6 +8,19 @@ class Modal extends Component {
     this.props.onClose();
   }
 
+  hotkeys = (e) => {
+    let pressedEnter = 13; 
+    let pressedEsc = 27;
+    switch (e.keyCode){
+      case pressedEnter: this.props.onClick(); this.props.onClose();
+      break;
+      case pressedEsc: this.props.onClose();
+      break;
+      default:
+      break;
+    }
+  }
+
   modalBody = () => {
     const { name, reference } = this.props;
     switch (name) {
@@ -63,10 +76,12 @@ class Modal extends Component {
 
   componentDidMount = () => {
     window.addEventListener("click", this.closeOutside);
+    document.addEventListener("keydown", this.hotkeys);
   }
 
   componentWillUnmount = () => {
     window.removeEventListener("click", this.closeOutside);
+    document.removeEventListener("keydown", this.hotkeys);
   }
 
   render() {
