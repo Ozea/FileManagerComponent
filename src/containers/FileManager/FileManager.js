@@ -271,6 +271,9 @@ class FileManager extends Component {
     if (active === "left") {
       leftList.listing[cursor].name = this.inputElement.value;
       this.setState({ leftList });
+    } else {
+      rightList.listing[cursor].name = this.inputElement.value;
+      this.setState({ rightList });
     }
   }
 
