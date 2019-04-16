@@ -49,7 +49,7 @@ class Modal extends Component {
     if (this.props.name === 'Delete') {
       return <h3>Are you sure you want to delete this file?</h3>;
     } else if (this.props.name === 'Nothing selected') {
-      return <h3>No such file or directory selected</h3>;
+      return <h3>No file or directory selected</h3>;
     } else {
       return <h3>{this.props.name}</h3>
     }

@@ -20,11 +20,11 @@ class Menu extends Component {
   }
 
   renameHandler = () => {
-    if (this.props.cursor === 0){
-      return;
+    if (this.props.cursor === 0) {
+      this.props.openModal("Nothing selected", true);
+    } else {
+      this.props.openModal("Rename", true);
     }
-
-    this.props.openModal("Rename", true);
   }
 
   render() {
