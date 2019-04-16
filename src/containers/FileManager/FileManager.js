@@ -266,6 +266,14 @@ class FileManager extends Component {
     }
   }
 
+  onRenameHandler = () => {
+    const { cursor, leftList, rightList, active } = this.state;
+    if (active === "left") {
+      leftList.listing[cursor].name = this.inputElement.value;
+      this.setState({ leftList });
+    }
+  }
+
   closeModal = () => {
     this.setState({ modalVisible: false });
   }
@@ -277,6 +285,8 @@ class FileManager extends Component {
       case 'Add directory': this.setState({ modal: <Modal modalVisible={this.state.modalVisible} name={type} visible={visible} onClick={this.addNewDirHandler} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: visible });
         break;
       case 'Delete': this.setState({ modal: <Modal modalVisible={this.state.modalVisible} name={type} visible={visible} onClick={this.onDeleteFileHandler} onClose={this.closeModal} />, modalVisible: visible });
+        break;
+      case 'Rename': this.setState({ modal: <Modal modalVisible={this.state.modalVisible} name={type} visible={visible} onClick={this.onRenameHandler} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: visible });
         break;
       case 'Nothing selected': this.setState({ modal: <Modal modalVisible={this.state.modalVisible} name={type} visible={visible} onClick={this.onDeleteFileHandler} onClose={this.closeModal} />, modalVisible: visible });
         break;
