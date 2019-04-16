@@ -25,7 +25,8 @@ class Modal extends Component {
     const { name, reference } = this.props;
     switch (name) {
       case 'Add file': return (<input type="text" ref={reference}></input>);
-      case 'Add directory': return (<input type="text" ref={reference}></input>)
+      case 'Add directory': return (<input type="text" ref={reference}></input>);
+      case 'Rename': return (<input type="text" ref={reference}></input>)
       case 'Delete': return null;
       case 'Nothing selected': return null;
       default:
