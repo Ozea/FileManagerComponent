@@ -77,6 +77,7 @@ class DirectoryList extends Component {
 
       this.setState({ cursor: cursor + 1 });
       this.props.cursorChangeHandler(this.state.cursor);
+      this.props.handleNameOnButton();
     }
 
     if (e.keyCode === 38) {
@@ -90,6 +91,7 @@ class DirectoryList extends Component {
 
       this.setState({ cursor: cursor - 1 });
       this.props.cursorChangeHandler(this.state.cursor);
+      this.props.handleNameOnButton();
     }
   }
 
@@ -102,9 +104,10 @@ class DirectoryList extends Component {
         (<Row key={key}
           glyph={this.handleGlyphIcon(item.type)}
           name={item.name}
-          handleCursor={() => {
+          handleCursor={(name) => {
             this.setState({ cursor: key });
             this.props.cursorChangeHandler(key);
+            this.props.handleNameOnClick(name);
           }}
           active={key === cursor}
           selected={this.isSelected(key)}
