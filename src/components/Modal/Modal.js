@@ -9,24 +9,21 @@ class Modal extends Component {
   }
 
   hotkeys = (e) => {
-    let pressedEnter = 13; 
-    let pressedEsc = 27;
-    switch (e.keyCode){
-      case pressedEnter: this.props.onClick(); this.props.onClose();
-      break;
-      case pressedEsc: this.props.onClose();
-      break;
-      default:
-      break;
+    if (e.keyCode === 27){
+      this.props.onClose();
     }
   }
 
+  onChange = (e) => {
+    this.props.onChangeValue(e.target.value);
+  }
+
   modalBody = () => {
-    const { name, reference } = this.props;
+    const { name, reference, fName } = this.props;
     switch (name) {
-      case 'Add file': return (<input type="text" ref={reference}></input>);
-      case 'Add directory': return (<input type="text" ref={reference}></input>);
-      case 'Rename': return (<input type="text" ref={reference}></input>)
+      case 'Add file': return (<input type="text" ref={reference} autoFocus></input>);
+      case 'Add directory': return (<input type="text" ref={reference} autoFocus></input>);
+      case 'Rename': return (<input type="text" autoFocus defaultValue={fName} onBlur={this.onChange} ref={reference}></input>)
       case 'Delete': return null;
       case 'Nothing selected': return null;
       default:
@@ -51,7 +48,7 @@ class Modal extends Component {
     } else if (this.props.name === 'Nothing selected') {
       return <h3>No file or directory selected</h3>;
     } else {
-      return <h3>{this.props.name}</h3>
+      return <h3>{this.props.name} <span className="quot">&quot;{this.props.fName}&quot;</span></h3>
     }
   }
 
@@ -60,7 +57,7 @@ class Modal extends Component {
       case 'Delete': return (
         <div className="modal-footer lower">
           <button type="button" className="btn btn-danger cancel" onClick={this.closeModal}>Close</button>
-          <button type="button" className="btn btn-primary" onClick={this.onClick}>Delete</button>
+          <button type="button" className="btn btn-primary" autoFocus onClick={this.onClick}>Delete</button>
         </div>
       );
       case 'Nothing selected': return (
@@ -88,7 +85,7 @@ class Modal extends Component {
   render() {
     const style = !this.props.modalVisible ? { display: "block" } : { display: "none" };
     return (
-      <div className="modal" id="modal" style={style}>
+      <div className="modal" style={style}>
         <div className="modal-content">
           <span className="close" onClick={this.closeModal}>&times;</span>
           <div className="header">
