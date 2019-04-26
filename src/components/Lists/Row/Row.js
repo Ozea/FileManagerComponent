@@ -4,7 +4,7 @@ import './Row.css';
 class Row extends Component {
 
   handleClick = () => {
-    this.props.handleCursor(this.props.name);
+    this.props.handleCursor(this.props.name, this.props.permissions);
   }
 
   liClassName = (active, selected) => {

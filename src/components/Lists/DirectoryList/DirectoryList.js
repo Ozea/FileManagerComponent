@@ -104,10 +104,10 @@ class DirectoryList extends Component {
         (<Row key={key}
           glyph={this.handleGlyphIcon(item.type)}
           name={item.name}
-          handleCursor={(name) => {
+          handleCursor={(name, rights) => {
             this.setState({ cursor: key });
             this.props.cursorChangeHandler(key);
-            this.props.handleNameOnClick(name);
+            this.props.handleNameOnClick(name, rights);
           }}
           active={key === cursor}
           selected={this.isSelected(key)}

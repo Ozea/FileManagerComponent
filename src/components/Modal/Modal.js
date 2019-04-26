@@ -1,4 +1,10 @@
 import React, { Component } from 'react';
+import AddFile from './AddFile';
+import AddDirectory from './AddDirectory';
+import Rename from './Rename';
+import Delete from './Delete';
+import NothingSelected from './NothingSelected';
+import Permissions from './Permissions.jsx';
 import './Modal.css';
 
 class Modal extends Component {
@@ -9,23 +15,31 @@ class Modal extends Component {
   }
 
   hotkeys = (e) => {
-    if (e.keyCode === 27){
+    if (e.keyCode === 27) {
+      this.props.onClose();
+    } else if (e.keyCode === 13) {
+      this.props.onClick();
       this.props.onClose();
     }
+  }
+
+  changePermissions = (permissions) => {
+    this.props.onChangePermissions(permissions);
   }
 
   onChange = (e) => {
     this.props.onChangeValue(e.target.value);
   }
 
-  modalBody = () => {
-    const { name, reference, fName } = this.props;
+  content = () => {
+    const { name, reference, fName, rights } = this.props;
     switch (name) {
-      case 'Add file': return (<input type="text" ref={reference} autoFocus></input>);
-      case 'Add directory': return (<input type="text" ref={reference} autoFocus></input>);
-      case 'Rename': return (<input type="text" autoFocus defaultValue={fName} onBlur={this.onChange} ref={reference}></input>)
-      case 'Delete': return null;
-      case 'Nothing selected': return null;
+      case 'Add file': return <AddFile closeModal={this.closeModal} onClick={this.onClick} reference={reference} />;
+      case 'Add directory': return <AddDirectory closeModal={this.closeModal} onClick={this.onClick} reference={reference} />;
+      case 'Rename': return <Rename closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={name} fName={fName} />;
+      case 'Permissions': return <Permissions closeModal={this.closeModal} onClick={this.onClick} changePermissions={this.changePermissions} fName={fName} rights={rights} />;
+      case 'Delete': return <Delete closeModal={this.closeModal} onClick={this.onClick} fName={fName} />;
+      case 'Nothing selected': return <NothingSelected closeModal={this.closeModal} />;
       default:
         break;
     }
@@ -42,36 +56,6 @@ class Modal extends Component {
     }
   }
 
-  modalName = () => {
-    if (this.props.name === 'Delete') {
-      return <h3>Are you sure you want to delete this file?</h3>;
-    } else if (this.props.name === 'Nothing selected') {
-      return <h3>No file or directory selected</h3>;
-    } else {
-      return <h3>{this.props.name} <span className="quot">&quot;{this.props.fName}&quot;</span></h3>
-    }
-  }
-
-  modalFooter = () => {
-    switch (this.props.name) {
-      case 'Delete': return (
-        <div className="modal-footer lower">
-          <button type="button" className="btn btn-danger cancel" onClick={this.closeModal}>Close</button>
-          <button type="button" className="btn btn-primary" autoFocus onClick={this.onClick}>Delete</button>
-        </div>
-      );
-      case 'Nothing selected': return (
-        <div className="modal-footer lower">
-          <button type="button" className="btn btn-danger cancel" onClick={this.closeModal}>Close</button>
-        </div>);
-      default: return (
-        <div className="modal-footer">
-          <button type="button" className="btn btn-danger cancel" onClick={this.closeModal}>Close</button>
-          <button type="button" className="btn btn-primary" onClick={this.onClick}>Save</button>
-        </div>);
-    }
-  }
-
   componentDidMount = () => {
     window.addEventListener("click", this.closeOutside);
     document.addEventListener("keydown", this.hotkeys);
@@ -83,20 +67,12 @@ class Modal extends Component {
   }
 
   render() {
-    const style = !this.props.modalVisible ? { display: "block" } : { display: "none" };
     return (
-      <div className="modal" style={style}>
-        <div className="modal-content">
-          <span className="close" onClick={this.closeModal}>&times;</span>
-          <div className="header">
-            {this.modalName()}
-          </div>
-          {this.props.name !== 'Delete' || 'Nothing selected' ? null : <hr/>}
-          <div className="modal-body">
-            {this.modalBody()}
-          </div>
-          {this.modalFooter()}
-        </div>
+      <div>
+        {!this.props.modalVisible &&
+          <div className="modal" id="modal">
+            {this.content()}
+          </div>}
       </div>
     );
   }
