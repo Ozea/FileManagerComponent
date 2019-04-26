@@ -4,26 +4,34 @@ import './Menu.css';
 class Menu extends Component {
 
   addNewFileModal = () => {
-    this.props.openModal("Add file", true);
+    this.props.openModal("Add file");
   }
 
   addNewDirModal = () => {
-    this.props.openModal("Add directory", true);
+    this.props.openModal("Add directory");
   }
 
   onDeleteHandler = () => {
     if (this.props.cursor === 0) {
-      this.props.openModal("Nothing selected", true);
+      this.props.openModal("Nothing selected");
     } else {
-      this.props.openModal("Delete", true);
+      this.props.openModal("Delete");
     }
   }
 
   renameHandler = () => {
     if (this.props.cursor === 0) {
-      this.props.openModal("Nothing selected", true);
+      this.props.openModal("Nothing selected");
     } else {
-      this.props.openModal("Rename", true);
+      this.props.openModal("Rename");
+    }
+  }
+
+  permissionsHandler = () => {
+    if (this.props.cursor === 0){
+      this.props.openModal("Nothing selected");
+    } else {
+      this.props.openModal("Permissions");
     }
   }
 
@@ -35,7 +43,7 @@ class Menu extends Component {
         <button type="button" className="btn btn-outline-secondary" onClick={this.addNewDirModal}>New dir</button>
         <button type="button" className="btn btn-outline-secondary">Download</button>
         <button type="button" className="btn btn-outline-secondary" onClick={this.renameHandler}>Rename</button>
-        <button type="button" className="btn btn-outline-secondary">Rights</button>
+        <button type="button" className="btn btn-outline-secondary" onClick={this.permissionsHandler}>Permissions</button>
         <button type="button" className="btn btn-outline-secondary">Copy</button>
         <button type="button" className="btn btn-outline-secondary">Move</button>
         <button type="button" className="btn btn-outline-secondary">Archive</button>
