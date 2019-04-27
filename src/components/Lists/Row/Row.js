@@ -3,8 +3,12 @@ import './Row.css';
 
 class Row extends Component {
 
-  handleClick = () => {
+  handleClick = (e) => {
+    if (e.shiftKey){
+      this.props.multipleSelectionOnClick();
+    } else {
     this.props.handleCursor(this.props.name, this.props.permissions);
+    }
   }
 
   liClassName = (active, selected) => {
@@ -16,6 +20,10 @@ class Row extends Component {
       let isActive = active ? 'active' : '';
       return isActive.length ? 'inactive' : null;
     }
+  }
+
+  componentDidMount = () => {
+    document.addEventListener("keypress", this.handleClick);
   }
 
   render() {

@@ -86,7 +86,7 @@ class DirectoryList extends Component {
       }
 
       if (e.shiftKey) {
-        this.addToSelection(cursor - 1)
+        this.addToSelection(cursor)
       }
 
       this.setState({ cursor: cursor - 1 });
@@ -102,6 +102,7 @@ class DirectoryList extends Component {
       data.listing.map((item, key) =>
         (key !== 0) ?
         (<Row key={key}
+          multipleSelectionOnClick={() => this.addToSelection(key)}
           glyph={this.handleGlyphIcon(item.type)}
           name={item.name}
           handleCursor={(name, rights) => {

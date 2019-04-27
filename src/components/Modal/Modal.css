@@ -52,8 +52,12 @@ input[type="text"] {
   margin-top: 3px;
 }
 
+.nothing-selected {
+  margin-top: 80px;
+}
+
 .lower {
-  margin-top: 30px;
+  margin-top: 60px;
 }
 
 .quot {
@@ -61,11 +65,11 @@ input[type="text"] {
 }
 
 .add {
-  height: 230px;
+  height: 200px;
 }
 
 .delete {
-  height: 200px;
+  height: 220px;
 }
 
 .permissions {
