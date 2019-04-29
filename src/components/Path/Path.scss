@@ -1,17 +1,15 @@
+$white: #fff;
+
 .path {
   padding: 8px;
   height: 60px;
   background: #7b7b7b;
-  color: #fff;
-}
-
-.path b {
-  top: 30px;
+  color: $white;
 }
 
 .active-path {
   padding: 8px;
   height: 60px;
   background: #333;
-  color: #fff;
+  color: $white;
 }

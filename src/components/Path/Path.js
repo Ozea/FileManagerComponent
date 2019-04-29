@@ -1,5 +1,5 @@
 import React from 'react';
-import './Path.css';
+import './Path.scss';
 
 const Path = (props) => {
   return(

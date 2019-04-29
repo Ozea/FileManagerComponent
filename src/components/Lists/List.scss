@@ -1,0 +1,23 @@
+ul {
+  margin-top: 20px;
+  padding: 0;
+
+  li {
+    font-size: 20px;
+    margin-bottom: 2px;
+    padding-left: 15px;
+    list-style: none;
+
+    &:hover{
+      background: #DEDEDE;
+    }
+  }
+
+  li.active {
+    background: #FFDC5A;
+  }
+
+  li.selected {
+    background: #fcfcd4;
+  }
+}
