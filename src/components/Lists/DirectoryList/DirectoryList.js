@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Path from '../../Path/Path';
 import Row from '../Row/Row';
-import '../List.css';
+import '../List.scss';
 
 class DirectoryList extends Component {
   constructor(props) {
@@ -26,19 +26,6 @@ class DirectoryList extends Component {
 
   isSelected = (i) => {
     return this.state.selection.indexOf(i) !== -1;
-  }
-
-  handleGlyphIcon = (type) => {
-    switch (type) {
-      case 'd': return (
-        <span className="glyphicon glyphicon-folder-close"></span>
-      );
-      case 'f': return (
-        <span className="glyphicon glyphicon-file"></span>
-      );
-      default:
-        break;
-    }
   }
 
   addToSelection(i) {
@@ -103,7 +90,7 @@ class DirectoryList extends Component {
         (key !== 0) ?
           (<Row key={key}
             multipleSelectionOnClick={() => this.addToSelection(key)}
-            glyph={this.handleGlyphIcon(item.type)}
+            glyph={item.type}
             name={item.name}
             handleCursor={(name, rights) => {
               this.setState({ cursor: key });
@@ -118,7 +105,7 @@ class DirectoryList extends Component {
             size={item.size} />) :
           (<Row key={key}
             multipleSelectionOnClick={() => this.addToSelection(key)}
-            glyph={this.handleGlyphIcon(item.type)}
+            glyph={item.type}
             name=".."
             handleCursor={() => {
               this.setState({ cursor: key });

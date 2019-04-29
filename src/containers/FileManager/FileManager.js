@@ -3,7 +3,7 @@ import DirectoryList from '../../components/Lists/DirectoryList/DirectoryList';
 import Modal from '../../components/Modal/Modal';
 import Menu from '../../components/Menu/Menu';
 // import axios from 'axios';
-import '../App/App.css';
+import '../App/App.scss';
 
 class FileManager extends Component {
   state = {

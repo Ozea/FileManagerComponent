@@ -5,7 +5,7 @@ import Rename from './Rename';
 import Delete from './Delete';
 import NothingSelected from './NothingSelected';
 import Permissions from './Permissions.jsx';
-import './Modal.css';
+import './Modal.scss';
 
 class Modal extends Component {
 

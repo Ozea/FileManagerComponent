@@ -10,22 +10,22 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
-}
 
-.lists-container {
-  display: flex;
-  flex-direction: row;
-}
+  .lists-container {
+    display: flex;
+    flex-direction: row;
 
-.list {
-  width: 50%;
-  height: 100vh;
-  flex: 1 1 50%;
-}
-
-.list-container {
-  height: calc(100% - 115px);
-  overflow: auto;
+    .list {
+      width: 50%;
+      height: 100vh;
+      flex: 1 1 50%;
+    
+      .list-container {
+        height: calc(100% - 115px);
+        overflow: auto;
+      }
+    }
+  }
 }
 
 .active {
