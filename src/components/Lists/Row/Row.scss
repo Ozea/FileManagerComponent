@@ -12,7 +12,37 @@ span {
 
 .fOwner,
 .fPermissions,
-.fSize {
+.fSize,
+.fDate,
+.fTime {
+  font-size: 18px;
+  margin-left: 40px;
   float: right;
-  width: 100px;
+  width: 60px;
+}
+
+.fDate {
+  margin-left: 30px;
+}
+
+.fPermissions {
+  margin-left: 55px;
+  margin-right: 25px;
+}
+
+.fOwner {
+  margin-left: 25px;
+}
+
+.fSize {
+  margin-left: 20px;
+}
+
+.value {
+  color: #1f666e;
+}
+
+.unit {
+  font-weight: bolder;
+  color: #333;
 }

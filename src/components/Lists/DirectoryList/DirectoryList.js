@@ -46,7 +46,7 @@ class DirectoryList extends Component {
   }
 
   handleLiSelection = (e) => {
-    const { data, isActive } = this.props;
+    const { data, isActive, cursorChangeHandler, handleNameOnButton } = this.props;
     const { cursor } = this.state;
 
     if (!isActive) {
@@ -63,8 +63,8 @@ class DirectoryList extends Component {
       }
 
       this.setState({ cursor: cursor + 1 });
-      this.props.cursorChangeHandler(this.state.cursor);
-      this.props.handleNameOnButton();
+      cursorChangeHandler(this.state.cursor);
+      handleNameOnButton();
     }
 
     if (e.keyCode === 38) {
@@ -77,13 +77,13 @@ class DirectoryList extends Component {
       }
 
       this.setState({ cursor: cursor - 1 });
-      this.props.cursorChangeHandler(this.state.cursor);
-      this.props.handleNameOnButton();
+      cursorChangeHandler(this.state.cursor);
+      handleNameOnButton();
     }
   }
 
   rows = () => {
-    const { data, isActive } = this.props;
+    const { data, isActive, cursorChangeHandler, handleNameOnClick } = this.props;
     const { cursor } = this.state;
     return (
       data.listing.map((item, key) =>
@@ -94,22 +94,24 @@ class DirectoryList extends Component {
             name={item.name}
             handleCursor={(name, rights) => {
               this.setState({ cursor: key });
-              this.props.cursorChangeHandler(key);
-              this.props.handleNameOnClick(name, rights);
+              cursorChangeHandler(key);
+              handleNameOnClick(name, rights);
             }}
             active={key === cursor}
             selected={this.isSelected(key)}
             activeList={isActive}
             owner={item.owner}
             permissions={item.permissions}
-            size={item.size} />) :
+            size={item.size}
+            date={item.date}
+            time={item.time} />) :
           (<Row key={key}
             multipleSelectionOnClick={() => this.addToSelection(key)}
             glyph={item.type}
             name=".."
             handleCursor={() => {
               this.setState({ cursor: key });
-              this.props.cursorChangeHandler(key)
+              cursorChangeHandler(key)
             }}
             active={key === cursor}
             activeList={isActive} />))
@@ -121,6 +123,14 @@ class DirectoryList extends Component {
     return (
       <div className={isActive ? "list active" : "list"} onClick={this.handleClick}>
         <Path class={isActive ? "active-path" : "path"} />
+        <div className="head">
+          <span className="permissions">Permissions</span>
+          <span className="owner">Owner</span>
+          <span className="size">Size</span>
+          <span className="date">Date</span>
+          <span className="time">Time</span>
+          <span className="name">Name</span>
+        </div>
         <div className="list-container">
           <ul>
             {this.rows()}
