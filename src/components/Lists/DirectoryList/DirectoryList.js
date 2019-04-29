@@ -101,22 +101,29 @@ class DirectoryList extends Component {
     return (
       data.listing.map((item, key) =>
         (key !== 0) ?
-        (<Row key={key}
-          multipleSelectionOnClick={() => this.addToSelection(key)}
-          glyph={this.handleGlyphIcon(item.type)}
-          name={item.name}
-          handleCursor={(name, rights) => {
-            this.setState({ cursor: key });
-            this.props.cursorChangeHandler(key);
-            this.props.handleNameOnClick(name, rights);
-          }}
-          active={key === cursor}
-          selected={this.isSelected(key)}
-          activeList={isActive}
-          owner={item.owner}
-          permissions={item.permissions}
-          size={item.size} />) :
-        (<Row key={key} glyph={this.handleGlyphIcon(item.type)} name=".." handleCursor={() => {this.setState({ cursor: key }); this.props.cursorChangeHandler(key)}} active={key === cursor} activeList={isActive} />))
+          (<Row key={key}
+            glyph={this.handleGlyphIcon(item.type)}
+            name={item.name}
+            handleCursor={(name, rights) => {
+              this.setState({ cursor: key });
+              this.props.cursorChangeHandler(key);
+              this.props.handleNameOnClick(name, rights);
+            }}
+            active={key === cursor}
+            selected={this.isSelected(key)}
+            activeList={isActive}
+            owner={item.owner}
+            permissions={item.permissions}
+            size={item.size} />) :
+          (<Row key={key}
+            glyph={this.handleGlyphIcon(item.type)}
+            name=".."
+            handleCursor={() => {
+              this.setState({ cursor: key });
+              this.props.cursorChangeHandler(key)
+            }}
+            active={key === cursor}
+            activeList={isActive} />))
     );
   }
 
