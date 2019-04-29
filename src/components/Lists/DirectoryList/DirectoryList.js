@@ -102,6 +102,7 @@ class DirectoryList extends Component {
       data.listing.map((item, key) =>
         (key !== 0) ?
           (<Row key={key}
+            multipleSelectionOnClick={() => this.addToSelection(key)}
             glyph={this.handleGlyphIcon(item.type)}
             name={item.name}
             handleCursor={(name, rights) => {
@@ -116,6 +117,7 @@ class DirectoryList extends Component {
             permissions={item.permissions}
             size={item.size} />) :
           (<Row key={key}
+            multipleSelectionOnClick={() => this.addToSelection(key)}
             glyph={this.handleGlyphIcon(item.type)}
             name=".."
             handleCursor={() => {
