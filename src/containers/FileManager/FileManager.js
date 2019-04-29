@@ -322,18 +322,12 @@ class FileManager extends Component {
   modal = (type) => {
     const { modalVisible, name, rights } = this.state;
     switch (type) {
-      case 'Add file': this.setState({ modal: <Modal modalVisible={modalVisible} name={type} onClick={this.addNewFileHandler} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
-        break;
-      case 'Add directory': this.setState({ modal: <Modal modalVisible={modalVisible} name={type} onClick={this.addNewDirHandler} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
-        break;
-      case 'Delete': this.setState({ modal: <Modal modalVisible={modalVisible} name={type} fName={name} onClick={this.onDeleteFileHandler} onClose={this.closeModal} />, modalVisible: true });
-        break;
-      case 'Rename': this.setState({ modal: <Modal modalVisible={modalVisible} name={type} fName={name} onChangeValue={this.nameHandler} onClick={this.onRenameHandler} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
-        break;
-      case 'Nothing selected': this.setState({ modal: <Modal modalVisible={modalVisible} name={type} onClick={this.onDeleteFileHandler} onClose={this.closeModal} />, modalVisible: true });
-        break;
-      case 'Permissions': this.setState({ modal: <Modal modalVisible={modalVisible} name={type} fName={name} onClick={this.changePermissions} onClose={this.closeModal} onChangePermissions={this.fPermissions} rights={rights} />, modalVisible: true });
-        break;
+      case 'Add file': return this.setState({ modal: <Modal modalVisible={modalVisible} name={type} onClick={this.addNewFileHandler} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Add directory': return this.setState({ modal: <Modal modalVisible={modalVisible} name={type} onClick={this.addNewDirHandler} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Delete': return this.setState({ modal: <Modal modalVisible={modalVisible} name={type} fName={name} onClick={this.onDeleteFileHandler} onClose={this.closeModal} />, modalVisible: true });
+      case 'Rename': return this.setState({ modal: <Modal modalVisible={modalVisible} name={type} fName={name} onChangeValue={this.nameHandler} onClick={this.onRenameHandler} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Nothing selected': return this.setState({ modal: <Modal modalVisible={modalVisible} name={type} onClick={this.onDeleteFileHandler} onClose={this.closeModal} />, modalVisible: true });
+      case 'Permissions': return this.setState({ modal: <Modal modalVisible={modalVisible} name={type} fName={name} onClick={this.changePermissions} onClose={this.closeModal} onChangePermissions={this.fPermissions} rights={rights} />, modalVisible: true });
       default:
         break;
     }
