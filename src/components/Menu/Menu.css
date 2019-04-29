@@ -10,3 +10,7 @@
   margin-right: 30px;
   text-align: center;
 }
+
+.panel button:hover {
+  color: rgb(1, 148, 148);
+}
