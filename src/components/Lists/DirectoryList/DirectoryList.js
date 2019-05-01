@@ -20,6 +20,10 @@ class DirectoryList extends Component {
     document.removeEventListener("keydown", this.handleLiSelection);
   }
 
+  removeSelection = (newCursor) => {
+    this.setState({ selection: [], cursor: newCursor });
+  }
+
   onClick = () => {
     this.props.onClick(this.props.list);
   }
@@ -63,7 +67,7 @@ class DirectoryList extends Component {
       }
 
       this.setState({ cursor: cursor + 1 });
-      handleDataOnButton(cursor);
+      handleDataOnButton(this.state.cursor);
     }
 
     if (e.keyCode === 38) {
@@ -76,7 +80,7 @@ class DirectoryList extends Component {
       }
 
       this.setState({ cursor: cursor - 1 });
-      handleDataOnButton(cursor);
+      handleDataOnButton(this.state.cursor);
     }
   }
 
