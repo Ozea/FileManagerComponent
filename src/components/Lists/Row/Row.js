@@ -3,7 +3,7 @@ import './Row.scss';
 
 class Row extends Component {
 
-  handleClick = (e) => {
+  onClick = (e) => {
     if (e.shiftKey) {
       this.props.multipleSelectionOnClick();
     }
@@ -61,7 +61,7 @@ class Row extends Component {
   render() {
     const { name, owner, permissions, size, date, time } = this.props;
     return (
-      <li className={this.liClassName(this.props.active, this.props.selected)} onClick={this.handleClick} >
+      <li className={this.liClassName(this.props.active, this.props.selected)} onClick={this.onClick} >
         <span>{this.glyph()}</span>
         <span className="fName">{name}</span>
         <span className="fPermissions">{permissions}</span>

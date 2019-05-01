@@ -32,12 +32,12 @@ class Modal extends Component {
   }
 
   content = () => {
-    const { name, reference, fName, rights } = this.props;
-    switch (name) {
+    const { type, reference, fName, permissions, name } = this.props;
+    switch (type) {
       case 'Add file': return <AddFile closeModal={this.closeModal} onClick={this.onClick} reference={reference} />;
       case 'Add directory': return <AddDirectory closeModal={this.closeModal} onClick={this.onClick} reference={reference} />;
       case 'Rename': return <Rename closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={name} fName={fName} />;
-      case 'Permissions': return <Permissions closeModal={this.closeModal} onClick={this.onClick} changePermissions={this.changePermissions} fName={fName} rights={rights} />;
+      case 'Permissions': return <Permissions closeModal={this.closeModal} onClick={this.onClick} changePermissions={this.changePermissions} fName={fName} permissions={permissions} />;
       case 'Delete': return <Delete closeModal={this.closeModal} onClick={this.onClick} fName={fName} />;
       case 'Nothing selected': return <NothingSelected closeModal={this.closeModal} />;
       default:

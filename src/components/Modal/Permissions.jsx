@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import classNames from 'classname';
 
-const defaultRights = {
+const defaultPermissions = {
   owner: {
     read: 0,
     write: 0,
@@ -23,7 +23,7 @@ class Permissions extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rights: this.decode(this.props.rights) || defaultRights,
+      permissions: this.decode(this.props.permissions) || defaultPermissions,
       inputInvalid: false,
     }
   }
@@ -36,18 +36,18 @@ class Permissions extends Component {
     const number = parseInt(string, 0);
 
     return {
-      read: this.inArray(number, [0, 4, 5, 6, 7]) ? 4 : 0,
-      write: this.inArray(number, [0, 2, 3, 6, 7]) ? 2 : 0,
-      execute: this.inArray(number, [0, 1, 3, 5, 7]) ? 1 : 0
+      read: this.inArray(number, [ 4, 5, 6, 7]) ? 4 : 0,
+      write: this.inArray(number, [ 2, 3, 6, 7]) ? 2 : 0,
+      execute: this.inArray(number, [ 1, 3, 5, 7]) ? 1 : 0
     };
   }
 
   isValid(numbers = '') {
-    if (numbers.length !== 3) {
+    if (numbers.length !== 3 || numbers === '000') {
       return false;
     }
 
-    return numbers.split('').find((number) => parseInt(number, 0) <= 0 || parseInt(number, 0) > 7) === undefined;
+    return numbers.split('').find((number) => parseInt(number, 0) < 0 || parseInt(number, 0) > 7) === undefined;
   }
 
   decode(numbers) {
@@ -65,8 +65,7 @@ class Permissions extends Component {
       return Object.values(permissionObject).map((number) => parseInt(number, 0)).reduce((acc, n) => acc + n, 0);
     }
     return ['owner', 'group', 'others'].reduce((acc, role) => {
-
-      const roleObject = this.state.rights[role];
+      const roleObject = this.state.permissions[role];
       return acc + sumPermissions(roleObject);
     }, '');
   }
@@ -75,10 +74,10 @@ class Permissions extends Component {
     const checkbox = event.target;
     const [role, permissionName] = checkbox.name.split('_');
     this.setState({
-      rights: {
-        ...this.state.rights,
+      permissions: {
+        ...this.state.permissions,
         [role]: {
-          ...this.state.rights[role],
+          ...this.state.permissions[role],
           [permissionName]: checkbox.checked ? checkbox.value : 0,
         }
       }
@@ -95,19 +94,19 @@ class Permissions extends Component {
     }
 
     this.setState({
-      rights: this.decode(value),
+      permissions: this.decode(value),
       inputInvalid: false,
     });
     this.props.changePermissions(this.inputRef.value);
   }
 
   permissionBlock(type) {
-    const { rights } = this.state;
+    const { permissions } = this.state;
     return (
       <div>
-        <label><input type="checkbox" name={type + '_read'} value="4" checked={!!rights[type].read} id="read" /> Read by {type}</label>
-        <label><input type="checkbox" name={type + '_write'} value="2" checked={!!rights[type].write} /> Write by {type}</label>
-        <label><input type="checkbox" name={type + '_execute'} value="1" checked={!!rights[type].execute} /> Execute/search by {type}</label>
+        <label><input type="checkbox" name={type + '_read'} value="4" checked={!!permissions[type].read} id="read" /> Read by {type}</label>
+        <label><input type="checkbox" name={type + '_write'} value="2" checked={!!permissions[type].write} /> Write by {type}</label>
+        <label><input type="checkbox" name={type + '_execute'} value="1" checked={!!permissions[type].execute} /> Execute/search by {type}</label>
       </div>
     );
   }
