@@ -35,6 +35,25 @@ class Menu extends Component {
     }
   }
 
+  hotKeys = (e) => {
+    switch(e.keyCode){
+      case 112: return this.addNewFileModal();
+      case 113: return this.addNewDirModal();
+      case 114: return this.renameHandler();
+      case 115: return this.permissionsHandler();
+      case 116: return this.onDeleteHandler();
+      default: break;
+    }
+  }
+
+  componentDidMount = () => {
+    document.addEventListener("keydown", this.hotKeys);
+  }
+
+  componentWillUnmount = () => {
+    document.removeEventListener("keydown", this.hotKeys);
+  }
+
   render() {
     return (
       <ul className="panel">

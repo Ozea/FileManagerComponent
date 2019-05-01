@@ -20,7 +20,7 @@ class DirectoryList extends Component {
     document.removeEventListener("keydown", this.handleLiSelection);
   }
 
-  handleClick = () => {
+  onClick = () => {
     this.props.onClick(this.props.list);
   }
 
@@ -42,11 +42,11 @@ class DirectoryList extends Component {
       result.push(i)
     }
 
-    this.setState({ selection: result });
+    this.setState({ selection: result }, this.props.handleSelection(result));
   }
 
   handleLiSelection = (e) => {
-    const { data, isActive, cursorChangeHandler, handleNameOnButton } = this.props;
+    const { data, isActive, handleDataOnButton } = this.props;
     const { cursor } = this.state;
 
     if (!isActive) {
@@ -59,12 +59,11 @@ class DirectoryList extends Component {
       }
 
       if (e.shiftKey) {
-        this.addToSelection(cursor)
+        this.addToSelection(cursor);
       }
 
       this.setState({ cursor: cursor + 1 });
-      cursorChangeHandler(this.state.cursor);
-      handleNameOnButton();
+      handleDataOnButton(cursor);
     }
 
     if (e.keyCode === 38) {
@@ -73,17 +72,16 @@ class DirectoryList extends Component {
       }
 
       if (e.shiftKey) {
-        this.addToSelection(cursor)
+        this.addToSelection(cursor);
       }
 
       this.setState({ cursor: cursor - 1 });
-      cursorChangeHandler(this.state.cursor);
-      handleNameOnButton();
+      handleDataOnButton(cursor);
     }
   }
 
   rows = () => {
-    const { data, isActive, cursorChangeHandler, handleNameOnClick } = this.props;
+    const { data, isActive, handleDataOnClick, handleDataOnButton } = this.props;
     const { cursor } = this.state;
     return (
       data.listing.map((item, key) =>
@@ -94,8 +92,8 @@ class DirectoryList extends Component {
             name={item.name}
             handleCursor={(name, rights) => {
               this.setState({ cursor: key });
-              cursorChangeHandler(key);
-              handleNameOnClick(name, rights);
+              handleDataOnButton(key);
+              handleDataOnClick(name, rights);
             }}
             active={key === cursor}
             selected={this.isSelected(key)}
@@ -111,7 +109,7 @@ class DirectoryList extends Component {
             name=".."
             handleCursor={() => {
               this.setState({ cursor: key });
-              cursorChangeHandler(key)
+              handleDataOnButton(key)
             }}
             active={key === cursor}
             activeList={isActive} />))
@@ -121,7 +119,7 @@ class DirectoryList extends Component {
   render() {
     const { isActive } = this.props;
     return (
-      <div className={isActive ? "list active" : "list"} onClick={this.handleClick}>
+      <div className={isActive ? "list active" : "list"} onClick={this.onClick}>
         <Path class={isActive ? "active-path" : "path"} />
         <div className="head">
           <span className="permissions">Permissions</span>
