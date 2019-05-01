@@ -6,163 +6,167 @@ import Menu from '../../components/Menu/Menu';
 import '../App/App.scss';
 
 class FileManager extends Component {
-  state = {
-    // date: new Date().getTime(),
-    leftList: {
-      "listing": [
-        {
-          "type": "d",
-          "permissions": "711",
-          "date": "2015-07-04",
-          "time": "09:46",
-          "owner": "admin",
-          "group": "admin",
-          "size": "4096",
-          "name": ""
-        },
-        {
-          "type": "f",
-          "permissions": "644",
-          "date": "2015-07-04",
-          "time": "09:46",
-          "owner": "admin",
-          "group": "admin",
-          "size": "124",
-          "name": ".bashrc"
-        },
-        {
-          "type": "f",
-          "permissions": "644",
-          "date": "2015-07-04",
-          "time": "09:46",
-          "owner": "admin",
-          "group": "admin",
-          "size": "176",
-          "name": ".bash_profile"
-        },
-        {
-          "type": "d",
-          "permissions": "751",
-          "date": "2015-07-04",
-          "time": "09:46",
-          "owner": "admin",
-          "group": "admin",
-          "size": "4096",
-          "name": "web"
-        },
-        {
-          "type": "d",
-          "permissions": "755",
-          "date": "2015-07-04",
-          "time": "09:46",
-          "owner": "root",
-          "group": "root",
-          "size": "4096",
-          "name": "conf"
-        },
-        {
-          "type": "f",
-          "permissions": "644",
-          "date": "2015-07-04",
-          "time": "09:46",
-          "owner": "admin",
-          "group": "admin",
-          "size": "33",
-          "name": ".bash_logout"
-        },
-        {
-          "type": "d",
-          "permissions": "771",
-          "date": "2015-07-04",
-          "time": "09:46",
-          "owner": "admin",
-          "group": "admin",
-          "size": "4096",
-          "name": "tmp"
-        }
-      ]
-    },
-    rightList: {
-      "listing": [
-        {
-          "type": "d",
-          "permissions": "711",
-          "date": "2015-07-04",
-          "time": "09:46",
-          "owner": "admin",
-          "group": "admin",
-          "size": "4096",
-          "name": ""
-        },
-        {
-          "type": "f",
-          "permissions": "644",
-          "date": "2015-07-04",
-          "time": "09:46",
-          "owner": "admin",
-          "group": "admin",
-          "size": "124",
-          "name": ".bashrc"
-        },
-        {
-          "type": "f",
-          "permissions": "644",
-          "date": "2015-07-04",
-          "time": "09:46",
-          "owner": "admin",
-          "group": "admin",
-          "size": "176",
-          "name": ".bash_profile"
-        },
-        {
-          "type": "d",
-          "permissions": "751",
-          "date": "2015-07-04",
-          "time": "09:46",
-          "owner": "admin",
-          "group": "admin",
-          "size": "4096",
-          "name": "web"
-        },
-        {
-          "type": "d",
-          "permissions": "755",
-          "date": "2015-07-04",
-          "time": "09:46",
-          "owner": "root",
-          "group": "root",
-          "size": "4096",
-          "name": "conf"
-        },
-        {
-          "type": "f",
-          "permissions": "644",
-          "date": "2015-07-04",
-          "time": "09:46",
-          "owner": "admin",
-          "group": "admin",
-          "size": "33",
-          "name": ".bash_logout"
-        },
-        {
-          "type": "d",
-          "permissions": "771",
-          "date": "2015-07-04",
-          "time": "09:46",
-          "owner": "admin",
-          "group": "admin",
-          "size": "4096",
-          "name": "tmp"
-        }
-      ]
-    },
-    active: "left",
-    modal: null,
-    modalVisible: false,
-    cursor: 0,
-    name: "",
-    permissions: "",
-    selection: null
+  constructor(props) {
+    super(props);
+    this.state = {
+      leftList: {
+        "listing": [
+          {
+            "type": "d",
+            "permissions": "711",
+            "date": "2015-07-04",
+            "time": "09:46",
+            "owner": "admin",
+            "group": "admin",
+            "size": "4096",
+            "name": ""
+          },
+          {
+            "type": "f",
+            "permissions": "644",
+            "date": "2015-07-04",
+            "time": "09:46",
+            "owner": "admin",
+            "group": "admin",
+            "size": "124",
+            "name": ".bashrc"
+          },
+          {
+            "type": "f",
+            "permissions": "644",
+            "date": "2015-07-04",
+            "time": "09:46",
+            "owner": "admin",
+            "group": "admin",
+            "size": "176",
+            "name": ".bash_profile"
+          },
+          {
+            "type": "d",
+            "permissions": "751",
+            "date": "2015-07-04",
+            "time": "09:46",
+            "owner": "admin",
+            "group": "admin",
+            "size": "4096",
+            "name": "web"
+          },
+          {
+            "type": "d",
+            "permissions": "755",
+            "date": "2015-07-04",
+            "time": "09:46",
+            "owner": "root",
+            "group": "root",
+            "size": "4096",
+            "name": "conf"
+          },
+          {
+            "type": "f",
+            "permissions": "644",
+            "date": "2015-07-04",
+            "time": "09:46",
+            "owner": "admin",
+            "group": "admin",
+            "size": "33",
+            "name": ".bash_logout"
+          },
+          {
+            "type": "d",
+            "permissions": "771",
+            "date": "2015-07-04",
+            "time": "09:46",
+            "owner": "admin",
+            "group": "admin",
+            "size": "4096",
+            "name": "tmp"
+          }
+        ]
+      },
+      rightList: {
+        "listing": [
+          {
+            "type": "d",
+            "permissions": "711",
+            "date": "2015-07-04",
+            "time": "09:46",
+            "owner": "admin",
+            "group": "admin",
+            "size": "4096",
+            "name": ""
+          },
+          {
+            "type": "f",
+            "permissions": "644",
+            "date": "2015-07-04",
+            "time": "09:46",
+            "owner": "admin",
+            "group": "admin",
+            "size": "124",
+            "name": ".bashrc"
+          },
+          {
+            "type": "f",
+            "permissions": "644",
+            "date": "2015-07-04",
+            "time": "09:46",
+            "owner": "admin",
+            "group": "admin",
+            "size": "176",
+            "name": ".bash_profile"
+          },
+          {
+            "type": "d",
+            "permissions": "751",
+            "date": "2015-07-04",
+            "time": "09:46",
+            "owner": "admin",
+            "group": "admin",
+            "size": "4096",
+            "name": "web"
+          },
+          {
+            "type": "d",
+            "permissions": "755",
+            "date": "2015-07-04",
+            "time": "09:46",
+            "owner": "root",
+            "group": "root",
+            "size": "4096",
+            "name": "conf"
+          },
+          {
+            "type": "f",
+            "permissions": "644",
+            "date": "2015-07-04",
+            "time": "09:46",
+            "owner": "admin",
+            "group": "admin",
+            "size": "33",
+            "name": ".bash_logout"
+          },
+          {
+            "type": "d",
+            "permissions": "771",
+            "date": "2015-07-04",
+            "time": "09:46",
+            "owner": "admin",
+            "group": "admin",
+            "size": "4096",
+            "name": "tmp"
+          }
+        ]
+      },
+      active: "left",
+      modal: null,
+      modalVisible: false,
+      cursor: 0,
+      name: "",
+      permissions: "",
+      selection: []
+    }
+    this.leftDirectoryListElement = React.createRef();
+    this.rightDirectoryListElement = React.createRef();
   }
 
   // componentDidMount = () => {
@@ -207,7 +211,7 @@ class FileManager extends Component {
   }
 
   handleSwitchList = (e) => {
-    if (e.keyCode === 39){
+    if (e.keyCode === 39) {
       this.setState({ active: "right" });
     } else if (e.keyCode === 37) {
       this.setState({ active: "left" });
@@ -215,14 +219,26 @@ class FileManager extends Component {
   }
 
   onDelete = () => {
-    const { leftList, rightList, active, cursor } = this.state;
+    const { leftList, rightList, active, cursor, selection } = this.state;
 
     if (active === "left") {
-      leftList.listing.splice(cursor, 1);
-      this.setState({ leftList });
+      if (selection.length > 0) {
+        let listing = [...leftList.listing];
+        let newListing = listing.filter((value, index) => !selection.includes(index));
+        this.setState({ leftList: { listing: newListing } }, this.leftDirectoryListElement.current.removeSelection(newListing.length - 1));
+      } else {
+        leftList.listing.splice(cursor, 1);
+        this.setState({ leftList });
+      }
     } else {
-      rightList.listing.splice(cursor, 1);
-      this.setState({ rightList });
+      if (selection.length > 0) {
+        let listing = [...rightList.listing];
+        let newListing = listing.filter((value, index) => !selection.includes(index));
+        this.setState({ rightList: { listing: newListing } }, this.rightDirectoryListElement.current.removeSelection(newListing.length - 1));
+      } else {
+        rightList.listing.splice(cursor, 1);
+        this.setState({ rightList });
+      }
     }
   }
 
@@ -305,7 +321,7 @@ class FileManager extends Component {
     this.setState({ permissions });
   }
 
-  handleDataOnclick = (name, permissions) => {
+  handleDataOnClick = (name, permissions) => {
     this.setState({ name, permissions });
   }
 
@@ -313,12 +329,12 @@ class FileManager extends Component {
     this.setState({ modalVisible: false });
   }
 
-  modal = (type) => {
+  modal = (type, items) => {
     const { modalVisible, name, permissions } = this.state;
     switch (type) {
       case 'Add file': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newFile} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Add directory': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newDir} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
-      case 'Delete': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onDelete} onClose={this.closeModal} />, modalVisible: true });
+      case 'Delete': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onDelete} onClose={this.closeModal} items={items} />, modalVisible: true });
       case 'Rename': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onChangeValue={this.nameHandler} onClick={this.onRename} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Nothing selected': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} />, modalVisible: true });
       case 'Permissions': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onChangePermissions} onClose={this.closeModal} onChangePermissions={this.handlePermissions} permissions={permissions} />, modalVisible: true });
@@ -328,25 +344,28 @@ class FileManager extends Component {
   }
 
   render() {
-    const { leftList, rightList, active, modal, modalVisible, cursor } = this.state;
+    const { leftList, rightList, active, modal, modalVisible, cursor, selection } = this.state;
     return (
       <div className="window">
         <Menu
+          selection={selection}
           cursor={cursor}
           openModal={this.modal}
           onDelete={this.onDeleteFileHandler} />
         <div className="lists-container">
           <DirectoryList
+            ref={this.leftDirectoryListElement}
             handleDataOnButton={this.handleDataOnButton}
-            handleDataOnClick={this.handleDataOnclick}
+            handleDataOnClick={this.handleDataOnClick}
             handleSelection={this.handleSelection}
             data={leftList}
             isActive={active === "left"}
             onClick={this.toggleActiveList}
             list="left" />
           <DirectoryList
+            ref={this.rightDirectoryListElement}
             handleDataOnButton={this.handleDataOnButton}
-            handleDataOnclick={this.handleDataOnclick}
+            handleDataOnClick={this.handleDataOnClick}
             handleSelection={this.handleSelection}
             data={rightList}
             isActive={active === "right"}

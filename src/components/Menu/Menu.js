@@ -12,10 +12,15 @@ class Menu extends Component {
   }
 
   onDeleteHandler = () => {
-    if (this.props.cursor === 0) {
-      this.props.openModal("Nothing selected");
+    const { selection, openModal, cursor } = this.props;
+    if (selection.length === 0){
+      if (cursor === 0) {
+        openModal("Nothing selected");
+      } else {
+        openModal("Delete");
+      }
     } else {
-      this.props.openModal("Delete");
+      openModal("Delete", selection.length);
     }
   }
 
@@ -48,10 +53,6 @@ class Menu extends Component {
 
   componentDidMount = () => {
     document.addEventListener("keydown", this.hotKeys);
-  }
-
-  componentWillUnmount = () => {
-    document.removeEventListener("keydown", this.hotKeys);
   }
 
   render() {
