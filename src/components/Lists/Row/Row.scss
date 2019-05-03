@@ -1,4 +1,5 @@
 span {
+  text-align: center;
   margin-right: 10px;
 }
 
@@ -10,40 +11,43 @@ span {
   color: #0cdada;
 }
 
+.glyphicon-picture {
+  color: #105050;
+}
+
 .fOwner,
 .fPermissions,
 .fSize,
 .fDate,
 .fTime {
   font-size: 18px;
-  margin-left: 40px;
+  margin-left: 2px;
   float: right;
-  width: 60px;
+  width: 80px;
 }
 
 .fName {
+  padding: 6px 5px 2px 5px;
   font-size: 17px;
   white-space: nowrap; 
   width: 230px; 
   overflow: hidden;
   text-overflow: clip;
-}
 
-.fDate {
-  margin-left: 30px;
+  &:hover {
+    background: rgb(201, 199, 199);
+    border-radius: 4px;
+    cursor: pointer;
+  }
 }
 
 .fPermissions {
-  margin-left: 55px;
-  margin-right: 25px;
-}
-
-.fOwner {
-  margin-left: 25px;
+  margin-left: 40px;
+  margin-right: 30px;
 }
 
 .fSize {
-  margin-left: 20px;
+  width: 120px;
 }
 
 .value {
@@ -58,4 +62,10 @@ span {
 .inactive {
   border-left: 5px solid #999999;
   background: #DEDEDE;
+}
+
+@media (max-width: 1200px){
+  .fPermissions, .fOwner {
+    display: none;
+  }
 }

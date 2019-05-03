@@ -5,6 +5,9 @@ import Rename from './Rename';
 import Delete from './Delete';
 import NothingSelected from './NothingSelected';
 import Permissions from './Permissions.jsx';
+import Photo from './Photo.jsx';
+import Video from './Video.jsx';
+import classNames from 'classname';
 import './Modal.scss';
 
 class Modal extends Component {
@@ -32,11 +35,13 @@ class Modal extends Component {
   }
 
   content = () => {
-    const { type, reference, fName, permissions, name, items } = this.props;
+    const { type, reference, fName, permissions, items } = this.props;
     switch (type) {
+      case 'Video': return <Video closeModal={this.closeModal} />;
+      case 'Photo': return <Photo closeModal={this.closeModal} />;
       case 'Add file': return <AddFile closeModal={this.closeModal} onClick={this.onClick} reference={reference} />;
       case 'Add directory': return <AddDirectory closeModal={this.closeModal} onClick={this.onClick} reference={reference} />;
-      case 'Rename': return <Rename closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={name} fName={fName} />;
+      case 'Rename': return <Rename closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={type} fName={fName} />;
       case 'Permissions': return <Permissions closeModal={this.closeModal} onClick={this.onClick} changePermissions={this.changePermissions} fName={fName} permissions={permissions} />;
       case 'Delete': return <Delete closeModal={this.closeModal} onClick={this.onClick} fName={fName} items={items}/>;
       case 'Nothing selected': return <NothingSelected closeModal={this.closeModal} />;
@@ -67,10 +72,16 @@ class Modal extends Component {
   }
 
   render() {
+    const { type, modalVisible } = this.props;
+    const modalClasses = classNames({
+      "modal": true,
+      "preview-modal": type === 'Video' || 'Photo'
+    });
+
     return (
       <div>
-        {!this.props.modalVisible &&
-          <div className="modal" id="modal">
+        {!modalVisible &&
+          <div className={modalClasses} id="modal">
             {this.content()}
           </div>}
       </div>

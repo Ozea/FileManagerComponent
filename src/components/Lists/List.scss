@@ -17,19 +17,27 @@
       margin-left: 45px;
     }
 
+    .date {
+      margin-left: 35px;
+    }
+
+    .size {
+      margin-left: 60px;
+    }
+
     .owner {
-      margin-left: 40px;
+      margin-left: 65px;
     }
 
     .permissions {
-      margin-left: 20px;
+      margin-left: 35px;
     }
 
     .name {
       margin-top: 5px;
       font-weight: bolder;
       font-size: 19px;
-      margin-right: 190px;
+      margin-right: 140px;
   }
 }
 
@@ -62,5 +70,23 @@
         background: #fcfcd4;
       }
     }
+  }
+}
+
+@media screen and (max-width: 1200px){
+
+  .list .head {
+    .size {
+      margin-left: 60px;
+      margin-right: 60px;
+    }
+
+    .name {
+      margin-right: 120px;
+    }
+  }
+
+  .permissions, .owner {
+    display: none;
   }
 }
