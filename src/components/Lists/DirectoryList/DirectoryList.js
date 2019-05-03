@@ -20,8 +20,8 @@ class DirectoryList extends Component {
     document.removeEventListener("keydown", this.handleLiSelection);
   }
 
-  removeSelection = (newCursor) => {
-    this.setState({ selection: [], cursor: newCursor });
+  removeSelection = () => {
+    this.setState({ selection: [], cursor: 0 });
   }
 
   onClick = () => {
@@ -84,6 +84,14 @@ class DirectoryList extends Component {
     }
   }
 
+  preview = (type, name) => {
+    if (type === 'f' && name.match('.jpg') && this.state.cursor !== 0){
+      this.props.openModal("Photo");
+    } else if (type === 'f' && name.match('.mp4') && this.state.cursor !== 0){
+      this.props.openModal("Video");
+    }
+  }
+
   rows = () => {
     const { data, isActive, handleDataOnClick, handleDataOnButton } = this.props;
     const { cursor } = this.state;
@@ -92,7 +100,7 @@ class DirectoryList extends Component {
         (key !== 0) ?
           (<Row key={key}
             multipleSelectionOnClick={() => this.addToSelection(key)}
-            glyph={item.type}
+            type={item.type}
             name={item.name}
             handleCursor={(name, rights) => {
               this.setState({ cursor: key });
@@ -106,17 +114,19 @@ class DirectoryList extends Component {
             permissions={item.permissions}
             size={item.size}
             date={item.date}
-            time={item.time} />) :
+            time={item.time}
+            preview={this.preview} />) :
           (<Row key={key}
             multipleSelectionOnClick={() => this.addToSelection(key)}
-            glyph={item.type}
+            type={item.type}
             name=".."
             handleCursor={() => {
               this.setState({ cursor: key });
               handleDataOnButton(key)
             }}
             active={key === cursor}
-            activeList={isActive} />))
+            activeList={isActive}
+            preview={this.preview} />))
     );
   }
 

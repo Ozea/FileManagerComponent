@@ -38,8 +38,8 @@ class FileManager extends Component {
             "time": "09:46",
             "owner": "admin",
             "group": "admin",
-            "size": "176",
-            "name": ".bash_profile"
+            "size": "200000",
+            "name": "screenshot.jpg"
           },
           {
             "type": "d",
@@ -112,8 +112,8 @@ class FileManager extends Component {
             "time": "09:46",
             "owner": "admin",
             "group": "admin",
-            "size": "176",
-            "name": ".bash_profile"
+            "size": "17600000",
+            "name": "video.mp4"
           },
           {
             "type": "d",
@@ -225,7 +225,7 @@ class FileManager extends Component {
       if (selection.length > 0) {
         let listing = [...leftList.listing];
         let newListing = listing.filter((value, index) => !selection.includes(index));
-        this.setState({ leftList: { listing: newListing } }, this.leftDirectoryListElement.current.removeSelection(newListing.length - 1));
+        this.setState({ leftList: { listing: newListing }, selection: [] }, this.leftDirectoryListElement.current.removeSelection());
       } else {
         leftList.listing.splice(cursor, 1);
         this.setState({ leftList });
@@ -234,7 +234,7 @@ class FileManager extends Component {
       if (selection.length > 0) {
         let listing = [...rightList.listing];
         let newListing = listing.filter((value, index) => !selection.includes(index));
-        this.setState({ rightList: { listing: newListing } }, this.rightDirectoryListElement.current.removeSelection(newListing.length - 1));
+        this.setState({ rightList: { listing: newListing }, selection: [] }, this.rightDirectoryListElement.current.removeSelection());
       } else {
         rightList.listing.splice(cursor, 1);
         this.setState({ rightList });
@@ -332,6 +332,8 @@ class FileManager extends Component {
   modal = (type, items) => {
     const { modalVisible, name, permissions } = this.state;
     switch (type) {
+      case 'Video': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} />, modalVisible: true });
+      case 'Photo': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} />, modalVisible: true });
       case 'Add file': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newFile} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Add directory': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newDir} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Delete': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onDelete} onClose={this.closeModal} items={items} />, modalVisible: true });
@@ -354,6 +356,7 @@ class FileManager extends Component {
           onDelete={this.onDeleteFileHandler} />
         <div className="lists-container">
           <DirectoryList
+            openModal={this.modal}
             ref={this.leftDirectoryListElement}
             handleDataOnButton={this.handleDataOnButton}
             handleDataOnClick={this.handleDataOnClick}
@@ -363,6 +366,7 @@ class FileManager extends Component {
             onClick={this.toggleActiveList}
             list="left" />
           <DirectoryList
+            openModal={this.modal}
             ref={this.rightDirectoryListElement}
             handleDataOnButton={this.handleDataOnButton}
             handleDataOnClick={this.handleDataOnClick}
