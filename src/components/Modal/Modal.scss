@@ -17,7 +17,6 @@ $black: #000;
   .modal-content {
     background-color: #fff;
     margin: auto;
-    padding: 20px;
     border: 1px solid #888;
     width: 30%;
     height: 230px;
@@ -26,35 +25,34 @@ $black: #000;
     margin-top: 100px;
 
     .modal-body input {
+      margin-top: 10px;
       width: 60%;
     }
 
-    .close {
-      color: #3a3a3a;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
+    .modal-header {
+      .close {
+        z-index: 1;
+        padding: 0;
+        color: #3a3a3a;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+  
+        &:hover,&:focus{
+          color: #333;
+          outline: none;
+          text-decoration: none;
+          cursor: pointer;
+        }
+      }
 
-      &:hover,&:focus{
-        color: #333;
-        text-decoration: none;
-        cursor: pointer;
+      .quot {
+        color: rgb(182, 120, 28);
       }
     }
-
+    
     .header .quot {
       color: rgb(182, 120, 28);
-    }
-
-    .modal-footer {
-      .cancel {
-        float: left;
-        margin-top: 3px;
-      }
-    }
-
-    .nothing-selected {
-      margin-top: 80px;
     }
 
     .lower {
@@ -62,16 +60,20 @@ $black: #000;
     }
   }
 
-  .add {
-    height: 220px;
+  .nothing-selected {
+    height: 170px;
+
+    .modal-footer {
+      margin-top: 45px;
+    }
   }
   
   .delete {
-    height: 220px;
+    height: 200px;
   }
   
   .permissions {
-    height: 600px;
+    height: 560px;
 
     .error, &:focus {
       border: 1px solid red;
@@ -80,7 +82,7 @@ $black: #000;
     input[type="text"] {
       size: 40px;
       width: 60px;
-      margin-bottom: 10px;
+      margin: 0 0 10px 200px;
       display: inline-block;
     }
 
@@ -166,6 +168,33 @@ $black: #000;
     height: 95%;
     width: 85%;
   
+    .carousel {
+      margin-left: 60px;
+      width: 90%;
+      height: 100%;
+      
+      .carousel-indicators {
+        .indicator {
+        margin: 0 15px;
+        width: 80px;
+        height: 80px;
+
+          .control-photo {
+            width: 100px;
+            height: 80px;
+          }
+
+          .active {
+            border: 3px solid #00afea;
+          }
+          
+          &:hover {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+
     .close {
       position: absolute;
       top: 20px;
@@ -175,6 +204,7 @@ $black: #000;
     }
   
     .photo {
+      margin-left: 20px;
       width: 98%;
       height: 100%;
     }

@@ -7,6 +7,7 @@ class DirectoryList extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      photoGallery: [],
       selection: [],
       cursor: 0
     }
@@ -32,6 +33,14 @@ class DirectoryList extends Component {
     return this.state.selection.indexOf(i) !== -1;
   }
 
+  setPhotoGallery = (name) => {
+    let photoGallery = [...this.state.photoGallery];
+
+    photoGallery.push(name);
+
+    this.setState({ photoGallery });
+  }
+
   addToSelection(i) {
     const { selection } = this.state;
     const result = [...selection];
@@ -50,10 +59,10 @@ class DirectoryList extends Component {
   }
 
   handleLiSelection = (e) => {
-    const { data, isActive, handleDataOnButton } = this.props;
+    const { data, isActive, handleDataOnButton, modalVisible } = this.props;
     const { cursor } = this.state;
 
-    if (!isActive) {
+    if (!isActive || modalVisible) {
       return;
     }
 
@@ -86,19 +95,20 @@ class DirectoryList extends Component {
 
   preview = (type, name) => {
     if (type === 'f' && name.match('.jpg') && this.state.cursor !== 0){
-      this.props.openModal("Photo");
+      this.props.openModal("Photo", this.state.photoGallery);
     } else if (type === 'f' && name.match('.mp4') && this.state.cursor !== 0){
       this.props.openModal("Video");
     }
   }
 
   rows = () => {
-    const { data, isActive, handleDataOnClick, handleDataOnButton } = this.props;
+    const { data, isActive, handleDataOnClick, handleDataOnButton, modalVisible } = this.props;
     const { cursor } = this.state;
     return (
       data.listing.map((item, key) =>
         (key !== 0) ?
           (<Row key={key}
+            modalVisible={modalVisible}
             multipleSelectionOnClick={() => this.addToSelection(key)}
             type={item.type}
             name={item.name}
@@ -115,8 +125,11 @@ class DirectoryList extends Component {
             size={item.size}
             date={item.date}
             time={item.time}
+            setGallery={this.setPhotoGallery}
             preview={this.preview} />) :
           (<Row key={key}
+            setGallery={this.setPhotoGallery}
+            modalVisible={modalVisible}
             multipleSelectionOnClick={() => this.addToSelection(key)}
             type={item.type}
             name=".."

@@ -36,14 +36,14 @@ class Permissions extends Component {
     const number = parseInt(string, 0);
 
     return {
-      read: this.inArray(number, [ 4, 5, 6, 7]) ? 4 : 0,
-      write: this.inArray(number, [ 2, 3, 6, 7]) ? 2 : 0,
-      execute: this.inArray(number, [ 1, 3, 5, 7]) ? 1 : 0
+      read: this.inArray(number, [4, 5, 6, 7]) ? 4 : 0,
+      write: this.inArray(number, [2, 3, 6, 7]) ? 2 : 0,
+      execute: this.inArray(number, [1, 3, 5, 7]) ? 1 : 0
     };
   }
 
   isValid(numbers = '') {
-    if (numbers.length !== 3 || numbers === '000') {
+    if (numbers.length !== 3 || numbers === '000' || numbers.match(/[A-Za-z]/)) {
       return false;
     }
 
@@ -121,9 +121,11 @@ class Permissions extends Component {
 
     return (
       <div className="modal-content permissions">
-        <span className="close" onClick={closeModal}>&times;</span>
-        <div className="header">
-          <h3>Change rights: <span className="quot">&quot;{fName}&quot;</span></h3>
+        <div className="modal-header">
+          <h3 className="modal-title perms">Change rights: <span className="quot">&quot;{fName}&quot;</span></h3>
+          <button type="button" className="close" onClick={closeModal} >
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
         <form name="form" onChange={this.onChangeForm}>
           {this.permissionBlock('owner')}
@@ -132,8 +134,8 @@ class Permissions extends Component {
         </form>
         <input type="text" className={inputClasses} defaultValue={this.encode()} ref={(ref) => this.inputRef = ref} onChange={this.handleInputChange} maxLength="3" />
         <div className="modal-footer">
-          <button type="button" className="btn btn-danger cancel" onClick={closeModal}>Close</button>
-          <button type="button" className="btn btn-primary" onClick={onClick} disabled={inputInvalid} >Save</button>
+          <button type="button" className="btn btn-danger mr-auto" onClick={closeModal}>Close</button>
+          <button type="button" className="btn btn-primary" onClick={onClick} disabled={inputInvalid}>Save</button>
         </div>
       </div>
     );

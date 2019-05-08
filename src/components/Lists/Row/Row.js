@@ -4,19 +4,30 @@ import './Row.scss';
 class Row extends Component {
 
   previewOnEnter = (e) => {
-    const { active, name, type, activeList } = this.props;
+    const { active, name, type, activeList, modalVisible } = this.props;
+
+    if (modalVisible) {
+      return;
+    }
+
     if (activeList && active && e.keyCode === 13) {
       this.props.preview(type, name);
     }
   }
 
   previewOnClick = (type, name) => {
-    console.log(type, name);
     this.props.preview(type, name);
   }
 
+  setPhotoGallery = (name) => {
+    if ( name.match('.jpg') ){
+      this.props.setGallery(name);
+    }
+  }
+
   componentDidMount = () => {
-    document.addEventListener("keypress", this.previewOnEnter);
+    document.addEventListener("keydown", this.previewOnEnter);
+    this.setPhotoGallery(this.props.name);
   }
 
   onClick = (e) => {
