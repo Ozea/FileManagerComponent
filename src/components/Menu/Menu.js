@@ -13,7 +13,7 @@ class Menu extends Component {
 
   onDeleteHandler = () => {
     const { selection, openModal, cursor } = this.props;
-    if (selection.length === 0){
+    if (selection.length === 0) {
       if (cursor === 0) {
         openModal("Nothing selected");
       } else {
@@ -33,7 +33,7 @@ class Menu extends Component {
   }
 
   permissionsHandler = () => {
-    if (this.props.cursor === 0){
+    if (this.props.cursor === 0) {
       this.props.openModal("Nothing selected");
     } else {
       this.props.openModal("Permissions");
@@ -41,7 +41,11 @@ class Menu extends Component {
   }
 
   hotKeys = (e) => {
-    switch(e.keyCode){
+    if (this.props.modalVisible) {
+      return;
+    }
+
+    switch (e.keyCode) {
       case 112: return this.addNewFileModal();
       case 113: return this.addNewDirModal();
       case 114: return this.renameHandler();
@@ -57,18 +61,18 @@ class Menu extends Component {
 
   render() {
     return (
-      <ul className="panel">
-        <button type="button" className="btn btn-outline-secondary">Upload</button>
-        <button type="button" className="btn btn-outline-secondary" onClick={this.addNewFileModal}>New file</button>
-        <button type="button" className="btn btn-outline-secondary" onClick={this.addNewDirModal}>New dir</button>
-        <button type="button" className="btn btn-outline-secondary">Download</button>
-        <button type="button" className="btn btn-outline-secondary" onClick={this.renameHandler}>Rename</button>
-        <button type="button" className="btn btn-outline-secondary" onClick={this.permissionsHandler}>Permissions</button>
-        <button type="button" className="btn btn-outline-secondary">Copy</button>
-        <button type="button" className="btn btn-outline-secondary">Move</button>
-        <button type="button" className="btn btn-outline-secondary">Archive</button>
-        <button type="button" className="btn btn-outline-secondary" onClick={this.onDeleteHandler} >Delete</button>
-      </ul>
+      <div className="btn-group" role="group" aria-label="First group">
+        <button type="button" className="btn btn-light">Upload</button>
+        <button type="button" className="btn btn-light" onClick={this.addNewFileModal}>New file</button>
+        <button type="button" className="btn btn-light" onClick={this.addNewDirModal}>New dir</button>
+        <button type="button" className="btn btn-light">Download</button>
+        <button type="button" className="btn btn-light" onClick={this.renameHandler}>Rename</button>
+        <button type="button" className="btn btn-light" onClick={this.permissionsHandler}>Permissions</button>
+        <button type="button" className="btn btn-light">Copy</button>
+        <button type="button" className="btn btn-light">Move</button>
+        <button type="button" className="btn btn-light">Archive</button>
+        <button type="button" className="btn btn-light" onClick={this.onDeleteHandler} >Delete</button>
+      </div>
     );
   }
 }

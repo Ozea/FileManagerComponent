@@ -35,10 +35,10 @@ class Modal extends Component {
   }
 
   content = () => {
-    const { type, reference, fName, permissions, items } = this.props;
+    const { type, reference, fName, permissions, items, gallery } = this.props;
     switch (type) {
       case 'Video': return <Video closeModal={this.closeModal} />;
-      case 'Photo': return <Photo closeModal={this.closeModal} />;
+      case 'Photo': return <Photo closeModal={this.closeModal} gallery={gallery} />;
       case 'Add file': return <AddFile closeModal={this.closeModal} onClick={this.onClick} reference={reference} />;
       case 'Add directory': return <AddDirectory closeModal={this.closeModal} onClick={this.onClick} reference={reference} />;
       case 'Rename': return <Rename closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={type} fName={fName} />;
@@ -75,7 +75,7 @@ class Modal extends Component {
     const { type, modalVisible } = this.props;
     const modalClasses = classNames({
       "modal": true,
-      "preview-modal": type === 'Video' || 'Photo'
+      "preview-modal": type === 'Video' || type === 'Photo'
     });
 
     return (

@@ -211,6 +211,10 @@ class FileManager extends Component {
   }
 
   handleSwitchList = (e) => {
+    if (this.state.modalVisible) {
+      return;
+    }
+
     if (e.keyCode === 39) {
       this.setState({ active: "right" });
     } else if (e.keyCode === 37) {
@@ -332,13 +336,13 @@ class FileManager extends Component {
   modal = (type, items) => {
     const { modalVisible, name, permissions } = this.state;
     switch (type) {
-      case 'Video': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} />, modalVisible: true });
-      case 'Photo': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} />, modalVisible: true });
+      case 'Video': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} onClick={this.closeModal} />, modalVisible: true });
+      case 'Photo': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} onClick={this.closeModal} gallery={items} />, modalVisible: true });
       case 'Add file': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newFile} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Add directory': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newDir} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Delete': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onDelete} onClose={this.closeModal} items={items} />, modalVisible: true });
       case 'Rename': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onChangeValue={this.nameHandler} onClick={this.onRename} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
-      case 'Nothing selected': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} />, modalVisible: true });
+      case 'Nothing selected': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} onClick={this.closeModal} />, modalVisible: true });
       case 'Permissions': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onChangePermissions} onClose={this.closeModal} onChangePermissions={this.handlePermissions} permissions={permissions} />, modalVisible: true });
       default:
         break;
@@ -350,12 +354,14 @@ class FileManager extends Component {
     return (
       <div className="window">
         <Menu
+          modalVisible={modalVisible}
           selection={selection}
           cursor={cursor}
           openModal={this.modal}
           onDelete={this.onDeleteFileHandler} />
         <div className="lists-container">
           <DirectoryList
+            modalVisible={modalVisible}
             openModal={this.modal}
             ref={this.leftDirectoryListElement}
             handleDataOnButton={this.handleDataOnButton}
@@ -366,6 +372,7 @@ class FileManager extends Component {
             onClick={this.toggleActiveList}
             list="left" />
           <DirectoryList
+            modalVisible={modalVisible}
             openModal={this.modal}
             ref={this.rightDirectoryListElement}
             handleDataOnButton={this.handleDataOnButton}
