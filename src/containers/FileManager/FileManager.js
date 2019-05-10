@@ -336,6 +336,7 @@ class FileManager extends Component {
   modal = (type, items) => {
     const { modalVisible, name, permissions } = this.state;
     switch (type) {
+      case 'Editor': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} />, modalVisible: true });
       case 'Video': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} onClick={this.closeModal} />, modalVisible: true });
       case 'Photo': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} onClick={this.closeModal} gallery={items} />, modalVisible: true });
       case 'Add file': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newFile} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });

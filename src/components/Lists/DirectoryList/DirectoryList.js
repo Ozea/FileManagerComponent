@@ -85,10 +85,14 @@ class DirectoryList extends Component {
   }
 
   preview = (type, name) => {
-    if (type === 'f' && name.match('.jpg') && this.state.cursor !== 0){
-      this.props.openModal("Photo", this.getPhotos());
-    } else if (type === 'f' && name.match('.mp4') && this.state.cursor !== 0){
-      this.props.openModal("Video");
+    if (type === 'f') {
+      if (name.match('.jpg') && this.state.cursor !== 0) {
+        this.props.openModal("Photo", this.getPhotos());
+      } else if (name.match('.mp4') && this.state.cursor !== 0) {
+        this.props.openModal("Video");
+      } else {
+        this.props.openModal("Editor");
+      }
     }
   }
 

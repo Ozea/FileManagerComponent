@@ -184,17 +184,13 @@ $black: #000;
             width: 100px;
             height: 80px;
           }
-
-          .active {
-            border: 3px solid #00afea;
-          }
           
           &:hover {
             cursor: pointer;
           }
 
           &.active > img {
-            border: 3px solid #00afea;
+            border: 3px solid #3cc3f0;
           }
         }
       }
@@ -213,6 +209,45 @@ $black: #000;
     .photo {
       width: 100%;
       height: 100%;
+    }
+  }
+}
+
+.editor-modal {
+  padding-top: 80px;
+
+  .editor {
+    margin-left: 10%;
+    width: 80%;
+    text-align: left;
+
+    .close {
+      z-index: 4;
+      position: absolute;
+      top: 80px;
+      left: 88%;
+      font-size: 40px;
+      opacity: 1;
+      color: #000;
+
+      &:hover {
+        color: rgb(139, 139, 139);
+      }
+    }
+
+    .CodeMirror {
+      height: 800px;
+
+      .CodeMirror-selected {
+        background:#ACCEF7;
+      }
+    }
+
+    .save {
+      font-size: 15px;
+      left: 86%;
+      bottom: 100px;
+      position: absolute;
     }
   }
 }
