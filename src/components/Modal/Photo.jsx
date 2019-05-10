@@ -1,22 +1,43 @@
 import React, { Component } from 'react';
+import classNames from 'classname';
 
 class Photo extends Component {
+  state = {
+    activeSlide: 0,
+  }
+
   carouselIndicators = () => {
     const gallery = this.props.gallery || [];
-    return gallery.map((item, i) => (
-      <div data-target="#photoGallery" data-slide-to={i} key={i} className="indicator active">
-        <img src={require('../../' + item)} alt={i} className="control-photo" />
-      </div>
-    ));
+    return gallery.map((item, i) => {
+      const imageClasses = classNames({ 'control-photo': true, 'active': i === this.state.activeSlide });
+      const result = (<div data-target="#photoGallery" data-slide-to={i} key={item} className="indicator">
+        <img src={require('../../' + item)} alt={i} className={imageClasses} />
+      </div>);
+      return result;
+    });
   }
 
   carouselPhotos = () => {
     const gallery = this.props.gallery || [];
     return gallery.map((item, i) => (
-      <div className={i === 0 ? 'carousel-item active' : 'carousel-item'} key={item}>
+      <div className={i === 0 ? 'carousel-item active' : 'carousel-item'} key={i}>
         <img src={require('../../' + item)} alt={i} className="photo" />
       </div>
     ));
+  }
+
+  componentDidMount() {
+    // eslint-disable-next-line
+    $('.carousel').on('slide.bs.carousel', this.handleSlide);
+  }
+
+  componentWillUnmount = () => {
+    // eslint-disable-next-line
+    $('.carousel').off('slide.bs.carousel', this.handleSlide);
+  }
+
+  handleSlide = (event) => {
+    this.setState({ activeSlide: event.to });
   }
 
   render() {
