@@ -7,7 +7,6 @@ class DirectoryList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      photoGallery: [],
       selection: [],
       cursor: 0
     }
@@ -31,14 +30,6 @@ class DirectoryList extends Component {
 
   isSelected = (i) => {
     return this.state.selection.indexOf(i) !== -1;
-  }
-
-  setPhotoGallery = (name) => {
-    let photoGallery = [...this.state.photoGallery];
-
-    photoGallery.push(name);
-
-    this.setState({ photoGallery });
   }
 
   addToSelection(i) {
@@ -95,10 +86,19 @@ class DirectoryList extends Component {
 
   preview = (type, name) => {
     if (type === 'f' && name.match('.jpg') && this.state.cursor !== 0){
-      this.props.openModal("Photo", this.state.photoGallery);
+      this.props.openModal("Photo", this.getPhotos());
     } else if (type === 'f' && name.match('.mp4') && this.state.cursor !== 0){
       this.props.openModal("Video");
     }
+  }
+
+  getPhotos = () => {
+    const { data: { listing } } = this.props;
+    return listing.filter(this.isPhoto).map(item => item.name);
+  }
+
+  isPhoto = (item) => {
+    return item.name.match('.jpg');
   }
 
   rows = () => {
@@ -125,10 +125,8 @@ class DirectoryList extends Component {
             size={item.size}
             date={item.date}
             time={item.time}
-            setGallery={this.setPhotoGallery}
             preview={this.preview} />) :
           (<Row key={key}
-            setGallery={this.setPhotoGallery}
             modalVisible={modalVisible}
             multipleSelectionOnClick={() => this.addToSelection(key)}
             type={item.type}

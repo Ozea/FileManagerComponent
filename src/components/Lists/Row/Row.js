@@ -19,15 +19,8 @@ class Row extends Component {
     this.props.preview(type, name);
   }
 
-  setPhotoGallery = (name) => {
-    if ( name.match('.jpg') ){
-      this.props.setGallery(name);
-    }
-  }
-
   componentDidMount = () => {
     document.addEventListener("keydown", this.previewOnEnter);
-    this.setPhotoGallery(this.props.name);
   }
 
   onClick = (e) => {
