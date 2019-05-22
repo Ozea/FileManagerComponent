@@ -49,6 +49,15 @@ class DirectoryList extends Component {
     this.setState({ selection: result }, this.props.handleSelection(result));
   }
 
+  changeQuery = (name, type) => {
+    if (type === 'f') {
+      this.props.history.history.push({
+        pathname: '/',
+        search: `?path=/home/admin/${name === '' ? '..' : name}`
+      });
+    }
+  }
+
   handleLiSelection = (e) => {
     const { data, isActive, handleDataOnButton, modalVisible } = this.props;
     const { cursor } = this.state;
@@ -68,6 +77,9 @@ class DirectoryList extends Component {
 
       this.setState({ cursor: cursor + 1 });
       handleDataOnButton(this.state.cursor);
+      let name = data.listing[this.state.cursor].name;
+      let type = data.listing[this.state.cursor].type;
+      this.changeQuery(name, type);
     }
 
     if (e.keyCode === 38) {
@@ -81,17 +93,21 @@ class DirectoryList extends Component {
 
       this.setState({ cursor: cursor - 1 });
       handleDataOnButton(this.state.cursor);
+      let name = data.listing[this.state.cursor].name;
+      let type = data.listing[this.state.cursor].type;
+      this.changeQuery(name, type);
     }
   }
 
   preview = (type, name) => {
+    const { history } = this.props.history;
     if (type === 'f') {
-      if (name.match('.jpg') && this.state.cursor !== 0) {
-        this.props.openModal("Photo", this.getPhotos());
-      } else if (name.match('.mp4') && this.state.cursor !== 0) {
-        this.props.openModal("Video");
+      if (name.match('.jpg')) {
+        return history.push({ pathname: `/preview`, search: `?path=/home/admin/${name}`, state: { gallery: this.getPhotos(), type: 'photo' } });
+      } else if (name.match('.mp4')) {
+        return history.push({ pathname: `/preview`, search: `?path=/home/admin/${name}`, state: { type: 'video' } });
       } else {
-        this.props.openModal("Editor");
+        return history.push({ pathname: `/preview`, search: `?path=/home/admin/${name}`, state: { type: 'editor' } });
       }
     }
   }
@@ -109,7 +125,7 @@ class DirectoryList extends Component {
     const { data, isActive, handleDataOnClick, handleDataOnButton, modalVisible } = this.props;
     const { cursor } = this.state;
     return (
-      data.listing.map((item, key) =>
+      data.listing.sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name)).map((item, key) =>
         (key !== 0) ?
           (<Row key={key}
             modalVisible={modalVisible}

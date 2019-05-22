@@ -1,0 +1,50 @@
+.carousel {
+  width: 100%;
+  position: relative;
+
+  .carousel-inner {
+    .carousel-item {
+      width: 100%;
+      max-height: 100vh;
+        
+        img {
+          width: 100%;
+        }
+    }
+  }
+
+  .carousel-indicators {
+    .indicator {
+    margin: 0 15px;
+    width: 80px;
+    height: 80px;
+
+      .control-photo {
+        width: 100px;
+        height: 80px;
+      }
+      
+      &:hover {
+        cursor: pointer;
+      }
+
+      &.active > img {
+        border: 3px solid #3cc3f0;
+      }
+
+      .active {
+        border: 3px solid #3cc3f0;
+      }
+    }
+  }
+}
+
+.close {
+  z-index: 1;
+  font-size: 30px;
+  position: absolute;
+  top: 5px;
+  right: 0;
+  opacity: 1;
+  color: #fff;
+}

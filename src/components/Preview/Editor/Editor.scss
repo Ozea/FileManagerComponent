@@ -1,0 +1,32 @@
+.editor {
+  width: 100%;
+
+  .close {
+    z-index: 4;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    font-size: 40px;
+    opacity: 1;
+    color: #000;
+
+    &:hover {
+      color: rgb(139, 139, 139);
+    }
+  }
+
+  .CodeMirror {
+    height: 100vh;
+
+    .CodeMirror-selected {
+      background:#ACCEF7;
+    }
+  }
+
+  .save {
+    font-size: 20px;
+    left: 95%;
+    bottom: 10px;
+    position: absolute;
+  }
+}

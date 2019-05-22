@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import './Row.scss';
 
 class Row extends Component {
 
   previewOnEnter = (e) => {
     const { active, name, type, activeList, modalVisible } = this.props;
-
     if (modalVisible) {
       return;
     }
@@ -16,18 +16,37 @@ class Row extends Component {
   }
 
   previewOnClick = (type, name) => {
-    this.props.preview(type, name);
+    if (type === 'f') {
+      return this.props.preview(type, name);
+    }
+
+    this.props.history.push({
+      pathname: '/',
+      search: `?path=/home/admin/${name}`
+    });
   }
 
   componentDidMount = () => {
     document.addEventListener("keydown", this.previewOnEnter);
   }
 
-  onClick = (e) => {
+  componentWillUnmount = () => {
+    document.removeEventListener("keydown", this.previewOnEnter);
+  }
+
+  onClick = (e, name, type) => {
     if (e.shiftKey) {
       this.props.multipleSelectionOnClick();
     }
+
     this.props.handleCursor(this.props.name, this.props.permissions);
+
+    if (type === 'f') {
+      this.props.history.push({
+        pathname: '/',
+        search: `?path=/home/admin/${name}`
+      });
+    }
   }
 
   liClassName = (active, selected) => {
@@ -86,9 +105,9 @@ class Row extends Component {
   render() {
     const { name, owner, permissions, size, date, time, type, active, selected } = this.props;
     return (
-      <li className={this.liClassName(active, selected)} onClick={this.onClick} >
+      <li className={this.liClassName(active, selected)} onClick={(e) => this.onClick(e, name, type)} >
         <span>{this.glyph()}</span>
-        <span className="fName" onClick={() => this.previewOnClick(type, name)}>{name}</span>
+        <span className="fName" onDoubleClick={() => this.previewOnClick(type, name)}>{name}</span>
         <span className="fPermissions">{permissions}</span>
         <span className="fOwner">{owner}</span>
         <span className="fSize">{this.sizeFormatter(size)}</span>
@@ -99,4 +118,4 @@ class Row extends Component {
   }
 }
 
-export default Row;
+export default withRouter(Row);

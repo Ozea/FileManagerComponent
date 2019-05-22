@@ -1,0 +1,26 @@
+.video-preview {
+  width: 100%;
+  
+  .close {
+    z-index: 1;
+    font-size: 30px;
+    position: absolute;
+    top: 15px;
+    right: 2px;
+    opacity: 1;
+    color: #fff;
+
+    &:hover {
+      color: #000;
+    }
+  }
+
+  .video {
+    width: 100%;
+    height: auto;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}

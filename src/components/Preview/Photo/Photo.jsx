@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classname';
+import './Photo.scss';
 
 class Photo extends Component {
   state = {
@@ -11,7 +12,7 @@ class Photo extends Component {
     return gallery.map((item, i) => {
       const imageClasses = classNames({ 'control-photo': true, 'active': i === this.state.activeSlide });
       const result = (<div data-target="#photoGallery" data-slide-to={i} key={item} className="indicator">
-        <img src={require('../../' + item)} alt={i} className={imageClasses} />
+        <img src={require('../../../' + item)} alt={i} className={imageClasses} />
       </div>);
       return result;
     });
@@ -21,7 +22,9 @@ class Photo extends Component {
     const gallery = this.props.gallery || [];
     return gallery.map((item, i) => (
       <div className={i === 0 ? 'carousel-item active' : 'carousel-item'} key={i}>
-        <img src={require('../../' + item)} alt={i} className="photo" />
+        <div className="d-flex align-items-center justify-content-center min-vh-100">
+          <img src={require('../../../' + item)} alt={i} />
+        </div>
       </div>
     ));
   }
@@ -42,24 +45,22 @@ class Photo extends Component {
 
   render() {
     return (
-      <div className="modal-content photo-preview">
-        <div id="photoGallery" className="carousel slide" data-ride="carousel">
-          <span className="close" onClick={this.props.closeModal}>&times;</span>
-          <div className="carousel-inner">
-            {this.carouselPhotos()}
-          </div>
-          <div className="carousel-indicators">
-            {this.carouselIndicators()}
-          </div>
-          <a className="carousel-control-prev" href="#photoGallery" role="button" data-slide="prev">
-            <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span className="sr-only">Previous</span>
-          </a>
-          <a className="carousel-control-next" href="#photoGallery" role="button" data-slide="next">
-            <span className="carousel-control-next-icon" aria-hidden="true"></span>
-            <span className="sr-only">Next</span>
-          </a>
+      <div id="photoGallery" className="carousel slide" data-ride="carousel">
+        <span className="close" onClick={this.props.closeModal}>&times;</span>
+        <div className="carousel-inner">
+          {this.carouselPhotos()}
         </div>
+        <div className="carousel-indicators">
+          {this.carouselIndicators()}
+        </div>
+        <a className="carousel-control-prev" href="#photoGallery" role="button" data-slide="prev">
+          <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span className="sr-only">Previous</span>
+        </a>
+        <a className="carousel-control-next" href="#photoGallery" role="button" data-slide="next">
+          <span className="carousel-control-next-icon" aria-hidden="true"></span>
+          <span className="sr-only">Next</span>
+        </a>
       </div>
     );
   }
