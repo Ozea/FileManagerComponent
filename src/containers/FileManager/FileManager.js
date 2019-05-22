@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import DirectoryList from '../../components/Lists/DirectoryList/DirectoryList';
 import Modal from '../../components/Modal/Modal';
 import Menu from '../../components/Menu/Menu';
+import { withRouter } from 'react-router-dom';
 // import axios from 'axios';
 import '../App/App.scss';
 
@@ -336,9 +337,6 @@ class FileManager extends Component {
   modal = (type, items) => {
     const { modalVisible, name, permissions } = this.state;
     switch (type) {
-      case 'Editor': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} />, modalVisible: true });
-      case 'Video': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} onClick={this.closeModal} />, modalVisible: true });
-      case 'Photo': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} onClick={this.closeModal} gallery={items} />, modalVisible: true });
       case 'Add file': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newFile} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Add directory': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newDir} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Delete': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onDelete} onClose={this.closeModal} items={items} />, modalVisible: true });
@@ -371,6 +369,7 @@ class FileManager extends Component {
             data={leftList}
             isActive={active === "left"}
             onClick={this.toggleActiveList}
+            history={this.props}
             list="left" />
           <DirectoryList
             modalVisible={modalVisible}
@@ -382,6 +381,7 @@ class FileManager extends Component {
             data={rightList}
             isActive={active === "right"}
             onClick={this.toggleActiveList}
+            history={this.props}
             list="right" />
         </div>
         {modalVisible && modal}
@@ -390,4 +390,4 @@ class FileManager extends Component {
   }
 }
 
-export default FileManager;
+export default withRouter(FileManager);

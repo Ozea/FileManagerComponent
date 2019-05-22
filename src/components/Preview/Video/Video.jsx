@@ -1,11 +1,12 @@
 import React from 'react';
-import video from '../../2.mp4';
+import video from '../../../2.mp4';
+import './Video.scss';
 
 const Video = (props) => {
   return (
-    <div className="modal-content video-preview">
+    <div className="video-preview">
       <span className="close" onClick={props.closeModal}>&times;</span>
-      <video className="video-fluid z-depth-1 video" autoPlay loop controls>
+      <video className="video" loop controls>
         <source src={video} type="video/mp4" />
       </video>
     </div>

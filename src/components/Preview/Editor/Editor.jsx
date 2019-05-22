@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import CodeMirror from 'react-codemirror';
+import './Editor.scss';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/xml/xml';
@@ -7,7 +8,7 @@ import 'codemirror/mode/markdown/markdown';
 
 class Editor extends Component {
   state = {
-    code: "Hello"
+    code: 'editor'
   }
 
   updateCode = (newCode) => {
