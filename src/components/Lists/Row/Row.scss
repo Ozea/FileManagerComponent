@@ -61,7 +61,11 @@ span {
 
 .inactive {
   border-left: 5px solid #999999;
-  background: #DEDEDE;
+  background: rgb(195, 195, 195)
+}
+
+.inactive-selected {
+  background: rgb(220, 220, 220);
 }
 
 @media (max-width: 1200px){

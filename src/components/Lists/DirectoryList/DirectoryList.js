@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Path from '../../Path/Path';
 import Row from '../Row/Row';
+import * as FM from '../../../LocalAPI';
 import '../List.scss';
 
 class DirectoryList extends Component {
@@ -14,18 +15,34 @@ class DirectoryList extends Component {
 
   componentDidMount = () => {
     document.addEventListener("keydown", this.handleLiSelection);
+    this.setCursor();
   }
 
   componentWillUnmount = () => {
     document.removeEventListener("keydown", this.handleLiSelection);
   }
 
+  setCursor = () => {
+    const { history, data } = this.props;
+    let fName = history.location.search.split('/').pop();
+    let arrayIndex = data.listing.findIndex(item => item.name === fName);
+    let cursor = arrayIndex === -1 ? 0 : arrayIndex;
+    this.setState({ cursor });
+  }
+
+  handleCursorAfterDeletion = (prevCursor) => {
+    let cursor = prevCursor - 1;
+    this.setState({ cursor });
+  }
+
   removeSelection = () => {
     this.setState({ selection: [], cursor: 0 });
   }
 
-  onClick = () => {
-    this.props.onClick(this.props.list);
+  toggleActiveList = () => {
+    if (!this.props.isActive) {
+      this.props.onClick(this.props.list);
+    }
   }
 
   isSelected = (i) => {
@@ -53,7 +70,7 @@ class DirectoryList extends Component {
     if (type === 'f') {
       this.props.history.history.push({
         pathname: '/',
-        search: `?path=/home/admin/${name === '' ? '..' : name}`
+        search: `?path=${FM.getDirectoryPath()}/${name === '' ? '..' : name}`
       });
     }
   }
@@ -76,9 +93,8 @@ class DirectoryList extends Component {
       }
 
       this.setState({ cursor: cursor + 1 });
-      handleDataOnButton(this.state.cursor);
-      let name = data.listing[this.state.cursor].name;
-      let type = data.listing[this.state.cursor].type;
+      const { name, type, permissions } = data.listing[this.state.cursor];
+      handleDataOnButton(this.state.cursor, name, permissions);
       this.changeQuery(name, type);
     }
 
@@ -92,9 +108,8 @@ class DirectoryList extends Component {
       }
 
       this.setState({ cursor: cursor - 1 });
-      handleDataOnButton(this.state.cursor);
-      let name = data.listing[this.state.cursor].name;
-      let type = data.listing[this.state.cursor].type;
+      const { name, type, permissions } = data.listing[this.state.cursor];
+      handleDataOnButton(this.state.cursor, name, permissions);
       this.changeQuery(name, type);
     }
   }
@@ -103,13 +118,24 @@ class DirectoryList extends Component {
     const { history } = this.props.history;
     if (type === 'f') {
       if (name.match('.jpg')) {
-        return history.push({ pathname: `/preview`, search: `?path=/home/admin/${name}`, state: { gallery: this.getPhotos(), type: 'photo' } });
+        return history.push({ pathname: `/preview`, search: `?path=${FM.getDirectoryPath()}/${name}`, state: { type: 'photo', gallery: this.getPhotos() } });
       } else if (name.match('.mp4')) {
-        return history.push({ pathname: `/preview`, search: `?path=/home/admin/${name}`, state: { type: 'video' } });
+        return history.push({ pathname: `/preview`, search: `?path=${FM.getDirectoryPath()}/${name}`, state: { type: 'video' } });
       } else {
-        return history.push({ pathname: `/preview`, search: `?path=/home/admin/${name}`, state: { type: 'editor' } });
+        return history.push({ pathname: `/preview`, search: `?path=${FM.getDirectoryPath()}/${name}`, state: { type: 'editor' } });
       }
     }
+  }
+
+  openDirectory = (name) => {
+    const { history: { history }, path, changePath } = this.props;
+    history.push({
+      pathname: '/',
+      search: `?path=${path}/${name}`
+    });
+    changePath(name);
+    FM.openDirectory(this.props.list);
+    this.setState({ cursor: 0 });
   }
 
   getPhotos = () => {
@@ -122,22 +148,22 @@ class DirectoryList extends Component {
   }
 
   rows = () => {
-    const { data, isActive, handleDataOnClick, handleDataOnButton, modalVisible } = this.props;
+    const { data, isActive, handleDataOnClick, modalVisible } = this.props;
     const { cursor } = this.state;
     return (
       data.listing.sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name)).map((item, key) =>
         (key !== 0) ?
           (<Row key={key}
             modalVisible={modalVisible}
-            multipleSelectionOnClick={() => this.addToSelection(key)}
+            selectMultiple={() => this.addToSelection(key)}
             type={item.type}
             name={item.name}
-            handleCursor={(name, rights) => {
+            handleDataOnClick={(name, permissions) => {
               this.setState({ cursor: key });
-              handleDataOnButton(key);
-              handleDataOnClick(name, rights);
+              handleDataOnClick(key, name, permissions);
             }}
-            active={key === cursor}
+            activeRow={key === cursor}
+            cursor={key}
             selected={this.isSelected(key)}
             activeList={isActive}
             owner={item.owner}
@@ -145,27 +171,27 @@ class DirectoryList extends Component {
             size={item.size}
             date={item.date}
             time={item.time}
+            openDirectory={this.openDirectory}
             preview={this.preview} />) :
           (<Row key={key}
             modalVisible={modalVisible}
-            multipleSelectionOnClick={() => this.addToSelection(key)}
             type={item.type}
             name=".."
-            handleCursor={() => {
+            cursor={key}
+            handleDataOnClick={(name) => {
               this.setState({ cursor: key });
-              handleDataOnButton(key)
+              handleDataOnClick(key, name)
             }}
-            active={key === cursor}
-            activeList={isActive}
-            preview={this.preview} />))
+            activeRow={key === cursor}
+            activeList={isActive} />))
     );
   }
 
   render() {
-    const { isActive } = this.props;
+    const { isActive, path } = this.props;
     return (
-      <div className={isActive ? "list active" : "list"} onClick={this.onClick}>
-        <Path class={isActive ? "active-path" : "path"} />
+      <div className={isActive ? "list active" : "list"} onClick={this.toggleActiveList}>
+        <Path class={isActive ? "active-path" : "path"} path={path} />
         <div className="head">
           <span className="permissions">Permissions</span>
           <span className="owner">Owner</span>

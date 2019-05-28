@@ -6,7 +6,7 @@ const Video = (props) => {
   return (
     <div className="video-preview">
       <span className="close" onClick={props.closeModal}>&times;</span>
-      <video className="video" loop controls>
+      <video className="video" autoPlay loop controls>
         <source src={video} type="video/mp4" />
       </video>
     </div>
