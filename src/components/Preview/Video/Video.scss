@@ -1,11 +1,13 @@
 .video-preview {
+  padding-bottom: 17px;
   width: 100%;
+  background: #000;
   
   .close {
     z-index: 1;
     font-size: 30px;
     position: absolute;
-    top: 15px;
+    top: 5px;
     right: 2px;
     opacity: 1;
     color: #fff;

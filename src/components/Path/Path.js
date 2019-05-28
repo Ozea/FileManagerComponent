@@ -4,7 +4,7 @@ import './Path.scss';
 const Path = (props) => {
   return(
     <div className={props.class}>
-      /home/admin/
+      {props.path}
     </div>
   );
 }

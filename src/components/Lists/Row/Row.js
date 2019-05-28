@@ -1,62 +1,68 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import * as FM from '../../../LocalAPI';
 import './Row.scss';
 
 class Row extends Component {
 
-  previewOnEnter = (e) => {
-    const { active, name, type, activeList, modalVisible } = this.props;
-    if (modalVisible) {
+  handleEnterButton = (e) => {
+    const { activeRow, name, type, activeList, modalVisible, preview, openDirectory, cursor } = this.props;
+    if (modalVisible || !activeRow || !activeList) {
       return;
     }
 
-    if (activeList && active && e.keyCode === 13) {
-      this.props.preview(type, name);
+    if (e.keyCode === 13) {
+      if (type === 'f' && cursor !== 0) {
+        preview(type, name);
+      } else {
+        openDirectory(name);
+      }
     }
   }
 
-  previewOnClick = (type, name) => {
-    if (type === 'f') {
-      return this.props.preview(type, name);
+  handleDoubleClick = () => {
+    const { type, name, preview, openDirectory, cursor } = this.props;
+    if (type === 'f' && cursor !== 0) {
+      return preview(type, name);
+    } else {
+      return openDirectory(name);
     }
-
-    this.props.history.push({
-      pathname: '/',
-      search: `?path=/home/admin/${name}`
-    });
   }
 
   componentDidMount = () => {
-    document.addEventListener("keydown", this.previewOnEnter);
+    document.addEventListener("keydown", this.handleEnterButton);
   }
 
   componentWillUnmount = () => {
-    document.removeEventListener("keydown", this.previewOnEnter);
+    document.removeEventListener("keydown", this.handleEnterButton);
   }
 
-  onClick = (e, name, type) => {
-    if (e.shiftKey) {
-      this.props.multipleSelectionOnClick();
+  onClick = (e) => {
+    const { name, type, selectMultiple, handleDataOnClick, history, permissions, cursor } = this.props;
+    if (e.shiftKey && cursor !== 0) {
+      selectMultiple();
     }
 
-    this.props.handleCursor(this.props.name, this.props.permissions);
+    handleDataOnClick(name, permissions);
 
     if (type === 'f') {
-      this.props.history.push({
+      history.push({
         pathname: '/',
-        search: `?path=/home/admin/${name}`
+        search: `?path=${FM.getDirectoryPath()}/${name}`
       });
     }
   }
 
-  liClassName = (active, selected) => {
-    if (this.props.activeList) {
-      let isActive = active ? 'active' : '';
+  liClassName = () => {
+    const { activeRow, selected, activeList } = this.props;
+    if (activeList) {
+      let isActive = activeRow ? 'active' : '';
       let isSelected = selected ? 'selected' : '';
       return isActive.length ? isActive : isSelected;
     } else {
-      let isActive = active ? 'active' : '';
-      return isActive.length ? 'inactive' : null;
+      let isActive = activeRow ? 'inactive' : '';
+      let isSelected = selected ? 'inactive-selected' : '';
+      return isActive.length ? isActive : isSelected;
     }
   }
 
@@ -103,11 +109,11 @@ class Row extends Component {
   }
 
   render() {
-    const { name, owner, permissions, size, date, time, type, active, selected } = this.props;
+    const { name, owner, permissions, size, date, time } = this.props;
     return (
-      <li className={this.liClassName(active, selected)} onClick={(e) => this.onClick(e, name, type)} >
+      <li className={this.liClassName()} onClick={this.onClick} >
         <span>{this.glyph()}</span>
-        <span className="fName" onDoubleClick={() => this.previewOnClick(type, name)}>{name}</span>
+        <span className="fName" onDoubleClick={this.handleDoubleClick}>{name}</span>
         <span className="fPermissions">{permissions}</span>
         <span className="fOwner">{owner}</span>
         <span className="fSize">{this.sizeFormatter(size)}</span>

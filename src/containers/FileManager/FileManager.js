@@ -3,6 +3,7 @@ import DirectoryList from '../../components/Lists/DirectoryList/DirectoryList';
 import Modal from '../../components/Modal/Modal';
 import Menu from '../../components/Menu/Menu';
 import { withRouter } from 'react-router-dom';
+import * as FM from '../../LocalAPI';
 // import axios from 'axios';
 import '../App/App.scss';
 
@@ -11,152 +12,12 @@ class FileManager extends Component {
     super(props);
     this.state = {
       leftList: {
-        "listing": [
-          {
-            "type": "d",
-            "permissions": "711",
-            "date": "2015-07-04",
-            "time": "09:46",
-            "owner": "admin",
-            "group": "admin",
-            "size": "4096",
-            "name": ""
-          },
-          {
-            "type": "f",
-            "permissions": "644",
-            "date": "2015-07-04",
-            "time": "09:46",
-            "owner": "admin",
-            "group": "admin",
-            "size": "124",
-            "name": ".bashrc"
-          },
-          {
-            "type": "f",
-            "permissions": "644",
-            "date": "2015-07-04",
-            "time": "09:46",
-            "owner": "admin",
-            "group": "admin",
-            "size": "200000",
-            "name": "screenshot.jpg"
-          },
-          {
-            "type": "d",
-            "permissions": "751",
-            "date": "2015-07-04",
-            "time": "09:46",
-            "owner": "admin",
-            "group": "admin",
-            "size": "4096",
-            "name": "web"
-          },
-          {
-            "type": "d",
-            "permissions": "755",
-            "date": "2015-07-04",
-            "time": "09:46",
-            "owner": "root",
-            "group": "root",
-            "size": "4096",
-            "name": "conf"
-          },
-          {
-            "type": "f",
-            "permissions": "644",
-            "date": "2015-07-04",
-            "time": "09:46",
-            "owner": "admin",
-            "group": "admin",
-            "size": "33",
-            "name": ".bash_logout"
-          },
-          {
-            "type": "d",
-            "permissions": "771",
-            "date": "2015-07-04",
-            "time": "09:46",
-            "owner": "admin",
-            "group": "admin",
-            "size": "4096",
-            "name": "tmp"
-          }
-        ]
+        path: FM.getDirectoryPath(),
+        files: FM.leftList,
       },
       rightList: {
-        "listing": [
-          {
-            "type": "d",
-            "permissions": "711",
-            "date": "2015-07-04",
-            "time": "09:46",
-            "owner": "admin",
-            "group": "admin",
-            "size": "4096",
-            "name": ""
-          },
-          {
-            "type": "f",
-            "permissions": "644",
-            "date": "2015-07-04",
-            "time": "09:46",
-            "owner": "admin",
-            "group": "admin",
-            "size": "124",
-            "name": ".bashrc"
-          },
-          {
-            "type": "f",
-            "permissions": "644",
-            "date": "2015-07-04",
-            "time": "09:46",
-            "owner": "admin",
-            "group": "admin",
-            "size": "17600000",
-            "name": "video.mp4"
-          },
-          {
-            "type": "d",
-            "permissions": "751",
-            "date": "2015-07-04",
-            "time": "09:46",
-            "owner": "admin",
-            "group": "admin",
-            "size": "4096",
-            "name": "web"
-          },
-          {
-            "type": "d",
-            "permissions": "755",
-            "date": "2015-07-04",
-            "time": "09:46",
-            "owner": "root",
-            "group": "root",
-            "size": "4096",
-            "name": "conf"
-          },
-          {
-            "type": "f",
-            "permissions": "644",
-            "date": "2015-07-04",
-            "time": "09:46",
-            "owner": "admin",
-            "group": "admin",
-            "size": "33",
-            "name": ".bash_logout"
-          },
-          {
-            "type": "d",
-            "permissions": "771",
-            "date": "2015-07-04",
-            "time": "09:46",
-            "owner": "admin",
-            "group": "admin",
-            "size": "4096",
-            "name": "tmp"
-          }
-        ]
+        path: FM.getDirectoryPath(),
+        files: FM.rightList,
       },
       active: "left",
       modal: null,
@@ -183,35 +44,31 @@ class FileManager extends Component {
   // };
 
   componentDidMount = () => {
-    window.addEventListener("keydown", this.handleSwitchList);
+    window.addEventListener("keydown", this.switchActiveList);
+    window.addEventListener("keydown", this.goToPrevDir);
+    // FM.getDataFromServer('')
+    //   .then() // setState({ data })
+    //   .catch()
   }
 
   componentWillUnmount = () => {
-    window.removeEventListener("keydown", this.handleSwitchList);
+    window.removeEventListener("keydown", this.switchActiveList);
+    window.removeEventListener("keydown", this.goToPrevDir);
   }
 
   handleSelection = (selection) => {
     this.setState({ selection });
   }
 
-  handleDataOnButton = (cursor) => {
-    const { leftList, rightList, active } = this.state;
-    if (active === "left") {
-      let name = leftList.listing[cursor].name;
-      let permissions = leftList.listing[cursor].permissions;
-      this.setState({ name, permissions, cursor });
-    } else {
-      let name = rightList.listing[cursor].name;
-      let permissions = rightList.listing[cursor].permissions;
-      this.setState({ name, permissions, cursor });
-    }
+  handleDataOnButton = (cursor, name, permissions) => {
+    this.setState({ name, permissions, cursor });
   }
 
   toggleActiveList = (list) => {
     this.setState({ active: list });
   }
 
-  handleSwitchList = (e) => {
+  switchActiveList = (e) => {
     if (this.state.modalVisible) {
       return;
     }
@@ -228,92 +85,80 @@ class FileManager extends Component {
 
     if (active === "left") {
       if (selection.length > 0) {
-        let listing = [...leftList.listing];
+        let listing = [...leftList.files.listing];
         let newListing = listing.filter((value, index) => !selection.includes(index));
-        this.setState({ leftList: { listing: newListing }, selection: [] }, this.leftDirectoryListElement.current.removeSelection());
+        this.setState({ leftList: { files: { listing: newListing } }, selection: [] });
+        this.leftDirectoryListElement.current.removeSelection();
       } else {
-        leftList.listing.splice(cursor, 1);
+        leftList.files.listing.splice(cursor, 1);
         this.setState({ leftList });
+        this.leftDirectoryListElement.current.handleCursorAfterDeletion(cursor)
       }
     } else {
       if (selection.length > 0) {
-        let listing = [...rightList.listing];
+        let listing = [...rightList.files.listing];
         let newListing = listing.filter((value, index) => !selection.includes(index));
-        this.setState({ rightList: { listing: newListing }, selection: [] }, this.rightDirectoryListElement.current.removeSelection());
+        this.setState({ rightList: { files: { listing: newListing } }, selection: [] });
+        this.rightDirectoryListElement.current.removeSelection()
       } else {
-        rightList.listing.splice(cursor, 1);
+        rightList.files.listing.splice(cursor, 1);
         this.setState({ rightList });
+        this.rightDirectoryListElement.current.handleCursorAfterDeletion(cursor)
       }
     }
   }
 
   newFile = () => {
-    const { leftList, rightList, active } = this.state;
-    const newFile = {
-      type: "f",
-      permissions: "771",
-      owner: "admin",
-      group: "admin",
-      size: "1000",
-      name: this.inputElement.value
-    };
-
-    if (active === "left") {
-      const listing = [...leftList.listing, newFile];
-      this.setState({
-        leftList: { ...leftList, listing }
-      });
-
-    } else {
-      const listing = [...rightList.listing, newFile];
-      this.setState({
-        rightList: { ...rightList, listing }
-      });
-    }
+    const { active } = this.state;
+    let name = this.inputElement.value;
+    FM.addFile(name, active);
   }
 
   newDir = () => {
-    const { leftList, rightList, active } = this.state;
-    const newDir = {
-      type: "d",
-      permissions: "771",
-      owner: "admin",
-      group: "admin",
-      size: "1000",
-      name: this.inputElement.value
-    };
-
-    if (active === "left") {
-      const listing = [...leftList.listing, newDir];
-      this.setState({
-        leftList: { ...rightList, listing }
-      });
-    } else {
-      const listing = [...rightList.listing, newDir];
-      this.setState({
-        rightList: { ...rightList, listing }
-      });
-    }
+    const { active } = this.state;
+    let name = this.inputElement.value;
+    FM.addDirectory(name, active);
   }
 
   onRename = () => {
-    const { cursor, leftList, rightList, active } = this.state;
-    if (active === "left") {
-      leftList.listing[cursor].name = this.inputElement.value;
-      this.setState({ leftList });
-    } else {
-      rightList.listing[cursor].name = this.inputElement.value;
-      this.setState({ rightList });
-    }
+    const { cursor, active } = this.state;
+    let name = this.inputElement.value;
+    FM.rename(cursor, active, name);
   }
 
   onChangePermissions = () => {
-    const { cursor, leftList, rightList, active } = this.state;
+    const { cursor, active } = this.state;
+    let permissions = this.state.permissions;
+    FM.changePermissions(cursor, active, permissions);
+  }
+
+  goToPrevDir = (e) => {
+    if (e.keyCode === 8 && !this.state.modalVisible) {
+      if (this.state.active === "left") {
+        let leftList = { ...this.state.leftList };
+        leftList.path = leftList.path.substring(0, leftList.path.lastIndexOf('/'));
+        this.setState({ leftList });
+        this.props.history.push({ search: `?path=${leftList.path}` });
+      } else {
+        let rightList = { ...this.state.rightList };
+        rightList.path = rightList.path.substring(0, rightList.path.lastIndexOf('/'));
+        this.setState({ rightList });
+        this.props.history.push({ search: `?path=${rightList.path}` });
+      }
+    }
+  }
+
+  changePath = (name) => {
+    const { active } = this.state;
     if (active === "left") {
-      leftList.listing[cursor].permissions = this.state.permissions;
+      let leftList = { ...this.state.leftList };
+      let oldPath = leftList.path;
+      leftList.path = `${oldPath}/${name}`;
       this.setState({ leftList });
     } else {
-      rightList.listing[cursor].permissions = this.state.permissions;
+      let rightList = { ...this.state.rightList };
+      let oldPath = rightList.path;
+      rightList.path = `${oldPath}/${name}`;
       this.setState({ rightList });
     }
   }
@@ -326,8 +171,8 @@ class FileManager extends Component {
     this.setState({ permissions });
   }
 
-  handleDataOnClick = (name, permissions) => {
-    this.setState({ name, permissions });
+  handleDataOnClick = (cursor, name, permissions) => {
+    this.setState({ cursor, name, permissions });
   }
 
   closeModal = () => {
@@ -366,10 +211,12 @@ class FileManager extends Component {
             handleDataOnButton={this.handleDataOnButton}
             handleDataOnClick={this.handleDataOnClick}
             handleSelection={this.handleSelection}
-            data={leftList}
+            data={leftList.files}
             isActive={active === "left"}
             onClick={this.toggleActiveList}
             history={this.props}
+            path={leftList.path}
+            changePath={this.changePath}
             list="left" />
           <DirectoryList
             modalVisible={modalVisible}
@@ -378,10 +225,12 @@ class FileManager extends Component {
             handleDataOnButton={this.handleDataOnButton}
             handleDataOnClick={this.handleDataOnClick}
             handleSelection={this.handleSelection}
-            data={rightList}
+            data={rightList.files}
             isActive={active === "right"}
             onClick={this.toggleActiveList}
             history={this.props}
+            path={rightList.path}
+            changePath={this.changePath}
             list="right" />
         </div>
         {modalVisible && modal}

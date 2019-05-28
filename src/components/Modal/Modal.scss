@@ -57,12 +57,13 @@ $black: #000;
     }
 
     .close {
-      right: 3px;
+      top: 0;
+      right: 0;
       color: $black;
     }
 
     .lower {
-      margin-top: 50px;
+      margin-top: 30px;
     }
   }
 
@@ -75,7 +76,7 @@ $black: #000;
   }
   
   .delete {
-    height: 200px;
+    height: 180px;
   }
   
   .permissions {
