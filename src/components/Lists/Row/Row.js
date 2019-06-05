@@ -112,7 +112,7 @@ class Row extends Component {
     const { name, owner, permissions, size, date, time } = this.props;
     return (
       <li className={this.liClassName()} onClick={this.onClick} >
-        <span>{this.glyph()}</span>
+        {this.glyph()}
         <span className="fName" onDoubleClick={this.handleDoubleClick}>{name}</span>
         <span className="fPermissions">{permissions}</span>
         <span className="fOwner">{owner}</span>

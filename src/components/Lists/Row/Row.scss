@@ -3,6 +3,10 @@ span {
   margin-right: 10px;
 }
 
+span.glyphicon {
+  vertical-align: text-top;
+}
+
 .glyphicon-folder-close {
   color: #e29741;
 }
@@ -24,6 +28,7 @@ span {
   margin-left: 2px;
   float: right;
   width: 80px;
+  padding-top: 2px;
 }
 
 .fName {
@@ -48,6 +53,11 @@ span {
 
 .fSize {
   width: 120px;
+}
+
+.fOwner {
+  color: rgb(36, 148, 114);
+  font-style: italic;
 }
 
 .value {

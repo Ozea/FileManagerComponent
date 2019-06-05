@@ -19,6 +19,7 @@ class FileManager extends Component {
         path: FM.getDirectoryPath(),
         files: FM.rightList,
       },
+      path: FM.getDirectoryPath(),
       active: "left",
       modal: null,
       modalVisible: false,
@@ -46,6 +47,7 @@ class FileManager extends Component {
   componentDidMount = () => {
     window.addEventListener("keydown", this.switchActiveList);
     window.addEventListener("keydown", this.goToPrevDir);
+    window.addEventListener("keydown", this.toggleActiveListOnTab);
     // FM.getDataFromServer('')
     //   .then() // setState({ data })
     //   .catch()
@@ -54,6 +56,18 @@ class FileManager extends Component {
   componentWillUnmount = () => {
     window.removeEventListener("keydown", this.switchActiveList);
     window.removeEventListener("keydown", this.goToPrevDir);
+    window.removeEventListener("keydown", this.toggleActiveListOnTab);
+  }
+
+  toggleActiveListOnTab = (e) => {
+    if (e.keyCode === 9) {
+      e.preventDefault();
+      if (this.state.active === "left") {
+        this.setState({ active: "right" });
+      } else {
+        this.setState({ active: "left" });
+      }
+    }
   }
 
   handleSelection = (selection) => {
@@ -148,7 +162,23 @@ class FileManager extends Component {
     }
   }
 
-  changePath = (name) => {
+  moveBack = () => {
+    if (this.state.active === "left") {
+      let leftList = { ...this.state.leftList };
+      leftList.path = leftList.path.substring(0, leftList.path.lastIndexOf('/'));
+      this.setState({ leftList });
+      this.props.history.push({ search: `?path=${leftList.path}` });
+      FM.openDefaultList(this.state.active);
+    } else {
+      let rightList = { ...this.state.rightList };
+      rightList.path = rightList.path.substring(0, rightList.path.lastIndexOf('/'));
+      this.setState({ rightList });
+      this.props.history.push({ search: `?path=${rightList.path}` });
+      FM.openDefaultList(this.state.active);
+    }
+  }
+
+  addToPath = (name) => {
     const { active } = this.state;
     if (active === "left") {
       let leftList = { ...this.state.leftList };
@@ -167,6 +197,10 @@ class FileManager extends Component {
     this.setState({ name });
   }
 
+  moveInto = (path) => {
+    this.setState({ path });
+  }
+
   handlePermissions = (permissions) => {
     this.setState({ permissions });
   }
@@ -180,8 +214,9 @@ class FileManager extends Component {
   }
 
   modal = (type, items) => {
-    const { modalVisible, name, permissions } = this.state;
+    const { modalVisible, name, permissions, path } = this.state;
     switch (type) {
+      case 'Move': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} path={path} onClick={this.moveItem} onClose={this.closeModal} onChangeValue={this.moveInto} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Add file': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newFile} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Add directory': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newDir} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Delete': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onDelete} onClose={this.closeModal} items={items} />, modalVisible: true });
@@ -191,6 +226,16 @@ class FileManager extends Component {
       default:
         break;
     }
+  }
+
+  moveItem = () => {
+    const { leftList, rightList, name } = this.state;
+    leftList.files.listing.forEach((item, index) => {
+      if (item.name === name) {
+        rightList.files.listing.push(leftList.files.listing[index]);
+        leftList.files.listing.splice(index, 1);
+      }
+    })
   }
 
   render() {
@@ -216,7 +261,9 @@ class FileManager extends Component {
             onClick={this.toggleActiveList}
             history={this.props}
             path={leftList.path}
-            changePath={this.changePath}
+            addToPath={this.addToPath}
+            moveBack={this.moveBack}
+            goToPrevDir={this.goToPrevDir}
             list="left" />
           <DirectoryList
             modalVisible={modalVisible}
@@ -230,7 +277,9 @@ class FileManager extends Component {
             onClick={this.toggleActiveList}
             history={this.props}
             path={rightList.path}
-            changePath={this.changePath}
+            addToPath={this.addToPath}
+            moveBack={this.moveBack}
+            goToPrevDir={this.goToPrevDir}
             list="right" />
         </div>
         {modalVisible && modal}

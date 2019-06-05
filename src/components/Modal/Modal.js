@@ -5,6 +5,7 @@ import Rename from './Rename';
 import Delete from './Delete';
 import NothingSelected from './NothingSelected';
 import Permissions from './Permissions.jsx';
+import Move from './Move';
 import './Modal.scss';
 
 class Modal extends Component {
@@ -32,8 +33,9 @@ class Modal extends Component {
   }
 
   content = () => {
-    const { type, reference, fName, permissions, items } = this.props;
+    const { type, reference, fName, permissions, items, path } = this.props;
     switch (type) {
+      case 'Move': return <Move closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={type} path={path} fName={fName} />;
       case 'Add file': return <AddFile closeModal={this.closeModal} onClick={this.onClick} reference={reference} />;
       case 'Add directory': return <AddDirectory closeModal={this.closeModal} onClick={this.onClick} reference={reference} />;
       case 'Rename': return <Rename closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={type} fName={fName} />;

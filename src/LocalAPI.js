@@ -68,6 +68,89 @@ export function getDirectoryPath() {
   return '/home/admin';
 }
 
+export function openDefaultList(active) {
+  if (active === "left") {
+    return leftList.listing = defaultList.listing;
+  } else {
+    return rightList.listing = defaultList.listing;
+  }
+}
+
+const defaultList = {
+  "listing": [
+    {
+      "type": "d",
+      "permissions": "711",
+      "date": "2015-07-04",
+      "time": "09:46",
+      "owner": "admin",
+      "group": "admin",
+      "size": "4096",
+      "name": ""
+    },
+    {
+      "type": "f",
+      "permissions": "644",
+      "date": "2015-07-04",
+      "time": "09:46",
+      "owner": "admin",
+      "group": "admin",
+      "size": "124",
+      "name": ".bashrc"
+    },
+    {
+      "type": "f",
+      "permissions": "644",
+      "date": "2015-07-04",
+      "time": "09:46",
+      "owner": "admin",
+      "group": "admin",
+      "size": "200000",
+      "name": "screenshot.jpg"
+    },
+    {
+      "type": "d",
+      "permissions": "751",
+      "date": "2015-07-04",
+      "time": "09:46",
+      "owner": "admin",
+      "group": "admin",
+      "size": "4096",
+      "name": "web"
+    },
+    {
+      "type": "d",
+      "permissions": "755",
+      "date": "2015-07-04",
+      "time": "09:46",
+      "owner": "root",
+      "group": "root",
+      "size": "4096",
+      "name": "conf"
+    },
+    {
+      "type": "f",
+      "permissions": "644",
+      "date": "2015-07-04",
+      "time": "09:46",
+      "owner": "admin",
+      "group": "admin",
+      "size": "33",
+      "name": ".bash_logout"
+    },
+    {
+      "type": "d",
+      "permissions": "771",
+      "date": "2015-07-04",
+      "time": "09:46",
+      "owner": "admin",
+      "group": "admin",
+      "size": "4096",
+      "name": "tmp"
+    }
+  ]
+}
+
 export const leftList = {
   "listing": [
     {
