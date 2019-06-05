@@ -40,6 +40,14 @@ class Menu extends Component {
     }
   }
 
+  move = () => {
+    if (this.props.cursor === 0) {
+      this.props.openModal("Nothing selected");
+    } else {
+      this.props.openModal("Move");
+    }
+  }
+
   hotKeys = (e) => {
     if (this.props.modalVisible) {
       return;
@@ -69,7 +77,7 @@ class Menu extends Component {
         <button type="button" className="btn btn-light" onClick={this.renameHandler}>Rename</button>
         <button type="button" className="btn btn-light" onClick={this.permissionsHandler}>Permissions</button>
         <button type="button" className="btn btn-light">Copy</button>
-        <button type="button" className="btn btn-light">Move</button>
+        <button type="button" className="btn btn-light" onClick={this.move}>Move</button>
         <button type="button" className="btn btn-light">Archive</button>
         <button type="button" className="btn btn-light" onClick={this.onDeleteHandler} >Delete</button>
       </div>

@@ -15,19 +15,22 @@ class DirectoryList extends Component {
 
   componentDidMount = () => {
     document.addEventListener("keydown", this.handleLiSelection);
-    this.setCursor();
+    this.setCursorWhenLoaded();
   }
 
   componentWillUnmount = () => {
     document.removeEventListener("keydown", this.handleLiSelection);
   }
 
-  setCursor = () => {
+  setCursorWhenLoaded = () => {
     const { history, data } = this.props;
     let fName = history.location.search.split('/').pop();
     let arrayIndex = data.listing.findIndex(item => item.name === fName);
     let cursor = arrayIndex === -1 ? 0 : arrayIndex;
     this.setState({ cursor });
+    if (this.props.isActive) {
+      this.props.handleDataOnClick(cursor, fName, data.listing[cursor].permissions);
+    }
   }
 
   handleCursorAfterDeletion = (prevCursor) => {
@@ -128,13 +131,18 @@ class DirectoryList extends Component {
   }
 
   openDirectory = (name) => {
-    const { history: { history }, path, changePath } = this.props;
+    const { history: { history }, path, addToPath } = this.props;
     history.push({
       pathname: '/',
       search: `?path=${path}/${name}`
     });
-    changePath(name);
+    addToPath(name);
     FM.openDirectory(this.props.list);
+    this.setState({ cursor: 0 });
+  }
+
+  moveBack = () => {
+    this.props.moveBack();
     this.setState({ cursor: 0 });
   }
 
@@ -183,6 +191,7 @@ class DirectoryList extends Component {
               handleDataOnClick(key, name)
             }}
             activeRow={key === cursor}
+            openDirectory={this.moveBack}
             activeList={isActive} />))
     );
   }
