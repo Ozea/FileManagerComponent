@@ -72,6 +72,37 @@ export function extractItem(cursor, name, active) {
   }
 }
 
+export function moveItem(active, selection, name) {
+  if (active === "left") {
+    let listing = [...leftList.listing];
+    if (selection.length > 0) {
+      let newListing = listing.filter((item, index) => selection.includes(index)).concat(rightList.listing);
+      let splicedListing = listing.filter((item, index) => !selection.includes(index));
+      rightList.listing = newListing;
+      leftList.listing = splicedListing;
+    } else {
+      listing.filter((item, index) => checkName(item, index, name, leftList, rightList));
+    }
+  } else {
+    let listing = [...rightList.listing];
+    if (selection.length > 0) {
+      let newListing = listing.filter((item, index) => selection.includes(index)).concat(leftList.listing);
+      let splicedListing = listing.filter((item, index) => !selection.includes(index));
+      leftList.listing = newListing;
+      rightList.listing = splicedListing;
+    } else {
+      listing.filter((item, index) => checkName(item, index, name, rightList, leftList));
+    }
+  }
+}
+
+function checkName (item, index, name, list, destination) {
+  if (item.name === name) {
+    destination.listing.push(list.listing[index]);
+    list.listing.splice(index, 1);
+  }
+}
+
 export function openDirectory(active) {
   if (active === "left") {
     return leftList.listing = [{ "type": "d", "permissions": "711", "owner": "admin", "name": "" }, { "type": "d", "permissions": "711", "owner": "admin", "name": "new" }, { "type": "d", "permissions": "711", "owner": "admin", "name": "test" }]
