@@ -96,8 +96,12 @@ class Row extends Component {
 
   glyph = () => {
     const { type, name } = this.props;
+    if (name.match('.tar.gz')) {
+      return (<span className="glyphicon glyphicon-book"></span>);
+    }
+
     if (type === 'd') {
-      return (<span className="glyphicon glyphicon-folder-close"></span>);
+      return (<span className="glyphicon glyphicon-folder-open"></span>);
     } else if (type === 'f') {
       if (name.match('.jpg') !== null) {
         return (<span className="glyphicon glyphicon-picture"></span>);

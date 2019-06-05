@@ -56,6 +56,22 @@ export function changePermissions(cursor, active, permissions) {
   }
 }
 
+export function archiveItem(cursor, name, active) {
+  if (active === "left") {
+    return leftList.listing[cursor].name = name;
+  } else {
+    return rightList.listing[cursor].name = name;
+  }
+}
+
+export function extractItem(cursor, name, active) {
+  if (active === "left") {
+    return leftList.listing[cursor].name = name;
+  } else {
+    return rightList.listing[cursor].name = name;
+  }
+}
+
 export function openDirectory(active) {
   if (active === "left") {
     return leftList.listing = [{ "type": "d", "permissions": "711", "owner": "admin", "name": "" }, { "type": "d", "permissions": "711", "owner": "admin", "name": "new" }, { "type": "d", "permissions": "711", "owner": "admin", "name": "test" }]

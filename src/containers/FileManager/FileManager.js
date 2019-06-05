@@ -146,6 +146,18 @@ class FileManager extends Component {
     FM.changePermissions(cursor, active, permissions);
   }
 
+  archiveItem = () => {
+    const { cursor, active } = this.state;
+    let name = this.inputElement.value;
+    FM.archiveItem(cursor, name, active);
+  }
+
+  extractItem = () => {
+    const { cursor, active } = this.state;
+    let name = this.inputElement.value;
+    FM.extractItem(cursor, name, active);
+  }
+
   goToPrevDir = (e) => {
     if (e.keyCode === 8 && !this.state.modalVisible) {
       if (this.state.active === "left") {
@@ -216,6 +228,8 @@ class FileManager extends Component {
   modal = (type, items) => {
     const { modalVisible, name, permissions, path } = this.state;
     switch (type) {
+      case 'Extract': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.extractItem} onClose={this.closeModal} onChangeValue={this.nameHandler} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Archive': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.archiveItem} onClose={this.closeModal} onChangeValue={this.nameHandler} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Move': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} path={path} onClick={this.moveItem} onClose={this.closeModal} onChangeValue={this.moveInto} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Add file': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newFile} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Add directory': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newDir} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
@@ -239,11 +253,12 @@ class FileManager extends Component {
   }
 
   render() {
-    const { leftList, rightList, active, modal, modalVisible, cursor, selection } = this.state;
+    const { leftList, rightList, active, modal, modalVisible, cursor, selection, name } = this.state;
     return (
       <div className="window">
         <Menu
           modalVisible={modalVisible}
+          name={name}
           selection={selection}
           cursor={cursor}
           openModal={this.modal}

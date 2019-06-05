@@ -48,6 +48,22 @@ class Menu extends Component {
     }
   }
 
+  archive = () => {
+    if (this.props.cursor === 0) {
+      this.props.openModal("Nothing selected");
+    } else {
+      this.props.openModal("Archive");
+    }
+  }
+
+  extract = () => {
+    if (this.props.cursor === 0) {
+      this.props.openModal("Nothing selected");
+    } else {
+      this.props.openModal("Extract");
+    }
+  }
+
   hotKeys = (e) => {
     if (this.props.modalVisible) {
       return;
@@ -67,6 +83,10 @@ class Menu extends Component {
     document.addEventListener("keydown", this.hotKeys);
   }
 
+  componentWillUnmount = () => {
+    document.removeEventListener("keydown", this.hotKeys);
+  }
+
   render() {
     return (
       <div className="btn-group" role="group" aria-label="First group">
@@ -78,7 +98,8 @@ class Menu extends Component {
         <button type="button" className="btn btn-light" onClick={this.permissionsHandler}>Permissions</button>
         <button type="button" className="btn btn-light">Copy</button>
         <button type="button" className="btn btn-light" onClick={this.move}>Move</button>
-        <button type="button" className="btn btn-light">Archive</button>
+        <button type="button" className="btn btn-light" onClick={this.archive}>Archive</button>
+        {this.props.name.match('.tar.gz') ? <button type="button" className="btn btn-light" onClick={this.extract}>Extract</button> : null}
         <button type="button" className="btn btn-light" onClick={this.onDeleteHandler} >Delete</button>
       </div>
     );
