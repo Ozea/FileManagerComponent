@@ -5,7 +5,9 @@ const Move = (props) => {
   return (
     <div className="modal-content">
       <div className="modal-header">
-        <h3 className="modal-title rename">{props.name} <span className="quot">&quot;{FM.getDirectoryPath()}/{props.fName}&quot;</span>into:</h3>
+        {props.items > 0 ?
+          <h3>Move <span className="quot">({props.items})</span> selected item(s) into:</h3> :
+          <h3 className="modal-title rename">{props.name} <span className="quot">&quot;{FM.getDirectoryPath()}/{props.fName}&quot;</span>into:</h3>}
         <button type="button" className="close" onClick={props.closeModal} >
           <span aria-hidden="true">&times;</span>
         </button>

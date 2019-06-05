@@ -41,10 +41,15 @@ class Menu extends Component {
   }
 
   move = () => {
-    if (this.props.cursor === 0) {
-      this.props.openModal("Nothing selected");
+    const { selection, openModal, cursor } = this.props;
+    if (selection.length === 0) {
+      if (cursor === 0) {
+        openModal("Nothing selected");
+      } else {
+        openModal("Move");
+      }
     } else {
-      this.props.openModal("Move");
+      openModal("Move", selection.length);
     }
   }
 

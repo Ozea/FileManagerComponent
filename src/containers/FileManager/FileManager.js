@@ -158,6 +158,17 @@ class FileManager extends Component {
     FM.extractItem(cursor, name, active);
   }
 
+  moveItem = () => {
+    const { active, selection, name } = this.state;
+    FM.moveItem(active, selection, name);
+
+    if (active === "left") {
+      this.leftDirectoryListElement.current.removeSelection();
+    } else {
+      this.rightDirectoryListElement.current.removeSelection();
+    }
+  }
+
   goToPrevDir = (e) => {
     if (e.keyCode === 8 && !this.state.modalVisible) {
       if (this.state.active === "left") {
@@ -230,7 +241,7 @@ class FileManager extends Component {
     switch (type) {
       case 'Extract': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.extractItem} onClose={this.closeModal} onChangeValue={this.nameHandler} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Archive': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.archiveItem} onClose={this.closeModal} onChangeValue={this.nameHandler} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
-      case 'Move': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} path={path} onClick={this.moveItem} onClose={this.closeModal} onChangeValue={this.moveInto} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Move': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} path={path} onClick={this.moveItem} items={items} onClose={this.closeModal} onChangeValue={this.moveInto} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Add file': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newFile} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Add directory': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newDir} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Delete': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onDelete} onClose={this.closeModal} items={items} />, modalVisible: true });
@@ -240,16 +251,6 @@ class FileManager extends Component {
       default:
         break;
     }
-  }
-
-  moveItem = () => {
-    const { leftList, rightList, name } = this.state;
-    leftList.files.listing.forEach((item, index) => {
-      if (item.name === name) {
-        rightList.files.listing.push(leftList.files.listing[index]);
-        leftList.files.listing.splice(index, 1);
-      }
-    })
   }
 
   render() {

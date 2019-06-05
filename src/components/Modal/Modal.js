@@ -39,7 +39,7 @@ class Modal extends Component {
     switch (type) {
       case 'Extract': return <Extract closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={type} fName={fName} />;
       case 'Archive': return <Archive closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={type} fName={fName} />;
-      case 'Move': return <Move closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={type} path={path} fName={fName} />;
+      case 'Move': return <Move closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={type} path={path} fName={fName} items={items} />;
       case 'Add file': return <AddFile closeModal={this.closeModal} onClick={this.onClick} reference={reference} />;
       case 'Add directory': return <AddDirectory closeModal={this.closeModal} onClick={this.onClick} reference={reference} />;
       case 'Rename': return <Rename closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={type} fName={fName} />;
