@@ -39,7 +39,7 @@ class Row extends Component {
 
   onClick = (e) => {
     const { name, type, selectMultiple, handleDataOnClick, history, permissions, cursor } = this.props;
-    if (e.shiftKey && cursor !== 0) {
+    if (e.metaKey && cursor !== 0) {
       selectMultiple();
     }
 

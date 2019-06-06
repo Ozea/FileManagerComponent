@@ -169,6 +169,12 @@ class FileManager extends Component {
     }
   }
 
+  copyItem = () => {
+    const { active, selection, name } = this.state;
+
+    FM.copyItem(name, active, selection);
+  }
+
   goToPrevDir = (e) => {
     if (e.keyCode === 8 && !this.state.modalVisible) {
       if (this.state.active === "left") {
@@ -239,6 +245,7 @@ class FileManager extends Component {
   modal = (type, items) => {
     const { modalVisible, name, permissions, path } = this.state;
     switch (type) {
+      case 'Copy': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} path={path} onClick={this.copyItem} items={items} onClose={this.closeModal} onChangeValue={this.moveInto} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Extract': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.extractItem} onClose={this.closeModal} onChangeValue={this.nameHandler} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Archive': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.archiveItem} onClose={this.closeModal} onChangeValue={this.nameHandler} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Move': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} path={path} onClick={this.moveItem} items={items} onClose={this.closeModal} onChangeValue={this.moveInto} reference={(inp) => this.inputElement = inp} />, modalVisible: true });

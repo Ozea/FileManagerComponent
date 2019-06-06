@@ -69,6 +69,19 @@ class Menu extends Component {
     }
   }
 
+  copy = () => {
+    const { selection, openModal, cursor } = this.props;
+    if (selection.length === 0) {
+      if (cursor === 0) {
+        openModal("Nothing selected");
+      } else {
+        openModal("Copy");
+      }
+    } else {
+      openModal("Copy", selection.length);
+    }
+  }
+
   hotKeys = (e) => {
     if (this.props.modalVisible) {
       return;
@@ -101,7 +114,7 @@ class Menu extends Component {
         <button type="button" className="btn btn-light">Download</button>
         <button type="button" className="btn btn-light" onClick={this.renameHandler}>Rename</button>
         <button type="button" className="btn btn-light" onClick={this.permissionsHandler}>Permissions</button>
-        <button type="button" className="btn btn-light">Copy</button>
+        <button type="button" className="btn btn-light" onClick={this.copy}>Copy</button>
         <button type="button" className="btn btn-light" onClick={this.move}>Move</button>
         <button type="button" className="btn btn-light" onClick={this.archive}>Archive</button>
         {this.props.name.match('.tar.gz') ? <button type="button" className="btn btn-light" onClick={this.extract}>Extract</button> : null}
