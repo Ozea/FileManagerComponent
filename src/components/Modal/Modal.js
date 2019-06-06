@@ -8,6 +8,7 @@ import Permissions from './Permissions.jsx';
 import Move from './Move';
 import Archive from './Archive';
 import Extract from './Extract';
+import Copy from './Copy';
 import './Modal.scss';
 
 class Modal extends Component {
@@ -37,6 +38,7 @@ class Modal extends Component {
   content = () => {
     const { type, reference, fName, permissions, items, path } = this.props;
     switch (type) {
+      case 'Copy': return <Copy closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={type} path={path} fName={fName} items={items} />;
       case 'Extract': return <Extract closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={type} fName={fName} />;
       case 'Archive': return <Archive closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={type} fName={fName} />;
       case 'Move': return <Move closeModal={this.closeModal} onClick={this.onClick} reference={reference} onChange={this.onChange} name={type} path={path} fName={fName} items={items} />;
@@ -77,7 +79,6 @@ class Modal extends Component {
 
     return (
       <div>
-
         {!modalVisible &&
           <div className="modal" id="modal">
             {this.content()}

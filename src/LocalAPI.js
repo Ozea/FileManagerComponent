@@ -72,6 +72,28 @@ export function extractItem(cursor, name, active) {
   }
 }
 
+export function copyItem(name, active, selection) {
+  if (active === "left") {
+    let listing = [...leftList.listing];
+    if (selection.length > 0) {
+      let newListing = listing.filter((item, index) => selection.includes(index)).concat(rightList.listing);
+      rightList.listing = newListing;
+    } else {
+      let newListing = listing.filter((item, index) => item.name === name).concat(rightList.listing);
+      rightList.listing = newListing;
+    }
+  } else {
+    let listing = [...rightList.listing];
+    if (selection.length > 0) {
+      let newListing = listing.filter((item, index) => selection.includes(index)).concat(leftList.listing);
+      leftList.listing = newListing;
+    } else {
+      let newListing = listing.filter((item, index) => item.name === name).concat(leftList.listing);
+      leftList.listing = newListing;
+    }
+  }
+}
+
 export function moveItem(active, selection, name) {
   if (active === "left") {
     let listing = [...leftList.listing];
@@ -96,7 +118,7 @@ export function moveItem(active, selection, name) {
   }
 }
 
-function checkName (item, index, name, list, destination) {
+function checkName(item, index, name, list, destination) {
   if (item.name === name) {
     destination.listing.push(list.listing[index]);
     list.listing.splice(index, 1);
