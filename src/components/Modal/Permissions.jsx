@@ -113,7 +113,7 @@ class Permissions extends Component {
 
   render() {
     const { inputInvalid } = this.state;
-    const { closeModal, onClick, fName } = this.props;
+    const { close, save, fName } = this.props;
     const inputClasses = classNames({
       'form-control total': true,
       'error': inputInvalid,
@@ -123,7 +123,7 @@ class Permissions extends Component {
       <div className="modal-content permissions">
         <div className="modal-header">
           <h3 className="modal-title perms">Change rights: <span className="quot">&quot;{fName}&quot;</span></h3>
-          <button type="button" className="close" onClick={closeModal} >
+          <button type="button" className="close" onClick={close} >
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -134,8 +134,8 @@ class Permissions extends Component {
         </form>
         <input type="text" className={inputClasses} defaultValue={this.encode()} ref={(ref) => this.inputRef = ref} onChange={this.handleInputChange} maxLength="3" />
         <div className="modal-footer">
-          <button type="button" className="btn btn-danger mr-auto" onClick={closeModal}>Close</button>
-          <button type="button" className="btn btn-primary" onClick={onClick} disabled={inputInvalid}>Save</button>
+          <button type="button" className="btn btn-danger mr-auto" onClick={close}>Close</button>
+          <button type="button" className="btn btn-primary" onClick={save} disabled={inputInvalid}>Save</button>
         </div>
       </div>
     );
