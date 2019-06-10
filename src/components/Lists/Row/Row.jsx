@@ -5,14 +5,23 @@ import './Row.scss';
 
 class Row extends Component {
 
+  componentDidMount = () => {
+    document.addEventListener("keydown", this.handleEnterButton);
+  }
+
+  componentWillUnmount = () => {
+    document.removeEventListener("keydown", this.handleEnterButton);
+  }
+
   handleEnterButton = (e) => {
-    const { activeRow, name, type, activeList, modalVisible, preview, openDirectory, cursor } = this.props;
-    if (modalVisible || !activeRow || !activeList) {
+    const { activeRow, name, type, isActiveList, modalVisible, preview, openDirectory, cursor } = this.props;
+
+    if (modalVisible || !activeRow || !isActiveList) {
       return;
     }
 
     if (e.keyCode === 13) {
-      if (type === 'f' && cursor !== 0) {
+      if (this.isFile(type) && cursor !== 0) {
         preview(type, name);
       } else {
         openDirectory(name);
@@ -22,40 +31,39 @@ class Row extends Component {
 
   handleDoubleClick = () => {
     const { type, name, preview, openDirectory, cursor } = this.props;
-    if (type === 'f' && cursor !== 0) {
+
+    if (this.isFile(type) && cursor !== 0) {
       return preview(type, name);
     } else {
       return openDirectory(name);
     }
   }
 
-  componentDidMount = () => {
-    document.addEventListener("keydown", this.handleEnterButton);
-  }
+  handleClick = (e) => {
+    const { name, type, selectMultiple, passData, permissions, cursor } = this.props;
 
-  componentWillUnmount = () => {
-    document.removeEventListener("keydown", this.handleEnterButton);
-  }
-
-  onClick = (e) => {
-    const { name, type, selectMultiple, handleDataOnClick, history, permissions, cursor } = this.props;
     if (e.metaKey && cursor !== 0) {
       selectMultiple();
     }
 
-    handleDataOnClick(name, permissions);
+    passData(name, permissions);
 
-    if (type === 'f') {
-      history.push({
-        pathname: '/',
-        search: `?path=${FM.getDirectoryPath()}/${name}`
-      });
+    if (this.isFile(type)) {
+      this.changeQuery(name);
     }
   }
 
-  liClassName = () => {
-    const { activeRow, selected, activeList } = this.props;
-    if (activeList) {
+  changeQuery(name) {
+    this.props.history.push({
+      pathname: '/',
+      search: `?path=${FM.getDirectoryPath()}/${name}`
+    });
+  }
+
+  className = () => {
+    const { activeRow, selected, isActiveList } = this.props;
+
+    if (isActiveList) {
       let isActive = activeRow ? 'active' : '';
       let isSelected = selected ? 'selected' : '';
       return isActive.length ? isActive : isSelected;
@@ -87,35 +95,56 @@ class Row extends Component {
       return null;
     }
 
-    let date = new Date(fDate);
-    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    let getDay = date.getDate();
-    let getMonth = months[date.getMonth()];
+    let date = new Date(fDate),
+      months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      getDay = date.getDate(),
+      getMonth = months[date.getMonth()];
     return (<span className="date">{getMonth} {getDay}</span>);
   }
 
   glyph = () => {
     const { type, name } = this.props;
-    if (name.match('.tar.gz')) {
+
+    if (this.isArchive(name)) {
       return (<span className="glyphicon glyphicon-book"></span>);
     }
 
-    if (type === 'd') {
+    if (this.isDirectory(type)) {
       return (<span className="glyphicon glyphicon-folder-open"></span>);
-    } else if (type === 'f') {
-      if (name.match('.jpg') !== null) {
+    } else if (this.isFile(type)) {
+      if (this.isPhoto(name)) {
         return (<span className="glyphicon glyphicon-picture"></span>);
-      } else if (name.match('.mp4') !== null) {
+      } else if (this.isVideo(name)) {
         return (<span className="glyphicon glyphicon-film"></span>);
       }
       return (<span className="glyphicon glyphicon-file"></span>);
     }
   }
 
+  isPhoto(name) {
+    return name.match('.jpg') !== null;
+  }
+
+  isVideo(name) {
+    return name.match('.mp4') !== null;
+  }
+
+  isArchive(name) {
+    return name.match('.tar.gz');
+  }
+
+  isDirectory(type) {
+    return type === 'd';
+  }
+
+  isFile(type) {
+    return type === 'f';
+  }
+
   render() {
     const { name, owner, permissions, size, date, time } = this.props;
     return (
-      <li className={this.liClassName()} onClick={this.onClick} >
+      <li className={this.className()} onClick={this.handleClick} >
         {this.glyph()}
         <span className="fName" onDoubleClick={this.handleDoubleClick}>{name}</span>
         <span className="fPermissions">{permissions}</span>

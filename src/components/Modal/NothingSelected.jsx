@@ -7,7 +7,7 @@ const NothingSelected = (props) => {
         <h3>No file or directory selected</h3>
       </div>
       <div className="modal-footer">
-        <button type="button" className="btn btn-danger mr-auto" onClick={props.closeModal}>Close</button>
+        <button type="button" className="btn btn-danger mr-auto" onClick={props.close}>Close</button>
       </div>
     </div>
   );

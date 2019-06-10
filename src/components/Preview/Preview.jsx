@@ -10,6 +10,10 @@ class Preview extends Component {
     document.addEventListener("keydown", this.hotkeys);
   }
 
+  componentWillUnmount = () => {
+    document.removeEventListener("keydown", this.hotkeys);
+  }
+
   hotkeys = (e) => {
     if (e.keyCode === 27) {
       this.props.onClose();
