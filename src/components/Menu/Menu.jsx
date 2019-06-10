@@ -3,15 +3,23 @@ import './Menu.scss';
 
 class Menu extends Component {
 
-  addNewFileModal = () => {
+  componentDidMount = () => {
+    document.addEventListener("keydown", this.hotKeys);
+  }
+
+  componentWillUnmount = () => {
+    document.removeEventListener("keydown", this.hotKeys);
+  }
+
+  newFile = () => {
     this.props.openModal("Add file");
   }
 
-  addNewDirModal = () => {
+  newDirectory = () => {
     this.props.openModal("Add directory");
   }
 
-  onDeleteHandler = () => {
+  delete = () => {
     const { selection, openModal, cursor } = this.props;
     if (selection.length === 0) {
       if (cursor === 0) {
@@ -24,7 +32,7 @@ class Menu extends Component {
     }
   }
 
-  renameHandler = () => {
+  rename = () => {
     if (this.props.cursor === 0) {
       this.props.openModal("Nothing selected");
     } else {
@@ -32,7 +40,7 @@ class Menu extends Component {
     }
   }
 
-  permissionsHandler = () => {
+  permissions = () => {
     if (this.props.cursor === 0) {
       this.props.openModal("Nothing selected");
     } else {
@@ -88,37 +96,29 @@ class Menu extends Component {
     }
 
     switch (e.keyCode) {
-      case 112: return this.addNewFileModal();
-      case 113: return this.addNewDirModal();
-      case 114: return this.renameHandler();
-      case 115: return this.permissionsHandler();
-      case 116: return this.onDeleteHandler();
+      case 112: return this.newFile();
+      case 113: return this.newDirectory();
+      case 114: return this.rename();
+      case 115: return this.permissions();
+      case 116: return this.delete();
       default: break;
     }
-  }
-
-  componentDidMount = () => {
-    document.addEventListener("keydown", this.hotKeys);
-  }
-
-  componentWillUnmount = () => {
-    document.removeEventListener("keydown", this.hotKeys);
   }
 
   render() {
     return (
       <div className="btn-group" role="group" aria-label="First group">
         <button type="button" className="btn btn-light">Upload</button>
-        <button type="button" className="btn btn-light" onClick={this.addNewFileModal}>New file</button>
-        <button type="button" className="btn btn-light" onClick={this.addNewDirModal}>New dir</button>
+        <button type="button" className="btn btn-light" onClick={this.newFile}>New file</button>
+        <button type="button" className="btn btn-light" onClick={this.newDirectory}>New dir</button>
         <button type="button" className="btn btn-light">Download</button>
-        <button type="button" className="btn btn-light" onClick={this.renameHandler}>Rename</button>
-        <button type="button" className="btn btn-light" onClick={this.permissionsHandler}>Permissions</button>
+        <button type="button" className="btn btn-light" onClick={this.rename}>Rename</button>
+        <button type="button" className="btn btn-light" onClick={this.permissions}>Permissions</button>
         <button type="button" className="btn btn-light" onClick={this.copy}>Copy</button>
         <button type="button" className="btn btn-light" onClick={this.move}>Move</button>
         <button type="button" className="btn btn-light" onClick={this.archive}>Archive</button>
         {this.props.name.match('.tar.gz') ? <button type="button" className="btn btn-light" onClick={this.extract}>Extract</button> : null}
-        <button type="button" className="btn btn-light" onClick={this.onDeleteHandler} >Delete</button>
+        <button type="button" className="btn btn-light" onClick={this.delete} >Delete</button>
       </div>
     );
   }

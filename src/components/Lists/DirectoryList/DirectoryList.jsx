@@ -15,31 +15,44 @@ class DirectoryList extends Component {
 
   componentDidMount = () => {
     document.addEventListener("keydown", this.handleLiSelection);
-    this.setCursorWhenLoaded();
+    document.addEventListener("keydown", this.moveBackOnBackspace);
+    this.setCursorOnWindowLoad();
   }
 
   componentWillUnmount = () => {
     document.removeEventListener("keydown", this.handleLiSelection);
+    document.removeEventListener("keydown", this.moveBackOnBackspace);
   }
 
-  setCursorWhenLoaded = () => {
-    const { history, data } = this.props;
-    let fName = history.location.search.split('/').pop();
-    let arrayIndex = data.listing.findIndex(item => item.name === fName);
-    let cursor = arrayIndex === -1 ? 0 : arrayIndex;
-    this.setState({ cursor });
-    if (this.props.isActive) {
-      this.props.handleDataOnClick(cursor, fName, data.listing[cursor].permissions);
+  moveBackOnBackspace = (e) => {
+    if (e.keyCode === 8 && !this.props.modalVisible && this.props.isActive) {
+      this.moveBack();
     }
   }
 
-  handleCursorAfterDeletion = (prevCursor) => {
+  setCursorOnWindowLoad = () => {
+    const { history, data, passData, isActive } = this.props;
+    let fName = history.location.search.split('/').pop();
+    let arrayIndex = data.listing.findIndex(item => item.name === fName);
+    let cursor = arrayIndex === -1 ? 0 : arrayIndex;
+    let permissions = data.listing[cursor].permissions;
+    if (isActive) {
+      this.setState({ cursor });
+      passData(cursor, fName, permissions);
+    }
+  }
+
+  moveCursorOnPreviousRow = (prevCursor) => {
     let cursor = prevCursor - 1;
+    let { name, permissions} = this.props.data.listing[cursor];
+    this.props.passData(cursor, name, permissions);
     this.setState({ cursor });
   }
 
   removeSelection = () => {
     this.setState({ selection: [], cursor: 0 });
+    let { name, permissions } = this.props.data.listing[this.state.cursor];
+    this.props.passData(this.state.cursor, name, permissions);
   }
 
   toggleActiveList = () => {
@@ -66,7 +79,8 @@ class DirectoryList extends Component {
       result.push(i)
     }
 
-    this.setState({ selection: result }, this.props.handleSelection(result));
+    this.setState({ selection: result });
+    this.props.passSelection(result);
   }
 
   changeQuery = (name, type) => {
@@ -79,7 +93,7 @@ class DirectoryList extends Component {
   }
 
   handleLiSelection = (e) => {
-    const { data, isActive, handleDataOnButton, modalVisible } = this.props;
+    const { data, isActive, passData, modalVisible } = this.props;
     const { cursor } = this.state;
 
     if (!isActive || modalVisible) {
@@ -97,7 +111,7 @@ class DirectoryList extends Component {
 
       this.setState({ cursor: cursor + 1 });
       const { name, type, permissions } = data.listing[this.state.cursor];
-      handleDataOnButton(this.state.cursor, name, permissions);
+      passData(this.state.cursor, name, permissions);
       this.changeQuery(name, type);
     }
 
@@ -112,7 +126,7 @@ class DirectoryList extends Component {
 
       this.setState({ cursor: cursor - 1 });
       const { name, type, permissions } = data.listing[this.state.cursor];
-      handleDataOnButton(this.state.cursor, name, permissions);
+      passData(this.state.cursor, name, permissions);
       this.changeQuery(name, type);
     }
   }
@@ -131,13 +145,13 @@ class DirectoryList extends Component {
   }
 
   openDirectory = (name) => {
-    const { history: { history }, path, addToPath } = this.props;
+    const { history: { history }, path, addToPath, list } = this.props;
     history.push({
       pathname: '/',
       search: `?path=${path}/${name}`
     });
     addToPath(name);
-    FM.openDirectory(this.props.list);
+    FM.openDirectory(list);
     this.setState({ cursor: 0 });
   }
 
@@ -156,7 +170,7 @@ class DirectoryList extends Component {
   }
 
   rows = () => {
-    const { data, isActive, handleDataOnClick, modalVisible } = this.props;
+    const { data, isActive, passData, modalVisible } = this.props;
     const { cursor } = this.state;
     return (
       data.listing.sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name)).map((item, key) =>
@@ -166,14 +180,14 @@ class DirectoryList extends Component {
             selectMultiple={() => this.addToSelection(key)}
             type={item.type}
             name={item.name}
-            handleDataOnClick={(name, permissions) => {
+            passData={(name, permissions) => {
               this.setState({ cursor: key });
-              handleDataOnClick(key, name, permissions);
+              passData(key, name, permissions);
             }}
             activeRow={key === cursor}
             cursor={key}
             selected={this.isSelected(key)}
-            activeList={isActive}
+            isActiveList={isActive}
             owner={item.owner}
             permissions={item.permissions}
             size={item.size}
@@ -186,13 +200,13 @@ class DirectoryList extends Component {
             type={item.type}
             name=".."
             cursor={key}
-            handleDataOnClick={(name) => {
+            passData={(name) => {
               this.setState({ cursor: key });
-              handleDataOnClick(key, name)
+              passData(key, name)
             }}
             activeRow={key === cursor}
             openDirectory={this.moveBack}
-            activeList={isActive} />))
+            isActiveList={isActive} />))
     );
   }
 

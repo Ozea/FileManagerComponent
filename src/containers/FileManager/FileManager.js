@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import DirectoryList from '../../components/Lists/DirectoryList/DirectoryList';
 import Modal from '../../components/Modal/Modal';
-import Menu from '../../components/Menu/Menu';
 import { withRouter } from 'react-router-dom';
 import * as FM from '../../LocalAPI';
+import Menu from '../../components/Menu/Menu';
 // import axios from 'axios';
 import '../App/App.scss';
 
@@ -32,21 +32,8 @@ class FileManager extends Component {
     this.rightDirectoryListElement = React.createRef();
   }
 
-  // componentDidMount = () => {
-  //   axios.get('https://r5.vestacp.com:8083/file_manager/fm_api.php?dir=%2Fhome%2Fadmin%2F&action=cd&_=' + this.state.date)
-  //     .then(res => {
-  //       let data = res.data.listing.toArray;
-  //       this.setState({ data });
-  //       console.log(res.data.listing);
-  //     })
-  //     .catch(error => {
-  //       console.log(error);
-  //     })
-  // };
-
   componentDidMount = () => {
     window.addEventListener("keydown", this.switchActiveList);
-    window.addEventListener("keydown", this.goToPrevDir);
     window.addEventListener("keydown", this.toggleActiveListOnTab);
     // FM.getDataFromServer('')
     //   .then() // setState({ data })
@@ -55,7 +42,6 @@ class FileManager extends Component {
 
   componentWillUnmount = () => {
     window.removeEventListener("keydown", this.switchActiveList);
-    window.removeEventListener("keydown", this.goToPrevDir);
     window.removeEventListener("keydown", this.toggleActiveListOnTab);
   }
 
@@ -70,12 +56,8 @@ class FileManager extends Component {
     }
   }
 
-  handleSelection = (selection) => {
+  passSelection = (selection) => {
     this.setState({ selection });
-  }
-
-  handleDataOnButton = (cursor, name, permissions) => {
-    this.setState({ name, permissions, cursor });
   }
 
   toggleActiveList = (list) => {
@@ -101,23 +83,25 @@ class FileManager extends Component {
       if (selection.length > 0) {
         let listing = [...leftList.files.listing];
         let newListing = listing.filter((value, index) => !selection.includes(index));
-        this.setState({ leftList: { files: { listing: newListing } }, selection: [] });
+        leftList.files.listing = newListing;
+        this.setState({ leftList, selection: [] });
         this.leftDirectoryListElement.current.removeSelection();
       } else {
         leftList.files.listing.splice(cursor, 1);
         this.setState({ leftList });
-        this.leftDirectoryListElement.current.handleCursorAfterDeletion(cursor)
+        this.leftDirectoryListElement.current.moveCursorOnPreviousRow(cursor);
       }
     } else {
       if (selection.length > 0) {
         let listing = [...rightList.files.listing];
         let newListing = listing.filter((value, index) => !selection.includes(index));
-        this.setState({ rightList: { files: { listing: newListing } }, selection: [] });
+        rightList.files.listing = newListing;
+        this.setState({ rightList, selection: [] });
         this.rightDirectoryListElement.current.removeSelection()
       } else {
         rightList.files.listing.splice(cursor, 1);
         this.setState({ rightList });
-        this.rightDirectoryListElement.current.handleCursorAfterDeletion(cursor)
+        this.rightDirectoryListElement.current.moveCursorOnPreviousRow(cursor);
       }
     }
   }
@@ -141,8 +125,7 @@ class FileManager extends Component {
   }
 
   onChangePermissions = () => {
-    const { cursor, active } = this.state;
-    let permissions = this.state.permissions;
+    const { cursor, active, permissions } = this.state;
     FM.changePermissions(cursor, active, permissions);
   }
 
@@ -159,13 +142,23 @@ class FileManager extends Component {
   }
 
   moveItem = () => {
-    const { active, selection, name } = this.state;
+    const { active, selection, name, cursor } = this.state;
     FM.moveItem(active, selection, name);
 
-    if (active === "left") {
-      this.leftDirectoryListElement.current.removeSelection();
+    if (selection.length > 0) {
+      if (active === "left") {
+        this.leftDirectoryListElement.current.removeSelection();
+        this.setState({ selection: [] });
+      } else {
+        this.rightDirectoryListElement.current.removeSelection();
+        this.setState({ selection: [] });
+      }
     } else {
-      this.rightDirectoryListElement.current.removeSelection();
+      if (active === "left") {
+        this.leftDirectoryListElement.current.moveCursorOnPreviousRow(cursor);
+      } else {
+        this.rightDirectoryListElement.current.moveCursorOnPreviousRow(cursor);
+      }
     }
   }
 
@@ -173,20 +166,14 @@ class FileManager extends Component {
     const { active, selection, name } = this.state;
 
     FM.copyItem(name, active, selection);
-  }
 
-  goToPrevDir = (e) => {
-    if (e.keyCode === 8 && !this.state.modalVisible) {
-      if (this.state.active === "left") {
-        let leftList = { ...this.state.leftList };
-        leftList.path = leftList.path.substring(0, leftList.path.lastIndexOf('/'));
-        this.setState({ leftList });
-        this.props.history.push({ search: `?path=${leftList.path}` });
+    if (selection.length > 0) {
+      if (active === "left") {
+        this.leftDirectoryListElement.current.removeSelection();
+        this.setState({ selection: [] });
       } else {
-        let rightList = { ...this.state.rightList };
-        rightList.path = rightList.path.substring(0, rightList.path.lastIndexOf('/'));
-        this.setState({ rightList });
-        this.props.history.push({ search: `?path=${rightList.path}` });
+        this.rightDirectoryListElement.current.removeSelection();
+        this.setState({ selection: [] });
       }
     }
   }
@@ -222,19 +209,19 @@ class FileManager extends Component {
     }
   }
 
-  nameHandler = (name) => {
+  changeName = (name) => {
     this.setState({ name });
   }
 
-  moveInto = (path) => {
+  changePath = (path) => {
     this.setState({ path });
   }
 
-  handlePermissions = (permissions) => {
+  changePermissions = (permissions) => {
     this.setState({ permissions });
   }
 
-  handleDataOnClick = (cursor, name, permissions) => {
+  passData = (cursor, name, permissions) => {
     this.setState({ cursor, name, permissions });
   }
 
@@ -245,16 +232,16 @@ class FileManager extends Component {
   modal = (type, items) => {
     const { modalVisible, name, permissions, path } = this.state;
     switch (type) {
-      case 'Copy': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} path={path} onClick={this.copyItem} items={items} onClose={this.closeModal} onChangeValue={this.moveInto} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
-      case 'Extract': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.extractItem} onClose={this.closeModal} onChangeValue={this.nameHandler} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
-      case 'Archive': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.archiveItem} onClose={this.closeModal} onChangeValue={this.nameHandler} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
-      case 'Move': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} path={path} onClick={this.moveItem} items={items} onClose={this.closeModal} onChangeValue={this.moveInto} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
-      case 'Add file': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newFile} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Copy': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} path={path} onClick={this.copyItem} items={items} onClose={this.closeModal} onChangeValue={this.changePath} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Move': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} path={path} onClick={this.moveItem} items={items} onClose={this.closeModal} onChangeValue={this.changePath} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Permissions': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onChangePermissions} onClose={this.closeModal} onChangePermissions={this.changePermissions} permissions={permissions} />, modalVisible: true });
+      case 'Extract': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.extractItem} onClose={this.closeModal} onChangeValue={this.changeName} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Archive': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.archiveItem} onClose={this.closeModal} onChangeValue={this.changeName} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Rename': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onChangeValue={this.changeName} onClick={this.onRename} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Add directory': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newDir} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Add file': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newFile} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Delete': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onDelete} onClose={this.closeModal} items={items} />, modalVisible: true });
-      case 'Rename': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onChangeValue={this.nameHandler} onClick={this.onRename} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Nothing selected': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} onClick={this.closeModal} />, modalVisible: true });
-      case 'Permissions': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onChangePermissions} onClose={this.closeModal} onChangePermissions={this.handlePermissions} permissions={permissions} />, modalVisible: true });
       default:
         break;
     }
@@ -276,9 +263,8 @@ class FileManager extends Component {
             modalVisible={modalVisible}
             openModal={this.modal}
             ref={this.leftDirectoryListElement}
-            handleDataOnButton={this.handleDataOnButton}
-            handleDataOnClick={this.handleDataOnClick}
-            handleSelection={this.handleSelection}
+            passData={this.passData}
+            passSelection={this.passSelection}
             data={leftList.files}
             isActive={active === "left"}
             onClick={this.toggleActiveList}
@@ -286,15 +272,13 @@ class FileManager extends Component {
             path={leftList.path}
             addToPath={this.addToPath}
             moveBack={this.moveBack}
-            goToPrevDir={this.goToPrevDir}
             list="left" />
           <DirectoryList
             modalVisible={modalVisible}
             openModal={this.modal}
             ref={this.rightDirectoryListElement}
-            handleDataOnButton={this.handleDataOnButton}
-            handleDataOnClick={this.handleDataOnClick}
-            handleSelection={this.handleSelection}
+            passData={this.passData}
+            passSelection={this.passSelection}
             data={rightList.files}
             isActive={active === "right"}
             onClick={this.toggleActiveList}
@@ -302,7 +286,6 @@ class FileManager extends Component {
             path={rightList.path}
             addToPath={this.addToPath}
             moveBack={this.moveBack}
-            goToPrevDir={this.goToPrevDir}
             list="right" />
         </div>
         {modalVisible && modal}
