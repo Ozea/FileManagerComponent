@@ -10,11 +10,16 @@
     "react-codemirror": "^1.0.0",
     "react-dom": "^16.8.3",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "^2.1.8"
+    "react-scripts": "^2.1.8",
+    "react-toastify": "^5.3.1"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && npm run delete-remote-js && npm run delete-remote-css && npm run move-local-js && npm run move-local-css",
+    "delete-remote-js": "ssh root@r5.vestacp.com 'rm -rf /usr/local/vesta/web/static/js' ",
+    "delete-remote-css": "ssh root@r5.vestacp.com 'rm -rf /usr/local/vesta/web/static/css'",
+    "move-local-js": "scp -r build/static/js root@r5.vestacp.com:/usr/local/vesta/web/static",
+    "move-local-css": "scp -r build/static/css root@r5.vestacp.com:/usr/local/vesta/web/static",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

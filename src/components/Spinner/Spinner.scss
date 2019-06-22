@@ -1,0 +1,13 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 50%;
+  right: 45%;
+
+  div {
+    width: 60px;
+    height: 60px;
+  }
+}

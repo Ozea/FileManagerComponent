@@ -5,12 +5,20 @@ import './App.scss';
 import Preview from '../../components/Preview/Preview';
 
 class App extends Component {
+  onClose = (history) => {
+    let lastOpenedDirectory = history.location.search.substring(6, history.location.search.lastIndexOf('/'));
+    history.push({
+      pathname: '/list/directory',
+      search: `?path=${lastOpenedDirectory}`
+    })
+  }
+
   render() {
     return (
       <div className="App">
         <Router>
-          <Route path="/preview" component={(props) => <Preview onClose={() => props.history.push('/')} />} />
-          <Route path="/" exact component={FileManager} />
+          <Route path="/list/directory/preview" component={(props) => <Preview onClose={() => this.onClose(props.history)} />} />
+          <Route path="/list/directory/" exact component={FileManager} />
         </Router>
       </div>
     );

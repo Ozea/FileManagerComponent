@@ -61,8 +61,8 @@ class Modal extends Component {
       case 'Copy': return <Copy close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} path={path} fName={fName} items={items} />;
       case 'Move': return <Move close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} path={path} fName={fName} items={items} />;
       case 'Permissions': return <Permissions close={this.closeModal} save={this.saveAndClose} changePermissions={this.changePermissions} fName={fName} permissions={permissions} />;
-      case 'Extract': return <Extract close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} fName={fName} />;
-      case 'Archive': return <Archive close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} fName={fName} />;
+      case 'Extract': return <Extract close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} fName={fName} path={path} />;
+      case 'Archive': return <Archive close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} fName={fName} path={path} />;
       case 'Rename': return <Rename close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} fName={fName} />;
       case 'Add directory': return <AddDirectory close={this.closeModal} save={this.saveAndClose} reference={reference} />;
       case 'Delete': return <Delete close={this.closeModal} save={this.saveAndClose} fName={fName} items={items} />;

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import * as FM from '../../../LocalAPI';
 import './Row.scss';
 
 class Row extends Component {
@@ -14,15 +13,19 @@ class Row extends Component {
   }
 
   handleEnterButton = (e) => {
-    const { activeRow, name, type, isActiveList, modalVisible, preview, openDirectory, cursor } = this.props;
+    const { activeRow, name, type, isActiveList, modalVisible, preview, openDirectory, cursor, download } = this.props;
 
     if (modalVisible || !activeRow || !isActiveList) {
       return;
     }
 
     if (e.keyCode === 13) {
-      if (this.isFile(type) && cursor !== 0) {
+      if (this.isArchive(name)) {
+        download();
+      } else if (this.isFile(type) && cursor !== 0) {
         preview(type, name);
+      } else if (type === "l") {
+        download();
       } else {
         openDirectory(name);
       }
@@ -30,34 +33,27 @@ class Row extends Component {
   }
 
   handleDoubleClick = () => {
-    const { type, name, preview, openDirectory, cursor } = this.props;
+    const { type, name, preview, openDirectory, download } = this.props;
 
-    if (this.isFile(type) && cursor !== 0) {
+    if (this.isArchive(name)) {
+      return download();
+    } else if (this.isFile(type)) {
       return preview(type, name);
-    } else {
+    } else if (this.isDirectory(type)) {
       return openDirectory(name);
+    } else if (type === "l") {
+      return download();
     }
   }
 
   handleClick = (e) => {
-    const { name, type, selectMultiple, passData, permissions, cursor } = this.props;
+    const { name, selectMultiple, passData, permissions, cursor } = this.props;
 
     if (e.metaKey && cursor !== 0) {
       selectMultiple();
     }
 
     passData(name, permissions);
-
-    if (this.isFile(type)) {
-      this.changeQuery(name);
-    }
-  }
-
-  changeQuery(name) {
-    this.props.history.push({
-      pathname: '/',
-      search: `?path=${FM.getDirectoryPath()}/${name}`
-    });
   }
 
   className = () => {
@@ -79,8 +75,8 @@ class Row extends Component {
       return null;
     };
 
-    if (bytes === 0) {
-      return '0 Bytes';
+    if (bytes === "0") {
+      return <span className="value">0 <span className="unit">b</span></span>;
     }
 
     let k = 1024,
@@ -118,11 +114,13 @@ class Row extends Component {
         return (<span className="glyphicon glyphicon-film"></span>);
       }
       return (<span className="glyphicon glyphicon-file"></span>);
+    } else if (type === "l") {
+      return (<span className="glyphicon glyphicon-download-alt"></span>);
     }
   }
 
   isPhoto(name) {
-    return name.match('.jpg') !== null;
+    return name.match('.jpg') || name.match('.png') !== null;
   }
 
   isVideo(name) {

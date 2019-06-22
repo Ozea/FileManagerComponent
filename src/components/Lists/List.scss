@@ -3,46 +3,8 @@
   height: 100vh;
   flex: 1 1 50%;
 
-  .head {
-    display: flex;
-    flex-direction: row-reverse;
-    box-shadow: 0 2px 6px -2px gray;
-    margin-bottom: 5px;
-    padding-bottom: 5px;
-
-    .permissions, .owner, .size, .date, .time{
-      margin-top: 5px;
-      font-weight: bolder;
-      font-size: 19px;
-      margin-left: 45px;
-    }
-
-    .date {
-      margin-left: 35px;
-    }
-
-    .size {
-      margin-left: 60px;
-    }
-
-    .owner {
-      margin-left: 65px;
-    }
-
-    .permissions {
-      margin-left: 35px;
-    }
-
-    .name {
-      margin-top: 5px;
-      font-weight: bolder;
-      font-size: 19px;
-      margin-right: 150px;
-  }
-}
-
   .list-container {
-    margin-top: 0;
+    margin-top: 10px;
     height: calc(100% - 155px);
     overflow: auto;
 
@@ -51,8 +13,11 @@
       padding: 0;
     
       li {
-        font-size: 20px;
-        margin-bottom: 2px;
+        display: block;
+        height: 34px;
+        line-height: 30px;
+        font-size: 16px;
+        margin-top: 2px;
         padding-left: 15px;
         list-style: none;
     
@@ -74,18 +39,6 @@
 }
 
 @media screen and (max-width: 1200px){
-
-  .list .head {
-    .size {
-      margin-left: 60px;
-      margin-right: 60px;
-    }
-
-    .name {
-      margin-right: 120px;
-    }
-  }
-
   .permissions, .owner {
     display: none;
   }

@@ -1,8 +1,6 @@
 import React from 'react';
 
 const Extract = (props) => {
-  let nameArray = props.fName.split('.');
-  let name = nameArray.splice(0, nameArray.length - 2).join('.');
   return (
     <div className="modal-content">
       <div className="modal-header">
@@ -12,7 +10,7 @@ const Extract = (props) => {
         </button>
       </div>
       <div className="modal-body">
-        <input type="text" autoFocus defaultValue={`${name}`} onChange={props.onChange} ref={props.reference}></input>
+        <input type="text" autoFocus defaultValue={props.path} onChange={props.onChange} ref={props.reference}></input>
       </div>
       <div className="modal-footer">
         <button type="button" className="btn btn-danger mr-auto" onClick={props.close}>Close</button>
