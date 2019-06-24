@@ -117,19 +117,6 @@ class DirectoryList extends Component {
     }
   }
 
-  preview = (type, name) => {
-    const { history: { history } } = this.props;
-    if (type === 'f') {
-      if (name.match('.jpg') || name.match('.png')) {
-        return history.push({ pathname: `/list/directory/preview`, search: `?path=${this.props.path}/${name}`, state: { type: 'photo', gallery: this.getPhotos() } });
-      } else if (name.match('.mp4')) {
-        return history.push({ pathname: `/list/directory/preview`, search: `?path=${this.props.path}/${name}`, state: { type: 'video' } });
-      } else {
-        return history.push({ pathname: `/list/directory/preview`, search: `?path=${this.props.path}/${name}`, state: { type: 'editor', name } });
-      }
-    }
-  }
-
   openDirectory = (name) => {
     const { history: { history }, path, addToPath, openDirectory } = this.props;
     history.push({
@@ -171,7 +158,7 @@ class DirectoryList extends Component {
   }
 
   rows = () => {
-    const { data, isActive, passData, modalVisible, path, download } = this.props;
+    const { data, isActive, passData, modalVisible, path, download, history: { history } } = this.props;
     const { cursor } = this.state;
     return (
       data.listing.sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name)).map((item, key) =>
@@ -195,6 +182,7 @@ class DirectoryList extends Component {
             date={item.date}
             time={item.time}
             path={path}
+            history={history}
             download={download}
             openDirectory={this.openDirectory}
             preview={this.preview} />) :

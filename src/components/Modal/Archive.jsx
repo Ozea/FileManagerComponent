@@ -10,7 +10,7 @@ const Archive = (props) => {
         </button>
       </div>
       <div className="modal-body">
-        <input type="text" autoFocus defaultValue={`${props.path}/${props.fName}.tar.gz`} onChange={props.onChange} ref={props.reference}></input>
+        <input type="text" autoFocus defaultValue={`${props.path}/${props.fName}.tar.gz`} onBlur={props.onChange} ref={props.reference}></input>
       </div>
       <div className="modal-footer">
         <button type="button" className="btn btn-danger mr-auto" onClick={props.close}>Close</button>

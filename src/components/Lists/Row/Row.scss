@@ -2,8 +2,10 @@ span {
   text-align: center;
 }
 
-span.glyphicon {
-  vertical-align: text-top;
+.list-container span.glyphicon {
+  vertical-align: top;
+  display: inline-block;
+  line-height: 34px;
 }
 
 .glyphicon-folder-open {
@@ -34,21 +36,26 @@ span.glyphicon {
 }
 
 .fName {
-  margin-left: 15px;
-  padding: 8px 4px 8px 4px;
-  line-height: 34px;
-  font-size: 16px;
-  white-space: nowrap; 
-  width: 230px; 
+  width: 230px;
+  display: inline-block;
   overflow: hidden;
   text-overflow: clip;
-  transition: all ease-out .3s;
 
-  &:hover {
-    transition: all ease-out .2s;
-    background: rgb(201, 199, 199);
-    border-radius: 4px;
-    cursor: pointer;
+  .name {
+    padding: 0 5px;
+    float: left;
+    margin-left: 15px;
+    line-height: 34px;
+    font-size: 16px;
+    white-space: nowrap; 
+    transition: all ease-out .3s;
+  
+    &:hover {
+      transition: all ease-out .2s;
+      background: rgb(201, 199, 199);
+      border-radius: 4px;
+      cursor: pointer;
+    }
   }
 }
 
@@ -67,7 +74,9 @@ span.glyphicon {
 }
 
 .fSize {
-  width: 100px;
+  padding-right: 15px;
+  text-align: right;
+  width: 95px;
 }
 
 .fOwner {

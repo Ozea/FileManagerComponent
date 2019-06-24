@@ -13,7 +13,7 @@ class Row extends Component {
   }
 
   handleEnterButton = (e) => {
-    const { activeRow, name, type, isActiveList, modalVisible, preview, openDirectory, cursor, download } = this.props;
+    const { activeRow, name, type, isActiveList, modalVisible, openDirectory, cursor, download, path } = this.props;
 
     if (modalVisible || !activeRow || !isActiveList) {
       return;
@@ -23,7 +23,7 @@ class Row extends Component {
       if (this.isArchive(name)) {
         download();
       } else if (this.isFile(type) && cursor !== 0) {
-        preview(type, name);
+        this.preview(path, name);
       } else if (type === "l") {
         download();
       } else {
@@ -32,16 +32,23 @@ class Row extends Component {
     }
   }
 
+  preview = (path, name) => {
+    this.props.history.push({
+      pathname: '/list/directory/preview/',
+      search: `?path=${path}/${name}`
+    });
+  }
+
   handleDoubleClick = () => {
-    const { type, name, preview, openDirectory, download } = this.props;
+    const { type, name, openDirectory, download, path } = this.props;
 
     if (this.isArchive(name)) {
       return download();
     } else if (this.isFile(type)) {
-      return preview(type, name);
+      return this.preview(path, name);
     } else if (this.isDirectory(type)) {
       return openDirectory(name);
-    } else if (type === "l") {
+    } else if (type === "l" || name.match('.mp4')) {
       return download();
     }
   }
@@ -144,7 +151,7 @@ class Row extends Component {
     return (
       <li className={this.className()} onClick={this.handleClick} >
         {this.glyph()}
-        <span className="fName" onDoubleClick={this.handleDoubleClick}>{name}</span>
+        <span className="fName" onDoubleClick={this.handleDoubleClick}><span className="name">{name}</span></span>
         <span className="fPermissions">{permissions}</span>
         <span className="fOwner">{owner}</span>
         <span className="fSize">{this.sizeFormatter(size)}</span>

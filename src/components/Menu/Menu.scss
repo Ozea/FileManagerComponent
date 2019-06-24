@@ -43,6 +43,10 @@
   .upload {
     display: none;
   }
+
+  .delete:hover{
+    color: rgb(221, 57, 57);
+  }
 }
 
 @media screen and (max-width: 1200px){

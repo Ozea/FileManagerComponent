@@ -2,6 +2,10 @@
   width: 100%;
   position: relative;
 
+  .glyphicon {
+    color: black;
+  }
+
   .carousel-inner {
     .carousel-item {
       width: 100%;
@@ -40,11 +44,11 @@
 }
 
 .close {
-  z-index: 1;
+  z-index: 10;
   font-size: 30px;
   position: absolute;
   top: 5px;
-  right: 0;
+  right: 10px;
   opacity: 1;
   color: #fff;
 }

@@ -103,12 +103,22 @@ class Menu extends Component {
       return;
     }
 
+    if (e.shiftKey + e.keyCode === 76) {
+      this.rename();
+    }
+
     switch (e.keyCode) {
-      case 112: return this.newFile();
-      case 113: return this.newDirectory();
-      case 114: return this.rename();
+      case 46: return this.delete();
+      case 65: return this.archive();
+      case 68: return this.download();
+      case 77: return this.move();
+      case 78: return this.newFile();
+      case 85: return this.inputFile.click();
+      case 112: return this.rename();
       case 115: return this.permissions();
-      case 116: return this.delete();
+      case 116: return this.copy();
+      case 118: return this.newDirectory();
+      case 119: return this.delete();
       default: break;
     }
   }
@@ -136,7 +146,7 @@ class Menu extends Component {
         <button type="button" className="btn btn-light small" onClick={this.archive} title="Archive"><span className="glyphicon glyphicon-book"></span></button>
         {this.props.name.match('.tar.gz') ? <button type="button" className="btn btn-light big" onClick={this.extract}>Extract</button> : null}
         {this.props.name.match('.tar.gz') ? <button type="button" className="btn btn-light small" onClick={this.extract} title="Extract"><span className="glyphicon glyphicon-open"></span></button> : null}
-        <button type="button" className="btn btn-light big" onClick={this.delete} >Delete</button>
+        <button type="button" className="btn btn-light big delete" onClick={this.delete} >Delete</button>
         <button type="button" className="btn btn-light small" onClick={this.delete} title="Delete"><span className="glyphicon glyphicon-trash"></span></button>
       </div>
     );

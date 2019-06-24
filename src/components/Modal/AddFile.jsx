@@ -10,7 +10,7 @@ const AddFile = (props) => {
         </button>
       </div>
       <div className="modal-body">
-        <input type="text" ref={props.reference} autoFocus></input>
+        <input type="text" ref={props.reference}></input>
       </div>
       <div className="modal-footer">
         <button type="button" className="btn btn-danger mr-auto" onClick={props.close}>Close</button>

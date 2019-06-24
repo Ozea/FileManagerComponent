@@ -23,10 +23,12 @@ class Editor extends Component {
   }
 
   componentWillMount = () => {
+    document.addEventListener("keydown", this.hotkey);
+
     const { history } = this.props;
     let path = history.location.search.substring(6, history.location.search.lastIndexOf('/'));
     this.setState({ loading: true }, () => {
-      axios.get(`https://r5.vestacp.com:8083/file_manager/fm_api.php?dir=${this.encodePath(path)}&item=${history.location.state.name}&action=open_fs_file`)
+      axios.get(`https://r5.vestacp.com:8083/file_manager/fm_api.php?dir=${this.encodePath(path)}&item=${this.props.name}&action=open_fs_file`)
         .then(result => {
           if (result.data.content) {
             this.setState({ code: result.data.content, loading: false });
@@ -37,6 +39,16 @@ class Editor extends Component {
     })
   }
 
+  componentWillUnmount = () => {
+    document.removeEventListener("keydown", this.hotkey);
+  }
+
+  hotkey = (e) => {
+    if (e.metaKey && e.keyCode === 83) {
+      this.save();
+    }
+  }
+
   save = () => {
     let formData = new FormData();
     let path = this.props.history.location.search.substring(6, this.props.history.location.search.lastIndexOf('/'));
@@ -45,7 +57,7 @@ class Editor extends Component {
     formData.append('contents', this.state.code);
 
     this.setState({ loading: true }, () => {
-      axios.post(`https://r5.vestacp.com:8083/edit/file/?path=${path}%2F${this.props.history.location.state.name}`, formData)
+      axios.post(`https://r5.vestacp.com:8083/edit/file/?path=${path}%2F${this.props.name}`, formData)
         .then(toast.success('Saved successfully!', {
           position: "top-center",
           autoClose: 3000,
@@ -74,7 +86,7 @@ class Editor extends Component {
         <ToastContainer />
         <div className="panel-editor">
           <button type="button" className="btn btn-primary" onClick={this.save}>Save</button>
-          <button type="button" className="btn btn-danger" onClick={this.props.closeModal}>Close</button>
+          <button type="button" className="btn btn-danger" onClick={this.props.close}>Close</button>
         </div>
         {this.state.loading ? <Spinner /> : <CodeMirror value={this.state.code} onChange={this.updateCode} options={options} autoFocus />}
       </div>

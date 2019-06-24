@@ -22,13 +22,19 @@ class Preview extends Component {
 
   content = () => {
     const { location, onClose } = this.props;
-    let type = location.state.type;
-    if (type === 'editor') {
-      return <Editor closeModal={onClose} />;
-    } else if (type === 'photo') {
-      return <Photo closeModal={onClose} gallery={this.props.location.state.gallery} />;
-    } else if (type === 'video') {
+    let split = location.search.split('/');
+    let name = split[split.length - 1];
+
+    if (location.pathname !== '/list/directory/preview/') {
+      return;
+    }
+
+    if (name.match('.mp4')) {
       return <Video closeModal={onClose} />;
+    } else if (name.match('.png')) {
+      return <Photo closeModal={onClose} close={onClose} path={location.search} />;
+    } else {
+      return <Editor close={onClose} name={name} />;
     }
   }
 

@@ -17,7 +17,7 @@ class App extends Component {
     return (
       <div className="App">
         <Router>
-          <Route path="/list/directory/preview" component={(props) => <Preview onClose={() => this.onClose(props.history)} />} />
+          <Route path="/list/directory/preview/" component={(props) => <Preview onClose={() => this.onClose(props.history)} />} />
           <Route path="/list/directory/" exact component={FileManager} />
         </Router>
       </div>
