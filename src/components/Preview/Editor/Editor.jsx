@@ -33,7 +33,14 @@ class Editor extends Component {
           if (result.data.content) {
             this.setState({ code: result.data.content, loading: false });
           } else {
-            console.log("No content");
+            toast.warning('This file is empty!', {
+              position: "top-center",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true
+            });
           }
         })
     })
@@ -44,7 +51,7 @@ class Editor extends Component {
   }
 
   hotkey = (e) => {
-    if (e.metaKey && e.keyCode === 83) {
+    if (e.ctrlKey && e.keyCode === 83) {
       this.save();
     }
   }

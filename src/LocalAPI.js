@@ -13,14 +13,14 @@ export function deleteItems(url, path, selection) {
     return false;
   }
 
-  const promisesArray = selection.map(item => {
+  const promisesArray = selection.map(item =>
     validateAction(`${url}item=${path}%2F${item}&dir=${path}&action=delete_files`)
       .then(response => {
         if (response.data.result) {
           console.log(response.data.result);
         }
       })
-  });
+  );
 
   return Promise.all(promisesArray);
 }
@@ -30,14 +30,14 @@ export function moveItems(url, path, targetPath, selection) {
     return false;
   }
 
-  const promisesArray = selection.map(item => {
+  const promisesArray = selection.map(item =>
     validateAction(`${url}item=${path}%2F${item}&target_name=${targetPath}&action=move_file`)
       .then(response => {
         if (response.data.result) {
           console.log(response.data.result);
         }
       })
-  });
+  );
 
   return Promise.all(promisesArray);
 }
@@ -47,14 +47,31 @@ export function copyItems(url, path, targetPath, selection) {
     return false;
   }
 
-  const promisesArray = selection.map(item => {
+  const promisesArray = selection.map(item =>
     validateAction(`${url}item=${path}%2F${item}&filename=${item}&dir=${path}&dir_target=${targetPath}&action=copy_file`)
       .then(response => {
         if (response.data.result) {
           console.log(response.data.result);
         }
       })
-  });
+  );
+
+  return Promise.all(promisesArray);
+}
+
+export function archiveItems(url, path, dstItem, selection) {
+  if (!selection.length) {
+    return false;
+  }
+
+  const promisesArray = selection.map(item =>
+    validateAction(`${url}items=${path}%2F${item}&dst_item=${dstItem}%2F${item}.tar.gz&action=pack_item`)
+      .then(response => {
+        if (response.data.result) {
+          console.log(response.data.result);
+        }
+      })
+  );
 
   return Promise.all(promisesArray);
 }

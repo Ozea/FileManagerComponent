@@ -2,10 +2,49 @@ span {
   text-align: center;
 }
 
-.list-container span.glyphicon {
+.list-container span.glyphicon, .list .list-container ul li i {
   vertical-align: top;
   display: inline-block;
   line-height: 34px;
+}
+
+.list .list-container ul li i {
+  width: 16px;
+  height: 19px;
+  padding-left: 2px;
+}
+
+.fa-html5 {
+  color: #f16529;
+}
+
+.fa-file-alt {
+  color: #20d2d1;
+}
+
+.fa-js-square {
+  color: #f7df1c;
+
+  &:before {
+    background: black;
+    border: 0.4px solid black;
+  }
+}
+
+.fa-php {
+  color: #777bb3;
+}
+
+.fa-css3 {
+  color: #0079cb;
+}
+
+.fa-sass {
+  color: #cd6699;
+}
+
+.glyphicon-picture {
+  color: #36afae;
 }
 
 .glyphicon-folder-open {

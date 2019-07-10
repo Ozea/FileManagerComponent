@@ -6,7 +6,7 @@ const Copy = (props) => {
       <div className="modal-header">
         {props.items > 0 ?
           <h3 className="modal-title">Copy <span className="quot">({props.items})</span>selected item(s) into:</h3> :
-          <h3 className="modal-title rename">{props.name} <span className="quot">&quot;{props.path}/{props.fName}&quot;</span> into:</h3>}
+          <h3 className="modal-title rename">{props.name} <span className="quot">&quot;{props.fName}&quot;</span> into:</h3>}
         <button type="button" className="close" onClick={props.close} >
           <span aria-hidden="true">&times;</span>
         </button>

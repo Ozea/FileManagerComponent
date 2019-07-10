@@ -38,8 +38,8 @@ const Hotkeys = (props) => {
           <li><span className="glyphicon glyphicon-arrow-left shortcut"></span> Switch to the Left tab</li>
           <li><span className="glyphicon glyphicon-arrow-right shortcut"></span> Switch to the Right tab</li>
           <li><span className="shortcut">Tab</span> Switch Tab</li>
-          <li><span className="shortcut">Enter</span> Open/Preview file / Enter directory</li>
-          <li><span className="shortcut">F4</span> Edit file</li>
+          <li><span className="shortcut">Enter</span> Open / Preview file / Enter directory</li>
+          <li><span className="shortcut">F4</span> Edit file permissions</li>
           <li><span className="shortcut">Backspace</span> Go to the parent directory</li>
           <li><span className="shortcut">Ctr + Click</span> Select a bunch of files</li>
           <li><span className="shortcut">Shift + Cursor up/down</span> Select a bunch of files</li>

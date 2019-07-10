@@ -48,14 +48,11 @@ class Photo extends Component {
 
   setPhotoGallery = () => {
     this.setState({ loading: true }, () => {
-      console.log(`Path = ${this.props.path}, Encoded path = ${this.encodePath(this.props.path)}`);
       FM.getDataFromServer(`https://r5.vestacp.com:8083/file_manager/fm_api.php?dir=%2F${this.encodePath(this.props.path)}&action=cd`)
         .then(result => {
           let photoGallery = [...this.state.photoGallery];
-          console.log(result.data.listing);
-          result.data.listing.filter(item => item.name.match('.png') ? photoGallery.push(item.name) : null)
+          result.data.listing.filter(item => item.name.match(/png|jpg|jpeg|gif/g) && !item.name.match(/zip|tgz|tar.gz|gzip|tbz|tar.bz|gz|zip|tar|rar/g) ? photoGallery.push(item.name) : null)
           this.setState({ photoGallery, loading: false })
-          console.log(this.state.photoGallery);
         })
     })
   }

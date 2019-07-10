@@ -39,8 +39,12 @@ class Row extends Component {
     });
   }
 
-  handleDoubleClick = () => {
-    const { type, name, openDirectory, download, path } = this.props;
+  handleItemClick = () => {
+    const { type, name, openDirectory, download, path, isActiveList } = this.props;
+
+    if (!isActiveList) {
+      return;
+    }
 
     if (this.isArchive(name)) {
       return download();
@@ -56,7 +60,7 @@ class Row extends Component {
   handleClick = (e) => {
     const { name, selectMultiple, passData, permissions, cursor } = this.props;
 
-    if (e.metaKey && cursor !== 0) {
+    if (e.ctrlKey && cursor !== 0) {
       selectMultiple();
     }
 
@@ -114,20 +118,37 @@ class Row extends Component {
 
     if (this.isDirectory(type)) {
       return (<span className="glyphicon glyphicon-folder-open"></span>);
-    } else if (this.isFile(type)) {
+    } 
+    
+    if (this.isFile(type)) {
       if (this.isPhoto(name)) {
         return (<span className="glyphicon glyphicon-picture"></span>);
       } else if (this.isVideo(name)) {
-        return (<span className="glyphicon glyphicon-film"></span>);
-      }
+        return (<span className="glyphicon glyphicon-download-alt"></span>);
+      } else if (name.match('.txt')) {
+        return (<i className="fas fa-file-alt"></i>);
+      } else if (name.match('.js')) {
+        return (<i className="fab fa-js-square"></i>);
+      } else if (name.match('.html')) {
+        return (<i className="fab fa-html5"></i>);
+      } else if (name.match('.php')) {
+        return (<i className="fab fa-php"></i>);
+      } if (name.match(/.scss/i)) {
+        return (<i className="fab fa-sass"></i>);
+      } else if (name.match(/.css/i)) {
+        return (<i className="fab fa-css3"></i>);
+      } else {
       return (<span className="glyphicon glyphicon-file"></span>);
-    } else if (type === "l") {
+      }
+    } 
+    
+    if (type === "l") {
       return (<span className="glyphicon glyphicon-download-alt"></span>);
     }
   }
 
   isPhoto(name) {
-    return name.match('.jpg') || name.match('.png') !== null;
+    return name.match(/png|jpg|jpeg|gif/g);
   }
 
   isVideo(name) {
@@ -135,7 +156,7 @@ class Row extends Component {
   }
 
   isArchive(name) {
-    return name.match('.tar.gz');
+    return name.match(/zip|tgz|tar.gz|gzip|tbz|tar.bz|gz|zip|tar|rar/g);
   }
 
   isDirectory(type) {
@@ -151,7 +172,7 @@ class Row extends Component {
     return (
       <li className={this.className()} onClick={this.handleClick} >
         {this.glyph()}
-        <span className="fName" onDoubleClick={this.handleDoubleClick}><span className="name">{name}</span></span>
+        <span className="fName"><span className="name" onClick={this.handleItemClick}>{name}</span></span>
         <span className="fPermissions">{permissions}</span>
         <span className="fOwner">{owner}</span>
         <span className="fSize">{this.sizeFormatter(size)}</span>

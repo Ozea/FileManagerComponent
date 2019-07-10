@@ -62,10 +62,16 @@ class Menu extends Component {
   }
 
   archive = () => {
-    if (this.props.cursor === 0) {
-      this.props.openModal("Nothing selected");
+    const { selection, openModal, cursor } = this.props;
+
+    if (selection.length === 0) {
+      if (cursor === 0) {
+        openModal("Nothing selected");
+      } else {
+        openModal("Archive");
+      }
     } else {
-      this.props.openModal("Archive");
+      openModal("Archive", selection.length);
     }
   }
 
@@ -95,7 +101,11 @@ class Menu extends Component {
   }
 
   download = () => {
-    this.props.download();
+    if (this.props.cursor === 0) {
+      this.props.openModal("Nothing selected");
+    } else {
+      this.props.download();
+    }
   }
 
   hotKeys = (e) => {
@@ -103,7 +113,7 @@ class Menu extends Component {
       return;
     }
 
-    if (e.shiftKey + e.keyCode === 76) {
+    if (e.shiftKey && e.keyCode === 117) {
       this.rename();
     }
 
@@ -114,7 +124,7 @@ class Menu extends Component {
       case 77: return this.move();
       case 78: return this.newFile();
       case 85: return this.inputFile.click();
-      case 112: return this.rename();
+      case 113: return this.rename();
       case 115: return this.permissions();
       case 116: return this.copy();
       case 118: return this.newDirectory();
@@ -144,8 +154,8 @@ class Menu extends Component {
         <button type="button" className="btn btn-light small" onClick={this.move} title="Move"><span className="glyphicon glyphicon-paste"></span></button>
         <button type="button" className="btn btn-light big" onClick={this.archive}>Archive</button>
         <button type="button" className="btn btn-light small" onClick={this.archive} title="Archive"><span className="glyphicon glyphicon-book"></span></button>
-        {this.props.name.match('.tar.gz') ? <button type="button" className="btn btn-light big" onClick={this.extract}>Extract</button> : null}
-        {this.props.name.match('.tar.gz') ? <button type="button" className="btn btn-light small" onClick={this.extract} title="Extract"><span className="glyphicon glyphicon-open"></span></button> : null}
+        {this.props.name.match(/zip|tgz|tar.gz|gzip|tbz|tar.bz|gz|zip|tar|rar/g) ? <button type="button" className="btn btn-light big" onClick={this.extract}>Extract</button> : null}
+        {this.props.name.match(/zip|tgz|tar.gz|gzip|tbz|tar.bz|gz|zip|tar|rar/g) ? <button type="button" className="btn btn-light small" onClick={this.extract} title="Extract"><span className="glyphicon glyphicon-open"></span></button> : null}
         <button type="button" className="btn btn-light big delete" onClick={this.delete} >Delete</button>
         <button type="button" className="btn btn-light small" onClick={this.delete} title="Delete"><span className="glyphicon glyphicon-trash"></span></button>
       </div>

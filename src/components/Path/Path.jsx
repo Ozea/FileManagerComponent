@@ -1,5 +1,6 @@
 import React from 'react';
 import './Path.scss';
+import Dropdown from './Dropdown/Dropdown';
 
 function clickablePath(path, props) {
   let splitPath = path.split('/');
@@ -13,14 +14,21 @@ function clickablePath(path, props) {
 }
 
 function openDirectory(path, props) {
-  props.openDirectory(path);
+  if (!props.isActive) {
+    return;
+  } else {
+    props.openDirectory(path);
+  }
 }
 
 const Path = (props) => {
   return (
     <div className={props.class}>
-      <span className="clickable" onClick={() => openDirectory('/home/admin', props)}>/home/admin</span>
-      {clickablePath(props.path, props)}
+      <span className="clickable-path">
+        <span className="clickable" onClick={() => openDirectory('/home/admin', props)}>/home/admin</span>
+        {clickablePath(props.path, props)}
+      </span>
+      <Dropdown changeSorting={props.changeSorting} sortingName={props.sortingName} order={props.order} />
     </div>
   );
 }
