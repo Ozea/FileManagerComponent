@@ -4,7 +4,7 @@ const AddDirectory = (props) => {
   return (
     <div className="modal-content">
       <div className="modal-header">
-        <h3 className="modal-title directory" >Add directory:</h3>
+        <h3 className="modal-title directory" >Create directory:</h3>
         <button type="button" className="close" onClick={props.close} >
           <span aria-hidden="true">&times;</span>
         </button>
@@ -13,8 +13,8 @@ const AddDirectory = (props) => {
         <input type="text" ref={props.reference} autoFocus></input>
       </div>
       <div className="modal-footer">
-        <button type="button" className="btn btn-danger mr-auto" onClick={props.close}>Close</button>
-        <button type="button" className="btn btn-primary" onClick={props.save}>Save</button>
+        <button type="button" className="btn btn-danger mr-auto" onClick={props.close}>Cancel</button>
+        <button type="button" className="btn btn-primary" onClick={props.save}>Create</button>
       </div>
     </div>
   );

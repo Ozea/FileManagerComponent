@@ -29,8 +29,9 @@ const Hotkeys = (props) => {
           <li><span className="shortcut">F5</span> Copy</li>
           <li><span className="shortcut">a</span> Archive</li>
           <li><span className="shortcut">F8 / Del</span> delete</li>
-          <li><span className="shortcut">Ctrl + s</span> Save file (in text editor)</li>
+          <li><span className="shortcut">F2</span> Save file (in text editor)</li>
           <li><span className="shortcut">h</span> Display / Close shortcuts</li>
+          <li><span className="shortcut">F10</span> Close Preview / Editor</li>
         </ul>
         <ul>
           <li><span className="glyphicon glyphicon-arrow-up shortcut"></span> Move cursor up</li>

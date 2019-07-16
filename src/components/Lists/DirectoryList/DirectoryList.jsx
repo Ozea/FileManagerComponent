@@ -33,8 +33,6 @@ class DirectoryList extends Component {
   }
 
   cacheSorting = () => {
-    localStorage.removeItem(`${this.props.list}Sorting`, this.state.sorting);
-    localStorage.removeItem(`${this.props.list}Order`, this.state.order);
     localStorage.setItem(`${this.props.list}Sorting`, this.state.sorting);
     localStorage.setItem(`${this.props.list}Order`, this.state.order);
   }
@@ -68,7 +66,14 @@ class DirectoryList extends Component {
         pathname: '/list/directory/',
         search: `?path=${path}`
       });
+      this.cacheActiveWindowAndPaths();
     }
+  }
+
+  cacheActiveWindowAndPaths = () => {
+    localStorage.setItem("activeWindow", this.props.list);
+    localStorage.setItem(`${this.props.list}ListPath`, this.props.path);
+    localStorage.setItem(`${this.props.list}ListPath`, this.props.path);
   }
 
   isSelected = (i) => {
@@ -164,7 +169,7 @@ class DirectoryList extends Component {
       search: `?path=${path}`
     });
     changePath(path);
-    openCertainDirectory(path);
+    openCertainDirectory();
   }
 
   moveBack = () => {
@@ -215,7 +220,7 @@ class DirectoryList extends Component {
   sortData = (a, b) => {
     switch (this.state.sorting) {
       case "Type": return this.sortByType(a, b);
-      case "Size": return this.sortBySize(a, b);
+      case "Size": if (a.type !== "d" && b.type !== "d") { return this.sortBySize(a, b) }; break;
       case "Date": return this.sortByDate(a, b);
       case "Name": return this.sortByName(a, b);
       default: return this.sortByType(a, b);

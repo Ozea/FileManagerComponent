@@ -97,6 +97,7 @@ class Menu extends Component {
   }
 
   upload = (e) => {
+    console.log("Uploading");
     this.props.upload(e.target.files);
   }
 

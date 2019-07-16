@@ -12,7 +12,7 @@ import '../App/App.scss';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 
-const url = "https://r5.vestacp.com:8083/file_manager/fm_api.php?";
+const server = "https://r5.vestacp.com:8083/file_manager/fm_api.php?";
 
 class FileManager extends Component {
   constructor(props) {
@@ -52,13 +52,10 @@ class FileManager extends Component {
   componentWillUnmount = () => {
     window.removeEventListener("keydown", this.switchActiveList);
     window.removeEventListener("keydown", this.toggleActiveListOnTab);
-    document.addEventListener("keydown", this.hotkeysListener);
+    document.removeEventListener("keydown", this.hotkeysListener);
   }
 
   cachePaths = () => {
-    localStorage.removeItem('activeWindow');
-    localStorage.removeItem('leftListPath');
-    localStorage.removeItem('rightListPath');
     localStorage.setItem('activeWindow', this.state.active);
     localStorage.setItem('leftListPath', this.state.leftList.path);
     localStorage.setItem('rightListPath', this.state.rightList.path);
@@ -66,23 +63,33 @@ class FileManager extends Component {
 
   componentWillMount = () => {
     if (localStorage.getItem("activeWindow") === null || localStorage.getItem("leftListPath") === null || localStorage.getItem("rightListPath") === null) {
+      let path = this.props.history.location.search.substring(6);
       localStorage.setItem("activeWindow", "left");
-      localStorage.setItem("leftListPath", "/home/admin");
+      localStorage.setItem("leftListPath", path);
       localStorage.setItem("rightListPath", "/home/admin");
     }
+
+    if (this.state.active === "left") {
+      let path = localStorage.getItem("leftListPath");
+      this.setState({ path });
+    } else {
+      let path = localStorage.getItem("rightListPath");
+      this.setState({ path });
+    }
+
 
     this.changeDirectoryOnLoading();
   }
 
   changeDirectoryOnLoading = () => {
     this.setState({ active: localStorage.getItem('activeWindow'), loading: true }, () => {
-      FM.getDataFromServer(`${url}dir=${this.encodePath(localStorage.getItem('leftListPath'))}&action=cd`)
+      FM.getDataFromServer(`${server}dir=${this.encodePath(localStorage.getItem('leftListPath'))}&action=cd`)
         .then(result => {
           let path = localStorage.getItem('leftListPath');
           let listing = result.data.listing;
           this.setState({ leftList: { files: { listing }, path } });
         })
-        .then(FM.getDataFromServer(`${url}dir=${this.encodePath(localStorage.getItem('rightListPath'))}&action=cd`)
+        .then(FM.getDataFromServer(`${server}dir=${this.encodePath(localStorage.getItem('rightListPath'))}&action=cd`)
           .then(result => {
             let path = localStorage.getItem('rightListPath');
             let listing = result.data.listing;
@@ -110,11 +117,10 @@ class FileManager extends Component {
     this.setState({ loading: false });
   }
 
-  changeDirectory = (url) => {
-    console.log("CD");
+  changeDirectory = () => {
     const { active, path } = this.state;
     if (this.state.leftList.path === this.state.rightList.path) {
-      FM.getDataFromServer(url)
+      FM.getDataFromServer(`${server}dir=${this.encodePath(this.state.path)}&action=cd`)
         .then(result => {
           let listing = result.data.listing;
           this.setState({ leftList: { files: { listing }, path }, rightList: { files: { listing }, path }, loading: false });
@@ -122,7 +128,7 @@ class FileManager extends Component {
           this.rightDirectoryListElement.current.resetData();
         })
     } else if (active === "left") {
-      FM.getDataFromServer(url)
+      FM.getDataFromServer(`${server}dir=${this.encodePath(this.state.path)}&action=cd`)
         .then(result => {
           let listing = result.data.listing;
           this.setState({ leftList: { files: { listing }, path }, loading: false });
@@ -130,7 +136,7 @@ class FileManager extends Component {
         })
         .catch(e => console.log(e))
     } else {
-      FM.getDataFromServer(url)
+      FM.getDataFromServer(`${server}dir=${this.encodePath(this.state.path)}&action=cd`)
         .then(result => {
           let listing = result.data.listing;
           this.setState({ rightList: { files: { listing }, path }, loading: false });
@@ -151,14 +157,14 @@ class FileManager extends Component {
         this.setState({ active: "right", path: this.state.rightList.path });
         this.changeQuery(this.state.path);
         this.rightDirectoryListElement.current.passData();
+        this.cachePaths();
       } else {
         this.setState({ active: "left", path: this.state.leftList.path });
         this.changeQuery(this.state.path);
         this.leftDirectoryListElement.current.passData();
+        this.cachePaths();
       }
     }
-
-    this.cachePaths();
   }
 
   passSelection = (selection) => {
@@ -178,13 +184,13 @@ class FileManager extends Component {
       this.setState({ active: "right", path: this.state.rightList.path });
       this.changeQuery(this.state.path);
       this.rightDirectoryListElement.current.passData();
+      this.cachePaths();
     } else if (e.keyCode === 37) {
       this.setState({ active: "left", path: this.state.leftList.path });
       this.changeQuery(this.state.path);
       this.leftDirectoryListElement.current.passData();
+      this.cachePaths();
     }
-
-    this.cachePaths();
   }
 
   validateAction = (url) => {
@@ -192,8 +198,9 @@ class FileManager extends Component {
       FM.validateAction(url)
         .then(response => {
           if (response.data.result) {
-            this.changeDirectory(`${url}dir=${this.encodePath(this.state.path)}&action=cd`);
+            this.changeDirectory();
           } else {
+            console.log(response.data.message);
             this.showError(response.data.message);
           }
         })
@@ -210,8 +217,55 @@ class FileManager extends Component {
     window.open('/download/file/?path=' + path + '/' + name);
   }
 
+  checkExistingFileName = (selectedFiles) => {
+    let selectedFileNames = [];
+    let existingFileNames = [];
+    let newFiles = [];
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+      selectedFileNames.push(selectedFiles[i]);
+    }
+
+    if (this.state.active === "left") {
+      for (let i = 0; i < selectedFileNames.length; i++) {
+        if (this.state.leftList.files.listing.map((i) => { return i.name }).includes(selectedFileNames[i].name)) {
+          existingFileNames.push(selectedFileNames[i]);
+        } else {
+          newFiles.push(selectedFileNames[i]);
+        }
+      }
+    } else {
+      for (let i = 0; i < selectedFileNames.length; i++) {
+        if (this.state.rightList.files.listing.map((i) => { return i.name }).includes(selectedFileNames[i].name)) {
+          existingFileNames.push(selectedFileNames[i]);
+        } else {
+          newFiles.push(selectedFileNames[i]);
+        }
+      }
+    }
+
+    if (existingFileNames.length !== 0) {
+      this.modal("Replace", existingFileNames);
+      this.upload(newFiles);
+    } else {
+      this.upload(selectedFiles);
+    }
+  }
+
+  replaceFiles = (selectedFiles) => {
+    for (let i = 0; i < selectedFiles.length; i++) {
+      this.validateAction(`${server}item=${this.encodePath(this.state.path)}%2F${selectedFiles[i].name}&dir=${this.encodePath(this.state.path)}&action=delete_files`);
+    }
+
+    this.upload(selectedFiles);
+  }
+
   upload = (selectedFiles) => {
     const formData = new FormData();
+
+    if (selectedFiles.length === 0) {
+      return;
+    }
 
     for (let i = 0; i < selectedFiles.length; i++) {
       formData.append('files[]', selectedFiles[i], selectedFiles[i].name);
@@ -224,7 +278,7 @@ class FileManager extends Component {
         }
       }).then((result) => {
         this.setState({ uploadPercent: "0" });
-        this.changeDirectory(`${url}dir=${this.encodePath(this.state.path)}&action=cd`);
+        this.changeDirectory();
       })
     });
   }
@@ -233,36 +287,36 @@ class FileManager extends Component {
     const { selection, name, path } = this.state;
     if (selection.length > 0) {
       this.setState({ loading: true }, () => {
-        FM.deleteItems(url, this.encodePath(path), selection)
+        FM.deleteItems(server, this.encodePath(path), selection)
           .then(() => {
             this.setState({ selection: [] }, () => {
-              this.changeDirectory(`${url}dir=${this.encodePath(path)}&action=cd`);
+              this.changeDirectory();
             })
           })
       });
     } else {
-      this.validateAction(`${url}item=${this.encodePath(path)}%2F${name}&dir=${this.encodePath(path)}&action=delete_files`);
+      this.validateAction(`${server}item=${this.encodePath(path)}%2F${name}&dir=${this.encodePath(path)}&action=delete_files`);
     }
   }
 
   newFile = () => {
     let name = this.inputElement.value;
-    this.validateAction(`${url}filename=${name}&dir=${this.encodePath(this.state.path)}&action=create_file`);
+    this.validateAction(`${server}filename=${name}&dir=${this.encodePath(this.state.path)}&action=create_file`);
   }
 
   newDir = () => {
     let name = this.inputElement.value;
-    this.validateAction(`${url}dirname=${name}&dir=${this.encodePath(this.state.path)}&action=create_dir`);
+    this.validateAction(`${server}dirname=${name}&dir=${this.encodePath(this.state.path)}&action=create_dir`);
   }
 
   onRename = () => {
     let name = this.state.inputValue;
-    this.validateAction(`${url}item=${this.state.name}&target_name=${name}&dir=${this.encodePath(this.state.path)}&action=rename_file`);
+    this.validateAction(`${server}item=${this.state.name}&target_name=${name}&dir=${this.encodePath(this.state.path)}&action=rename_file`);
   }
 
   onChangePermissions = () => {
     let permissions = this.state.inputValue;
-    this.validateAction(`${url}dir=${this.encodePath(this.state.path)}%2F&item=${this.state.name}&permissions=${permissions}&action=chmod_item`);
+    this.validateAction(`${server}dir=${this.encodePath(this.state.path)}%2F&item=${this.state.name}&permissions=${permissions}&action=chmod_item`);
   }
 
   archiveItem = () => {
@@ -270,21 +324,22 @@ class FileManager extends Component {
 
     if (this.state.selection.length > 0) {
       this.setState({ loading: true }, () => {
-        FM.archiveItems(url, this.encodePath(this.state.path), this.encodePath(name), this.state.selection)
-          .then(() => {
-            this.setState({ selection: [] }, () => {
-              this.changeDirectory(`${url}dir=${this.encodePath(this.state.path)}&action=cd`);
-            })
-          })
+        let items = [];
+        for (let i = 0; i < this.state.selection.length; i++) {
+          let path = `${this.state.path}/`;
+          items.push(path += this.state.selection[i]);
+        }
+        this.validateAction(`${server}items=${items}&dst_item=${this.encodePath(name)}&action=pack_item`);
+        this.setState({ selection: [] });
       })
     } else {
-      this.validateAction(`${url}items=${this.encodePath(this.state.path)}%2F${this.state.name}&dst_item=${this.encodePath(name)}&action=pack_item`);
+      this.validateAction(`${server}items=${this.encodePath(this.state.path)}%2F${this.state.name}&dst_item=${this.encodePath(name)}&action=pack_item`);
     }
   }
 
   extractItem = () => {
     let name = this.inputElement.value;
-    this.validateAction(`${url}item=${this.encodePath(this.state.path)}%2F${this.state.name}&filename=${this.state.name}&dir=${this.encodePath(this.state.path)}&dir_target=${name}&action=unpack_item`);
+    this.validateAction(`${server}item=${this.encodePath(this.state.path)}%2F${this.state.name}&filename=${this.state.name}&dir=${this.encodePath(this.state.path)}&dir_target=${name}&action=unpack_item`);
   }
 
   moveItem = () => {
@@ -293,15 +348,15 @@ class FileManager extends Component {
 
     if (selection.length > 0) {
       this.setState({ loading: true }, () => {
-        FM.moveItems(url, this.encodePath(path), targetDir, selection)
+        FM.moveItems(server, this.encodePath(path), targetDir, selection)
           .then(() => {
             this.setState({ selection: [] }, () => {
-              this.changeDirectory(`${url}dir=${this.encodePath(path)}&action=cd`);
+              this.changeDirectory();
             })
           })
       });
     } else {
-      this.validateAction(`${url}item=${path}%2F${name}&target_name=${targetDir}&action=move_file`);
+      this.validateAction(`${server}item=${path}%2F${name}&target_name=${targetDir}&action=move_file`);
     }
   }
 
@@ -311,15 +366,15 @@ class FileManager extends Component {
 
     if (selection.length > 0) {
       this.setState({ loading: true }, () => {
-        FM.copyItems(url, this.encodePath(path), targetDir, selection)
+        FM.copyItems(server, this.encodePath(path), targetDir, selection)
           .then(() => {
             this.setState({ selection: [] }, () => {
-              this.changeDirectory(`${url}dir=${this.encodePath(path)}&action=cd`);
+              this.changeDirectory();
             })
           })
       });
     } else {
-      this.validateAction(`${url}item=${path}%2F${name}&filename=${name}&dir=${path}&dir_target=${targetDir}&action=copy_file`);
+      this.validateAction(`${server}item=${path}%2F${name}&filename=${name}&dir=${path}&dir_target=${targetDir}&action=copy_file`);
     }
   }
 
@@ -332,14 +387,14 @@ class FileManager extends Component {
 
   openDirectory = () => {
     this.setState({ loading: true }, () => {
-      this.changeDirectory(`${url}dir=${this.encodePath(this.state.path)}&action=cd`);
+      this.changeDirectory();
       this.cachePaths();
     });
   }
 
-  openCertainDirectory = (path) => {
+  openCertainDirectory = () => {
     this.setState({ loading: true }, () => {
-      this.changeDirectory(`${url}dir=${this.encodePath(path)}&action=cd`);
+      this.changeDirectory();
       this.cachePaths();
     });
   }
@@ -430,6 +485,7 @@ class FileManager extends Component {
       case 'Add file': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newFile} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Delete': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onDelete} onClose={this.closeModal} items={items} />, modalVisible: true });
       case 'Nothing selected': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} onClick={this.closeModal} />, modalVisible: true });
+      case "Replace": return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} files={items} onClick={(files) => this.replaceFiles(files)} onClose={this.closeModal} />, modalVisible: true });
       default:
         break;
     }
@@ -447,7 +503,7 @@ class FileManager extends Component {
           download={this.download}
           openModal={this.modal}
           selection={selection}
-          upload={this.upload}
+          upload={this.checkExistingFileName}
           cursor={cursor}
           name={name} />
         <div className="lists-container">

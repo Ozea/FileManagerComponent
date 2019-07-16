@@ -15,7 +15,7 @@ class Preview extends Component {
   }
 
   hotkeys = (e) => {
-    if (e.keyCode === 27) {
+    if (e.keyCode === 121) {
       this.props.onClose();
     }
   }

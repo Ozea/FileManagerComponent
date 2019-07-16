@@ -11,6 +11,14 @@ class Photo extends Component {
     loading: false
   }
 
+  imgClass = (item) => {
+    if (item.match(/.gif/i)) {
+      return "gif";
+    } else {
+      return "img";
+    }
+  }
+
   encodePath = (path) => {
     let splitPath = path.split('/');
     splitPath.splice(splitPath.length - 1, 1);
@@ -40,7 +48,7 @@ class Photo extends Component {
     return gallery.map((item, i) => (
       <div className={i === 0 ? 'carousel-item active' : 'carousel-item'} key={i}>
         <div className="d-flex align-items-center justify-content-center min-vh-100">
-          <img src={`https://r5.vestacp.com:8083/view/file/${this.formatPath(this.props.path)}/${item}&raw=true`} alt={i} />
+          <img className={this.imgClass(item)} src={`https://r5.vestacp.com:8083/view/file/${this.formatPath(this.props.path)}/${item}&raw=true`} alt={i} />
         </div>
       </div>
     ));

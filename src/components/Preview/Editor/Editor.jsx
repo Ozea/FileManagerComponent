@@ -23,7 +23,7 @@ class Editor extends Component {
   }
 
   componentWillMount = () => {
-    document.addEventListener("keydown", this.hotkey);
+    document.addEventListener("keydown", this.hotKey);
 
     const { history } = this.props;
     let path = history.location.search.substring(6, history.location.search.lastIndexOf('/'));
@@ -47,11 +47,11 @@ class Editor extends Component {
   }
 
   componentWillUnmount = () => {
-    document.removeEventListener("keydown", this.hotkey);
+    document.removeEventListener("keydown", this.hotKey);
   }
 
-  hotkey = (e) => {
-    if (e.ctrlKey && e.keyCode === 83) {
+  hotKey = (e) => {
+    if (e.keyCode === 113) {
       this.save();
     }
   }

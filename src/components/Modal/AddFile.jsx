@@ -4,7 +4,7 @@ const AddFile = (props) => {
   return (
     <div className="modal-content">
       <div className="modal-header">
-        <h3 className="modal-title" >Add file:</h3>
+        <h3 className="modal-title" >Create file:</h3>
         <button type="button" className="close" onClick={props.close} >
           <span aria-hidden="true">&times;</span>
         </button>
@@ -14,7 +14,7 @@ const AddFile = (props) => {
       </div>
       <div className="modal-footer">
         <button type="button" className="btn btn-danger mr-auto" onClick={props.close}>Close</button>
-        <button type="button" className="btn btn-primary" onClick={props.save}>Save</button>
+        <button type="button" className="btn btn-primary" onClick={props.save}>Create</button>
       </div>
     </div>
   );

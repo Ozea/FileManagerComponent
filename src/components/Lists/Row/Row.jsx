@@ -82,7 +82,7 @@ class Row extends Component {
   }
 
   sizeFormatter = (bytes, decimals) => {
-    if (bytes === undefined) {
+    if (bytes === undefined || this.props.type === "d") {
       return null;
     };
 

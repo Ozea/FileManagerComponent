@@ -10,6 +10,7 @@ import Archive from './Archive';
 import Extract from './Extract';
 import Copy from './Copy';
 import './Modal.scss';
+import Replace from './Replace';
 
 class Modal extends Component {
 
@@ -40,6 +41,11 @@ class Modal extends Component {
     this.props.onChangePermissions(permissions);
   }
 
+  replace = (file) => {
+    this.props.onClick(file);
+    this.props.onClose();
+  }
+
   onChange = (e) => {
     this.props.onChangeValue(e.target.value);
   }
@@ -56,7 +62,7 @@ class Modal extends Component {
   }
 
   content = () => {
-    const { type, reference, fName, permissions, items, path } = this.props;
+    const { type, reference, fName, permissions, items, path, files } = this.props;
     switch (type) {
       case 'Copy': return <Copy close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} fName={fName} items={items} path={path} />;
       case 'Move': return <Move close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} fName={fName} items={items} path={path} />;
@@ -67,6 +73,7 @@ class Modal extends Component {
       case 'Add directory': return <AddDirectory close={this.closeModal} save={this.saveAndClose} reference={reference} />;
       case 'Delete': return <Delete close={this.closeModal} save={this.saveAndClose} fName={fName} items={items} />;
       case 'Add file': return <AddFile close={this.closeModal} save={this.saveAndClose} reference={reference} />;
+      case 'Replace': return <Replace close={this.closeModal} replace={(files) => this.replace(files)} files={files} />
       case 'Nothing selected': return <NothingSelected close={this.closeModal} />;
       default:
         break;

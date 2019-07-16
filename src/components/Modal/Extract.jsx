@@ -13,8 +13,8 @@ const Extract = (props) => {
         <input type="text" autoFocus defaultValue={props.path} onBlur={props.onChange} ref={props.reference}></input>
       </div>
       <div className="modal-footer">
-        <button type="button" className="btn btn-danger mr-auto" onClick={props.close}>Close</button>
-        <button type="button" className="btn btn-primary" onClick={props.save}>Save</button>
+        <button type="button" className="btn btn-danger mr-auto" onClick={props.close}>Cancel</button>
+        <button type="button" className="btn btn-primary" onClick={props.save}>Extract</button>
       </div>
     </div>
   );
