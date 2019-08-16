@@ -2,31 +2,43 @@ import React, { Component } from 'react';
 import DirectoryList from '../../components/Lists/DirectoryList/DirectoryList';
 import Modal from '../../components/Modal/Modal';
 import { withRouter } from 'react-router-dom';
-import * as FM from '../../LocalAPI';
 import Menu from '../../components/Menu/Menu';
-// import axios from 'axios';
+import ProgressBar from '../../components/ProgressBar/ProgressBar';
+import { toast, ToastContainer } from 'react-toastify';
+import Hotkeys from '../../components/Hotkeys/Hotkeys';
+import HotkeysButton from '../../components/Hotkeys/HotkeysButton';
+import * as FM from '../../LocalAPI';
 import '../App/App.scss';
+import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
+
+const server = "https://r5.vestacp.com:8083/file_manager/fm_api.php?";
 
 class FileManager extends Component {
   constructor(props) {
     super(props);
     this.state = {
       leftList: {
-        path: FM.getDirectoryPath(),
-        files: FM.leftList,
+        path: window.GLOBAL.ROOT_DIR,
+        files: { listing: [] },
       },
       rightList: {
-        path: FM.getDirectoryPath(),
-        files: FM.rightList,
+        path: window.GLOBAL.ROOT_DIR,
+        files: { listing: [] },
       },
-      path: FM.getDirectoryPath(),
+      path: window.GLOBAL.ROOT_DIR,
       active: "left",
       modal: null,
       modalVisible: false,
       cursor: 0,
       name: "",
       permissions: "",
-      selection: []
+      selection: [],
+      inputValue: "",
+      uploadPercent: "0",
+      hotkeysPanel: "inactive",
+      user: window.GLOBAL.ROOT_DIR,
+      loading: false
     }
     this.leftDirectoryListElement = React.createRef();
     this.rightDirectoryListElement = React.createRef();
@@ -35,23 +47,130 @@ class FileManager extends Component {
   componentDidMount = () => {
     window.addEventListener("keydown", this.switchActiveList);
     window.addEventListener("keydown", this.toggleActiveListOnTab);
-    // FM.getDataFromServer('')
-    //   .then() // setState({ data })
-    //   .catch()
+    document.addEventListener("keydown", this.hotkeysListener);
   }
 
   componentWillUnmount = () => {
     window.removeEventListener("keydown", this.switchActiveList);
     window.removeEventListener("keydown", this.toggleActiveListOnTab);
+    document.removeEventListener("keydown", this.hotkeysListener);
+  }
+
+  cachePaths = () => {
+    localStorage.setItem('activeWindow', this.state.active);
+    localStorage.setItem('leftListPath', this.state.leftList.path);
+    localStorage.setItem('rightListPath', this.state.rightList.path);
+  }
+
+  componentWillMount = () => {
+
+    if (localStorage.getItem("lastUser") === null || this.state.user !== localStorage.getItem("lastUser")) {
+      localStorage.setItem("lastUser", this.state.user);
+      localStorage.setItem("activeWindow", "left");
+      localStorage.setItem("leftListPath", window.GLOBAL.ROOT_DIR);
+      localStorage.setItem("rightListPath", window.GLOBAL.ROOT_DIR);
+    }
+
+    if (localStorage.getItem("activeWindow") === null || localStorage.getItem("leftListPath") === null || localStorage.getItem("rightListPath") === null) {
+      let path = this.props.history.location.search.substring(6).split('/');
+      localStorage.setItem("activeWindow", "left");
+      localStorage.setItem("leftListPath", path);
+      localStorage.setItem("rightListPath", window.GLOBAL.ROOT_DIR);
+    }
+
+    if (localStorage.getItem("activeWindow") === "left") {
+      let path = localStorage.getItem("leftListPath");
+      this.setState({ path });
+    } else if (localStorage.getItem("activeWindow") === "right") {
+      let path = localStorage.getItem("rightListPath");
+      this.setState({ path });
+    }
+
+    this.changeDirectoryOnLoading();
+  }
+
+  changeDirectoryOnLoading = () => {
+    this.setState({ active: localStorage.getItem('activeWindow'), loading: true }, () => {
+      FM.getDataFromServer(`${server}dir=${this.encodePath(localStorage.getItem('leftListPath'))}&action=cd`)
+        .then(result => {
+          let path = localStorage.getItem('leftListPath');
+          let listing = result.data.listing;
+          this.setState({ leftList: { files: { listing }, path } });
+        })
+        .then(FM.getDataFromServer(`${server}dir=${this.encodePath(localStorage.getItem('rightListPath'))}&action=cd`)
+          .then(result => {
+            let path = localStorage.getItem('rightListPath');
+            let listing = result.data.listing;
+            this.setState({ rightList: { files: { listing }, path }, loading: false });
+          })
+        )
+    })
+  }
+
+  encodePath = (path) => {
+    let splitPath = path.split('/');
+    let encodedPath = splitPath.join('%2F');
+    return encodedPath;
+  }
+
+  showError = (error) => {
+    toast.error(error, {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true
+    });
+    this.setState({ loading: false });
+  }
+
+  changeDirectory = () => {
+    const { active, path } = this.state;
+    if (this.state.leftList.path === this.state.rightList.path) {
+      FM.getDataFromServer(`${server}dir=${this.encodePath(this.state.path)}&action=cd`)
+        .then(result => {
+          let listing = result.data.listing;
+          this.setState({ leftList: { files: { listing }, path }, rightList: { files: { listing }, path }, loading: false });
+          this.leftDirectoryListElement.current.resetData();
+          this.rightDirectoryListElement.current.resetData();
+        })
+    } else if (active === "left") {
+      FM.getDataFromServer(`${server}dir=${this.encodePath(this.state.path)}&action=cd`)
+        .then(result => {
+          let listing = result.data.listing;
+          this.setState({ leftList: { files: { listing }, path }, loading: false });
+          this.leftDirectoryListElement.current.resetData();
+        })
+        .catch(e => console.log(e))
+    } else {
+      FM.getDataFromServer(`${server}dir=${this.encodePath(this.state.path)}&action=cd`)
+        .then(result => {
+          let listing = result.data.listing;
+          this.setState({ rightList: { files: { listing }, path }, loading: false });
+          this.rightDirectoryListElement.current.resetData();
+        })
+        .catch(e => console.log(e))
+    }
   }
 
   toggleActiveListOnTab = (e) => {
+    if (this.state.modalVisible) {
+      return;
+    }
+
     if (e.keyCode === 9) {
       e.preventDefault();
       if (this.state.active === "left") {
-        this.setState({ active: "right" });
+        this.setState({ active: "right", path: this.state.rightList.path });
+        this.changeQuery(this.state.path);
+        this.rightDirectoryListElement.current.passData();
+        this.cachePaths();
       } else {
-        this.setState({ active: "left" });
+        this.setState({ active: "left", path: this.state.leftList.path });
+        this.changeQuery(this.state.path);
+        this.leftDirectoryListElement.current.passData();
+        this.cachePaths();
       }
     }
   }
@@ -70,127 +189,237 @@ class FileManager extends Component {
     }
 
     if (e.keyCode === 39) {
-      this.setState({ active: "right" });
+      this.setState({ active: "right", path: this.state.rightList.path });
+      this.changeQuery(this.state.path);
+      this.rightDirectoryListElement.current.passData();
+      this.cachePaths();
     } else if (e.keyCode === 37) {
-      this.setState({ active: "left" });
+      this.setState({ active: "left", path: this.state.leftList.path });
+      this.changeQuery(this.state.path);
+      this.leftDirectoryListElement.current.passData();
+      this.cachePaths();
     }
   }
 
-  onDelete = () => {
-    const { leftList, rightList, active, cursor, selection } = this.state;
+  validateAction = (url) => {
+    this.setState({ loading: true }, () => {
+      FM.validateAction(url)
+        .then(response => {
+          if (response.data.result) {
+            this.changeDirectory();
+          } else {
+            console.log(response.data.message);
+            this.showError(response.data.message);
+          }
+        })
+    });
+  }
 
-    if (active === "left") {
-      if (selection.length > 0) {
-        let listing = [...leftList.files.listing];
-        let newListing = listing.filter((value, index) => !selection.includes(index));
-        leftList.files.listing = newListing;
-        this.setState({ leftList, selection: [] });
-        this.leftDirectoryListElement.current.removeSelection();
-      } else {
-        leftList.files.listing.splice(cursor, 1);
-        this.setState({ leftList });
-        this.leftDirectoryListElement.current.moveCursorOnPreviousRow(cursor);
+  download = () => {
+    const { cursor, path, name } = this.state;
+
+    if (cursor === 0) {
+      return;
+    }
+
+    window.open('/download/file/?path=' + path + '/' + name);
+  }
+
+  checkExistingFileName = (selectedFiles) => {
+    let selectedFileNames = [];
+    let existingFileNames = [];
+    let newFiles = [];
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+      selectedFileNames.push(selectedFiles[i]);
+    }
+
+    if (this.state.active === "left") {
+      for (let i = 0; i < selectedFileNames.length; i++) {
+        if (this.state.leftList.files.listing.map((i) => { return i.name }).includes(selectedFileNames[i].name)) {
+          existingFileNames.push(selectedFileNames[i]);
+        } else {
+          newFiles.push(selectedFileNames[i]);
+        }
       }
     } else {
-      if (selection.length > 0) {
-        let listing = [...rightList.files.listing];
-        let newListing = listing.filter((value, index) => !selection.includes(index));
-        rightList.files.listing = newListing;
-        this.setState({ rightList, selection: [] });
-        this.rightDirectoryListElement.current.removeSelection()
-      } else {
-        rightList.files.listing.splice(cursor, 1);
-        this.setState({ rightList });
-        this.rightDirectoryListElement.current.moveCursorOnPreviousRow(cursor);
+      for (let i = 0; i < selectedFileNames.length; i++) {
+        if (this.state.rightList.files.listing.map((i) => { return i.name }).includes(selectedFileNames[i].name)) {
+          existingFileNames.push(selectedFileNames[i]);
+        } else {
+          newFiles.push(selectedFileNames[i]);
+        }
       }
+    }
+
+    if (existingFileNames.length !== 0) {
+      this.modal("Replace", existingFileNames);
+      this.upload(newFiles);
+    } else {
+      this.upload(selectedFiles);
+    }
+  }
+
+  replaceFiles = (selectedFiles) => {
+    for (let i = 0; i < selectedFiles.length; i++) {
+      this.validateAction(`${server}item=${this.encodePath(this.state.path)}%2F${selectedFiles[i].name}&dir=${this.encodePath(this.state.path)}&action=delete_files`);
+    }
+
+    this.upload(selectedFiles);
+  }
+
+  upload = (selectedFiles) => {
+    const formData = new FormData();
+
+    if (selectedFiles.length === 0) {
+      return;
+    }
+
+    for (let i = 0; i < selectedFiles.length; i++) {
+      formData.append('files[]', selectedFiles[i], selectedFiles[i].name);
+    }
+    this.setState({ loading: true }, () => {
+      axios.post(`https://r5.vestacp.com:8083/upload/?dir=${this.state.path}`, formData, {
+        onUploadProgress: progressEvent => {
+          let uploadPercent = Math.round(progressEvent.loaded / progressEvent.total * 100);
+          this.setState({ uploadPercent });
+        }
+      }).then((result) => {
+        this.setState({ uploadPercent: "0" });
+        this.changeDirectory();
+      })
+    });
+  }
+
+  onDelete = () => {
+    const { selection, name, path } = this.state;
+    if (selection.length > 0) {
+      this.setState({ loading: true }, () => {
+        FM.deleteItems(server, this.encodePath(path), selection)
+          .then(() => {
+            this.setState({ selection: [] }, () => {
+              this.changeDirectory();
+            })
+          })
+      });
+    } else {
+      this.validateAction(`${server}item=${this.encodePath(path)}%2F${name}&dir=${this.encodePath(path)}&action=delete_files`);
     }
   }
 
   newFile = () => {
-    const { active } = this.state;
     let name = this.inputElement.value;
-    FM.addFile(name, active);
+    this.validateAction(`${server}filename=${name}&dir=${this.encodePath(this.state.path)}&action=create_file`);
   }
 
   newDir = () => {
-    const { active } = this.state;
     let name = this.inputElement.value;
-    FM.addDirectory(name, active);
+    this.validateAction(`${server}dirname=${name}&dir=${this.encodePath(this.state.path)}&action=create_dir`);
   }
 
   onRename = () => {
-    const { cursor, active } = this.state;
-    let name = this.inputElement.value;
-    FM.rename(cursor, active, name);
+    let name = this.state.inputValue;
+    this.validateAction(`${server}item=${this.state.name}&target_name=${name}&dir=${this.encodePath(this.state.path)}&action=rename_file`);
   }
 
   onChangePermissions = () => {
-    const { cursor, active, permissions } = this.state;
-    FM.changePermissions(cursor, active, permissions);
+    let permissions = this.state.inputValue;
+    this.validateAction(`${server}dir=${this.encodePath(this.state.path)}%2F&item=${this.state.name}&permissions=${permissions}&action=chmod_item`);
   }
 
   archiveItem = () => {
-    const { cursor, active } = this.state;
     let name = this.inputElement.value;
-    FM.archiveItem(cursor, name, active);
+
+    if (this.state.selection.length > 0) {
+      this.setState({ loading: true }, () => {
+        let items = [];
+        for (let i = 0; i < this.state.selection.length; i++) {
+          let path = `${this.state.path}/`;
+          items.push(path += this.state.selection[i]);
+        }
+        this.validateAction(`${server}items=${items}&dst_item=${this.encodePath(name)}&action=pack_item`);
+        this.setState({ selection: [] });
+      })
+    } else {
+      this.validateAction(`${server}items=${this.encodePath(this.state.path)}%2F${this.state.name}&dst_item=${this.encodePath(name)}&action=pack_item`);
+    }
   }
 
   extractItem = () => {
-    const { cursor, active } = this.state;
     let name = this.inputElement.value;
-    FM.extractItem(cursor, name, active);
+    this.validateAction(`${server}item=${this.encodePath(this.state.path)}%2F${this.state.name}&filename=${this.state.name}&dir=${this.encodePath(this.state.path)}&dir_target=${name}&action=unpack_item`);
   }
 
   moveItem = () => {
-    const { active, selection, name, cursor } = this.state;
-    FM.moveItem(active, selection, name);
+    const { path, selection, name } = this.state;
+    let targetDir = this.inputElement.value;
 
     if (selection.length > 0) {
-      if (active === "left") {
-        this.leftDirectoryListElement.current.removeSelection();
-        this.setState({ selection: [] });
-      } else {
-        this.rightDirectoryListElement.current.removeSelection();
-        this.setState({ selection: [] });
-      }
+      this.setState({ loading: true }, () => {
+        FM.moveItems(server, this.encodePath(path), targetDir, selection)
+          .then(() => {
+            this.setState({ selection: [] }, () => {
+              this.changeDirectory();
+            })
+          })
+      });
     } else {
-      if (active === "left") {
-        this.leftDirectoryListElement.current.moveCursorOnPreviousRow(cursor);
-      } else {
-        this.rightDirectoryListElement.current.moveCursorOnPreviousRow(cursor);
-      }
+      this.validateAction(`${server}item=${path}%2F${name}&target_name=${targetDir}&action=move_file`);
     }
   }
 
   copyItem = () => {
-    const { active, selection, name } = this.state;
-
-    FM.copyItem(name, active, selection);
+    const { path, selection, name } = this.state;
+    let targetDir = this.inputElement.value;
 
     if (selection.length > 0) {
-      if (active === "left") {
-        this.leftDirectoryListElement.current.removeSelection();
-        this.setState({ selection: [] });
-      } else {
-        this.rightDirectoryListElement.current.removeSelection();
-        this.setState({ selection: [] });
-      }
+      this.setState({ loading: true }, () => {
+        FM.copyItems(server, this.encodePath(path), targetDir, selection)
+          .then(() => {
+            this.setState({ selection: [] }, () => {
+              this.changeDirectory();
+            })
+          })
+      });
+    } else {
+      this.validateAction(`${server}item=${path}%2F${name}&filename=${name}&dir=${path}&dir_target=${targetDir}&action=copy_file`);
     }
+  }
+
+  changeQuery = (path) => {
+    this.props.history.push({
+      pathname: '/list/directory/',
+      search: `?path=${path}`
+    });
+  }
+
+  openDirectory = () => {
+    this.setState({ loading: true }, () => {
+      this.changeDirectory();
+      this.cachePaths();
+    });
+  }
+
+  openCertainDirectory = () => {
+    this.setState({ loading: true }, () => {
+      this.changeDirectory();
+      this.cachePaths();
+    });
   }
 
   moveBack = () => {
     if (this.state.active === "left") {
       let leftList = { ...this.state.leftList };
       leftList.path = leftList.path.substring(0, leftList.path.lastIndexOf('/'));
-      this.setState({ leftList });
+      this.setState({ leftList, path: leftList.path });
       this.props.history.push({ search: `?path=${leftList.path}` });
-      FM.openDefaultList(this.state.active);
+      this.openDirectory();
     } else {
       let rightList = { ...this.state.rightList };
       rightList.path = rightList.path.substring(0, rightList.path.lastIndexOf('/'));
-      this.setState({ rightList });
+      this.setState({ rightList, path: rightList.path });
       this.props.history.push({ search: `?path=${rightList.path}` });
-      FM.openDefaultList(this.state.active);
+      this.openDirectory();
     }
   }
 
@@ -200,93 +429,135 @@ class FileManager extends Component {
       let leftList = { ...this.state.leftList };
       let oldPath = leftList.path;
       leftList.path = `${oldPath}/${name}`;
-      this.setState({ leftList });
+      this.setState({ leftList, path: leftList.path });
     } else {
       let rightList = { ...this.state.rightList };
       let oldPath = rightList.path;
       rightList.path = `${oldPath}/${name}`;
-      this.setState({ rightList });
+      this.setState({ rightList, path: rightList.path });
     }
   }
 
-  changeName = (name) => {
-    this.setState({ name });
+  changeInputValue = (inputValue) => {
+    this.setState({ inputValue });
   }
 
-  changePath = (path) => {
+  changePathAfterToggle = (path) => {
     this.setState({ path });
   }
 
-  changePermissions = (permissions) => {
-    this.setState({ permissions });
+  changePath = (path) => {
+    if (this.state.active === "left") {
+      this.setState({ leftList: { files: { ...this.state.leftList.files }, path }, path });
+    } else {
+      this.setState({ rightList: { files: { ...this.state.rightList.files }, path }, path });
+    }
   }
 
-  passData = (cursor, name, permissions) => {
-    this.setState({ cursor, name, permissions });
+  passData = (cursor, name, permissions, type) => {
+    this.setState({ cursor, name, permissions, type });
   }
 
   closeModal = () => {
     this.setState({ modalVisible: false });
   }
 
-  modal = (type, items) => {
+  hotkeysListener = (e) => {
+    if (this.state.modalVisible) {
+      return;
+    }
+
+    if (e.keyCode === 72) {
+      this.hotkeys();
+    }
+  }
+
+  hotkeys = () => {
+    if (this.state.hotkeysPanel === "inactive") {
+      this.setState({ hotkeysPanel: "active" });
+    } else {
+      this.setState({ hotkeysPanel: "inactive" });
+    }
+  }
+
+  modal = (type, items, available) => {
     const { modalVisible, name, permissions, path } = this.state;
     switch (type) {
-      case 'Copy': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} path={path} onClick={this.copyItem} items={items} onClose={this.closeModal} onChangeValue={this.changePath} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
-      case 'Move': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} path={path} onClick={this.moveItem} items={items} onClose={this.closeModal} onChangeValue={this.changePath} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
-      case 'Permissions': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onChangePermissions} onClose={this.closeModal} onChangePermissions={this.changePermissions} permissions={permissions} />, modalVisible: true });
-      case 'Extract': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.extractItem} onClose={this.closeModal} onChangeValue={this.changeName} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
-      case 'Archive': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.archiveItem} onClose={this.closeModal} onChangeValue={this.changeName} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
-      case 'Rename': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onChangeValue={this.changeName} onClick={this.onRename} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Copy': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} path={path} onClick={this.copyItem} items={items} onClose={this.closeModal} onChangeValue={this.changeInputValue} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Move': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} path={path} onClick={this.moveItem} items={items} onClose={this.closeModal} onChangeValue={this.changeInputValue} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Extract': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.extractItem} onClose={this.closeModal} onChangeValue={this.changeInputValue} path={path} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Archive': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.archiveItem} items={items} onClose={this.closeModal} onChangeValue={this.changeInputValue} path={path} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
+      case 'Permissions': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onChangePermissions} onClose={this.closeModal} onChangePermissions={this.changeInputValue} permissions={permissions} />, modalVisible: true });
+      case 'Rename': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onChangeValue={this.changeInputValue} onClick={this.onRename} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Add directory': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newDir} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Add file': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newFile} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Delete': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onDelete} onClose={this.closeModal} items={items} />, modalVisible: true });
-      case 'Nothing selected': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} onClick={this.closeModal} />, modalVisible: true });
+      case 'Nothing selected': return this.setState({ modal: <Modal modalVisible={modalVisible} notAvailable={available} type={type} onClose={this.closeModal} onClick={this.closeModal} />, modalVisible: true });
+      case "Replace": return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} files={items} onClick={(files) => this.replaceFiles(files)} onClose={this.closeModal} />, modalVisible: true });
       default:
         break;
     }
   }
 
   render() {
-    const { leftList, rightList, active, modal, modalVisible, cursor, selection, name } = this.state;
+    const { leftList, rightList, active, modal, modalVisible, cursor, selection, name, loading, uploadPercent, hotkeysPanel, type } = this.state;
     return (
       <div className="window">
+        {uploadPercent !== "0" ? <ProgressBar progress={uploadPercent} /> : null}
+        <ToastContainer />
         <Menu
+          onDelete={this.onDeleteFileHandler}
           modalVisible={modalVisible}
-          name={name}
-          selection={selection}
-          cursor={cursor}
+          download={this.download}
           openModal={this.modal}
-          onDelete={this.onDeleteFileHandler} />
+          selection={selection}
+          itemType={type}
+          upload={this.checkExistingFileName}
+          cursor={cursor}
+          name={name} />
         <div className="lists-container">
           <DirectoryList
-            modalVisible={modalVisible}
-            openModal={this.modal}
+            changePathAfterToggle={this.changePathAfterToggle}
+            openCertainDirectory={this.openCertainDirectory}
             ref={this.leftDirectoryListElement}
-            passData={this.passData}
+            openDirectory={this.openDirectory}
             passSelection={this.passSelection}
-            data={leftList.files}
-            isActive={active === "left"}
+            data={this.state.leftList.files}
             onClick={this.toggleActiveList}
-            history={this.props}
-            path={leftList.path}
+            isActive={active === "left"}
+            changePath={this.changePath}
+            modalVisible={modalVisible}
             addToPath={this.addToPath}
+            passData={this.passData}
+            download={this.download}
             moveBack={this.moveBack}
+            openModal={this.modal}
+            path={leftList.path}
+            history={this.props}
+            loading={loading}
             list="left" />
           <DirectoryList
-            modalVisible={modalVisible}
-            openModal={this.modal}
+            changePathAfterToggle={this.changePathAfterToggle}
+            openCertainDirectory={this.openCertainDirectory}
             ref={this.rightDirectoryListElement}
-            passData={this.passData}
+            openDirectory={this.openDirectory}
             passSelection={this.passSelection}
-            data={rightList.files}
-            isActive={active === "right"}
+            data={this.state.rightList.files}
             onClick={this.toggleActiveList}
-            history={this.props}
-            path={rightList.path}
+            isActive={active === "right"}
+            changePath={this.changePath}
+            modalVisible={modalVisible}
             addToPath={this.addToPath}
+            passData={this.passData}
+            download={this.download}
             moveBack={this.moveBack}
+            openModal={this.modal}
+            path={rightList.path}
+            history={this.props}
+            loading={loading}
             list="right" />
+          <Hotkeys style={hotkeysPanel} close={this.hotkeys} />
+          <HotkeysButton open={this.hotkeys} />
         </div>
         {modalVisible && modal}
       </div>

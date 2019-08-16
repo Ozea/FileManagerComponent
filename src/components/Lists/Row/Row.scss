@@ -1,26 +1,64 @@
-span {
-  text-align: center;
-  margin-right: 10px;
+.list .list-container ul li svg {
+  width: 25px;
+  vertical-align: top;
+  margin-top: 9px;
+  margin-left: 10px;
 }
 
-span.glyphicon {
-  vertical-align: text-top;
+.html5 {
+  color: #f16529;
 }
 
-.glyphicon-folder-open {
+.file-alt {
+  color: #20d2d1;
+}
+
+.list .list-container ul li {
+  .marker {
+    float: left;
+    width: 4px;
+    height: 34px;
+    margin-right: 5px;
+  }
+}
+
+.list .list-container ul li .js {
+  width: 16px;
+  color: #f7df1c;
+  background: black;
+  margin: 9px 4px 0 15px;
+}
+
+.php {
+  color: #777bb3;
+}
+
+.css3 {
+  color: #0079cb;
+}
+
+.sass {
+  color: #cd6699;
+}
+
+.image {
+  color: #36afae;
+}
+
+.folder-open {
   color: #e29741;
 }
 
-.glyphicon-file {
+.file {
   color: #11b1b1;
 }
 
-.glyphicon-book {
+.archive {
   color: rgb(209, 206, 43);
 }
 
-.glyphicon-picture {
-  color: #105050;
+.download {
+  color: #929ca3;
 }
 
 .fOwner,
@@ -28,54 +66,92 @@ span.glyphicon {
 .fSize,
 .fDate,
 .fTime {
-  font-size: 18px;
-  margin-left: 2px;
+  font-size: 14px;
   float: right;
-  width: 80px;
+  width: 60px;
   padding-top: 2px;
 }
 
-.fName {
-  padding: 6px 5px 2px 5px;
-  font-size: 17px;
-  white-space: nowrap; 
-  width: 230px; 
+.list .list-container ul li .fName {
+  margin-left: 5px;
+  width: 260px;
+  display: inline-block;
   overflow: hidden;
   text-overflow: clip;
 
-  &:hover {
-    background: rgb(201, 199, 199);
-    border-radius: 4px;
-    cursor: pointer;
+  .name {
+    padding: 0 5px;
+    float: left;
+    margin-left: 5px;
+    line-height: 34px;
+    font-size: 15px;
+    white-space: nowrap; 
+    transition: all ease-out .3s;
+  
+    &:hover {
+      transition: all ease-out .2s;
+      background: rgb(201, 199, 199);
+      border-radius: 4px;
+      cursor: pointer;
+    }
   }
 }
 
-.fPermissions {
-  margin-left: 40px;
-  margin-right: 30px;
+.list .list-container ul li.active .fName .name:hover {
+  background: #F0B607;
+  color: black;
+}
+
+.list .list-container ul li .fPermissions {
+  margin-left: 35px;
+  width: 50px;
+  color: #727272;
+  font-size: 11px;
+}
+
+.list .list-container ul li .fDate .date {
+  color: #727272;
+  font-size: 11px;
+}
+.list .list-container ul li .fTime {
+  color: #727272;
+  font-size: 11px;
+  width: 54px;
 }
 
 .fSize {
-  width: 120px;
+  padding-right: 15px;
+  text-align: right;
+  width: 95px;
 }
 
-.fOwner {
-  color: rgb(36, 148, 114);
+.list .list-container ul li .fOwner {
+  color: #81A64F;
   font-style: italic;
+  width: 50px;
+  font-size: 12px;
+  margin-right: 5px;
 }
 
 .value {
-  color: #1f666e;
+  color: #44a8b3;
 }
 
 .unit {
   font-weight: bolder;
-  color: #333;
+  color: #727272;
 }
 
-.inactive {
-  border-left: 5px solid #999999;
-  background: rgba(195, 195, 195, 0.5);
+li.inactive {
+  .marker {
+    float: left;
+    width: 4px;
+    height: 34px;
+    margin-right: 5px;
+    background: rgb(163, 163, 163);
+  }
+
+  background: rgb(201, 199, 199);
 }
 
 .inactive-selected {

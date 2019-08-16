@@ -10,6 +10,7 @@ import Archive from './Archive';
 import Extract from './Extract';
 import Copy from './Copy';
 import './Modal.scss';
+import Replace from './Replace';
 
 class Modal extends Component {
 
@@ -40,6 +41,11 @@ class Modal extends Component {
     this.props.onChangePermissions(permissions);
   }
 
+  replace = (file) => {
+    this.props.onClick(file);
+    this.props.onClose();
+  }
+
   onChange = (e) => {
     this.props.onChangeValue(e.target.value);
   }
@@ -56,18 +62,19 @@ class Modal extends Component {
   }
 
   content = () => {
-    const { type, reference, fName, permissions, items, path } = this.props;
+    const { type, reference, fName, permissions, items, path, files, notAvailable } = this.props;
     switch (type) {
-      case 'Copy': return <Copy close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} path={path} fName={fName} items={items} />;
-      case 'Move': return <Move close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} path={path} fName={fName} items={items} />;
+      case 'Copy': return <Copy close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} fName={fName} items={items} path={path} />;
+      case 'Move': return <Move close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} fName={fName} items={items} path={path} />;
       case 'Permissions': return <Permissions close={this.closeModal} save={this.saveAndClose} changePermissions={this.changePermissions} fName={fName} permissions={permissions} />;
-      case 'Extract': return <Extract close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} fName={fName} />;
-      case 'Archive': return <Archive close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} fName={fName} />;
+      case 'Extract': return <Extract close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} fName={fName} path={path} />;
+      case 'Archive': return <Archive close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} items={items} name={type} fName={fName} path={path} />;
       case 'Rename': return <Rename close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} fName={fName} />;
       case 'Add directory': return <AddDirectory close={this.closeModal} save={this.saveAndClose} reference={reference} />;
       case 'Delete': return <Delete close={this.closeModal} save={this.saveAndClose} fName={fName} items={items} />;
       case 'Add file': return <AddFile close={this.closeModal} save={this.saveAndClose} reference={reference} />;
-      case 'Nothing selected': return <NothingSelected close={this.closeModal} />;
+      case 'Replace': return <Replace close={this.closeModal} replace={(files) => this.replace(files)} files={files} />
+      case 'Nothing selected': return <NothingSelected close={this.closeModal} notAvailable={notAvailable} />;
       default:
         break;
     }

@@ -4,368 +4,57 @@ export function getDataFromServer(url) {
   return axios.get(url);
 }
 
-export function addFile(name, activeList) {
-  const newFile = {
-    type: "f",
-    permissions: "771",
-    owner: "admin",
-    group: "admin",
-    size: "1000",
-    name
-  };
+export function validateAction(url) {
+  return axios.get(url);
+}
 
-  if (activeList === "left") {
-    leftList.listing.push(newFile);
-    return leftList;
-  } else {
-    rightList.listing.push(newFile);
-    return rightList;
+export function deleteItems(url, path, selection) {
+  if (!selection.length) {
+    return false;
   }
+
+  const promisesArray = selection.map(item =>
+    validateAction(`${url}item=${path}%2F${item}&dir=${path}&action=delete_files`)
+      .then(response => {
+        if (response.data.result) {
+          console.log(response.data.result);
+        }
+      })
+  );
+
+  return Promise.all(promisesArray);
 }
 
-export function addDirectory(name, activeList) {
-  const newDir = {
-    type: "d",
-    permissions: "771",
-    owner: "admin",
-    group: "admin",
-    size: "1000",
-    name: name
-  };
-
-  if (activeList === "left") {
-    return leftList.listing.push(newDir);
-  } else {
-    return rightList.listing.push(newDir);
+export function moveItems(url, path, targetPath, selection) {
+  if (!selection.length) {
+    return false;
   }
+
+  const promisesArray = selection.map(item =>
+    validateAction(`${url}item=${path}%2F${item}&target_name=${targetPath}&action=move_file`)
+      .then(response => {
+        if (response.data.result) {
+          console.log(response.data.result);
+        }
+      })
+  );
+
+  return Promise.all(promisesArray);
 }
 
-export function rename(cursor, active, name) {
-  if (active === "left") {
-    return leftList.listing[cursor].name = name;
-  } else {
-    return rightList.listing[cursor].name = name;
+export function copyItems(url, path, targetPath, selection) {
+  if (!selection.length) {
+    return false;
   }
-}
 
-export function changePermissions(cursor, active, permissions) {
-  if (active === "left") {
-    return leftList.listing[cursor].permissions = permissions;
-  } else {
-    return rightList.listing[cursor].permissions = permissions;
-  }
-}
+  const promisesArray = selection.map(item =>
+    validateAction(`${url}item=${path}%2F${item}&filename=${item}&dir=${path}&dir_target=${targetPath}&action=copy_file`)
+      .then(response => {
+        if (response.data.result) {
+          console.log(response.data.result);
+        }
+      })
+  );
 
-export function archiveItem(cursor, name, active) {
-  if (active === "left") {
-    return leftList.listing[cursor].name = name;
-  } else {
-    return rightList.listing[cursor].name = name;
-  }
-}
-
-export function extractItem(cursor, name, active) {
-  if (active === "left") {
-    return leftList.listing[cursor].name = name;
-  } else {
-    return rightList.listing[cursor].name = name;
-  }
-}
-
-export function copyItem(name, active, selection) {
-  if (active === "left") {
-    let listing = [...leftList.listing];
-    if (selection.length > 0) {
-      let newListing = listing.filter((item, index) => selection.includes(index)).concat(rightList.listing);
-      rightList.listing = newListing;
-    } else {
-      let newListing = listing.filter((item, index) => item.name === name).concat(rightList.listing);
-      rightList.listing = newListing;
-    }
-  } else {
-    let listing = [...rightList.listing];
-    if (selection.length > 0) {
-      let newListing = listing.filter((item, index) => selection.includes(index)).concat(leftList.listing);
-      leftList.listing = newListing;
-    } else {
-      let newListing = listing.filter((item, index) => item.name === name).concat(leftList.listing);
-      leftList.listing = newListing;
-    }
-  }
-}
-
-export function moveItem(active, selection, name) {
-  if (active === "left") {
-    let listing = [...leftList.listing];
-    if (selection.length > 0) {
-      let newListing = listing.filter((item, index) => selection.includes(index)).concat(rightList.listing);
-      let splicedListing = listing.filter((item, index) => !selection.includes(index));
-      rightList.listing = newListing;
-      leftList.listing = splicedListing;
-    } else {
-      listing.filter((item, index) => checkName(item, index, name, leftList, rightList));
-    }
-  } else {
-    let listing = [...rightList.listing];
-    if (selection.length > 0) {
-      let newListing = listing.filter((item, index) => selection.includes(index)).concat(leftList.listing);
-      let splicedListing = listing.filter((item, index) => !selection.includes(index));
-      leftList.listing = newListing;
-      rightList.listing = splicedListing;
-    } else {
-      listing.filter((item, index) => checkName(item, index, name, rightList, leftList));
-    }
-  }
-}
-
-function checkName(item, index, name, list, destination) {
-  if (item.name === name) {
-    destination.listing.push(list.listing[index]);
-    list.listing.splice(index, 1);
-  }
-}
-
-export function openDirectory(active) {
-  if (active === "left") {
-    return leftList.listing = [{ "type": "d", "permissions": "711", "owner": "admin", "name": "" }, { "type": "d", "permissions": "711", "owner": "admin", "name": "new" }, { "type": "d", "permissions": "711", "owner": "admin", "name": "test" }]
-  } else {
-    return rightList.listing = [{ "type": "d", "permissions": "711", "owner": "admin", "name": "" }, { "type": "d", "permissions": "711", "owner": "admin", "name": "test" }, { "type": "d", "permissions": "711", "owner": "admin", "name": "web" }]
-  }
-}
-
-export function getDirectoryPath() {
-  return '/home/admin';
-}
-
-export function openDefaultList(active) {
-  if (active === "left") {
-    return leftList.listing = defaultList.listing;
-  } else {
-    return rightList.listing = defaultList.listing;
-  }
-}
-
-const defaultList = {
-  "listing": [
-    {
-      "type": "d",
-      "permissions": "711",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "4096",
-      "name": ""
-    },
-    {
-      "type": "f",
-      "permissions": "644",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "124",
-      "name": ".bashrc"
-    },
-    {
-      "type": "f",
-      "permissions": "644",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "200000",
-      "name": "screenshot.jpg"
-    },
-    {
-      "type": "d",
-      "permissions": "751",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "4096",
-      "name": "web"
-    },
-    {
-      "type": "d",
-      "permissions": "755",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "root",
-      "group": "root",
-      "size": "4096",
-      "name": "conf"
-    },
-    {
-      "type": "f",
-      "permissions": "644",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "33",
-      "name": ".bash_logout"
-    },
-    {
-      "type": "d",
-      "permissions": "771",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "4096",
-      "name": "tmp"
-    }
-  ]
-}
-
-export const leftList = {
-  "listing": [
-    {
-      "type": "d",
-      "permissions": "711",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "4096",
-      "name": ""
-    },
-    {
-      "type": "f",
-      "permissions": "644",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "124",
-      "name": ".bashrc"
-    },
-    {
-      "type": "f",
-      "permissions": "644",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "200000",
-      "name": "screenshot.jpg"
-    },
-    {
-      "type": "d",
-      "permissions": "751",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "4096",
-      "name": "web"
-    },
-    {
-      "type": "d",
-      "permissions": "755",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "root",
-      "group": "root",
-      "size": "4096",
-      "name": "conf"
-    },
-    {
-      "type": "f",
-      "permissions": "644",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "33",
-      "name": ".bash_logout"
-    },
-    {
-      "type": "d",
-      "permissions": "771",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "4096",
-      "name": "tmp"
-    }
-  ]
-}
-
-export const rightList = {
-  "listing": [
-    {
-      "type": "d",
-      "permissions": "711",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "4096",
-      "name": ""
-    },
-    {
-      "type": "f",
-      "permissions": "644",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "124",
-      "name": ".bashrc"
-    },
-    {
-      "type": "f",
-      "permissions": "644",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "17600000",
-      "name": "video.mp4"
-    },
-    {
-      "type": "d",
-      "permissions": "751",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "4096",
-      "name": "web"
-    },
-    {
-      "type": "d",
-      "permissions": "755",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "root",
-      "group": "root",
-      "size": "4096",
-      "name": "conf"
-    },
-    {
-      "type": "f",
-      "permissions": "644",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "33",
-      "name": ".bash_logout"
-    },
-    {
-      "type": "d",
-      "permissions": "771",
-      "date": "2015-07-04",
-      "time": "09:46",
-      "owner": "admin",
-      "group": "admin",
-      "size": "4096",
-      "name": "tmp"
-    }
-  ]
+  return Promise.all(promisesArray);
 }

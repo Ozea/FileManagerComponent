@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import Spinner from '../../Spinner/Spinner';
 import Path from '../../Path/Path';
 import Row from '../Row/Row';
-import * as FM from '../../../LocalAPI';
 import '../List.scss';
 
 class DirectoryList extends Component {
@@ -9,56 +9,86 @@ class DirectoryList extends Component {
     super(props);
     this.state = {
       selection: [],
-      cursor: 0
+      cursor: 0,
+      sorting: "Type",
+      order: "descending",
+      data: []
     }
   }
 
   componentDidMount = () => {
-    document.addEventListener("keydown", this.handleLiSelection);
-    document.addEventListener("keydown", this.moveBackOnBackspace);
-    this.setCursorOnWindowLoad();
+    document.addEventListener("keydown",this.handleLiSelection);
+    document.addEventListener("keydown", this.moveBackOnButton);
   }
 
   componentWillUnmount = () => {
     document.removeEventListener("keydown", this.handleLiSelection);
-    document.removeEventListener("keydown", this.moveBackOnBackspace);
+    document.removeEventListener("keydown", this.moveBackOnButton);
   }
 
-  moveBackOnBackspace = (e) => {
+  componentWillMount = () => {
+    if (localStorage.getItem(`${this.props.list}Sorting`) !== null && localStorage.getItem(`${this.props.list}Order`) !== null) {
+      this.setState({ sorting: localStorage.getItem(`${this.props.list}Sorting`), order: localStorage.getItem(`${this.props.list}Order`) });
+    }
+  }
+
+  cacheSorting = () => {
+    localStorage.setItem(`${this.props.list}Sorting`, this.state.sorting);
+    localStorage.setItem(`${this.props.list}Order`, this.state.order);
+  }
+
+  moveBackOnButton = (e) => {
     if (e.keyCode === 8 && !this.props.modalVisible && this.props.isActive) {
       this.moveBack();
     }
   }
 
-  setCursorOnWindowLoad = () => {
-    const { history, data, passData, isActive } = this.props;
-    let fName = history.location.search.split('/').pop();
-    let arrayIndex = data.listing.findIndex(item => item.name === fName);
-    let cursor = arrayIndex === -1 ? 0 : arrayIndex;
-    let permissions = data.listing[cursor].permissions;
-    if (isActive) {
-      this.setState({ cursor });
-      passData(cursor, fName, permissions);
+  moveBack = () => {
+    if (!this.isHomeDirectory()) {
+      return;
     }
+
+    this.props.moveBack();
+    this.setState({ cursor: 0 });
   }
 
-  moveCursorOnPreviousRow = (prevCursor) => {
-    let cursor = prevCursor - 1;
-    let { name, permissions} = this.props.data.listing[cursor];
-    this.props.passData(cursor, name, permissions);
-    this.setState({ cursor });
+  isHomeDirectory = () => {
+    return this.props.path !== window.GLOBAL.ROOT_DIR;
   }
 
-  removeSelection = () => {
+  resetData = () => {
     this.setState({ selection: [], cursor: 0 });
-    let { name, permissions } = this.props.data.listing[this.state.cursor];
-    this.props.passData(this.state.cursor, name, permissions);
+    this.passData();
+  }
+
+  passData = () => {
+    const { data, passData } = this.props;
+    const { name, permissions, type } = data.listing[this.state.cursor];
+    if (this.state.cursor === 0) {
+      passData(0, '', '');
+    } else {
+      passData(this.state.cursor, name, permissions, type);
+    }
   }
 
   toggleActiveList = () => {
-    if (!this.props.isActive) {
-      this.props.onClick(this.props.list);
+    const { history: { history }, path, list, onClick, changePathAfterToggle, isActive } = this.props;
+
+    if (!isActive) {
+      onClick(list);
+      changePathAfterToggle(path);
+      history.push({
+        pathname: '/list/directory/',
+        search: `?path=${path}`
+      });
+      this.cacheActiveWindowAndPaths();
     }
+  }
+
+  cacheActiveWindowAndPaths = () => {
+    localStorage.setItem("activeWindow", this.props.list);
+    localStorage.setItem(`${this.props.list}ListPath`, this.props.path);
+    localStorage.setItem(`${this.props.list}ListPath`, this.props.path);
   }
 
   isSelected = (i) => {
@@ -72,7 +102,7 @@ class DirectoryList extends Component {
     if (duplicate !== -1) {
       result.splice(duplicate, 1);
     } else {
-      if (i === 0) {
+      if (i === "") {
         return;
       }
 
@@ -83,17 +113,8 @@ class DirectoryList extends Component {
     this.props.passSelection(result);
   }
 
-  changeQuery = (name, type) => {
-    if (type === 'f') {
-      this.props.history.history.push({
-        pathname: '/',
-        search: `?path=${FM.getDirectoryPath()}/${name === '' ? '..' : name}`
-      });
-    }
-  }
-
   handleLiSelection = (e) => {
-    const { data, isActive, passData, modalVisible } = this.props;
+    const { data, isActive, modalVisible } = this.props;
     const { cursor } = this.state;
 
     if (!isActive || modalVisible) {
@@ -106,13 +127,13 @@ class DirectoryList extends Component {
       }
 
       if (e.shiftKey) {
-        this.addToSelection(cursor);
+        let name = data.listing[cursor].name;
+        this.addToSelection(name);
       }
 
       this.setState({ cursor: cursor + 1 });
-      const { name, type, permissions } = data.listing[this.state.cursor];
-      passData(this.state.cursor, name, permissions);
-      this.changeQuery(name, type);
+      this.passData();
+      this.props.changePath(this.props.path);
     }
 
     if (e.keyCode === 38) {
@@ -121,111 +142,157 @@ class DirectoryList extends Component {
       }
 
       if (e.shiftKey) {
-        this.addToSelection(cursor);
+        let name = data.listing[cursor].name;
+        this.addToSelection(name);
       }
 
       this.setState({ cursor: cursor - 1 });
-      const { name, type, permissions } = data.listing[this.state.cursor];
-      passData(this.state.cursor, name, permissions);
-      this.changeQuery(name, type);
-    }
-  }
-
-  preview = (type, name) => {
-    const { history } = this.props.history;
-    if (type === 'f') {
-      if (name.match('.jpg')) {
-        return history.push({ pathname: `/preview`, search: `?path=${FM.getDirectoryPath()}/${name}`, state: { type: 'photo', gallery: this.getPhotos() } });
-      } else if (name.match('.mp4')) {
-        return history.push({ pathname: `/preview`, search: `?path=${FM.getDirectoryPath()}/${name}`, state: { type: 'video' } });
-      } else {
-        return history.push({ pathname: `/preview`, search: `?path=${FM.getDirectoryPath()}/${name}`, state: { type: 'editor' } });
-      }
+      this.passData();
+      this.props.changePath(this.props.path);
     }
   }
 
   openDirectory = (name) => {
-    const { history: { history }, path, addToPath, list } = this.props;
+    const { history: { history }, path, addToPath, openDirectory } = this.props;
+
     history.push({
-      pathname: '/',
+      pathname: '/list/directory/',
       search: `?path=${path}/${name}`
     });
     addToPath(name);
-    FM.openDirectory(list);
+    openDirectory();
     this.setState({ cursor: 0 });
   }
 
-  moveBack = () => {
-    this.props.moveBack();
-    this.setState({ cursor: 0 });
+  openCertainDirectory = (path) => {
+    const { history: { history }, openCertainDirectory, changePath } = this.props;
+
+    if (!this.isHomeDirectory()) {
+      return;
+    }
+
+    history.push({
+      pathname: '/list/directory/',
+      search: `?path=${path}`
+    });
+    changePath(path);
+    openCertainDirectory();
   }
 
-  getPhotos = () => {
-    const { data: { listing } } = this.props;
-    return listing.filter(this.isPhoto).map(item => item.name);
+  changeSorting = (sorting, order) => {
+    this.setState({ sorting, order }, () => this.cacheSorting());
   }
 
-  isPhoto = (item) => {
-    return item.name.match('.jpg');
+  sortByType = (a, b) => {
+    if (this.state.order === "descending" && a.name !== "") {
+      return a.type.localeCompare(b.type);
+    } else if (this.state.order === "ascending" && b.name !== "") {
+      return b.type.localeCompare(a.type);
+    }
+  }
+
+  sortBySize = (a, b) => {
+    if (this.state.order === "descending" && a.name !== "") {
+      return a.size - b.size;
+    } else if (this.state.order === "ascending" && b.name !== "") {
+      return b.size - a.size;
+    }
+  }
+
+  sortByDate = (a, b) => {
+    if (this.state.order === "descending" && a.name !== "") {
+      return new Date(a.date) - new Date(b.date);
+    } else if (this.state.order === "ascending" && a.name !== "") {
+      return new Date(b.date) - new Date(a.date);
+    }
+  }
+
+  sortByName = (a, b) => {
+    if (this.state.order === "descending" && a.name !== "") {
+      return a.name.localeCompare(b.name);
+    } else if (this.state.order === "ascending" && b.name !== "") {
+      return b.name.localeCompare(a.name);
+    }
+  }
+
+  sortData = (a, b) => {
+    switch (this.state.sorting) {
+      case "Type": return this.sortByType(a, b);
+      case "Size": if (a.type !== "d" && b.type !== "d") { return this.sortBySize(a, b) }; break;
+      case "Date": return this.sortByDate(a, b);
+      case "Name": return this.sortByName(a, b);
+      default: return this.sortByType(a, b);
+    }
   }
 
   rows = () => {
-    const { data, isActive, passData, modalVisible } = this.props;
+    const { isActive, passData, modalVisible, path, download, history: { history } } = this.props;
     const { cursor } = this.state;
-    return (
-      data.listing.sort((a, b) => a.type.localeCompare(b.type) || a.name.localeCompare(b.name)).map((item, key) =>
-        (key !== 0) ?
-          (<Row key={key}
-            modalVisible={modalVisible}
-            selectMultiple={() => this.addToSelection(key)}
-            type={item.type}
-            name={item.name}
-            passData={(name, permissions) => {
-              this.setState({ cursor: key });
-              passData(key, name, permissions);
-            }}
-            activeRow={key === cursor}
-            cursor={key}
-            selected={this.isSelected(key)}
-            isActiveList={isActive}
-            owner={item.owner}
-            permissions={item.permissions}
-            size={item.size}
-            date={item.date}
-            time={item.time}
-            openDirectory={this.openDirectory}
-            preview={this.preview} />) :
-          (<Row key={key}
-            modalVisible={modalVisible}
-            type={item.type}
-            name=".."
-            cursor={key}
-            passData={(name) => {
-              this.setState({ cursor: key });
-              passData(key, name)
-            }}
-            activeRow={key === cursor}
-            openDirectory={this.moveBack}
-            isActiveList={isActive} />))
-    );
+    const data = { ...this.props.data };
+
+    if (this.props.data.listing.length !== 0) {
+      this.props.data.listing[0].size = "";
+      this.props.data.listing[0].date = "";
+    }
+
+    if (data.listing.length !== 0) {
+      let sortedData = data.listing.sort((a, b) => this.sortData(a, b));
+      return (
+        sortedData.map((item, key) =>
+          (item.name !== "" && sortedData.length !== 0) ?
+            (<Row key={key}
+              modalVisible={modalVisible}
+              selectMultiple={() => this.addToSelection(item.name)}
+              type={item.type}
+              name={item.name}
+              passData={(name, permissions, type) => {
+                this.setState({ cursor: key });
+                passData(key, name, permissions, type);
+              }}
+              activeRow={key === cursor}
+              cursor={key}
+              selected={this.isSelected(item.name)}
+              isActiveList={isActive}
+              owner={item.owner}
+              permissions={item.permissions}
+              size={item.size}
+              date={item.date}
+              time={item.time}
+              path={path}
+              history={history}
+              download={download}
+              openDirectory={this.openDirectory} />) :
+            (<Row key={key}
+              modalVisible={modalVisible}
+              type={item.type}
+              path={path}
+              name=".."
+              cursor={key}
+              passData={(name) => {
+                this.setState({ cursor: key });
+                passData(key, name)
+              }}
+              activeRow={key === cursor}
+              openDirectory={this.moveBack}
+              isActiveList={isActive} />))
+      );
+    }
   }
 
   render() {
-    const { isActive, path } = this.props;
+    const { isActive, path, loading } = this.props;
     return (
       <div className={isActive ? "list active" : "list"} onClick={this.toggleActiveList}>
-        <Path class={isActive ? "active-path" : "path"} path={path} />
-        <div className="head">
-          <span className="permissions">Permissions</span>
-          <span className="owner">Owner</span>
-          <span className="size">Size</span>
-          <span className="date">Date</span>
-          <span className="time">Time</span>
-          <span className="name">Name</span>
-        </div>
+        <Path class={isActive ? "active-path" : "path"}
+          openDirectory={this.openCertainDirectory}
+          changeSorting={this.changeSorting}
+          sortingName={this.state.sorting}
+          isActive={isActive}
+          order={this.state.order}
+          path={path} />
         <div className="list-container">
           <ul>
-            {this.rows()}
+            {loading && isActive ? <Spinner /> : this.rows()}
           </ul>
         </div>
       </div>

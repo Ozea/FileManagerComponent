@@ -5,7 +5,7 @@ $black: #000;
   text-align: center;
   position: fixed;
   z-index: 1;
-  padding-top: 100px;
+  padding-top: 200px;
   left: 0;
   top: 0;
   width: 100%;
@@ -15,40 +15,81 @@ $black: #000;
   background-color: rgba(0,0,0,0.4);
 
   .modal-content {
-    background-color: #fff;
+    box-shadow: 0 2px 11px 0 rgba(0, 0, 0, 0.5);
+    background: #333;
     margin: auto;
     border: 1px solid #888;
-    width: 30%;
-    height: 230px;
-    color: $black;
-    border: 3px solid $black;
+    width: 25%;
+    height: auto;
+    color: white;
     margin-top: 100px;
 
-    .modal-body input {
-      margin-top: 10px;
-      width: 60%;
+    .modal-body {
+      margin-bottom: 40px;
+
+      input {
+        background: #333;
+        border: 1px solid #111;
+        color: white;
+        margin-top: 10px;
+        width: 85%;
+      }
     }
 
     .modal-header {
-      .close {
+      border-bottom: none;
+      padding-bottom: 0;
+
+      h3 {
+        color: #EBE697;
+      }
+
+      .replace {
+        position: absolute;
+        top: 10px;
         right: 10px;
-        z-index: 1;
-        padding: 0;
-        color: #3a3a3a;
-        float: right;
-        font-size: 28px;
-        font-weight: bold;
-  
-        &:hover,&:focus{
-          color: #333;
-          outline: none;
-          text-decoration: none;
-          cursor: pointer;
-        }
       }
 
       .quot {
         color: rgb(182, 120, 28);
+      }
+    }
+
+    .modal-footer {
+      border-top: 1px solid #555;
+
+      button {
+        color: white;
+        border-color: none;
+        background: none;
+        text-transform: uppercase;
+        font-size: 12px;
+      }
+
+      button.btn-danger {
+        border-color: transparent;
+
+        &:focus {
+          outline: none;
+          border: none;
+        }
+      }
+
+      button.btn-danger:hover {
+        background: #00cccb;
+        border-color: #00cccb;
+      }
+
+      button + button {
+        padding: 6px 30px;
+        background: #CACE33;
+        border-color: #CACE33;
+
+        &:hover {
+          background: #00cccb;
+          border-color: #00cccb;
+          color: white;
+        }
       }
     }
     
@@ -61,31 +102,40 @@ $black: #000;
       right: 0;
       color: $black;
     }
-
-    .lower {
-      margin-top: 30px;
-    }
   }
 
   .nothing-selected {
-    height: 170px;
+    h3 {
+      padding: 15px;
+    }
 
     .modal-footer {
-      margin-top: 45px;
+      margin-top: 20px;
+
+      button {
+        background: #d9534f;
+        border-color: #d9534f;
+        color: white;
+      }
     }
   }
-  
-  .delete {
-    height: 180px;
 
-    .header h3 {
-      padding: 0 50px;
+  .delete .modal-header {
+    border-bottom: none;
+    padding-bottom: 30px;
+
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
     }
   }
   
   .permissions {
-    height: 560px;
-
+    height: auto;
+    width: 30%;
+    margin-top: 0;
+    
     .error, &:focus {
       border: 1px solid red;
     }
@@ -93,7 +143,7 @@ $black: #000;
     input[type="text"] {
       size: 40px;
       width: 60px;
-      margin: 0 0 10px 200px;
+      margin: auto auto 10px auto;
       display: inline-block;
     }
 
@@ -118,6 +168,7 @@ $black: #000;
           font-size: 18px;
 
           input {
+            margin-top: 6px;
             margin-right: 5px;
           }
         }

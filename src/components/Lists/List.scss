@@ -3,58 +3,27 @@
   height: 100vh;
   flex: 1 1 50%;
 
-  .head {
-    display: flex;
-    flex-direction: row-reverse;
-    box-shadow: 0 2px 6px -2px gray;
-    margin-bottom: 5px;
-    padding-bottom: 5px;
-
-    .permissions, .owner, .size, .date, .time{
-      margin-top: 5px;
-      font-weight: bolder;
-      font-size: 19px;
-      margin-left: 45px;
-    }
-
-    .date {
-      margin-left: 35px;
-    }
-
-    .size {
-      margin-left: 60px;
-    }
-
-    .owner {
-      margin-left: 65px;
-    }
-
-    .permissions {
-      margin-left: 35px;
-    }
-
-    .name {
-      margin-top: 5px;
-      font-weight: bolder;
-      font-size: 19px;
-      margin-right: 150px;
-  }
-}
-
   .list-container {
-    margin-top: 0;
-    height: calc(100% - 155px);
+    margin-top: 10px;
+    height: calc(100% - 100px);
     overflow: auto;
 
     ul {
       margin-top: 5px;
       padding: 0;
+      color: #3a3a3a;
     
       li {
-        font-size: 20px;
-        margin-bottom: 2px;
-        padding-left: 15px;
+        display: block;
+        height: 34px;
+        line-height: 30px;
+        font-size: 15px;
+        margin-top: 2px;
         list-style: none;
+
+        span {
+          font-size: 13px;
+        }
     
         &:hover{
           background: #DEDEDE;
@@ -62,8 +31,15 @@
       }
     
       li.active {
-        border-left: 5px solid rgb(121, 100, 26);
         background: #FFDC5A;
+
+        .marker {
+          float: left;
+          width: 4px;
+          height: 34px;
+          margin-right: 5px;
+          background: #79641a;
+        }
       }
     
       li.selected {
@@ -74,18 +50,6 @@
 }
 
 @media screen and (max-width: 1200px){
-
-  .list .head {
-    .size {
-      margin-left: 60px;
-      margin-right: 60px;
-    }
-
-    .name {
-      margin-right: 120px;
-    }
-  }
-
   .permissions, .owner {
     display: none;
   }

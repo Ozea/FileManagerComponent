@@ -1,63 +1,72 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import * as FM from '../../../LocalAPI';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faJs, faCss3, faPhp, faHtml5, faSass } from '@fortawesome/free-brands-svg-icons';
 import './Row.scss';
 
 class Row extends Component {
 
   componentDidMount = () => {
-    document.addEventListener("keydown", this.handleEnterButton);
+    document.addEventListener("keydown", this.openOnEnter);
   }
 
   componentWillUnmount = () => {
-    document.removeEventListener("keydown", this.handleEnterButton);
+    document.removeEventListener("keydown", this.openOnEnter);
   }
 
-  handleEnterButton = (e) => {
-    const { activeRow, name, type, isActiveList, modalVisible, preview, openDirectory, cursor } = this.props;
+  openOnEnter = (e) => {
+    const { activeRow, name, type, isActiveList, modalVisible, openDirectory, cursor, download, path } = this.props;
 
     if (modalVisible || !activeRow || !isActiveList) {
       return;
     }
 
     if (e.keyCode === 13) {
-      if (this.isFile(type) && cursor !== 0) {
-        preview(type, name);
+      if (this.isArchive(name)) {
+        download();
+      } else if (this.isFile(type) && cursor !== 0) {
+        this.preview(path, name);
+      } else if (type === "l") {
+        download();
       } else {
         openDirectory(name);
       }
     }
   }
 
-  handleDoubleClick = () => {
-    const { type, name, preview, openDirectory, cursor } = this.props;
+  openItem = () => {
+    const { type, name, openDirectory, download, path, isActiveList } = this.props;
 
-    if (this.isFile(type) && cursor !== 0) {
-      return preview(type, name);
-    } else {
+    if (!isActiveList) {
+      return;
+    }
+
+    if (this.isArchive(name)) {
+      return download();
+    } else if (this.isFile(type)) {
+      return this.preview(path, name);
+    } else if (type === 'd') {
       return openDirectory(name);
+    } else if (type === "l" || name.match('.mp4')) {
+      return download();
     }
   }
 
-  handleClick = (e) => {
-    const { name, type, selectMultiple, passData, permissions, cursor } = this.props;
+  preview = (path, name) => {
+    this.props.history.push({
+      pathname: '/list/directory/preview/',
+      search: `?path=${path}/${name}`
+    });
+  }
 
-    if (e.metaKey && cursor !== 0) {
+  selectItem = (e) => {
+    const { name, selectMultiple, passData, permissions, cursor, type } = this.props;
+
+    if (e.ctrlKey && cursor !== 0) {
       selectMultiple();
     }
 
-    passData(name, permissions);
-
-    if (this.isFile(type)) {
-      this.changeQuery(name);
-    }
-  }
-
-  changeQuery(name) {
-    this.props.history.push({
-      pathname: '/',
-      search: `?path=${FM.getDirectoryPath()}/${name}`
-    });
+    passData(name, permissions, type);
   }
 
   className = () => {
@@ -75,12 +84,12 @@ class Row extends Component {
   }
 
   sizeFormatter = (bytes, decimals) => {
-    if (bytes === undefined) {
+    if (bytes === undefined || this.props.type === "d") {
       return null;
     };
 
-    if (bytes === 0) {
-      return '0 Bytes';
+    if (bytes === "0") {
+      return <span className="value">0 <span className="unit">b</span></span>;
     }
 
     let k = 1024,
@@ -97,44 +106,50 @@ class Row extends Component {
 
     let date = new Date(fDate),
       months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      appMonths = window.GLOBAL.App.Constants.FM_TRANSLATED_DATES,
       getDay = date.getDate(),
-      getMonth = months[date.getMonth()];
+      getMonth = appMonths[months[date.getMonth()]];
     return (<span className="date">{getMonth} {getDay}</span>);
   }
 
   glyph = () => {
     const { type, name } = this.props;
 
-    if (this.isArchive(name)) {
-      return (<span className="glyphicon glyphicon-book"></span>);
+    if (type === 'd') {
+      return <FontAwesomeIcon icon="folder-open" className="folder-open" />;
     }
 
-    if (this.isDirectory(type)) {
-      return (<span className="glyphicon glyphicon-folder-open"></span>);
-    } else if (this.isFile(type)) {
-      if (this.isPhoto(name)) {
-        return (<span className="glyphicon glyphicon-picture"></span>);
-      } else if (this.isVideo(name)) {
-        return (<span className="glyphicon glyphicon-film"></span>);
+    if (this.isFile(type)) {
+      if (this.isArchive(name)) {
+        return <FontAwesomeIcon icon="book" className="archive" />;
+      } else if (name.match(/png|jpg|jpeg|gif/g)) {
+        return <FontAwesomeIcon icon="image" className="image" />;
+      } else if (name.match('.mp4') !== null) {
+        return <FontAwesomeIcon icon="download" className="download" />;
+      } else if (name.match('.txt')) {
+        return <FontAwesomeIcon icon="file-alt" className="file-alt" />;
+      } else if (name.match('.js')) {
+        return <FontAwesomeIcon icon={faJs} className="js" />;
+      } else if (name.match('.html')) {
+        return <FontAwesomeIcon icon={faHtml5} className="html5" />;
+      } else if (name.match('.php')) {
+        return <FontAwesomeIcon icon={faPhp} className="php" />;
+      } else if (name.match(/.scss/i)) {
+        return <FontAwesomeIcon icon={faSass} className="sass" />;
+      } else if (name.match(/.css/i)) {
+        return <FontAwesomeIcon icon={faCss3} className="css3" />;
+      } else {
+        return <FontAwesomeIcon icon="file" className="file" />;
       }
-      return (<span className="glyphicon glyphicon-file"></span>);
     }
-  }
 
-  isPhoto(name) {
-    return name.match('.jpg') !== null;
-  }
-
-  isVideo(name) {
-    return name.match('.mp4') !== null;
+    if (type === "l") {
+      return <FontAwesomeIcon icon="download" className="download" />;
+    }
   }
 
   isArchive(name) {
-    return name.match('.tar.gz');
-  }
-
-  isDirectory(type) {
-    return type === 'd';
+    return name.match(/zip|tgz|tar.gz|gzip|tbz|tar.bz|gz|zip|tar|rar/g);
   }
 
   isFile(type) {
@@ -144,9 +159,10 @@ class Row extends Component {
   render() {
     const { name, owner, permissions, size, date, time } = this.props;
     return (
-      <li className={this.className()} onClick={this.handleClick} >
+      <li className={this.className()} onClick={this.selectItem} >
+        <span className="marker"></span>
         {this.glyph()}
-        <span className="fName" onDoubleClick={this.handleDoubleClick}>{name}</span>
+        <span className="fName"><span className="name" onClick={this.openItem}>{name}</span></span>
         <span className="fPermissions">{permissions}</span>
         <span className="fOwner">{owner}</span>
         <span className="fSize">{this.sizeFormatter(size)}</span>
