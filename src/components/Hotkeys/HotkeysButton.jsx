@@ -1,10 +1,11 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './Hotkeys.scss'
 
 const HotkeysButton = (props) => {
   return (
-    <div className="hotkeys-button">
-      <span className="glyphicon glyphicon-option-horizontal" onClick={props.open}></span>
+    <div className="hotkeys-button" onClick={props.open}>
+      <FontAwesomeIcon icon="ellipsis-h" />
     </div>
   );
 }

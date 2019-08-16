@@ -1,18 +1,20 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faJs, faCss3, faPhp, faHtml5, faSass } from '@fortawesome/free-brands-svg-icons';
 import './Row.scss';
 
 class Row extends Component {
 
   componentDidMount = () => {
-    document.addEventListener("keydown", this.handleEnterButton);
+    document.addEventListener("keydown", this.openOnEnter);
   }
 
   componentWillUnmount = () => {
-    document.removeEventListener("keydown", this.handleEnterButton);
+    document.removeEventListener("keydown", this.openOnEnter);
   }
 
-  handleEnterButton = (e) => {
+  openOnEnter = (e) => {
     const { activeRow, name, type, isActiveList, modalVisible, openDirectory, cursor, download, path } = this.props;
 
     if (modalVisible || !activeRow || !isActiveList) {
@@ -32,14 +34,7 @@ class Row extends Component {
     }
   }
 
-  preview = (path, name) => {
-    this.props.history.push({
-      pathname: '/list/directory/preview/',
-      search: `?path=${path}/${name}`
-    });
-  }
-
-  handleItemClick = () => {
+  openItem = () => {
     const { type, name, openDirectory, download, path, isActiveList } = this.props;
 
     if (!isActiveList) {
@@ -50,21 +45,28 @@ class Row extends Component {
       return download();
     } else if (this.isFile(type)) {
       return this.preview(path, name);
-    } else if (this.isDirectory(type)) {
+    } else if (type === 'd') {
       return openDirectory(name);
     } else if (type === "l" || name.match('.mp4')) {
       return download();
     }
   }
 
-  handleClick = (e) => {
-    const { name, selectMultiple, passData, permissions, cursor } = this.props;
+  preview = (path, name) => {
+    this.props.history.push({
+      pathname: '/list/directory/preview/',
+      search: `?path=${path}/${name}`
+    });
+  }
+
+  selectItem = (e) => {
+    const { name, selectMultiple, passData, permissions, cursor, type } = this.props;
 
     if (e.ctrlKey && cursor !== 0) {
       selectMultiple();
     }
 
-    passData(name, permissions);
+    passData(name, permissions, type);
   }
 
   className = () => {
@@ -104,63 +106,50 @@ class Row extends Component {
 
     let date = new Date(fDate),
       months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+      appMonths = window.GLOBAL.App.Constants.FM_TRANSLATED_DATES,
       getDay = date.getDate(),
-      getMonth = months[date.getMonth()];
+      getMonth = appMonths[months[date.getMonth()]];
     return (<span className="date">{getMonth} {getDay}</span>);
   }
 
   glyph = () => {
     const { type, name } = this.props;
 
-    if (this.isArchive(name)) {
-      return (<span className="glyphicon glyphicon-book"></span>);
+    if (type === 'd') {
+      return <FontAwesomeIcon icon="folder-open" className="folder-open" />;
     }
 
-    if (this.isDirectory(type)) {
-      return (<span className="glyphicon glyphicon-folder-open"></span>);
-    } 
-    
     if (this.isFile(type)) {
-      if (this.isPhoto(name)) {
-        return (<span className="glyphicon glyphicon-picture"></span>);
-      } else if (this.isVideo(name)) {
-        return (<span className="glyphicon glyphicon-download-alt"></span>);
+      if (this.isArchive(name)) {
+        return <FontAwesomeIcon icon="book" className="archive" />;
+      } else if (name.match(/png|jpg|jpeg|gif/g)) {
+        return <FontAwesomeIcon icon="image" className="image" />;
+      } else if (name.match('.mp4') !== null) {
+        return <FontAwesomeIcon icon="download" className="download" />;
       } else if (name.match('.txt')) {
-        return (<i className="fas fa-file-alt"></i>);
+        return <FontAwesomeIcon icon="file-alt" className="file-alt" />;
       } else if (name.match('.js')) {
-        return (<i className="fab fa-js-square"></i>);
+        return <FontAwesomeIcon icon={faJs} className="js" />;
       } else if (name.match('.html')) {
-        return (<i className="fab fa-html5"></i>);
+        return <FontAwesomeIcon icon={faHtml5} className="html5" />;
       } else if (name.match('.php')) {
-        return (<i className="fab fa-php"></i>);
-      } if (name.match(/.scss/i)) {
-        return (<i className="fab fa-sass"></i>);
+        return <FontAwesomeIcon icon={faPhp} className="php" />;
+      } else if (name.match(/.scss/i)) {
+        return <FontAwesomeIcon icon={faSass} className="sass" />;
       } else if (name.match(/.css/i)) {
-        return (<i className="fab fa-css3"></i>);
+        return <FontAwesomeIcon icon={faCss3} className="css3" />;
       } else {
-      return (<span className="glyphicon glyphicon-file"></span>);
+        return <FontAwesomeIcon icon="file" className="file" />;
       }
-    } 
-    
-    if (type === "l") {
-      return (<span className="glyphicon glyphicon-download-alt"></span>);
     }
-  }
 
-  isPhoto(name) {
-    return name.match(/png|jpg|jpeg|gif/g);
-  }
-
-  isVideo(name) {
-    return name.match('.mp4') !== null;
+    if (type === "l") {
+      return <FontAwesomeIcon icon="download" className="download" />;
+    }
   }
 
   isArchive(name) {
     return name.match(/zip|tgz|tar.gz|gzip|tbz|tar.bz|gz|zip|tar|rar/g);
-  }
-
-  isDirectory(type) {
-    return type === 'd';
   }
 
   isFile(type) {
@@ -170,9 +159,10 @@ class Row extends Component {
   render() {
     const { name, owner, permissions, size, date, time } = this.props;
     return (
-      <li className={this.className()} onClick={this.handleClick} >
+      <li className={this.className()} onClick={this.selectItem} >
+        <span className="marker"></span>
         {this.glyph()}
-        <span className="fName"><span className="name" onClick={this.handleItemClick}>{name}</span></span>
+        <span className="fName"><span className="name" onClick={this.openItem}>{name}</span></span>
         <span className="fPermissions">{permissions}</span>
         <span className="fOwner">{owner}</span>
         <span className="fSize">{this.sizeFormatter(size)}</span>

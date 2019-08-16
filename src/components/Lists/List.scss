@@ -11,15 +11,19 @@
     ul {
       margin-top: 5px;
       padding: 0;
+      color: #3a3a3a;
     
       li {
         display: block;
         height: 34px;
         line-height: 30px;
-        font-size: 16px;
+        font-size: 15px;
         margin-top: 2px;
-        padding-left: 15px;
         list-style: none;
+
+        span {
+          font-size: 13px;
+        }
     
         &:hover{
           background: #DEDEDE;
@@ -27,8 +31,15 @@
       }
     
       li.active {
-        border-left: 5px solid rgb(121, 100, 26);
         background: #FFDC5A;
+
+        .marker {
+          float: left;
+          width: 4px;
+          height: 34px;
+          margin-right: 5px;
+          background: #79641a;
+        }
       }
     
       li.selected {

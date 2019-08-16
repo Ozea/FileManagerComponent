@@ -100,17 +100,6 @@ class Permissions extends Component {
     this.props.changePermissions(this.inputRef.value);
   }
 
-  permissionBlock(type) {
-    const { permissions } = this.state;
-    return (
-      <div>
-        <label><input type="checkbox" name={type + '_read'} value="4" checked={!!permissions[type].read} id="read" /> Read by {type}</label>
-        <label><input type="checkbox" name={type + '_write'} value="2" checked={!!permissions[type].write} /> Write by {type}</label>
-        <label><input type="checkbox" name={type + '_execute'} value="1" checked={!!permissions[type].execute} /> Execute/search by {type}</label>
-      </div>
-    );
-  }
-
   render() {
     const { inputInvalid } = this.state;
     const { close, save, fName } = this.props;
@@ -122,20 +111,29 @@ class Permissions extends Component {
     return (
       <div className="modal-content permissions">
         <div className="modal-header">
-          <h3 className="modal-title perms">Change rights: <span className="quot">&quot;{fName}&quot;</span></h3>
-          <button type="button" className="close" onClick={close} >
-            <span aria-hidden="true">&times;</span>
-          </button>
+          <h3 className="modal-title perms">{window.GLOBAL.App.Constants.FM_CHMOD} <span className="quot">&quot;{fName}&quot;</span></h3>
         </div>
         <form name="form" onChange={this.onChangeForm}>
-          {this.permissionBlock('owner')}
-          {this.permissionBlock('group')}
-          {this.permissionBlock('others')}
+          <div>
+            <label><input type="checkbox" name={'owner_read'} value="4" checked={!!this.state.permissions["owner"].read} id="read" />{window.GLOBAL.App.Constants.FM_READ_BY_OWNER}</label>
+            <label><input type="checkbox" name={'owner_write'} value="2" checked={!!this.state.permissions["owner"].write} />{window.GLOBAL.App.Constants.FM_WRITE_BY_OWNER}</label>
+            <label><input type="checkbox" name={'owner_execute'} value="1" checked={!!this.state.permissions["owner"].execute} />{window.GLOBAL.App.Constants.FM_EXECUTE_BY_OWNER}</label>
+          </div>
+          <div>
+            <label><input type="checkbox" name={'group_read'} value="4" checked={!!this.state.permissions["group"].read} id="read" />{window.GLOBAL.App.Constants.FM_READ_BY_GROUP}</label>
+            <label><input type="checkbox" name={'group_write'} value="2" checked={!!this.state.permissions["group"].write} />{window.GLOBAL.App.Constants.FM_WRITE_BY_GROUP}</label>
+            <label><input type="checkbox" name={'group_execute'} value="1" checked={!!this.state.permissions["group"].execute} />{window.GLOBAL.App.Constants.FM_EXECUTE_BY_GROUP}</label>
+          </div>
+          <div>
+            <label><input type="checkbox" name={'others_read'} value="4" checked={!!this.state.permissions["others"].read} id="read" />{window.GLOBAL.App.Constants.FM_READ_BY_OTHERS}</label>
+            <label><input type="checkbox" name={'others_write'} value="2" checked={!!this.state.permissions["others"].write} />{window.GLOBAL.App.Constants.FM_WRITE_BY_OTHERS}</label>
+            <label><input type="checkbox" name={'others_execute'} value="1" checked={!!this.state.permissions["others"].execute} />{window.GLOBAL.App.Constants.FM_EXECUTE_BY_OTHERS}</label>
+          </div>
         </form>
         <input type="text" className={inputClasses} defaultValue={this.encode()} ref={(ref) => this.inputRef = ref} onChange={this.handleInputChange} maxLength="3" />
         <div className="modal-footer">
-          <button type="button" className="btn btn-danger mr-auto" onClick={close}>Cancel</button>
-          <button type="button" className="btn btn-primary" onClick={save} disabled={inputInvalid}>OK</button>
+          <button type="button" className="btn btn-danger mr-auto" onClick={close}>{window.GLOBAL.App.Constants.FM_CANCEL}</button>
+          <button type="button" className="btn btn-primary" onClick={save} disabled={inputInvalid}>{window.GLOBAL.App.Constants.FM_OK}</button>
         </div>
       </div>
     );

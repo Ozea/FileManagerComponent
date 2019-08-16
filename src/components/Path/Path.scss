@@ -3,12 +3,12 @@ $white: #fff;
 .path {
   display: flex;
   justify-content: space-between;
-  font-size: 18px;
-  padding: 1px 0 0 10px;
+  font-size: 15px;
+  padding: 1px 0 0 5px;
   height: 40px;
   background: #7b7b7b;
   color: $white;
-  box-shadow: 0 2px 10px -2px gray;
+  box-shadow: 0 2px 10px -4px gray;
 
   .btn-group {
     width: 75px;
@@ -22,15 +22,15 @@ $white: #fff;
     }
 
     button {
+      padding-left: 0;
       padding-right: 5px;
       color: white;
       background: #7b7b7b;
       transition: none;
-
+      
       span {
         color: #fff;
         padding: 0 0 0 5px;
-        vertical-align: text-top;
       }
 
       &:active, &:focus {
@@ -59,16 +59,21 @@ $white: #fff;
     }
   }
 
-  span {
-    padding-top: 7px;
+  .clickable {
+    padding-top: 8px;
+    cursor: pointer;
+  
+    &:hover {
+      color: goldenrod;
+    }
   }
 }
 
 .active-path {
   display: flex;
   justify-content: space-between;
-  font-size: 18px;
-  padding: 1px 0 0 10px;
+  font-size: 15px;
+  padding: 1px 0 0 5px;
   height: 40px;
   background: #333;
   color: $white;
@@ -86,6 +91,7 @@ $white: #fff;
     }
 
     button {
+      padding-left: 0;
       padding-right: 5px;
       color: white;
       background: #333;
@@ -94,7 +100,6 @@ $white: #fff;
       span {
         color: #fff;
         padding: 0 0 0 5px;
-        vertical-align: text-top;
       }
 
       &:active, &:focus {
@@ -123,15 +128,16 @@ $white: #fff;
     }
   }
 
-  span {
-    padding-top: 7px;
+  .clickable {
+    padding-top: 8px;
+    cursor: pointer;
+  
+    &:hover {
+      color: goldenrod;
+    }
   }
 }
 
-.clickable {
-  cursor: pointer;
-
-  &:hover {
-    color: goldenrod;
-  }
+.clickable-path {
+  display: flex;
 }

@@ -62,7 +62,7 @@ class Modal extends Component {
   }
 
   content = () => {
-    const { type, reference, fName, permissions, items, path, files } = this.props;
+    const { type, reference, fName, permissions, items, path, files, notAvailable } = this.props;
     switch (type) {
       case 'Copy': return <Copy close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} fName={fName} items={items} path={path} />;
       case 'Move': return <Move close={this.closeModal} save={this.saveAndClose} reference={reference} onChange={this.onChange} name={type} fName={fName} items={items} path={path} />;
@@ -74,7 +74,7 @@ class Modal extends Component {
       case 'Delete': return <Delete close={this.closeModal} save={this.saveAndClose} fName={fName} items={items} />;
       case 'Add file': return <AddFile close={this.closeModal} save={this.saveAndClose} reference={reference} />;
       case 'Replace': return <Replace close={this.closeModal} replace={(files) => this.replace(files)} files={files} />
-      case 'Nothing selected': return <NothingSelected close={this.closeModal} />;
+      case 'Nothing selected': return <NothingSelected close={this.closeModal} notAvailable={notAvailable} />;
       default:
         break;
     }

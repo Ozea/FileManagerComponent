@@ -4,9 +4,6 @@ const Replace = (props) => {
   return (
     <div className="modal-content replace">
       <div className="modal-header">
-        <button type="button" className="replace close" onClick={props.close} >
-          <span aria-hidden="true">&times;</span>
-        </button>
         {props.files.length > 1 ?
           <div><h3>These files already exist</h3>
             {props.files.map(item =>

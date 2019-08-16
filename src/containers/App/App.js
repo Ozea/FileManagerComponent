@@ -1,10 +1,17 @@
 import React, { Component } from 'react';
 import FileManager from '../FileManager/FileManager';
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import './App.scss';
 import Preview from '../../components/Preview/Preview';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faBook, faFile, faDownload, faFileAlt, faImage, faFolderOpen, faEllipsisH, faFolder, faItalic, faUser, faCopy, faPaste, faTrash, faBoxOpen, faArrowDown, faArrowUp } from '@fortawesome/free-solid-svg-icons';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap/dist/js/bootstrap.min';
+import './App.scss';
+
+library.add(faBook, faDownload, faFile, faFileAlt, faFolderOpen, faImage, faEllipsisH, faFolder, faItalic, faUser, faCopy, faPaste, faTrash, faBoxOpen, faArrowDown, faArrowUp);
 
 class App extends Component {
+
   onClose = (history) => {
     let lastOpenedDirectory = history.location.search.substring(6, history.location.search.lastIndexOf('/'));
     history.push({

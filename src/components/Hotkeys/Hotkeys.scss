@@ -11,11 +11,28 @@
     background: #474646b0;
     text-align: center;
     color: #ffcc00;
+    padding: 10px;
+
+    .close {
+      position: absolute;
+      color: white;
+      right: 10px;
+      top: 10px;
+      opacity: 1;
+
+      &:hover,&:focus{
+        color: #333;
+        outline: none;
+        text-decoration: none;
+        cursor: pointer;
+      }
+    }
   }
 
   .panel-body {
     display: flex;
     justify-content: space-between;
+    background: rgba(56,56,56,0.4);
 
     ul {
       width: 50%;
@@ -23,24 +40,11 @@
 
       li {
         list-style-type: none;
-        margin-bottom: inherit;
+        margin-bottom: 10px;
 
         .shortcut {
           color: #48F4EF;
         }
-      }
-    }
-
-    .close {
-      color: white;
-      right: 10px;
-      top: 10px;
-
-      &:hover,&:focus{
-        color: #333;
-        outline: none;
-        text-decoration: none;
-        cursor: pointer;
       }
     }
   }
@@ -58,9 +62,8 @@
   border-radius: 30px;
   cursor: pointer;
 
-  span {
-    line-height: 40px;
-    right: 1px;
+  svg {
+    margin-top: 7px;
   }
 
   &:hover {

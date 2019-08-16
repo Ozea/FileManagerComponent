@@ -17,13 +17,13 @@ class DirectoryList extends Component {
   }
 
   componentDidMount = () => {
-    document.addEventListener("keydown", this.handleLiSelection);
-    document.addEventListener("keydown", this.moveBackOnBackspace);
+    document.addEventListener("keydown",this.handleLiSelection);
+    document.addEventListener("keydown", this.moveBackOnButton);
   }
 
   componentWillUnmount = () => {
     document.removeEventListener("keydown", this.handleLiSelection);
-    document.removeEventListener("keydown", this.moveBackOnBackspace);
+    document.removeEventListener("keydown", this.moveBackOnButton);
   }
 
   componentWillMount = () => {
@@ -37,23 +37,38 @@ class DirectoryList extends Component {
     localStorage.setItem(`${this.props.list}Order`, this.state.order);
   }
 
-  moveBackOnBackspace = (e) => {
+  moveBackOnButton = (e) => {
     if (e.keyCode === 8 && !this.props.modalVisible && this.props.isActive) {
       this.moveBack();
     }
   }
 
-  moveCursorOnPreviousRow = (prevCursor) => {
-    let cursor = prevCursor - 1;
-    let { name, permissions } = this.props.data.listing[cursor];
-    this.props.passData(cursor, name, permissions);
-    this.setState({ cursor });
+  moveBack = () => {
+    if (!this.isHomeDirectory()) {
+      return;
+    }
+
+    this.props.moveBack();
+    this.setState({ cursor: 0 });
+  }
+
+  isHomeDirectory = () => {
+    return this.props.path !== window.GLOBAL.ROOT_DIR;
   }
 
   resetData = () => {
     this.setState({ selection: [], cursor: 0 });
-    let { name, permissions } = this.props.data.listing[this.state.cursor];
-    this.props.passData(this.state.cursor, name, permissions);
+    this.passData();
+  }
+
+  passData = () => {
+    const { data, passData } = this.props;
+    const { name, permissions, type } = data.listing[this.state.cursor];
+    if (this.state.cursor === 0) {
+      passData(0, '', '');
+    } else {
+      passData(this.state.cursor, name, permissions, type);
+    }
   }
 
   toggleActiveList = () => {
@@ -98,19 +113,8 @@ class DirectoryList extends Component {
     this.props.passSelection(result);
   }
 
-  passData = () => {
-    const { data, passData } = this.props;
-    let name = data.listing[this.state.cursor].name;
-    let permissions = data.listing[this.state.cursor].permissions;
-    if (this.state.cursor === 0) {
-      passData(0, '', '');
-    } else {
-      passData(this.state.cursor, name, permissions);
-    }
-  }
-
   handleLiSelection = (e) => {
-    const { data, isActive, passData, modalVisible } = this.props;
+    const { data, isActive, modalVisible } = this.props;
     const { cursor } = this.state;
 
     if (!isActive || modalVisible) {
@@ -128,8 +132,7 @@ class DirectoryList extends Component {
       }
 
       this.setState({ cursor: cursor + 1 });
-      const { name, permissions } = data.listing[this.state.cursor];
-      passData(this.state.cursor, name, permissions);
+      this.passData();
       this.props.changePath(this.props.path);
     }
 
@@ -144,14 +147,14 @@ class DirectoryList extends Component {
       }
 
       this.setState({ cursor: cursor - 1 });
-      const { name, permissions } = data.listing[this.state.cursor];
-      passData(this.state.cursor, name, permissions);
+      this.passData();
       this.props.changePath(this.props.path);
     }
   }
 
   openDirectory = (name) => {
     const { history: { history }, path, addToPath, openDirectory } = this.props;
+
     history.push({
       pathname: '/list/directory/',
       search: `?path=${path}/${name}`
@@ -164,21 +167,16 @@ class DirectoryList extends Component {
   openCertainDirectory = (path) => {
     const { history: { history }, openCertainDirectory, changePath } = this.props;
 
+    if (!this.isHomeDirectory()) {
+      return;
+    }
+
     history.push({
       pathname: '/list/directory/',
       search: `?path=${path}`
     });
     changePath(path);
     openCertainDirectory();
-  }
-
-  moveBack = () => {
-    if (this.props.path === '/home/admin') {
-      return;
-    }
-
-    this.props.moveBack();
-    this.setState({ cursor: 0 });
   }
 
   changeSorting = (sorting, order) => {
@@ -247,9 +245,9 @@ class DirectoryList extends Component {
               selectMultiple={() => this.addToSelection(item.name)}
               type={item.type}
               name={item.name}
-              passData={(name, permissions) => {
+              passData={(name, permissions, type) => {
                 this.setState({ cursor: key });
-                passData(key, name, permissions);
+                passData(key, name, permissions, type);
               }}
               activeRow={key === cursor}
               cursor={key}

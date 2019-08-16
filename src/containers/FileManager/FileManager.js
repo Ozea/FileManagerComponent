@@ -19,14 +19,14 @@ class FileManager extends Component {
     super(props);
     this.state = {
       leftList: {
-        path: '/home/admin',
+        path: window.GLOBAL.ROOT_DIR,
         files: { listing: [] },
       },
       rightList: {
-        path: '/home/admin',
+        path: window.GLOBAL.ROOT_DIR,
         files: { listing: [] },
       },
-      path: '/home/admin',
+      path: window.GLOBAL.ROOT_DIR,
       active: "left",
       modal: null,
       modalVisible: false,
@@ -37,6 +37,7 @@ class FileManager extends Component {
       inputValue: "",
       uploadPercent: "0",
       hotkeysPanel: "inactive",
+      user: window.GLOBAL.ROOT_DIR,
       loading: false
     }
     this.leftDirectoryListElement = React.createRef();
@@ -62,21 +63,28 @@ class FileManager extends Component {
   }
 
   componentWillMount = () => {
-    if (localStorage.getItem("activeWindow") === null || localStorage.getItem("leftListPath") === null || localStorage.getItem("rightListPath") === null) {
-      let path = this.props.history.location.search.substring(6);
+
+    if (localStorage.getItem("lastUser") === null || this.state.user !== localStorage.getItem("lastUser")) {
+      localStorage.setItem("lastUser", this.state.user);
       localStorage.setItem("activeWindow", "left");
-      localStorage.setItem("leftListPath", path);
-      localStorage.setItem("rightListPath", "/home/admin");
+      localStorage.setItem("leftListPath", window.GLOBAL.ROOT_DIR);
+      localStorage.setItem("rightListPath", window.GLOBAL.ROOT_DIR);
     }
 
-    if (this.state.active === "left") {
+    if (localStorage.getItem("activeWindow") === null || localStorage.getItem("leftListPath") === null || localStorage.getItem("rightListPath") === null) {
+      let path = this.props.history.location.search.substring(6).split('/');
+      localStorage.setItem("activeWindow", "left");
+      localStorage.setItem("leftListPath", path);
+      localStorage.setItem("rightListPath", window.GLOBAL.ROOT_DIR);
+    }
+
+    if (localStorage.getItem("activeWindow") === "left") {
       let path = localStorage.getItem("leftListPath");
       this.setState({ path });
-    } else {
+    } else if (localStorage.getItem("activeWindow") === "right") {
       let path = localStorage.getItem("rightListPath");
       this.setState({ path });
     }
-
 
     this.changeDirectoryOnLoading();
   }
@@ -446,8 +454,8 @@ class FileManager extends Component {
     }
   }
 
-  passData = (cursor, name, permissions) => {
-    this.setState({ cursor, name, permissions });
+  passData = (cursor, name, permissions, type) => {
+    this.setState({ cursor, name, permissions, type });
   }
 
   closeModal = () => {
@@ -472,7 +480,7 @@ class FileManager extends Component {
     }
   }
 
-  modal = (type, items) => {
+  modal = (type, items, available) => {
     const { modalVisible, name, permissions, path } = this.state;
     switch (type) {
       case 'Copy': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} path={path} onClick={this.copyItem} items={items} onClose={this.closeModal} onChangeValue={this.changeInputValue} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
@@ -484,7 +492,7 @@ class FileManager extends Component {
       case 'Add directory': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newDir} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Add file': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClick={this.newFile} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Delete': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} fName={name} onClick={this.onDelete} onClose={this.closeModal} items={items} />, modalVisible: true });
-      case 'Nothing selected': return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} onClose={this.closeModal} onClick={this.closeModal} />, modalVisible: true });
+      case 'Nothing selected': return this.setState({ modal: <Modal modalVisible={modalVisible} notAvailable={available} type={type} onClose={this.closeModal} onClick={this.closeModal} />, modalVisible: true });
       case "Replace": return this.setState({ modal: <Modal modalVisible={modalVisible} type={type} files={items} onClick={(files) => this.replaceFiles(files)} onClose={this.closeModal} />, modalVisible: true });
       default:
         break;
@@ -492,7 +500,7 @@ class FileManager extends Component {
   }
 
   render() {
-    const { leftList, rightList, active, modal, modalVisible, cursor, selection, name, loading, uploadPercent, hotkeysPanel } = this.state;
+    const { leftList, rightList, active, modal, modalVisible, cursor, selection, name, loading, uploadPercent, hotkeysPanel, type } = this.state;
     return (
       <div className="window">
         {uploadPercent !== "0" ? <ProgressBar progress={uploadPercent} /> : null}
@@ -503,6 +511,7 @@ class FileManager extends Component {
           download={this.download}
           openModal={this.modal}
           selection={selection}
+          itemType={type}
           upload={this.checkExistingFileName}
           cursor={cursor}
           name={name} />
