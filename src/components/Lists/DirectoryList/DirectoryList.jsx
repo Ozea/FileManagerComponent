@@ -1,23 +1,30 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
 import Spinner from '../../Spinner/Spinner';
 import Path from '../../Path/Path';
 import Row from '../Row/Row';
 import '../List.scss';
 
 class DirectoryList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selection: [],
-      cursor: 0,
-      sorting: "Type",
-      order: "descending",
-      data: []
+  state = {
+    itemsSelected: [],
+    cursor: 0,
+    sortingType: "Type",
+    orderType: "descending",
+    data: [],
+    itemName: "",
+    itemPermissions: "",
+    itemType: ""
+  }
+
+  componentWillMount = () => {
+    if (localStorage.getItem(`${this.props.list}Sorting`) && localStorage.getItem(`${this.props.list}Order`)) {
+      this.setState({ sortingType: localStorage.getItem(`${this.props.list}Sorting`), orderType: localStorage.getItem(`${this.props.list}Order`) });
     }
   }
 
   componentDidMount = () => {
-    document.addEventListener("keydown",this.handleLiSelection);
+    document.addEventListener("keydown", this.handleLiSelection);
     document.addEventListener("keydown", this.moveBackOnButton);
   }
 
@@ -26,15 +33,9 @@ class DirectoryList extends Component {
     document.removeEventListener("keydown", this.moveBackOnButton);
   }
 
-  componentWillMount = () => {
-    if (localStorage.getItem(`${this.props.list}Sorting`) !== null && localStorage.getItem(`${this.props.list}Order`) !== null) {
-      this.setState({ sorting: localStorage.getItem(`${this.props.list}Sorting`), order: localStorage.getItem(`${this.props.list}Order`) });
-    }
-  }
-
   cacheSorting = () => {
-    localStorage.setItem(`${this.props.list}Sorting`, this.state.sorting);
-    localStorage.setItem(`${this.props.list}Order`, this.state.order);
+    localStorage.setItem(`${this.props.list}Sorting`, this.state.sortingType);
+    localStorage.setItem(`${this.props.list}Order`, this.state.orderType);
   }
 
   moveBackOnButton = (e) => {
@@ -57,22 +58,21 @@ class DirectoryList extends Component {
   }
 
   resetData = () => {
-    this.setState({ selection: [], cursor: 0 });
+    this.setState({ itemsSelected: [], cursor: 0 });
     this.passData();
   }
 
+  setItemData = (itemName, itemPermissions, itemType) => {
+    this.setState({ itemName, itemPermissions, itemType });
+  }
+
   passData = () => {
-    const { data, passData } = this.props;
-    const { name, permissions, type } = data.listing[this.state.cursor];
-    if (this.state.cursor === 0) {
-      passData(0, '', '');
-    } else {
-      passData(this.state.cursor, name, permissions, type);
-    }
+    const { cursor, name, permissions, type } = this.state;
+    this.props.passData(cursor, name, permissions, type);
   }
 
   toggleActiveList = () => {
-    const { history: { history }, path, list, onClick, changePathAfterToggle, isActive } = this.props;
+    const { history, path, list, onClick, changePathAfterToggle, isActive } = this.props;
 
     if (!isActive) {
       onClick(list);
@@ -92,13 +92,13 @@ class DirectoryList extends Component {
   }
 
   isSelected = (i) => {
-    return this.state.selection.indexOf(i) !== -1;
+    return this.state.itemsSelected.indexOf(i) !== -1;
   }
 
   addToSelection(i) {
-    const { selection } = this.state;
-    const result = [...selection];
-    const duplicate = selection.indexOf(i);
+    const { itemsSelected } = this.state;
+    const result = [...itemsSelected];
+    const duplicate = itemsSelected.indexOf(i);
     if (duplicate !== -1) {
       result.splice(duplicate, 1);
     } else {
@@ -109,12 +109,13 @@ class DirectoryList extends Component {
       result.push(i)
     }
 
-    this.setState({ selection: result });
+    this.setState({ itemsSelected: result });
     this.props.passSelection(result);
   }
 
   handleLiSelection = (e) => {
-    const { data, isActive, modalVisible } = this.props;
+    const { data, isActive, modalVisible, changePath, path, passData } = this.props;
+    const { name, permissions, type } = data.listing[this.state.cursor];
     const { cursor } = this.state;
 
     if (!isActive || modalVisible) {
@@ -127,13 +128,12 @@ class DirectoryList extends Component {
       }
 
       if (e.shiftKey) {
-        let name = data.listing[cursor].name;
         this.addToSelection(name);
       }
 
       this.setState({ cursor: cursor + 1 });
-      this.passData();
-      this.props.changePath(this.props.path);
+      passData(cursor, name, permissions, type);
+      changePath(path);
     }
 
     if (e.keyCode === 38) {
@@ -142,18 +142,17 @@ class DirectoryList extends Component {
       }
 
       if (e.shiftKey) {
-        let name = data.listing[cursor].name;
         this.addToSelection(name);
       }
 
       this.setState({ cursor: cursor - 1 });
-      this.passData();
-      this.props.changePath(this.props.path);
+      passData(cursor, name, permissions, type);
+      changePath(path);
     }
   }
 
   openDirectory = (name) => {
-    const { history: { history }, path, addToPath, openDirectory } = this.props;
+    const { history, path, addToPath, openDirectory } = this.props;
 
     history.push({
       pathname: '/list/directory/',
@@ -165,7 +164,7 @@ class DirectoryList extends Component {
   }
 
   openCertainDirectory = (path) => {
-    const { history: { history }, openCertainDirectory, changePath } = this.props;
+    const { history, openCertainDirectory, changePath } = this.props;
 
     if (!this.isHomeDirectory()) {
       return;
@@ -179,44 +178,44 @@ class DirectoryList extends Component {
     openCertainDirectory();
   }
 
-  changeSorting = (sorting, order) => {
-    this.setState({ sorting, order }, () => this.cacheSorting());
+  changeSorting = (sortingType, orderType) => {
+    this.setState({ sortingType, orderType }, () => this.cacheSorting());
   }
 
   sortByType = (a, b) => {
-    if (this.state.order === "descending" && a.name !== "") {
+    if (this.state.orderType === "descending" && a.name !== "") {
       return a.type.localeCompare(b.type);
-    } else if (this.state.order === "ascending" && b.name !== "") {
+    } else if (this.state.orderType === "ascending" && b.name !== "") {
       return b.type.localeCompare(a.type);
     }
   }
 
   sortBySize = (a, b) => {
-    if (this.state.order === "descending" && a.name !== "") {
+    if (this.state.orderType === "descending" && a.name !== "") {
       return a.size - b.size;
-    } else if (this.state.order === "ascending" && b.name !== "") {
+    } else if (this.state.orderType === "ascending" && b.name !== "") {
       return b.size - a.size;
     }
   }
 
   sortByDate = (a, b) => {
-    if (this.state.order === "descending" && a.name !== "") {
+    if (this.state.orderType === "descending" && a.name !== "") {
       return new Date(a.date) - new Date(b.date);
-    } else if (this.state.order === "ascending" && a.name !== "") {
+    } else if (this.state.orderType === "ascending" && a.name !== "") {
       return new Date(b.date) - new Date(a.date);
     }
   }
 
   sortByName = (a, b) => {
-    if (this.state.order === "descending" && a.name !== "") {
+    if (this.state.orderType === "descending" && a.name !== "") {
       return a.name.localeCompare(b.name);
-    } else if (this.state.order === "ascending" && b.name !== "") {
+    } else if (this.state.orderType === "ascending" && b.name !== "") {
       return b.name.localeCompare(a.name);
     }
   }
 
   sortData = (a, b) => {
-    switch (this.state.sorting) {
+    switch (this.state.sortingType) {
       case "Type": return this.sortByType(a, b);
       case "Size": if (a.type !== "d" && b.type !== "d") { return this.sortBySize(a, b) }; break;
       case "Date": return this.sortByDate(a, b);
@@ -226,7 +225,7 @@ class DirectoryList extends Component {
   }
 
   rows = () => {
-    const { isActive, passData, modalVisible, path, download, history: { history } } = this.props;
+    const { isActive, passData, modalVisible, path, download } = this.props;
     const { cursor } = this.state;
     const data = { ...this.props.data };
 
@@ -242,35 +241,30 @@ class DirectoryList extends Component {
           (item.name !== "" && sortedData.length !== 0) ?
             (<Row key={key}
               modalVisible={modalVisible}
+              data={item}
               selectMultiple={() => this.addToSelection(item.name)}
-              type={item.type}
-              name={item.name}
-              passData={(name, permissions, type) => {
+              passData={(cursor, name, permissions, type) => {
                 this.setState({ cursor: key });
-                passData(key, name, permissions, type);
+                this.setItemData(cursor, name, permissions, type);
+                passData(cursor, name, permissions, type);
               }}
               activeRow={key === cursor}
               cursor={key}
               selected={this.isSelected(item.name)}
               isActiveList={isActive}
-              owner={item.owner}
               permissions={item.permissions}
-              size={item.size}
-              date={item.date}
-              time={item.time}
               path={path}
-              history={history}
               download={download}
               openDirectory={this.openDirectory} />) :
             (<Row key={key}
               modalVisible={modalVisible}
-              type={item.type}
+              data={item}
               path={path}
-              name=".."
               cursor={key}
-              passData={(name) => {
+              passData={(cursor, name, permissions, type) => {
                 this.setState({ cursor: key });
-                passData(key, name)
+                this.setItemData(cursor, name, permissions, type);
+                passData(cursor, name, permissions, type)
               }}
               activeRow={key === cursor}
               openDirectory={this.moveBack}
@@ -281,14 +275,15 @@ class DirectoryList extends Component {
 
   render() {
     const { isActive, path, loading } = this.props;
+    console.log("DList");
     return (
       <div className={isActive ? "list active" : "list"} onClick={this.toggleActiveList}>
         <Path class={isActive ? "active-path" : "path"}
           openDirectory={this.openCertainDirectory}
           changeSorting={this.changeSorting}
-          sortingName={this.state.sorting}
+          sorting={this.state.sortingType}
+          order={this.state.orderType}
           isActive={isActive}
-          order={this.state.order}
           path={path} />
         <div className="list-container">
           <ul>
@@ -300,4 +295,4 @@ class DirectoryList extends Component {
   }
 }
 
-export default DirectoryList;
+export default withRouter(DirectoryList);
