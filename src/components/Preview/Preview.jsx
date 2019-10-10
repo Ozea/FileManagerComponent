@@ -32,7 +32,7 @@ class Preview extends Component {
     if (name.match('.mp4')) {
       return <Video closeModal={onClose} />;
     } else if (name.match(/png|jpg|jpeg|gif/g)) {
-      return <Photo closeModal={onClose} close={onClose} path={location.search} />;
+      return <Photo closeModal={onClose} close={onClose} path={location.search} activeImage={name} />;
     } else {
       return <Editor close={onClose} name={name} />;
     }

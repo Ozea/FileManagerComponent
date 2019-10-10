@@ -15,19 +15,17 @@ class Row extends Component {
   }
 
   openOnEnter = (e) => {
-    const { activeRow, name, type, isActiveList, modalVisible, openDirectory, cursor, download, path } = this.props;
+    const { activeRow, data: { name, type }, isActiveList, modalVisible, openDirectory, cursor, download, path } = this.props;
 
     if (modalVisible || !activeRow || !isActiveList) {
       return;
     }
 
     if (e.keyCode === 13) {
-      if (this.isArchive(name)) {
+      if (this.isArchive(name) || type === "l") {
         download();
       } else if (this.isFile(type) && cursor !== 0) {
-        this.preview(path, name);
-      } else if (type === "l") {
-        download();
+        this.changePath(path, name);
       } else {
         openDirectory(name);
       }
@@ -35,38 +33,36 @@ class Row extends Component {
   }
 
   openItem = () => {
-    const { type, name, openDirectory, download, path, isActiveList } = this.props;
+    const { data: { type, name }, openDirectory, download, path, isActiveList } = this.props;
 
     if (!isActiveList) {
       return;
     }
 
-    if (this.isArchive(name)) {
+    if (this.isArchive(name) || type === "l" || name.match('.mp4')) {
       return download();
     } else if (this.isFile(type)) {
-      return this.preview(path, name);
+      return this.changePath(path, name);
     } else if (type === 'd') {
       return openDirectory(name);
-    } else if (type === "l" || name.match('.mp4')) {
-      return download();
     }
   }
 
-  preview = (path, name) => {
+  changePath = (path, name) => {
     this.props.history.push({
       pathname: '/list/directory/preview/',
       search: `?path=${path}/${name}`
     });
   }
 
-  selectItem = (e) => {
-    const { name, selectMultiple, passData, permissions, cursor, type } = this.props;
+  selectRow = (e) => {
+    const { data: { name, type }, selectMultiple, passData, permissions, cursor } = this.props;
 
     if (e.ctrlKey && cursor !== 0) {
       selectMultiple();
     }
 
-    passData(name, permissions, type);
+    passData(cursor, name, permissions, type);
   }
 
   className = () => {
@@ -88,7 +84,7 @@ class Row extends Component {
       return null;
     };
 
-    if (bytes === "0") {
+    if (bytes === "0" || isNaN(bytes)) {
       return <span className="value">0 <span className="unit">b</span></span>;
     }
 
@@ -113,7 +109,7 @@ class Row extends Component {
   }
 
   glyph = () => {
-    const { type, name } = this.props;
+    const { data: { type, name } } = this.props;
 
     if (type === 'd') {
       return <FontAwesomeIcon icon="folder-open" className="folder-open" />;
@@ -157,12 +153,12 @@ class Row extends Component {
   }
 
   render() {
-    const { name, owner, permissions, size, date, time } = this.props;
+    const { data: { name, owner, permissions, size, date, time } } = this.props;
     return (
-      <li className={this.className()} onClick={this.selectItem} >
+      <li className={this.className()} onClick={this.selectRow} >
         <span className="marker"></span>
         {this.glyph()}
-        <span className="fName"><span className="name" onClick={this.openItem}>{name}</span></span>
+        <span className="fName"><span className="name" onClick={this.openItem}>{this.props.cursor === 0 ? ".." : name}</span></span>
         <span className="fPermissions">{permissions}</span>
         <span className="fOwner">{owner}</span>
         <span className="fSize">{this.sizeFormatter(size)}</span>

@@ -2,8 +2,9 @@ import React from 'react';
 import './Path.scss';
 import Dropdown from './Dropdown/Dropdown';
 
-function clickablePath(path, props) {
-  let splitPath = path.split('/');
+function clickablePath(props) {
+  let path = props.path;
+  let splitPath = props.path.split('/');
   splitPath.splice(0, 3);
 
   if (path !== window.GLOBAL.ROOT_DIR) {
@@ -26,9 +27,9 @@ const Path = (props) => {
     <div className={props.class}>
       <span className="clickable-path">
         <span className="clickable" onClick={() => openDirectory(window.GLOBAL.ROOT_DIR, props)}>{window.GLOBAL.ROOT_DIR}</span>
-        {clickablePath(props.path, props)}
+        {clickablePath(props)}
       </span>
-      <Dropdown changeSorting={props.changeSorting} sortingName={props.sortingName} order={props.order} />
+      <Dropdown changeSorting={props.changeSorting} sorting={props.sorting} order={props.order} isActive={props.isActive} />
     </div>
   );
 }
