@@ -8,7 +8,7 @@ import Modal from '../../components/Modal/Modal';
 import 'react-toastify/dist/ReactToastify.css';
 import { withRouter } from 'react-router-dom';
 import Menu from '../../components/Menu/Menu';
-import * as FM from '../../LocalAPI';
+import * as FM from '../../FileManagerHelper';
 import '../App/App.scss';
 import axios from 'axios';
 
@@ -51,6 +51,9 @@ class FileManager extends Component {
     window.addEventListener("keydown", this.toggleActiveListOnTab);
     document.addEventListener("keydown", this.hotkeysListener);
   }
+  componentDidUpdate() {
+    console.log('Did update', this.leftList, this.rightList);
+  }
 
   componentWillUnmount = () => {
     window.removeEventListener("keydown", this.switchActiveList);
@@ -65,28 +68,9 @@ class FileManager extends Component {
   }
 
   componentWillMount = () => {
-    if (localStorage.getItem("lastUser") === null || this.state.currentUser !== localStorage.getItem("lastUser")) {
-      localStorage.setItem("lastUser", this.state.currentUser);
-      localStorage.setItem("activeWindow", "left");
-      localStorage.setItem("leftListPath", window.GLOBAL.ROOT_DIR);
-      localStorage.setItem("rightListPath", window.GLOBAL.ROOT_DIR);
-    }
-
-    if (localStorage.getItem("activeWindow") === null || localStorage.getItem("leftListPath") === null || localStorage.getItem("rightListPath") === null) {
-      let path = this.props.history.location.search.substring(6).split('/');
-      localStorage.setItem("activeWindow", "left");
-      localStorage.setItem("leftListPath", path);
-      localStorage.setItem("rightListPath", window.GLOBAL.ROOT_DIR);
-    }
-
-    if (localStorage.getItem("activeWindow") === "left") {
-      let currentPath = localStorage.getItem("leftListPath");
-      this.setState({ currentPath });
-    } else if (localStorage.getItem("activeWindow") === "right") {
-      let currentPath = localStorage.getItem("rightListPath");
-      this.setState({ currentPath });
-    }
-
+    FM.cacheData(this.state.currentUser, this.props.history);
+    let currentPath = FM.activeWindowPath();
+    this.setState({ currentPath });
     this.changeDirectoryOnLoading();
   }
 
@@ -133,15 +117,12 @@ class FileManager extends Component {
         .then(result => {
           let listing = result.data.listing;
           this.setState({ leftList: { files: { listing }, path: currentPath }, rightList: { files: { listing }, path: currentPath }, loading: false });
-          this.rightList.current.resetData();
-          this.leftList.current.resetData();
         })
     } else if (activeWindow === "left") {
       FM.getDataFromServer(`${server}dir=${this.encodePath(this.state.currentPath)}&action=cd`)
         .then(result => {
           let listing = result.data.listing;
           this.setState({ leftList: { files: { listing }, path: currentPath }, loading: false });
-          this.leftList.current.resetData();
         })
         .catch(e => console.log(e))
     } else {
@@ -149,10 +130,11 @@ class FileManager extends Component {
         .then(result => {
           let listing = result.data.listing;
           this.setState({ rightList: { files: { listing }, path: currentPath }, loading: false });
-          this.rightList.current.resetData();
         })
         .catch(e => console.log(e))
     }
+
+    console.log(this.leftList);
   }
 
   toggleActiveListOnTab = (e) => {
@@ -165,12 +147,10 @@ class FileManager extends Component {
       if (this.state.activeWindow === "left") {
         this.setState({ activeWindow: "right", currentPath: this.state.rightList.path });
         this.changeQuery(this.state.currentPath);
-        this.rightList.current.passData();
         this.cachePaths();
       } else {
         this.setState({ activeWindow: "left", currentPath: this.state.leftList.path });
         this.changeQuery(this.state.currentPath);
-        this.leftList.current.passData();
         this.cachePaths();
       }
     }
@@ -192,12 +172,10 @@ class FileManager extends Component {
     if (e.keyCode === 39) {
       this.setState({ activeWindow: "right", currentPath: this.state.rightList.path });
       this.changeQuery(this.state.currentPath);
-      this.rightDirectoryListElement.current.passData();
       this.cachePaths();
     } else if (e.keyCode === 37) {
       this.setState({ activeWindow: "left", currentPath: this.state.leftList.path });
       this.changeQuery(this.state.currentPath);
-      this.leftDirectoryListElement.current.passData();
       this.cachePaths();
     }
   }
@@ -209,7 +187,6 @@ class FileManager extends Component {
           if (response.data.result) {
             this.changeDirectory();
           } else {
-            console.log(response.data.message);
             this.showError(response.data.message);
           }
         })
@@ -319,13 +296,14 @@ class FileManager extends Component {
   }
 
   onRename = () => {
-    let name = this.state.inputValue;
+    let name = this.state.modalInputValue;
     this.validateAction(`${server}item=${this.state.itemName}&target_name=${name}&dir=${this.encodePath(this.state.currentPath)}&action=rename_file`);
   }
 
   onChangePermissions = () => {
-    let permissions = this.state.inputValue;
+    let permissions = this.state.modalInputValue;
     this.validateAction(`${server}dir=${this.encodePath(this.state.currentPath)}%2F&item=${this.state.itemName}&permissions=${permissions}&action=chmod_item`);
+    this.setState({ itemPermissions: permissions });
   }
 
   archiveItem = () => {
@@ -493,7 +471,7 @@ class FileManager extends Component {
       case 'Add directory': return this.setState({ modalWindow: <Modal modalVisible={modalVisible} type={type} onClick={this.newDir} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Add file': return this.setState({ modalWindow: <Modal modalVisible={modalVisible} type={type} onClick={this.newFile} onClose={this.closeModal} reference={(inp) => this.inputElement = inp} />, modalVisible: true });
       case 'Delete': return this.setState({ modalWindow: <Modal modalVisible={modalVisible} type={type} fName={itemName} onClick={this.onDelete} onClose={this.closeModal} items={items} />, modalVisible: true });
-      case 'Nothing selected': return this.setState({ modal: <Modal modalVisible={modalVisible} notAvailable={available} type={type} onClose={this.closeModal} onClick={this.closeModal} />, modalVisible: true });
+      case 'Nothing selected': return this.setState({ modalWindow: <Modal modalVisible={modalVisible} notAvailable={available} type={type} onClose={this.closeModal} onClick={this.closeModal} />, modalVisible: true });
       case "Replace": return this.setState({ modalWindow: <Modal modalVisible={modalVisible} type={type} files={items} onClick={(files) => this.replaceFiles(files)} onClose={this.closeModal} />, modalVisible: true });
       default:
         break;
@@ -501,7 +479,7 @@ class FileManager extends Component {
   }
 
   render() {
-    const { leftList, rightList, activeWindow, modalWindow, modalVisible, cursor, itemsSelected, itemName, loading, uploadPercent, hotkeysPanel, itemType } = this.state;
+    const { leftList, rightList, activeWindow, modalWindow, modalVisible, itemsSelected, itemName, loading, uploadPercent, hotkeysPanel, itemType } = this.state;
     return (
       <div className="window">
         {uploadPercent !== "0" ? <ProgressBar progress={uploadPercent} /> : null}
@@ -514,25 +492,25 @@ class FileManager extends Component {
           selection={itemsSelected}
           itemType={itemType}
           upload={this.checkExistingFileName}
-          cursor={cursor}
+          cursor={this.state.cursor}
           name={itemName} />
         <div className="lists-container">
           <DirectoryList
             changePathAfterToggle={this.changePathAfterToggle}
             openCertainDirectory={this.openCertainDirectory}
-            ref={this.leftList}
+            isActive={activeWindow === "left"}
             openDirectory={this.openDirectory}
             passSelection={this.passSelection}
             data={this.state.leftList.files}
             onClick={this.toggleActiveList}
-            isActive={activeWindow === "left"}
             changePath={this.changePath}
             modalVisible={modalVisible}
             addToPath={this.addToPath}
+            ref={this.leftList}
+            cursor={this.state.cursor}
             passData={this.passData}
             download={this.download}
             moveBack={this.moveBack}
-            openModal={this.modal}
             path={leftList.path}
             history={this.props}
             loading={loading}
@@ -540,19 +518,19 @@ class FileManager extends Component {
           <DirectoryList
             changePathAfterToggle={this.changePathAfterToggle}
             openCertainDirectory={this.openCertainDirectory}
-            ref={this.rightList}
+            isActive={activeWindow === "right"}
             openDirectory={this.openDirectory}
             passSelection={this.passSelection}
             data={this.state.rightList.files}
             onClick={this.toggleActiveList}
-            isActive={activeWindow === "right"}
             changePath={this.changePath}
             modalVisible={modalVisible}
             addToPath={this.addToPath}
+            ref={this.rightList}
+            cursor={this.state.cursor}
             passData={this.passData}
             download={this.download}
             moveBack={this.moveBack}
-            openModal={this.modal}
             path={rightList.path}
             history={this.props}
             loading={loading}

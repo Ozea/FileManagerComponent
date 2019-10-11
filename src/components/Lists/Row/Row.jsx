@@ -1,10 +1,25 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faJs, faCss3, faPhp, faHtml5, faSass } from '@fortawesome/free-brands-svg-icons';
 import './Row.scss';
 
 class Row extends Component {
+  static propTypes = {
+    selectMultiple: PropTypes.func,
+    selectOnClick: PropTypes.func,
+    openDirectory: PropTypes.func,
+    modalVisible: PropTypes.bool,
+    isActiveList: PropTypes.bool,
+    activeRow: PropTypes.bool,
+    selected: PropTypes.func,
+    download: PropTypes.func,
+    cursor: PropTypes.number,
+    path: PropTypes.string,
+    key: PropTypes.number,
+    data: PropTypes.array
+  }
 
   componentDidMount = () => {
     document.addEventListener("keydown", this.openOnEnter);
@@ -33,9 +48,9 @@ class Row extends Component {
   }
 
   openItem = () => {
-    const { data: { type, name }, openDirectory, download, path, isActiveList } = this.props;
+    const { data: { type, name }, openDirectory, download, path, isActiveList, activeRow } = this.props;
 
-    if (!isActiveList) {
+    if (!isActiveList || !activeRow) {
       return;
     }
 
@@ -56,13 +71,17 @@ class Row extends Component {
   }
 
   selectRow = (e) => {
-    const { data: { name, type }, selectMultiple, passData, permissions, cursor } = this.props;
+    const { data: { name, permissions, type }, selectMultiple, selectOnClick, cursor, activeRow } = this.props;
 
     if (e.ctrlKey && cursor !== 0) {
       selectMultiple();
     }
 
-    passData(cursor, name, permissions, type);
+    if (activeRow) {
+      return;
+    }
+
+    selectOnClick(cursor, name, permissions, type);
   }
 
   className = () => {
@@ -80,11 +99,11 @@ class Row extends Component {
   }
 
   sizeFormatter = (bytes, decimals) => {
-    if (bytes === undefined || this.props.type === "d") {
+    if (bytes === undefined || this.props.data.type === "d") {
       return null;
     };
 
-    if (bytes === "0" || isNaN(bytes)) {
+    if (bytes === "0") {
       return <span className="value">0 <span className="unit">b</span></span>;
     }
 
@@ -158,7 +177,7 @@ class Row extends Component {
       <li className={this.className()} onClick={this.selectRow} >
         <span className="marker"></span>
         {this.glyph()}
-        <span className="fName"><span className="name" onClick={this.openItem}>{this.props.cursor === 0 ? ".." : name}</span></span>
+        <span className="fName"><span className="name" onClick={(e) => this.openItem(e)}>{this.props.cursor === 0 ? ".." : name}</span></span>
         <span className="fPermissions">{permissions}</span>
         <span className="fOwner">{owner}</span>
         <span className="fSize">{this.sizeFormatter(size)}</span>

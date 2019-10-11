@@ -1,20 +1,38 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import Spinner from '../../Spinner/Spinner';
 import Path from '../../Path/Path';
 import Row from '../Row/Row';
 import '../List.scss';
 
 class DirectoryList extends Component {
+  static propTypes = {
+    changePathAfterToggle: PropTypes.func,
+    openCertainDirectory: PropTypes.func,
+    openDirectory: PropTypes.func,
+    passSelection: PropTypes.func,
+    modalVisible: PropTypes.bool,
+    changePath: PropTypes.func,
+    addToPath: PropTypes.func,
+    history: PropTypes.object,
+    isActive: PropTypes.bool,
+    cursor: PropTypes.number,
+    passData: PropTypes.func,
+    download: PropTypes.func,
+    moveBack: PropTypes.func,
+    onClick: PropTypes.func,
+    loading: PropTypes.bool,
+    path: PropTypes.string,
+    list: PropTypes.string,
+    data: PropTypes.array
+  }
+
   state = {
-    itemsSelected: [],
-    cursor: 0,
-    sortingType: "Type",
     orderType: "descending",
-    data: [],
-    itemName: "",
-    itemPermissions: "",
-    itemType: ""
+    sortingType: "Type",
+    itemsSelected: [],
+    cursor: 0
   }
 
   componentWillMount = () => {
@@ -45,7 +63,7 @@ class DirectoryList extends Component {
   }
 
   moveBack = () => {
-    if (!this.isHomeDirectory()) {
+    if (this.isHomeDirectory()) {
       return;
     }
 
@@ -54,21 +72,7 @@ class DirectoryList extends Component {
   }
 
   isHomeDirectory = () => {
-    return this.props.path !== window.GLOBAL.ROOT_DIR;
-  }
-
-  resetData = () => {
-    this.setState({ itemsSelected: [], cursor: 0 });
-    this.passData();
-  }
-
-  setItemData = (itemName, itemPermissions, itemType) => {
-    this.setState({ itemName, itemPermissions, itemType });
-  }
-
-  passData = () => {
-    const { cursor, name, permissions, type } = this.state;
-    this.props.passData(cursor, name, permissions, type);
+    return this.props.path === window.GLOBAL.ROOT_DIR;
   }
 
   toggleActiveList = () => {
@@ -114,8 +118,7 @@ class DirectoryList extends Component {
   }
 
   handleLiSelection = (e) => {
-    const { data, isActive, modalVisible, changePath, path, passData } = this.props;
-    const { name, permissions, type } = data.listing[this.state.cursor];
+    const { data, isActive, modalVisible } = this.props;
     const { cursor } = this.state;
 
     if (!isActive || modalVisible) {
@@ -128,12 +131,12 @@ class DirectoryList extends Component {
       }
 
       if (e.shiftKey) {
+        let name = data.listing[cursor].name;
         this.addToSelection(name);
       }
 
       this.setState({ cursor: cursor + 1 });
-      passData(cursor, name, permissions, type);
-      changePath(path);
+      this.passData();
     }
 
     if (e.keyCode === 38) {
@@ -142,13 +145,20 @@ class DirectoryList extends Component {
       }
 
       if (e.shiftKey) {
+        let name = data.listing[cursor].name;
         this.addToSelection(name);
       }
 
       this.setState({ cursor: cursor - 1 });
-      passData(cursor, name, permissions, type);
-      changePath(path);
+      this.passData();
     }
+  }
+
+  passData = () => {
+    const { data, passData, path } = this.props;
+    const { name, permissions, type } = data.listing[this.state.cursor];
+    passData(this.state.cursor, name, permissions, type);
+    this.props.changePath(path);
   }
 
   openDirectory = (name) => {
@@ -160,13 +170,13 @@ class DirectoryList extends Component {
     });
     addToPath(name);
     openDirectory();
-    this.setState({ cursor: 0 });
+    this.setState({ cursor: 0, itemsSelected: [] });
   }
 
   openCertainDirectory = (path) => {
     const { history, openCertainDirectory, changePath } = this.props;
 
-    if (!this.isHomeDirectory()) {
+    if (this.isHomeDirectory()) {
       return;
     }
 
@@ -176,6 +186,7 @@ class DirectoryList extends Component {
     });
     changePath(path);
     openCertainDirectory();
+    this.setState({ cursor: 0 });
   }
 
   changeSorting = (sortingType, orderType) => {
@@ -225,14 +236,9 @@ class DirectoryList extends Component {
   }
 
   rows = () => {
-    const { isActive, passData, modalVisible, path, download } = this.props;
+    const { isActive, modalVisible, path, download } = this.props;
     const { cursor } = this.state;
     const data = { ...this.props.data };
-
-    if (this.props.data.listing.length !== 0) {
-      this.props.data.listing[0].size = "";
-      this.props.data.listing[0].date = "";
-    }
 
     if (data.listing.length !== 0) {
       let sortedData = data.listing.sort((a, b) => this.sortData(a, b));
@@ -240,42 +246,38 @@ class DirectoryList extends Component {
         sortedData.map((item, key) =>
           (item.name !== "" && sortedData.length !== 0) ?
             (<Row key={key}
-              modalVisible={modalVisible}
-              data={item}
+              selectOnClick={(cursor, name, permissions, type) => {
+                this.setState({ cursor });
+                this.props.passData(cursor, name, permissions, type);
+              }}
               selectMultiple={() => this.addToSelection(item.name)}
-              passData={(cursor, name, permissions, type) => {
-                this.setState({ cursor: key });
-                this.setItemData(cursor, name, permissions, type);
-                passData(cursor, name, permissions, type);
-              }}
-              activeRow={key === cursor}
-              cursor={key}
               selected={this.isSelected(item.name)}
-              isActiveList={isActive}
-              permissions={item.permissions}
-              path={path}
-              download={download}
-              openDirectory={this.openDirectory} />) :
-            (<Row key={key}
+              openDirectory={this.openDirectory}
               modalVisible={modalVisible}
-              data={item}
-              path={path}
-              cursor={key}
-              passData={(cursor, name, permissions, type) => {
-                this.setState({ cursor: key });
-                this.setItemData(cursor, name, permissions, type);
-                passData(cursor, name, permissions, type)
-              }}
               activeRow={key === cursor}
+              isActiveList={isActive}
+              download={download}
+              cursor={key}
+              data={item}
+              path={path} />) :
+            (<Row key={key}
+              selectOnClick={(cursor, name, permissions, type) => {
+                this.setState({ cursor });
+                this.props.passData(cursor, name, permissions, type);
+              }}
               openDirectory={this.moveBack}
-              isActiveList={isActive} />))
+              modalVisible={modalVisible}
+              activeRow={key === cursor}
+              isActiveList={isActive}
+              cursor={key}
+              data={item}
+              path={path} />))
       );
     }
   }
 
   render() {
     const { isActive, path, loading } = this.props;
-    console.log("DList");
     return (
       <div className={isActive ? "list active" : "list"} onClick={this.toggleActiveList}>
         <Path class={isActive ? "active-path" : "path"}

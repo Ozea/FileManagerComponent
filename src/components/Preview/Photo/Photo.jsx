@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classNames from 'classname';
-import * as FM from '../../../LocalAPI';
+import * as FM from '../../../FileManagerHelper';
 import './Photo.scss';
 import Spinner from '../../Spinner/Spinner';
 

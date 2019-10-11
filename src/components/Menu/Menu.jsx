@@ -142,6 +142,7 @@ class Menu extends Component {
   }
 
   render() {
+    let matchArchive = this.props.name.match(/.zip|.tgz|.tar.gz|.gzip|.tbz|.tar.bz|.gz|.zip|.tar|.rar/g);
     return (
       <div className="menu">
         <div className="logo">
@@ -166,10 +167,10 @@ class Menu extends Component {
           <button type="button" className="btn btn-light small" onClick={this.copy} title={window.GLOBAL.App.Constants.FM_COPY_BUTTON}><FontAwesomeIcon icon="copy" className="icon copy" /></button>
           <button type="button" className="btn btn-light big" onClick={this.move}>{window.GLOBAL.App.Constants.FM_MOVE_BUTTON}</button>
           <button type="button" className="btn btn-light small" onClick={this.move} title={window.GLOBAL.App.Constants.FM_MOVE_BUTTON}><FontAwesomeIcon icon="paste" className="icon paste" /></button>
-          <button type="button" className="btn btn-light big" onClick={this.archive}>{window.GLOBAL.App.Constants.FM_ARCHIVE}</button>
-          <button type="button" className="btn btn-light small" onClick={this.archive} title={window.GLOBAL.App.Constants.FM_ARCHIVE}><FontAwesomeIcon icon="book" className="icon book" /></button>
-          {this.props.name.match(/.zip|.tgz|.tar.gz|.gzip|.tbz|.tar.bz|.gz|.zip|.tar|.rar/g) ? <button type="button" className="btn btn-light big" onClick={this.extract}>{window.GLOBAL.App.Constants.FM_EXTRACT}</button> : null}
-          {this.props.name.match(/.zip|.tgz|.tar.gz|.gzip|.tbz|.tar.bz|.gz|.zip|.tar|.rar/g) ? <button type="button" className="btn btn-light small" onClick={this.extract} title={window.GLOBAL.App.Constants.FM_EXTRACT}><FontAwesomeIcon icon="box-open" className="icon open" /></button> : null}
+          {matchArchive ? null : <button type="button" className="btn btn-light big" onClick={this.archive}>{window.GLOBAL.App.Constants.FM_ARCHIVE}</button>}
+          {matchArchive ? null : <button type="button" className="btn btn-light small" onClick={this.archive} title={window.GLOBAL.App.Constants.FM_ARCHIVE}><FontAwesomeIcon icon="book" className="icon book" /></button>}
+          {matchArchive ? <button type="button" className="btn btn-light big" onClick={this.extract}>{window.GLOBAL.App.Constants.FM_EXTRACT}</button> : null}
+          {matchArchive ? <button type="button" className="btn btn-light small" onClick={this.extract} title={window.GLOBAL.App.Constants.FM_EXTRACT}><FontAwesomeIcon icon="box-open" className="icon open" /></button> : null}
           <button type="button" className="btn btn-light big delete" onClick={this.delete} >{window.GLOBAL.App.Constants.FM_DELETE_BUTTON}</button>
           <button type="button" className="btn btn-light small" onClick={this.delete} title={window.GLOBAL.App.Constants.FM_DELETE_BUTTON}><FontAwesomeIcon icon="trash" className="icon trash" /></button>
         </div>

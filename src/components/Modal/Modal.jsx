@@ -81,13 +81,11 @@ class Modal extends Component {
   }
 
   render() {
-    const { modalVisible } = this.props;
     return (
       <div>
-        {!modalVisible &&
-          <div className="modal" id="modal">
-            {this.content()}
-          </div>}
+        <div className="modal" id="modal">
+          {this.content()}
+        </div>
       </div>
     );
   }
