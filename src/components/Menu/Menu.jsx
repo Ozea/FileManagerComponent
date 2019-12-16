@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import logo from '../../logo.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './Menu.scss';
 
@@ -146,8 +145,8 @@ class Menu extends Component {
     return (
       <div className="menu">
         <div className="logo">
-          <a href="https://r5.vestacp.com:8083">
-            <img src={logo} alt="Logo" />
+          <a href={window.location.origin}>
+            <img src="../../images/logo.png" alt="Logo" />
           </a>
         </div>
         <div className="btn-group" role="group" aria-label="First group">

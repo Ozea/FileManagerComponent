@@ -48,9 +48,9 @@ class Row extends Component {
   }
 
   openItem = () => {
-    const { data: { type, name }, openDirectory, download, path, isActiveList, activeRow } = this.props;
+    const { data: { type, name }, openDirectory, download, path, isActiveList } = this.props;
 
-    if (!isActiveList || !activeRow) {
+    if (!isActiveList) {
       return;
     }
 

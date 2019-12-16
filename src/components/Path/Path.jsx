@@ -9,26 +9,34 @@ function clickablePath(props) {
 
   if (path !== window.GLOBAL.ROOT_DIR) {
     return (
-      splitPath.map(item => <span className="clickable" onClick={() => openDirectory(path.substring(0, path.lastIndexOf(item)) + item, props)}>&nbsp;/&nbsp;{item}</span>)
+      splitPath.map((item, index) => <span className="clickable" key={index} onClick={() => openDirectory(props, index)}>&nbsp;/&nbsp;{item}</span>)
     );
   }
 }
 
-function openDirectory(path, props) {
+function openDirectory(props, index) {
+  let pathArray = props.path.split('/');
+
   if (!props.isActive) {
     return;
   } else {
-    props.openDirectory(path);
+    if (index !== undefined) {
+      let newPathArray = pathArray.splice(0, index + 4);
+      let newPath = newPathArray.join('/');
+      props.openDirectory(newPath);
+    }
   }
 }
 
 const Path = (props) => {
   return (
     <div className={props.class}>
-      <span className="clickable-path">
-        <span className="clickable" onClick={() => openDirectory(window.GLOBAL.ROOT_DIR, props)}>{window.GLOBAL.ROOT_DIR}</span>
-        {clickablePath(props)}
-      </span>
+      <div className="clickable-wrapper">
+        <span className="clickable-path">
+          <span className="clickable" onClick={() => props.openDirectory(window.GLOBAL.ROOT_DIR)}>{window.GLOBAL.ROOT_DIR}</span>
+          {clickablePath(props)}
+        </span>
+      </div>
       <Dropdown changeSorting={props.changeSorting} sorting={props.sorting} order={props.order} isActive={props.isActive} />
     </div>
   );

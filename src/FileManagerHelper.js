@@ -1,8 +1,5 @@
 import axios from "axios";
-
-export function getDataFromServer(url) {
-  return axios.get(url);
-}
+const server = window.location.origin + "/file_manager/fm_api.php?";
 
 export function validateAction(url) {
   return axios.get(url);
@@ -10,7 +7,7 @@ export function validateAction(url) {
 
 export function cacheData(currentUser, history) {
   if (localStorage.getItem("lastUser") === null || currentUser !== localStorage.getItem("lastUser")) {
-    localStorage.setItem("lastUser", this.state.currentUser);
+    localStorage.setItem("lastUser", currentUser);
     localStorage.setItem("activeWindow", "left");
     localStorage.setItem("leftListPath", window.GLOBAL.ROOT_DIR);
     localStorage.setItem("rightListPath", window.GLOBAL.ROOT_DIR);
@@ -22,6 +19,54 @@ export function cacheData(currentUser, history) {
     localStorage.setItem("leftListPath", path);
     localStorage.setItem("rightListPath", window.GLOBAL.ROOT_DIR);
   }
+}
+
+export function changeDirectoryOnLoading(server, list) {
+  return axios.get(`${server}dir=${encodePath(localStorage.getItem(list))}&action=cd`);
+}
+
+export function changeDirectory(server, path) {
+  return axios.get(`${server}dir=${encodePath(path)}&action=cd`);
+}
+
+export function getData(path) {
+  return axios.get(`${server}dir=%2F${path}&action=cd`);
+}
+
+export function checkExistingFileName(selectedFiles, activeWindow, leftListData, rightListData) {
+  let selectedFileNames = [];
+  let existingFileNames = [];
+  let newFiles = [];
+
+  for (let i = 0; i < selectedFiles.length; i++) {
+    selectedFileNames.push(selectedFiles[i]);
+  }
+
+  if (activeWindow === "left") {
+    for (let i = 0; i < selectedFileNames.length; i++) {
+      if (leftListData.map((item) => { return item.name }).includes(selectedFileNames[i].name)) {
+        existingFileNames.push(selectedFileNames[i]);
+      } else {
+        newFiles.push(selectedFileNames[i]);
+      }
+    }
+  } else {
+    for (let i = 0; i < selectedFileNames.length; i++) {
+      if (rightListData.map((item) => { return item.name }).includes(selectedFileNames[i].name)) {
+        existingFileNames.push(selectedFileNames[i]);
+      } else {
+        newFiles.push(selectedFileNames[i]);
+      }
+    }
+  }
+
+  return { existingFileNames, newFiles };
+}
+
+export function encodePath(path) {
+  let splitPath = path.split('/');
+  let encodedPath = splitPath.join('%2F');
+  return encodedPath;
 }
 
 export function activeWindowPath() {
@@ -41,11 +86,7 @@ export function deleteItems(url, path, selection) {
 
   const promisesArray = selection.map(item =>
     validateAction(`${url}item=${path}%2F${item}&dir=${path}&action=delete_files`)
-      .then(response => {
-        if (response.data.result) {
-          console.log(response.data.result);
-        }
-      })
+      .then(() => { })
   );
 
   return Promise.all(promisesArray);
@@ -58,11 +99,7 @@ export function moveItems(url, path, targetPath, selection) {
 
   const promisesArray = selection.map(item =>
     validateAction(`${url}item=${path}%2F${item}&target_name=${targetPath}&action=move_file`)
-      .then(response => {
-        if (response.data.result) {
-          console.log(response.data.result);
-        }
-      })
+      .then(() => { })
   );
 
   return Promise.all(promisesArray);
@@ -75,11 +112,7 @@ export function copyItems(url, path, targetPath, selection) {
 
   const promisesArray = selection.map(item =>
     validateAction(`${url}item=${path}%2F${item}&filename=${item}&dir=${path}&dir_target=${targetPath}&action=copy_file`)
-      .then(response => {
-        if (response.data.result) {
-          console.log(response.data.result);
-        }
-      })
+      .then(() => { })
   );
 
   return Promise.all(promisesArray);

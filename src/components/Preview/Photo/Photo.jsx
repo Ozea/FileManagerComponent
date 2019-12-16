@@ -37,7 +37,7 @@ class Photo extends Component {
     return gallery.map((item, i) => {
       const imageClasses = classNames({ 'control-photo': true, 'active': i === this.state.activeSlide });
       const result = (<div data-target="#photoGallery" data-slide-to={i} key={i} className="indicator">
-        <img src={`https://r5.vestacp.com:8083/view/file/${this.formatPath(this.props.path)}/${item}&raw=true`} alt={i} className={imageClasses} />
+        <img src={`${window.location.origin}/view/file/${this.formatPath(this.props.path)}/${item}&raw=true`} alt={i} className={imageClasses} />
       </div>);
       return result;
     });
@@ -48,22 +48,21 @@ class Photo extends Component {
     return gallery.map((item, i) => (
       <div className={i === this.state.activeSlide ? 'carousel-item active' : 'carousel-item'} key={i}>
         <div className="d-flex align-items-center justify-content-center min-vh-100">
-          <img className={this.imgClass(item)} src={`https://r5.vestacp.com:8083/view/file/${this.formatPath(this.props.path)}/${item}&raw=true`} alt={i} />
+          <img className={this.imgClass(item)} src={`${window.location.origin}/view/file/${this.formatPath(this.props.path)}/${item}&raw=true`} alt={i} />
         </div>
       </div>
     ));
   }
 
-  setPhotoGallery = () => {
-    this.setState({ loading: true }, () => {
-      FM.getDataFromServer(`https://r5.vestacp.com:8083/file_manager/fm_api.php?dir=%2F${this.encodePath(this.props.path)}&action=cd`)
-        .then(result => {
-          let photoGallery = [...this.state.photoGallery];
-          result.data.listing.filter(item => item.name.match(/png|jpg|jpeg|gif/g) && !item.name.match(/zip|tgz|tar.gz|gzip|tbz|tar.bz|gz|zip|tar|rar/g) ? photoGallery.push(item.name) : null)
-          this.setState({ photoGallery, loading: false });
-        })
-        .then(() => this.setActiveImage())
-    })
+  setStateAsync = updater => new Promise(resolve => this.setState(updater, resolve));
+
+  setPhotoGallery = async () => {
+    await this.setStateAsync({ loading: true });
+    const result = await FM.getData(this.encodePath(this.props.path));
+    let photoGallery = [...this.state.photoGallery];
+    result.data.listing.filter(item => item.name.match(/.png|.jpg|.jpeg|.gif/g) && !item.name.match(/.zip|.tgz|.tar.gz|.gzip|.tbz|.tar.bz|.gz|.zip|.tar|.rar/g) ? photoGallery.push(item.name) : null)
+    await this.setStateAsync({ photoGallery, loading: false })
+    this.setActiveImage();
   }
 
   setActiveImage = () => {

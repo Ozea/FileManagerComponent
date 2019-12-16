@@ -28,7 +28,7 @@ class Editor extends Component {
     const { history } = this.props;
     let path = history.location.search.substring(6, history.location.search.lastIndexOf('/'));
     this.setState({ loading: true }, () => {
-      axios.get(`https://r5.vestacp.com:8083/file_manager/fm_api.php?dir=${this.encodePath(path)}&item=${this.props.name}&action=open_fs_file`)
+      axios.get(`${window.location.origin}/file_manager/fm_api.php?dir=${this.encodePath(path)}&item=${this.props.name}&action=open_fs_file`)
         .then(result => {
           if (result.data.content) {
             this.setState({ code: result.data.content, loading: false });
@@ -64,7 +64,7 @@ class Editor extends Component {
     formData.append('contents', this.state.code);
 
     this.setState({ loading: true }, () => {
-      axios.post(`https://r5.vestacp.com:8083/edit/file/?path=${path}%2F${this.props.name}`, formData)
+      axios.post(`${window.location.origin}/edit/file/?path=${path}%2F${this.props.name}`, formData)
         .then(toast.success('Saved successfully!', {
           position: "top-center",
           autoClose: 3000,

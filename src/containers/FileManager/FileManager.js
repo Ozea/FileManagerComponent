@@ -12,7 +12,7 @@ import * as FM from '../../FileManagerHelper';
 import '../App/App.scss';
 import axios from 'axios';
 
-const server = "https://r5.vestacp.com:8083/file_manager/fm_api.php?";
+const server = window.location.origin + "/file_manager/fm_api.php?";
 
 class FileManager extends Component {
   constructor(props) {
@@ -41,18 +41,23 @@ class FileManager extends Component {
       hotkeysPanel: "inactive",
       loading: false
     }
+  }
 
-    this.leftList = React.createRef();
-    this.rightList = React.createRef();
+  componentWillMount = () => {
+    FM.cacheData(this.state.currentUser, this.props.history);
+    let currentPath = FM.activeWindowPath();
+    this.setState({ currentPath });
+    this.changeDirectoryOnLoading();
   }
 
   componentDidMount = () => {
     window.addEventListener("keydown", this.switchActiveList);
     window.addEventListener("keydown", this.toggleActiveListOnTab);
     document.addEventListener("keydown", this.hotkeysListener);
-  }
-  componentDidUpdate() {
-    console.log('Did update', this.leftList, this.rightList);
+
+    if (localStorage.getItem('activeWindow')) {
+      this.setState({ activeWindow: localStorage.getItem('activeWindow') });
+    }
   }
 
   componentWillUnmount = () => {
@@ -67,92 +72,57 @@ class FileManager extends Component {
     localStorage.setItem('rightListPath', this.state.rightList.path);
   }
 
-  componentWillMount = () => {
-    FM.cacheData(this.state.currentUser, this.props.history);
-    let currentPath = FM.activeWindowPath();
-    this.setState({ currentPath });
-    this.changeDirectoryOnLoading();
-  }
+  setStateAsync = updater => new Promise(resolve => this.setState(updater, resolve));
 
-  changeDirectoryOnLoading = () => {
-    this.setState({ activeWindow: localStorage.getItem('activeWindow'), loading: true }, () => {
-      FM.getDataFromServer(`${server}dir=${this.encodePath(localStorage.getItem('leftListPath'))}&action=cd`)
-        .then(result => {
-          let path = localStorage.getItem('leftListPath');
-          let listing = result.data.listing;
-          this.setState({ leftList: { files: { listing }, path } });
-        })
-        .then(FM.getDataFromServer(`${server}dir=${this.encodePath(localStorage.getItem('rightListPath'))}&action=cd`)
-          .then(result => {
-            let path = localStorage.getItem('rightListPath');
-            let listing = result.data.listing;
-            this.setState({ rightList: { files: { listing }, path }, loading: false });
-          })
-        )
-    })
-  }
-
-  encodePath = (path) => {
-    let splitPath = path.split('/');
-    let encodedPath = splitPath.join('%2F');
-    return encodedPath;
-  }
-
-  showError = (error) => {
-    toast.error(error, {
-      position: "top-center",
-      autoClose: 3000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true
+  changeDirectoryOnLoading = async () => {
+    ['leftList', 'rightList'].map(async (side) => {
+      const result = await FM.changeDirectoryOnLoading(server, `${side}Path`);
+      let path = localStorage.getItem(`${side}Path`);
+      let listing = result.data.listing;
+      await this.setStateAsync({ [side]: { files: { listing }, path } });
     });
-    this.setState({ loading: false });
+    
+    await this.setStateAsync({ loading: false });
   }
 
   changeDirectory = () => {
     const { activeWindow, currentPath } = this.state;
-    if (this.state.leftList.path === this.state.rightList.path) {
-      FM.getDataFromServer(`${server}dir=${this.encodePath(this.state.currentPath)}&action=cd`)
-        .then(result => {
-          let listing = result.data.listing;
-          this.setState({ leftList: { files: { listing }, path: currentPath }, rightList: { files: { listing }, path: currentPath }, loading: false });
-        })
-    } else if (activeWindow === "left") {
-      FM.getDataFromServer(`${server}dir=${this.encodePath(this.state.currentPath)}&action=cd`)
-        .then(result => {
-          let listing = result.data.listing;
-          this.setState({ leftList: { files: { listing }, path: currentPath }, loading: false });
-        })
-        .catch(e => console.log(e))
-    } else {
-      FM.getDataFromServer(`${server}dir=${this.encodePath(this.state.currentPath)}&action=cd`)
-        .then(result => {
-          let listing = result.data.listing;
-          this.setState({ rightList: { files: { listing }, path: currentPath }, loading: false });
-        })
-        .catch(e => console.log(e))
-    }
+    FM.changeDirectory(server, currentPath)
+      .then(result => {
+        let listing = result.data.listing;
 
-    console.log(this.leftList);
+        if (this.state.leftList.path === this.state.rightList.path) {
+          this.setState({ leftList: { files: { listing }, path: currentPath }, rightList: { files: { listing }, path: currentPath }, loading: false });
+          this.leftList.resetData();
+          this.rightList.resetData();
+        } else if (activeWindow === "left") {
+          this.setState({ leftList: { files: { listing }, path: currentPath }, loading: false });
+          this.leftList.resetData();
+        } else {
+          this.setState({ rightList: { files: { listing }, path: currentPath }, loading: false });
+          this.rightList.resetData();
+        }
+      });
   }
 
   toggleActiveListOnTab = (e) => {
+    const { activeWindow, rightList, leftList, currentPath } = this.state;
+
     if (this.state.modalVisible) {
       return;
     }
 
     if (e.keyCode === 9) {
       e.preventDefault();
-      if (this.state.activeWindow === "left") {
-        this.setState({ activeWindow: "right", currentPath: this.state.rightList.path });
-        this.changeQuery(this.state.currentPath);
-        this.cachePaths();
+      if (activeWindow === "left") {
+        this.setState({ activeWindow: "right", currentPath: rightList.path });
+        this.rightList.passData();
       } else {
-        this.setState({ activeWindow: "left", currentPath: this.state.leftList.path });
-        this.changeQuery(this.state.currentPath);
-        this.cachePaths();
+        this.setState({ activeWindow: "left", currentPath: leftList.path });
+        this.leftList.passData();
       }
+      this.changeQuery(currentPath);
+      this.cachePaths();
     }
   }
 
@@ -172,63 +142,49 @@ class FileManager extends Component {
     if (e.keyCode === 39) {
       this.setState({ activeWindow: "right", currentPath: this.state.rightList.path });
       this.changeQuery(this.state.currentPath);
+      this.rightList.passData();
       this.cachePaths();
     } else if (e.keyCode === 37) {
       this.setState({ activeWindow: "left", currentPath: this.state.leftList.path });
       this.changeQuery(this.state.currentPath);
+      this.leftList.passData();
       this.cachePaths();
     }
   }
 
-  validateAction = (url) => {
-    this.setState({ loading: true }, () => {
-      FM.validateAction(url)
-        .then(response => {
-          if (response.data.result) {
-            this.changeDirectory();
-          } else {
-            this.showError(response.data.message);
-          }
-        })
+  validateAction = async (url) => {
+    await this.setStateAsync({ loading: true });
+    let response = await FM.validateAction(url);
+    if (response.data.result) {
+      this.changeDirectory();
+    } else {
+      this.showError(response.data.message);
+    }
+  }
+
+  showError = (error) => {
+    toast.error(error, {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true
     });
+    this.setState({ loading: false });
   }
 
   download = () => {
     const { cursor, currentPath, itemName } = this.state;
 
-    if (cursor === 0) {
-      return;
+    if (cursor !== 0) {
+      window.open('/download/file/?path=' + currentPath + '/' + itemName);
     }
-
-    window.open('/download/file/?path=' + currentPath + '/' + itemName);
   }
 
   checkExistingFileName = (selectedFiles) => {
-    let selectedFileNames = [];
-    let existingFileNames = [];
-    let newFiles = [];
-
-    for (let i = 0; i < selectedFiles.length; i++) {
-      selectedFileNames.push(selectedFiles[i]);
-    }
-
-    if (this.state.activeWindow === "left") {
-      for (let i = 0; i < selectedFileNames.length; i++) {
-        if (this.state.leftList.files.listing.map((i) => { return i.name }).includes(selectedFileNames[i].name)) {
-          existingFileNames.push(selectedFileNames[i]);
-        } else {
-          newFiles.push(selectedFileNames[i]);
-        }
-      }
-    } else {
-      for (let i = 0; i < selectedFileNames.length; i++) {
-        if (this.state.rightList.files.listing.map((i) => { return i.name }).includes(selectedFileNames[i].name)) {
-          existingFileNames.push(selectedFileNames[i]);
-        } else {
-          newFiles.push(selectedFileNames[i]);
-        }
-      }
-    }
+    const { activeWindow, leftList, rightList } = this.state;
+    const { existingFileNames, newFiles } = FM.checkExistingFileName(selectedFiles, activeWindow, leftList.files.listing, rightList.files.listing);
 
     if (existingFileNames.length !== 0) {
       this.modal("Replace", existingFileNames);
@@ -240,7 +196,7 @@ class FileManager extends Component {
 
   replaceFiles = (selectedFiles) => {
     for (let i = 0; i < selectedFiles.length; i++) {
-      this.validateAction(`${server}item=${this.encodePath(this.state.currentPath)}%2F${selectedFiles[i].name}&dir=${this.encodePath(this.state.currentPath)}&action=delete_files`);
+      this.validateAction(`${server}item=${FM.encodePath(this.state.currentPath)}%2F${selectedFiles[i].name}&dir=${FM.encodePath(this.state.currentPath)}&action=delete_files`);
     }
 
     this.upload(selectedFiles);
@@ -256,53 +212,54 @@ class FileManager extends Component {
     for (let i = 0; i < selectedFiles.length; i++) {
       formData.append('files[]', selectedFiles[i], selectedFiles[i].name);
     }
+
     this.setState({ loading: true }, () => {
-      axios.post(`https://r5.vestacp.com:8083/upload/?dir=${this.state.currentPath}`, formData, {
+      axios.post(`${window.location.origin}/upload/?dir=${this.state.currentPath}`, formData, {
         onUploadProgress: progressEvent => {
           let uploadPercent = Math.round(progressEvent.loaded / progressEvent.total * 100);
           this.setState({ uploadPercent });
         }
-      }).then((result) => {
+      }).then(() => {
         this.setState({ uploadPercent: "0" });
         this.changeDirectory();
       })
     });
   }
 
-  onDelete = () => {
+  onDelete = async () => {
     const { itemsSelected, itemName, currentPath } = this.state;
     if (itemsSelected.length > 0) {
-      this.setState({ loading: true }, () => {
-        FM.deleteItems(server, this.encodePath(currentPath), itemsSelected)
-          .then(() => {
-            this.setState({ itemsSelected: [] }, () => {
-              this.changeDirectory();
-            })
-          })
-      });
+      await this.setStateAsync({ loading: true });
+      await FM.deleteItems(server, FM.encodePath(currentPath), itemsSelected);
+      this.changeDirectory();
     } else {
-      this.validateAction(`${server}item=${this.encodePath(currentPath)}%2F${itemName}&dir=${this.encodePath(currentPath)}&action=delete_files`);
+      this.validateAction(`${server}item=${FM.encodePath(currentPath)}%2F${itemName}&dir=${FM.encodePath(currentPath)}&action=delete_files`);
     }
   }
 
   newFile = () => {
     let name = this.inputElement.value;
-    this.validateAction(`${server}filename=${name}&dir=${this.encodePath(this.state.currentPath)}&action=create_file`);
+    this.validateAction(`${server}filename=${name}&dir=${FM.encodePath(this.state.currentPath)}&action=create_file`);
   }
 
   newDir = () => {
     let name = this.inputElement.value;
-    this.validateAction(`${server}dirname=${name}&dir=${this.encodePath(this.state.currentPath)}&action=create_dir`);
+    this.validateAction(`${server}dirname=${name}&dir=${FM.encodePath(this.state.currentPath)}&action=create_dir`);
   }
 
   onRename = () => {
-    let name = this.state.modalInputValue;
-    this.validateAction(`${server}item=${this.state.itemName}&target_name=${name}&dir=${this.encodePath(this.state.currentPath)}&action=rename_file`);
+    const { modalInputValue, itemType, itemName, currentPath } = this.state;
+    let name = modalInputValue;
+    if (itemType === "f") {
+      this.validateAction(`${server}item=${itemName}&target_name=${name}&dir=${FM.encodePath(currentPath)}&action=rename_file`);
+    } else if (itemType === "d") {
+      this.validateAction(`${server}item=${itemName}&target_name=${name}&dir=${FM.encodePath(currentPath)}%2F&action=rename_directory`);
+    }
   }
 
   onChangePermissions = () => {
     let permissions = this.state.modalInputValue;
-    this.validateAction(`${server}dir=${this.encodePath(this.state.currentPath)}%2F&item=${this.state.itemName}&permissions=${permissions}&action=chmod_item`);
+    this.validateAction(`${server}dir=${FM.encodePath(this.state.currentPath)}%2F&item=${this.state.itemName}&permissions=${permissions}&action=chmod_item`);
     this.setState({ itemPermissions: permissions });
   }
 
@@ -316,50 +273,42 @@ class FileManager extends Component {
           let path = `${this.state.currentPath}/`;
           items.push(path += this.state.itemsSelected[i]);
         }
-        this.validateAction(`${server}items=${items}&dst_item=${this.encodePath(name)}&action=pack_item`);
+        this.validateAction(`${server}items=${items}&dst_item=${FM.encodePath(name)}&action=pack_item`);
         this.setState({ itemsSelected: [] });
       })
     } else {
-      this.validateAction(`${server}items=${this.encodePath(this.state.currentPath)}%2F${this.state.itemName}&dst_item=${this.encodePath(name)}&action=pack_item`);
+      this.validateAction(`${server}items=${FM.encodePath(this.state.currentPath)}%2F${this.state.itemName}&dst_item=${FM.encodePath(name)}&action=pack_item`);
     }
   }
 
   extractItem = () => {
     let name = this.inputElement.value;
-    this.validateAction(`${server}item=${this.encodePath(this.state.currentPath)}%2F${this.state.itemName}&filename=${this.state.itemName}&dir=${this.encodePath(this.state.currentPath)}&dir_target=${name}&action=unpack_item`);
+    this.validateAction(`${server}item=${FM.encodePath(this.state.currentPath)}%2F${this.state.itemName}&filename=${this.state.itemName}&dir=${FM.encodePath(this.state.currentPath)}&dir_target=${name}&action=unpack_item`);
   }
 
-  moveItem = () => {
+  moveItem = async () => {
     const { currentPath, itemsSelected, itemName } = this.state;
     let targetDir = this.inputElement.value;
 
     if (itemsSelected.length > 0) {
-      this.setState({ loading: true }, () => {
-        FM.moveItems(server, this.encodePath(currentPath), targetDir, itemsSelected)
-          .then(() => {
-            this.setState({ itemsSelected: [] }, () => {
-              this.changeDirectory();
-            })
-          })
-      });
+      await this.setStateAsync({ loading: true });
+      await FM.moveItems(server, FM.encodePath(currentPath), targetDir, itemsSelected);
+      await this.setStateAsync({ itemsSelected: [] });
+      this.changeDirectory();
     } else {
       this.validateAction(`${server}item=${currentPath}%2F${itemName}&target_name=${targetDir}&action=move_file`);
     }
   }
 
-  copyItem = () => {
+  copyItem = async () => {
     const { currentPath, itemsSelected, itemName } = this.state;
     let targetDir = this.inputElement.value;
 
     if (itemsSelected.length > 0) {
-      this.setState({ loading: true }, () => {
-        FM.copyItems(server, this.encodePath(currentPath), targetDir, itemsSelected)
-          .then(() => {
-            this.setState({ itemsSelected: [] }, () => {
-              this.changeDirectory();
-            })
-          })
-      });
+      await this.setStateAsync({ loading: true });
+      await FM.copyItems(server, FM.encodePath(currentPath), targetDir, itemsSelected);
+      await this.setStateAsync({ itemsSelected: [] });
+      this.changeDirectory();
     } else {
       this.validateAction(`${server}item=${currentPath}%2F${itemName}&filename=${itemName}&dir=${currentPath}&dir_target=${targetDir}&action=copy_file`);
     }
@@ -387,34 +336,22 @@ class FileManager extends Component {
   }
 
   moveBack = () => {
-    if (this.state.activeWindow === "left") {
-      let leftList = { ...this.state.leftList };
-      leftList.path = leftList.path.substring(0, leftList.path.lastIndexOf('/'));
-      this.setState({ leftList, currentPath: leftList.path });
-      this.props.history.push({ search: `?path=${leftList.path}` });
-      this.openDirectory();
-    } else {
-      let rightList = { ...this.state.rightList };
-      rightList.path = rightList.path.substring(0, rightList.path.lastIndexOf('/'));
-      this.setState({ rightList, currentPath: rightList.path });
-      this.props.history.push({ search: `?path=${rightList.path}` });
-      this.openDirectory();
-    }
+    const { activeWindow } = this.state;
+
+    let list = { ...this.state[`${activeWindow}List`] };
+    list.path = list.path.substring(0, list.path.lastIndexOf('/'));
+    this.setState({ [`${activeWindow}List`]: list, currentPath: list.path });
+    this.props.history.push({ search: `?path=${list.path}` })
+    this.openDirectory();
   }
 
   addToPath = (name) => {
     const { activeWindow } = this.state;
-    if (activeWindow === "left") {
-      let leftList = { ...this.state.leftList };
-      let oldPath = leftList.path;
-      leftList.path = `${oldPath}/${name}`;
-      this.setState({ leftList, currentPath: leftList.path });
-    } else {
-      let rightList = { ...this.state.rightList };
-      let oldPath = rightList.path;
-      rightList.path = `${oldPath}/${name}`;
-      this.setState({ rightList, currentPath: rightList.path });
-    }
+
+    let activeList = { ...this.state[`${activeWindow}List`] };
+    let oldPath = activeList.path;
+    activeList.path = `${oldPath}/${name}`;
+    this.setState({ [`${activeWindow}List`]: activeList, currentPath: activeList.path });
   }
 
   changeInputValue = (modalInputValue) => {
@@ -479,7 +416,29 @@ class FileManager extends Component {
   }
 
   render() {
-    const { leftList, rightList, activeWindow, modalWindow, modalVisible, itemsSelected, itemName, loading, uploadPercent, hotkeysPanel, itemType } = this.state;
+    const { activeWindow, modalWindow, modalVisible, itemsSelected, itemName, loading, uploadPercent, hotkeysPanel, itemType } = this.state;
+    const DirectoryLists = ['left', 'right'].map((side) =>
+      <DirectoryList
+        changePathAfterToggle={this.changePathAfterToggle}
+        openCertainDirectory={this.openCertainDirectory}
+        isActive={activeWindow === side}
+        openDirectory={this.openDirectory}
+        passSelection={this.passSelection}
+        data={this.state[`${side}List`].files}
+        onClick={this.toggleActiveList}
+        changePath={this.changePath}
+        modalVisible={modalVisible}
+        addToPath={this.addToPath}
+        cursor={this.state.cursor}
+        passData={this.passData}
+        ref={el => this[`${side}List`] = el}
+        download={this.download}
+        moveBack={this.moveBack}
+        path={this.state[`${side}List`].path}
+        history={this.props.history}
+        loading={loading}
+        list={side} />
+    )
     return (
       <div className="window">
         {uploadPercent !== "0" ? <ProgressBar progress={uploadPercent} /> : null}
@@ -495,46 +454,7 @@ class FileManager extends Component {
           cursor={this.state.cursor}
           name={itemName} />
         <div className="lists-container">
-          <DirectoryList
-            changePathAfterToggle={this.changePathAfterToggle}
-            openCertainDirectory={this.openCertainDirectory}
-            isActive={activeWindow === "left"}
-            openDirectory={this.openDirectory}
-            passSelection={this.passSelection}
-            data={this.state.leftList.files}
-            onClick={this.toggleActiveList}
-            changePath={this.changePath}
-            modalVisible={modalVisible}
-            addToPath={this.addToPath}
-            ref={this.leftList}
-            cursor={this.state.cursor}
-            passData={this.passData}
-            download={this.download}
-            moveBack={this.moveBack}
-            path={leftList.path}
-            history={this.props}
-            loading={loading}
-            list="left" />
-          <DirectoryList
-            changePathAfterToggle={this.changePathAfterToggle}
-            openCertainDirectory={this.openCertainDirectory}
-            isActive={activeWindow === "right"}
-            openDirectory={this.openDirectory}
-            passSelection={this.passSelection}
-            data={this.state.rightList.files}
-            onClick={this.toggleActiveList}
-            changePath={this.changePath}
-            modalVisible={modalVisible}
-            addToPath={this.addToPath}
-            ref={this.rightList}
-            cursor={this.state.cursor}
-            passData={this.passData}
-            download={this.download}
-            moveBack={this.moveBack}
-            path={rightList.path}
-            history={this.props}
-            loading={loading}
-            list="right" />
+          {DirectoryLists}
           <Hotkeys style={hotkeysPanel} close={this.hotkeys} />
           <HotkeysButton open={this.hotkeys} />
         </div>

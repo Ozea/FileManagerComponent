@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Spinner from '../../Spinner/Spinner';
 import Path from '../../Path/Path';
@@ -33,7 +32,7 @@ class DirectoryList extends Component {
     sortingType: "Type",
     itemsSelected: [],
     cursor: 0
-  }
+  };
 
   componentWillMount = () => {
     if (localStorage.getItem(`${this.props.list}Sorting`) && localStorage.getItem(`${this.props.list}Order`)) {
@@ -68,7 +67,6 @@ class DirectoryList extends Component {
     }
 
     this.props.moveBack();
-    this.setState({ cursor: 0 });
   }
 
   isHomeDirectory = () => {
@@ -86,6 +84,7 @@ class DirectoryList extends Component {
         search: `?path=${path}`
       });
       this.cacheActiveWindowAndPaths();
+      this.passData();
     }
   }
 
@@ -118,7 +117,7 @@ class DirectoryList extends Component {
   }
 
   handleLiSelection = (e) => {
-    const { data, isActive, modalVisible } = this.props;
+    const { data, isActive, modalVisible, changePath, path } = this.props;
     const { cursor } = this.state;
 
     if (!isActive || modalVisible) {
@@ -137,6 +136,7 @@ class DirectoryList extends Component {
 
       this.setState({ cursor: cursor + 1 });
       this.passData();
+      changePath(path);
     }
 
     if (e.keyCode === 38) {
@@ -151,14 +151,18 @@ class DirectoryList extends Component {
 
       this.setState({ cursor: cursor - 1 });
       this.passData();
+      changePath(path);
     }
   }
 
+  resetData = () => {
+    this.setState({ cursor: 0, itemsSelected: [] });
+  }
+
   passData = () => {
-    const { data, passData, path } = this.props;
+    const { data, passData } = this.props;
     const { name, permissions, type } = data.listing[this.state.cursor];
     passData(this.state.cursor, name, permissions, type);
-    this.props.changePath(path);
   }
 
   openDirectory = (name) => {
@@ -170,7 +174,7 @@ class DirectoryList extends Component {
     });
     addToPath(name);
     openDirectory();
-    this.setState({ cursor: 0, itemsSelected: [] });
+    this.setState({ cursor: 0 });
   }
 
   openCertainDirectory = (path) => {
@@ -186,7 +190,6 @@ class DirectoryList extends Component {
     });
     changePath(path);
     openCertainDirectory();
-    this.setState({ cursor: 0 });
   }
 
   changeSorting = (sortingType, orderType) => {
@@ -297,4 +300,4 @@ class DirectoryList extends Component {
   }
 }
 
-export default withRouter(DirectoryList);
+export default DirectoryList;

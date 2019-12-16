@@ -12,6 +12,7 @@ $white: #fff;
 
   .btn-group {
     width: 75px;
+    margin-left: 15px;
     background: none;
     box-shadow: none;
     background: #7b7b7b;
@@ -79,6 +80,12 @@ $white: #fff;
   color: $white;
   box-shadow: 0 2px 6px -2px gray;
 
+  .clickable-wrapper {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow: auto;
+  }
+
   .btn-group {
     width: 75px;
     background: none;
@@ -140,4 +147,5 @@ $white: #fff;
 
 .clickable-path {
   display: flex;
+  float: 0 0 auto;
 }
