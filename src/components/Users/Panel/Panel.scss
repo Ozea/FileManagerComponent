@@ -1,0 +1,171 @@
+.top-panel.small-device {
+  display: none;
+}
+
+.top-panel {
+  display: flex;
+  flex-direction: row;
+  font-size: 12px;
+  position: fixed;
+  width: 100%;
+  text-align: center;
+  color: white;
+  background: #111;
+  height: 34px;
+  align-items: center;
+  padding: 0 20%;
+  z-index: 2;
+
+  .container {
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    height: 100%;
+
+    div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+  .left-menu {
+    width: 80%;
+    padding-left: 0;
+
+    div {
+      width: 7rem;
+      height: 100%;
+      padding: 0 5px;
+
+      &:hover {
+        background: #f79b44;
+      }
+    }
+
+    div.fm {
+      width: 10rem;
+    }
+  }
+
+  .profile-menu {
+    width: 20%;
+
+    div {
+      width: 6rem;
+      height: 100%;
+    }
+
+    div.bell {
+      color: #C0E60E;
+
+      svg {
+        border-radius: 30px;
+        width: 25px;
+        height: 25px;
+        padding: 5px;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.4);
+        }
+      }
+    }
+
+    div + div{
+      color: #a4abad;
+      font-weight: 700;
+    
+      &:hover {
+        color: #ffd62e;
+      }
+    }
+
+    div + div + div:hover {
+      color: #C0E60E;
+    }
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .top-panel {
+    padding: 0 15%;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .top-panel {
+    padding: 0 5%;
+  }
+}
+
+//Small Devices
+@media (max-width: 900px) {
+  .top-panel {
+    display: none;
+  }
+
+  .top-panel.small-device {
+    display: flex;
+    padding: 0;
+
+    > .container {
+      justify-content: center;
+      align-items: center;
+      width: 30%;
+    }
+
+    .profile-menu {
+      padding-left: 10%;
+    }
+
+    .hamburger {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+
+      .bar {
+        height: 2px;
+        margin: 2px;
+        width: 20px;
+        background: white;
+      }
+    }
+  }
+
+  @keyframes toggleNav {
+    from {
+      transform: translateY(-20px);
+    }
+
+    to {
+      transform: translateY(50px);
+    }
+  }
+}
+
+@media (max-width: 420px) {
+  .top-panel.small-device {
+    .profile-menu {
+      padding: 0;
+      margin-right: 5px;
+
+      .bell {
+        width: 20%;
+      }
+
+      .bell + div {
+        width: 40%;
+      }
+
+      .bell + div + div {
+        width: 40%;
+      }
+    }
+  }
+}
