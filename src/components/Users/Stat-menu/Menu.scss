@@ -45,6 +45,13 @@
     }
 
     .stat {
+      a {
+        display: block;
+        width: 100%;
+        height: 100%;
+        color: black;
+        text-decoration: none;
+      }
 
       h3 {
         font-size: 14px;
