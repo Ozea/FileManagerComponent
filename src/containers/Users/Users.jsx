@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import MainNav from '../../components/MainNav/MainNav';
 import User from '../../components/Users/User/User';
 import Spinner from '../../components/Spinner/Spinner';
 import { users } from '../../mocks/users';
@@ -35,10 +34,7 @@ class Users extends Component {
   render() {
     return (
       <div>
-        <MainNav />
-        <div className="content">
-          {this.state.loading ? <Spinner /> : this.users()}
-        </div>
+        {this.state.loading ? <Spinner /> : this.users()}
       </div>
     );
   }
