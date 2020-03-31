@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import User from '../../components//User/User';
+import User from '../../components/User/User';
 import Spinner from '../../components/Spinner/Spinner';
 import { users } from '../../mocks/users';
 import './User.scss';
