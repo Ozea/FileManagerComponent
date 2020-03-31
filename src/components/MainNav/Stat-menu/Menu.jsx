@@ -26,10 +26,6 @@ function style({ menuHeight, mobile }) {
 function statClassName(activeName) {
   let path = window.location.pathname;
 
-  if (path === "/list/backup") {
-    return "stat l-active last";
-  }
-
   if (path === activeName) {
     return "stat l-active";
   }
@@ -97,11 +93,13 @@ const Menu = (props) => {
             </div>
           </Link>
         </div>
-        <div className={statClassName("/list/backup")}>
-          <h3>Backup</h3>
-          <div className="stats">
-            <div>backups: <span>{users.admin.U_BACKUPS}</span></div>
-          </div>
+        <div className={statClassName("/list/backup") + ' last'}>
+          <Link to="/list/backup">
+            <h3>Backup</h3>
+            <div className="stats">
+              <div>backups: <span>{users.admin.U_BACKUPS}</span></div>
+            </div>
+          </Link>
         </div>
       </div>
     </div>

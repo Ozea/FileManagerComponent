@@ -7,6 +7,7 @@ import Users from '../../containers/Users/Users';
 import { Route, Switch } from "react-router-dom";
 import Web from '../../containers/Web/Web';
 import './ControlPanelContent.scss';
+import Backups from '../Backups/Backups';
 
 class ControlPanelContent extends Component {
   render() {
@@ -20,6 +21,7 @@ class ControlPanelContent extends Component {
             <Route path="/list/dns" component={DomainNameSystems} />
             <Route path="/list/db" component={Databases} />
             <Route path="/list/cron" component={CronJobs} />
+            <Route path="/list/backup" component={Backups} />
           </Switch>
         </div>
       </div>
