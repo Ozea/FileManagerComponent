@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Menu from '../../Users/Stat-menu/Menu';
-import Toolbar from '../../Users/Toolbar/Toolbar';
+import Menu from '../../MainNav/Stat-menu/Menu';
+import Toolbar from '../../MainNav/Toolbar/Toolbar';
 import './MobileTopNav.scss';
 
 class MobileTopNav extends Component {
