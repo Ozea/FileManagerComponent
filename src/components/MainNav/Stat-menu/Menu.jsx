@@ -80,11 +80,13 @@ const Menu = (props) => {
           </div>
         </div>
         <div className={statClassName("/list/db")}>
-          <h3>Db</h3>
-          <div className="stats">
-            <div>databases: <span>{users.admin.U_DATABASES}</span></div>
-            <div>suspended: <span>{users.admin.SUSPENDED_DB}</span></div>
-          </div>
+          <Link to="/list/db">
+            <h3>Db</h3>
+            <div className="stats">
+              <div>databases: <span>{users.admin.U_DATABASES}</span></div>
+              <div>suspended: <span>{users.admin.SUSPENDED_DB}</span></div>
+            </div>
+          </Link>
         </div>
         <div className={statClassName("/list/cron")}>
           <h3>Cron</h3>
