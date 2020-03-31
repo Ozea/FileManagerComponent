@@ -7,7 +7,8 @@ import './User.scss';
 class Users extends Component {
   state = {
     users: [],
-    loading: false
+    loading: false,
+    total: 0
   }
 
   componentDidMount() {
@@ -15,6 +16,21 @@ class Users extends Component {
       loading: true,
       users
     }, () => this.setState({ loading: false }));
+  }
+
+  totalAmount = () => {
+    const { users } = this.state;
+    let result = [];
+    
+    for (let i in users) {
+      result.push(users[i]);
+    }
+
+    if ( result.length < 2 ) {
+      return <div className="total">{result.length} account</div>;
+    } else {
+      return <div className="total">{result.length} accounts</div>;
+    }
   }
 
   users = () => {
@@ -35,6 +51,7 @@ class Users extends Component {
     return (
       <div>
         {this.state.loading ? <Spinner /> : this.users()}
+        {this.totalAmount()}
       </div>
     );
   }

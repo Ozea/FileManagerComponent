@@ -17,6 +17,21 @@ class Web extends Component {
     }, () => this.setState({ loading: false }));
   }
 
+  totalAmount = () => {
+    const { webDomains } = this.state;
+    let result = [];
+
+    for (let i in webDomains) {
+      result.push(webDomains[i]);
+    }
+
+    if (result.length < 2) {
+      return <div className="total">{result.length} domain</div>;
+    } else {
+      return <div className="total">{result.length} domains</div>;
+    }
+  }
+
   webDomains = () => {
     const { webDomains } = this.state;
     const result = [];
@@ -33,9 +48,8 @@ class Web extends Component {
   render() {
     return (
       <div className="web">
-        <div>
-          {this.state.loading ? <Spinner /> : this.webDomains()}
-        </div>
+        {this.state.loading ? <Spinner /> : this.webDomains()}
+        {this.totalAmount()}
       </div>
     );
   }

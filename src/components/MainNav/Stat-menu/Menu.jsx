@@ -89,11 +89,13 @@ const Menu = (props) => {
           </Link>
         </div>
         <div className={statClassName("/list/cron")}>
-          <h3>Cron</h3>
-          <div className="stats">
-            <div>jobs: <span>{users.admin.U_CRON_JOBS}</span></div>
-            <div>suspended: <span>{users.admin.SUSPENDED_CRON}</span></div>
-          </div>
+          <Link to="/list/cron">
+            <h3>Cron</h3>
+            <div className="stats">
+              <div>jobs: <span>{users.admin.U_CRON_JOBS}</span></div>
+              <div>suspended: <span>{users.admin.SUSPENDED_CRON}</span></div>
+            </div>
+          </Link>
         </div>
         <div className={statClassName("/list/backup")}>
           <h3>Backup</h3>

@@ -17,6 +17,21 @@ class Databases extends Component {
     }, () => this.setState({ loading: false }));
   }
 
+  totalAmount = () => {
+    const { databases } = this.state;
+    let result = [];
+    
+    for (let i in databases) {
+      result.push(databases[i]);
+    }
+
+    if ( result.length < 2 ) {
+      return <div className="total">{result.length} database</div>;
+    } else {
+      return <div className="total">{result.length} databases</div>;
+    }
+  }
+
   databases = () => {
     const { databases } = this.state;
     const result = [];
@@ -34,6 +49,7 @@ class Databases extends Component {
     return (
       <div>
         {this.state.loading ? <Spinner /> : this.databases()}
+        {this.totalAmount()}
       </div>
     );
   }

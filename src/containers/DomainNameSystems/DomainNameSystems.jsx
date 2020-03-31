@@ -17,6 +17,21 @@ class DomainNameSystems extends Component {
     }, () => this.setState({ loading: false }));
   }
 
+  totalAmount = () => {
+    const { domainNameSystems } = this.state;
+    let result = [];
+    
+    for (let i in domainNameSystems) {
+      result.push(domainNameSystems[i]);
+    }
+
+    if ( result.length < 2 ) {
+      return <div className="total">{result.length} domain</div>;
+    } else {
+      return <div className="total">{result.length} domains</div>;
+    }
+  }
+
   dns = () => {
     const { domainNameSystems } = this.state;
     const result = [];
@@ -37,6 +52,7 @@ class DomainNameSystems extends Component {
         <div>
           {this.state.loading ? <Spinner /> : this.dns()}
         </div>
+        {this.totalAmount()}
       </div>
     );
   }

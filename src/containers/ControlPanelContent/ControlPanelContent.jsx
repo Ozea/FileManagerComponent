@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import DomainNameSystems from '../DomainNameSystems/DomainNameSystems';
 import Databases from '../../containers/Databases/Databases';
+import CronJobs from '../../containers/CronJobs/CronJobs';
 import MainNav from '../../components/MainNav/MainNav';
 import Users from '../../containers/Users/Users';
 import { Route, Switch } from "react-router-dom";
@@ -18,6 +19,7 @@ class ControlPanelContent extends Component {
             <Route path="/list/web" component={Web} />
             <Route path="/list/dns" component={DomainNameSystems} />
             <Route path="/list/db" component={Databases} />
+            <Route path="/list/cron" component={CronJobs} />
           </Switch>
         </div>
       </div>
