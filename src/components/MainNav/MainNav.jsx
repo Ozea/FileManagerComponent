@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Toolbar from '../Users/Toolbar/Toolbar';
-import Menu from '../Users/Stat-menu/Menu';
-import Panel from '../Users/Panel/Panel';
+import Toolbar from '../MainNav/Toolbar/Toolbar';
+import Menu from '../MainNav/Stat-menu/Menu';
+import Panel from '../MainNav/Panel/Panel';
 import MobileTopNav from '../MainNav/Mobile/MobileTopNav';
 import './MainNav.scss';
 

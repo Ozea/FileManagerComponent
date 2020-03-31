@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import './ControlPanelContent.scss';
-import Users from '../../containers/Users/Users';
-import Web from '../../containers/Web/Web';
+import DomainNameSystems from '../DomainNameSystems/DomainNameSystems';
 import MainNav from '../../components/MainNav/MainNav';
+import Users from '../../containers/Users/Users';
 import { Route, Switch } from "react-router-dom";
+import Web from '../../containers/Web/Web';
+import './ControlPanelContent.scss';
 
 class ControlPanelContent extends Component {
   render() {
@@ -14,6 +15,7 @@ class ControlPanelContent extends Component {
           <Switch>
             <Route path="/list/user" component={Users} />
             <Route path="/list/web" component={Web} />
+            <Route path="/list/dns" component={DomainNameSystems} />
           </Switch>
         </div>
       </div>
