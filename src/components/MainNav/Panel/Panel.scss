@@ -26,9 +26,35 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      
+      a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+        text-decoration: none;
+        color: white;
+      }
 
       &:hover {
         cursor: pointer;
+      }
+    }
+
+    div.active {
+      background: white;
+      
+      a {
+        color: #ff6700;
+
+        &:hover {
+          color: white;
+        }
+      }
+
+      &:hover {
+        background: #ff6700;
       }
     }
   }
