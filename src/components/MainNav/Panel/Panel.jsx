@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from "react-router-dom";
 import './Panel.scss';
 
 class Panel extends Component {
@@ -17,13 +18,23 @@ class Panel extends Component {
     }
   }
 
+  className = (activeName) => {
+    let path = window.location.pathname;
+
+    if (path === activeName ) {
+      return "top-link active";
+    }
+
+    return "top-link";
+  }
+
   render() {
     return (
       <div className="panel-wrapper">
         <div className="top-panel">
           <div className="container left-menu">
             <div className="logo">LOGO</div>
-            <div>Packages</div>
+            <div className={this.className("/list/packages")}><Link to="/list/packages">Packages</Link></div>
             <div>IP</div>
             <div>Graphs</div>
             <div>Statistics</div>
