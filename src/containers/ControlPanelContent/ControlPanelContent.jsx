@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import DomainNameSystems from '../DomainNameSystems/DomainNameSystems';
+import InternetProtocols from '../InternetProtocols/InternetProtocols';
 import Databases from '../../containers/Databases/Databases';
 import CronJobs from '../../containers/CronJobs/CronJobs';
 import Packages from '../../containers/Packages/Packages';
@@ -18,6 +19,7 @@ class ControlPanelContent extends Component {
         <div className="content">
           <Switch>
             <Route path="/list/packages" component={Packages} />
+            <Route path="/list/ip" component={InternetProtocols} />
             <Route path="/list/user" component={Users} />
             <Route path="/list/web" component={Web} />
             <Route path="/list/dns" component={DomainNameSystems} />
