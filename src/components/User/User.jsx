@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './User.scss';
 import ListItem from '../ControlPanel/ListItem/ListItem';
 import Container from '../ControlPanel/Container/Container';
+import './User.scss';
 
 class User extends Component {
   printNameServers = servers => {
