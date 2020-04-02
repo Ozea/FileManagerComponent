@@ -3,13 +3,14 @@ import DomainNameSystems from '../DomainNameSystems/DomainNameSystems';
 import InternetProtocols from '../InternetProtocols/InternetProtocols';
 import Databases from '../../containers/Databases/Databases';
 import CronJobs from '../../containers/CronJobs/CronJobs';
+import RRDs from '../../containers/RRDs/RRDs';
 import Packages from '../../containers/Packages/Packages';
 import MainNav from '../../components/MainNav/MainNav';
 import Users from '../../containers/Users/Users';
 import { Route, Switch } from "react-router-dom";
 import Web from '../../containers/Web/Web';
-import './ControlPanelContent.scss';
 import Backups from '../Backups/Backups';
+import './ControlPanelContent.scss';
 
 class ControlPanelContent extends Component {
   render() {
@@ -20,6 +21,7 @@ class ControlPanelContent extends Component {
           <Switch>
             <Route path="/list/packages" component={Packages} />
             <Route path="/list/ip" component={InternetProtocols} />
+            <Route path="/list/rrd" component={RRDs} />
             <Route path="/list/user" component={Users} />
             <Route path="/list/web" component={Web} />
             <Route path="/list/dns" component={DomainNameSystems} />
