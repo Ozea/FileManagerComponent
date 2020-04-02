@@ -70,12 +70,17 @@
     }
 
     .c-1 {
-      margin-left: 0;
+      margin: 0;
+      margin-top: 15px;
+    }
+
+    .c-2 {
+      margin: 0;
+      margin-top: 15px;
+      padding-left: 4rem;
     }
 
     .c-3 {
-      margin-right: 0;
-
       div.ns {
         margin-top: 20px;
       }
@@ -83,7 +88,6 @@
 
     > div {
       margin: 15px 20px;
-      width: 33.3%;
     }
 
     .stat {

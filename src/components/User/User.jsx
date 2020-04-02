@@ -22,7 +22,7 @@ class User extends Component {
           <div className="name">{data.NAME}</div>
           <div>{data.FNAME} {data.LNAME}</div>
           <div className="stats">
-            <Container className="c-1 w-35">
+            <Container className="c-1 w-30">
               <div className="bandwidth">Bandwidth <span><span className="stat">{data.U_BANDWIDTH}</span> mb</span></div>
               <div className="disk">Disk: <span><span className="stat">{data.U_DISK}</span> mb</span></div>
               <div className="sub-disk-stats">
@@ -36,7 +36,7 @@ class User extends Component {
                 </div>
               </div>
             </Container>
-            <Container className="c-2 w-30">
+            <Container className="c-2 w-40">
               <div>Web Domains: <span><span className="stat">{data.U_WEB_DOMAINS}</span> / unlimited</span></div>
               <div>DNS Domains: <span><span className="stat">{data.U_DNS_DOMAINS}</span> / unlimited</span></div>
               <div>Mail Domains: <span><span className="stat">{data.U_MAIL_DOMAINS}</span>  / unlimited</span></div>
@@ -44,7 +44,7 @@ class User extends Component {
               <div>Cron Jobs: <span><span className="stat">{data.U_CRON_JOBS}</span>  / unlimited</span></div>
               <div>Backups: <span><span className="stat">{data.U_BACKUPS}</span>  / {data.BACKUPS}</span></div>
             </Container>
-            <Container className="c-3 w-35">
+            <Container className="c-3 w-30">
               <div>Email: <span className="stat">{data.CONTACT}</span></div>
               <div>Packages: <span className="stat">{data.PACKAGE}</span></div>
               <div>SSH Access: <span className="stat">{data.SHELL}</span></div>

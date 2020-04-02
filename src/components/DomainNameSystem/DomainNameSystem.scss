@@ -5,3 +5,11 @@ span.dns-records {
   font-style: italic;
   color: gray;
 }
+
+.r-col {
+  .stats {
+    .c-2.w-30 {
+      padding-left: 0;
+    }
+  }
+}
