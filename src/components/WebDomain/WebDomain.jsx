@@ -14,11 +14,11 @@ class WebDomain extends Component {
           <div className="name">{data.ALIAS}</div>
           <div>{data.IP}</div>
           <div className="stats">
-            <Container className="c-1 w-35">
+            <Container className="c-1 w-25">
               <div className="bandwidth">Bandwidth <span><span className="stat">{data.U_BANDWIDTH}</span> mb</span></div>
               <div className="disk">Disk: <span><span className="stat">{data.U_DISK}</span> mb</span></div>
             </Container>
-            <Container className="c-2 w-30">
+            <Container className="c-2 w-45">
               <div>Web Template: <span className="stat">{data.TPL}</span></div>
               <div>SSL Support: <span className="stat">{data.SSL}</span></div>
               <div className="web-stats">Web Statistics</div>
