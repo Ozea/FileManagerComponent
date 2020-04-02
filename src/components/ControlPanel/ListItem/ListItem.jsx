@@ -41,18 +41,10 @@ class ListItem extends Component {
     return "list-item";
   }
 
-  style = () => {
-    if (!this.props.toggled && !this.props.checked) {
-      return { display: "none" };
-    } else {
-      return { display: "flex" };
-    }
-  }
-
   render() {
     return (
       <div className={this.className()}>
-        <Container className="l-col w-15" style={this.style()}>
+        <Container className="l-col w-15">
           <div className="checkbox"><input type="checkbox" onChange={(e) => this.toggleItem(e)} /></div>
           {this.printDate(this.props.date)}
           <div onClick={this.starItem}><FontAwesomeIcon icon="star" /></div>

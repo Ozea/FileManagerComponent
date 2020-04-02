@@ -37,7 +37,7 @@ class Panel extends Component {
             <div className={this.className("/list/packages")}><Link to="/list/packages">Packages</Link></div>
             <div className={this.className("/list/ip")}><Link to="/list/ip">IP</Link></div>
             <div className={this.className("/list/rrd")}><Link to="/list/rrd">Graphs</Link></div>
-            <div>Statistics</div>
+            <div className={this.className("/list/stats")}><Link to="/list/stats">Statistics</Link></div>
             <div>Log</div>
             <div>Updates</div>
             <div>Firewall</div>

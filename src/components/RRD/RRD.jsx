@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Container from '../ControlPanel/Container/Container';
 import { generateImagePath } from '../../mocks/rrds';
 import './RRD.scss';
@@ -35,6 +36,12 @@ class RRD extends Component {
             </Container>
           </div>
         </Container>
+        <div className="actions">
+          <div>LOGOUT <FontAwesomeIcon icon="user-lock" /></div>
+          <div>EDIT <FontAwesomeIcon icon="pen" /></div>
+          <div>SUSPEND <FontAwesomeIcon icon="lock" /></div>
+          <div>DELETE <FontAwesomeIcon icon="times" /></div>
+        </div>
       </div>
     );
   }
