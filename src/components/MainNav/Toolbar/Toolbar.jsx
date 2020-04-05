@@ -3,8 +3,50 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './Toolbar.scss';
 
 class Toolbar extends Component {
+  state = {
+    toolbarHeight: 205
+  }
+
+  componentDidMount() {
+    window.addEventListener("resize", this.handleToolbar);
+    document.addEventListener("scroll", this.changeToolbarHeight);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener("resize", this.handleToolbar);
+    document.removeEventListener("scroll", this.changeToolbarHeight);
+  }
+
+  handleToolbar = () => {
+    if (document.documentElement.clientWidth < 900) {
+      this.setState({
+        toolbarHeight: 115
+      });
+    } else {
+      this.setState({
+        toolbarHeight: 205
+      });
+    }
+  }
+
+  changeToolbarHeight = () => {
+    if (document.documentElement.clientWidth > 900) {
+      let scrollTop = window.scrollY;
+      let toolbarHeight = Math.max(115, 205 - scrollTop);
+      this.setState({ toolbarHeight });
+    }
+  }
+
   className = () => {
-    return this.props.toolbarHeight === 115 ? "toolbar t-shadow" : "toolbar";
+    return this.state.toolbarHeight === 115 ? "toolbar t-shadow" : "toolbar";
+  }
+
+  leftMenuClassName = () => {
+    if (!this.props.showLeftMenu) {
+      return "l-menu none";
+    } else {
+      return "l-menu";
+    }
   }
 
   style = () => {
@@ -13,27 +55,32 @@ class Toolbar extends Component {
     }
 
     if (document.documentElement.clientWidth > 900) {
-      return { marginTop: this.props.toolbarHeight };
+      return { marginTop: this.state.toolbarHeight };
     } else {
       return { marginTop: 145 };
     }
   }
 
+  toggleAll = () => {
+    this.props.toggleAll();
+  }
+
   render() {
     return (
       <div className={this.className()} style={this.style()}>
-        <div className="l-menu">
+        <div className={this.leftMenuClassName()}>
           <button>
             <FontAwesomeIcon icon="plus" />
+            <span className="add">{this.props.buttonName}</span>
           </button>
         </div>
-        
+
         <div className="r-menu">
           <div className="input-group input-group-sm">
 
             <div className="input-group-prepend">
               <div className="input-group-text">
-                <input type="checkbox" aria-label="Checkbox for following text input" id="checkbox" />
+                <input type="checkbox" onChange={this.toggleAll} aria-label="Checkbox for following text input" id="checkbox" />
               </div>
               <span className="input-group-text">
                 <label htmlFor="checkbox">Toggle all</label>

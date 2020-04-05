@@ -48,7 +48,7 @@ class InternetProtocols extends Component {
 
   render() {
     return (
-      <div className="web">
+      <div className="internetProtocols">
         <div>
           {this.state.loading ? <Spinner /> : this.dns()}
         </div>

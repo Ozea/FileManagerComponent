@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Toolbar from '../MainNav/Toolbar/Toolbar';
 import Menu from '../MainNav/Stat-menu/Menu';
 import Panel from '../MainNav/Panel/Panel';
 import MobileTopNav from '../MainNav/Mobile/MobileTopNav';
@@ -8,32 +7,27 @@ import './MainNav.scss';
 class MainNav extends Component {
   state = {
     menuHeight: 135,
-    toolbarHeight: 205,
     showTopNav: false
   }
 
   componentDidMount() {
     window.addEventListener("resize", this.handleTopNav);
     document.addEventListener("scroll", this.hideMenu);
-    document.addEventListener("scroll", this.changeToolbarHeight);
   }
 
   componentWillUnmount() {
     window.addEventListener("resize", this.handleTopNav);
     window.removeEventListener("resize", this.hideMenu);
-    document.removeEventListener("scroll", this.changeToolbarHeight);
   }
 
   handleTopNav = () => {
     if (document.documentElement.clientWidth < 900) {
       this.setState({ 
-        menuHeight: 45,
-        toolbarHeight: 115
+        menuHeight: 45
       });
     } else {
       this.setState({ 
-        menuHeight: 135,
-        toolbarHeight: 205
+        menuHeight: 135
       });
     }
   }
@@ -43,14 +37,6 @@ class MainNav extends Component {
       let scrollTop = window.scrollY;
       let menuHeight = Math.max(45, 135 - scrollTop);
       this.setState({ menuHeight });
-    }
-  }
-
-  changeToolbarHeight = () => {
-    if (document.documentElement.clientWidth > 900) {
-      let scrollTop = window.scrollY;
-      let toolbarHeight = Math.max(115, 205 - scrollTop);
-      this.setState({ toolbarHeight });
     }
   }
 
@@ -80,7 +66,6 @@ class MainNav extends Component {
       return (
         <div className={this.topNavClassName()}>
           <Menu menuHeight={this.state.menuHeight} mobile={false} />
-          <Toolbar toolbarHeight={this.state.toolbarHeight} mobile={false} />
         </div>
       );
     } else {

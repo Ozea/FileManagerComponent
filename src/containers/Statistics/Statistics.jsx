@@ -21,12 +21,12 @@ class Statistics extends Component {
   totalAmount = () => {
     const { statistics } = this.state;
     let result = [];
-    
+
     for (let i in statistics) {
       result.push(statistics[i]);
     }
 
-    if ( result.length < 2 ) {
+    if (result.length < 2) {
       return <div className="total">{result.length} month</div>;
     } else {
       return <div className="total">{result.length} months</div>;
@@ -48,12 +48,10 @@ class Statistics extends Component {
   }
 
   render() {
-    return(
+    return (
       <div className="statistics-list">
-        <div className="packages">
         {this.state.loading ? <Spinner /> : this.statistics()}
         {this.totalAmount()}
-      </div>
       </div>
     );
   }

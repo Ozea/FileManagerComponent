@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import User from '../../components/User/User';
 import Spinner from '../../components/Spinner/Spinner';
+import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import { users } from '../../mocks/users';
-import './User.scss';
+import './Users.scss';
 
 class Users extends Component {
   state = {
     users: [],
     loading: false,
+    toggleAll: false,
     total: 0
   }
 
@@ -34,7 +36,7 @@ class Users extends Component {
   }
 
   users = () => {
-    const { users } = this.state;
+    const { users, toggleAll } = this.state;
     const result = [];
 
     for (let i in users) {
@@ -43,13 +45,18 @@ class Users extends Component {
     }
 
     return result.map((item, index) => {
-      return <User data={item} key={index} />;
+      return <User data={item} toggled={toggleAll} key={index} />;
     });
+  }
+
+  toggleAll = () => {
+    this.setState({ toggleAll: !this.state.toggleAll });
   }
 
   render() {
     return (
       <div>
+        <Toolbar toggleAll={this.toggleAll} showLeftMenu={true} buttonName="Add User" mobile={false} />
         {this.state.loading ? <Spinner /> : this.users()}
         {this.totalAmount()}
       </div>

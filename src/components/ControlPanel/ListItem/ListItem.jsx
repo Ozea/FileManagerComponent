@@ -5,8 +5,12 @@ import './ListItem.scss';
 
 class ListItem extends Component {
   state = {
-    toggled: this.props.toggled,
-    checked: this.props.checked
+    toggled: false,
+    checked: false
+  }
+
+  componentWillMount() {
+    console.log('list');
   }
 
   printDate = date => {

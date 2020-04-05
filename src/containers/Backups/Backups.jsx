@@ -48,7 +48,7 @@ class Backups extends Component {
 
   render() {
     return (
-      <div className="web">
+      <div className="backups">
         <div>
           {this.state.loading ? <Spinner /> : this.backups()}
         </div>

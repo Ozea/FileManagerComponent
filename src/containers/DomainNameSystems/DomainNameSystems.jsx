@@ -48,7 +48,7 @@ class DomainNameSystems extends Component {
 
   render() {
     return (
-      <div className="web">
+      <div className="dns">
         <div>
           {this.state.loading ? <Spinner /> : this.dns()}
         </div>

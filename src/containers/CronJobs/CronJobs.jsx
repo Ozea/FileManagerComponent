@@ -47,7 +47,7 @@ class CronJobs extends Component {
 
   render() {
     return (
-      <div>
+      <div className="cronJobs">
         {this.state.loading ? <Spinner /> : this.cronJobs()}
         {this.totalAmount()}
       </div>

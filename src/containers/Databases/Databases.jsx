@@ -47,7 +47,7 @@ class Databases extends Component {
 
   render() {
     return (
-      <div>
+      <div className="databases">
         {this.state.loading ? <Spinner /> : this.databases()}
         {this.totalAmount()}
       </div>

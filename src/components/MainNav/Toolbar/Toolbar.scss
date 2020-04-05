@@ -4,8 +4,10 @@
   justify-content: space-between;
   background: white;
   position: fixed;
-  margin-top: 210px;
+  top: 0;
+  left: 0;
   width: 100%;
+  z-index: 1;
   padding: 0 20%;
   border-bottom: 1px solid #e0e0e0;
   padding-top: 5px;
@@ -14,6 +16,9 @@
     transform: translate(35px, 50%);
 
     button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       background: #aacb0c;
       border-radius: 100%;
       color: white;
@@ -24,6 +29,24 @@
 
       &:hover {
         background: #c1e411;
+
+        span.add {
+          display: block;
+        }
+      }
+
+      span.add {
+        width: max-content;
+        display: none;
+        padding: 4px 10px 4px 25px;
+        background: #aacb0c;
+        border-radius: 15px;
+        color: white;
+        font-size: 15px;
+        position: absolute;
+        left: 25px;
+        z-index: -1;
+        text-align: right;
       }
 
       svg {
@@ -31,6 +54,10 @@
         height: 21px;
       }
     }
+  }
+
+  .l-menu.none {
+    display: none;
   }
 
   .r-menu {
