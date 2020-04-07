@@ -73,7 +73,7 @@ class CronJobs extends Component {
           <LeftButton name="Add Cron Job" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <button className="btn btn-secondary" type="submit">TURN ON NOTIFICATIONS</button>
+              <button className="btn btn-secondary extra" type="submit">TURN ON NOTIFICATIONS</button>
               <Checkbox toggleAll={this.toggleAll} />
               <Select list='cronList' />
               <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="cronList" />

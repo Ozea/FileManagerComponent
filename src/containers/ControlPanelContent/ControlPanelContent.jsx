@@ -11,6 +11,8 @@ import { Route, Switch } from "react-router-dom";
 import RRDs from '../../containers/RRDs/RRDs';
 import Web from '../../containers/Web/Web';
 import Backups from '../Backups/Backups';
+import Logs from '../Logs/Logs';
+
 import './ControlPanelContent.scss';
 
 class ControlPanelContent extends Component {
@@ -24,6 +26,7 @@ class ControlPanelContent extends Component {
             <Route path="/list/ip" component={InternetProtocols} />
             <Route path="/list/rrd" component={RRDs} />
             <Route path="/list/stats" component={Statistics} />
+            <Route path="/list/logs" component={Logs} />
             <Route path="/list/user" component={Users} />
             <Route path="/list/web" component={Web} />
             <Route path="/list/dns" component={DomainNameSystems} />

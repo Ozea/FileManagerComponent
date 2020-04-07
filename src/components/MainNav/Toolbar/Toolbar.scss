@@ -16,6 +16,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+    a.button-extra {
+      padding: 0 0.75rem;
+      text-decoration: none;
+      color: rgb(129, 125, 125);
+      font-size: 14px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      &:hover {
+        color: rgb(78, 76, 76);
+      }
+    }
     
     .input-group .input-group-prepend {
       height: 30px;

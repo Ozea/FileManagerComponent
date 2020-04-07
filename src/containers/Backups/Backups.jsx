@@ -73,7 +73,7 @@ class Backups extends Component {
           <LeftButton name="Create Backup" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <button className="btn btn-secondary" type="submit">BACKUP EXCLUSIONS</button>
+              <button className="btn btn-secondary extra" type="submit">BACKUP EXCLUSIONS</button>
               <Checkbox toggleAll={this.toggleAll} />
               <Select list='backupList' />
               <SearchInput />

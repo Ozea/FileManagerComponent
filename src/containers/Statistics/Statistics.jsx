@@ -67,7 +67,7 @@ class Statistics extends Component {
           <LeftButton name="Add Cron Job" showLeftMenu={false} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <button className="btn btn-secondary" type="submit">OVERALL STATISTICS</button>
+              <button className="btn btn-secondary extra" type="submit">OVERALL STATISTICS</button>
               <Select list='statisticsList' />
               <SearchInput />
             </div>
