@@ -6,11 +6,16 @@ import './ListItem.scss';
 class ListItem extends Component {
   state = {
     toggled: false,
-    checked: false
+    checked: false,
   }
 
-  componentWillMount() {
-    console.log('list');
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    const { toggled } = nextProps;
+
+    this.setState({
+      toggled,
+      checked: toggled
+    });
   }
 
   printDate = date => {
@@ -24,7 +29,10 @@ class ListItem extends Component {
   }
 
   toggleItem = (event) => {
-    this.setState({ toggled: event.target.checked });
+    this.setState({
+      toggled: event.target.checked,
+      checked: event.target.checked
+    });
   }
 
   starItem = () => {
@@ -49,7 +57,7 @@ class ListItem extends Component {
     return (
       <div className={this.className()}>
         <Container className="l-col w-15">
-          <div className="checkbox"><input type="checkbox" onChange={(e) => this.toggleItem(e)} /></div>
+          <div className="checkbox"><input type="checkbox" onChange={(e) => this.toggleItem(e)} checked={this.state.checked} /></div>
           {this.printDate(this.props.date)}
           <div onClick={this.starItem}><FontAwesomeIcon icon="star" /></div>
         </Container>

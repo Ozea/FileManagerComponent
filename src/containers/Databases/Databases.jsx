@@ -1,4 +1,10 @@
 import React, { Component } from 'react';
+import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
+import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
+import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
+import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
+import Select from '../../components/MainNav/Toolbar/Select/Select';
+import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Database from '../../components/Database/Database';
 import Spinner from '../../components/Spinner/Spinner';
 import { databases } from '../../mocks/databases';
@@ -7,7 +13,11 @@ import './Databases.scss';
 class Databases extends Component {
   state = {
     databases: [],
-    loading: false
+    loading: false,
+    toggleAll: false,
+    sorting: "DATE",
+    order: "descending",
+    total: 0
   }
 
   componentDidMount() {
@@ -32,8 +42,19 @@ class Databases extends Component {
     }
   }
 
+  changeSorting = (sorting, order) => {
+    this.setState({ 
+      sorting,
+      order
+     });
+  }
+
+  toggleAll = () => {
+    this.setState({ toggleAll: !this.state.toggleAll });
+  }
+
   databases = () => {
-    const { databases } = this.state;
+    const { databases, toggleAll } = this.state;
     const result = [];
 
     for (let i in databases) {
@@ -41,13 +62,25 @@ class Databases extends Component {
     }
 
     return result.map((item, index) => {
-      return <Database data={item} key={index} />;
+      return <Database data={item} toggled={toggleAll} key={index} />;
     });
   }
 
   render() {
     return (
       <div className="databases">
+        <Toolbar mobile={false} >
+          <LeftButton name="Add Database" showLeftMenu={true} />
+          <div className="r-menu">
+            <div className="input-group input-group-sm">
+              <button className="btn btn-secondary" type="submit">PHPPGADMIN</button>
+              <Checkbox toggleAll={this.toggleAll} />
+              <Select list='dbList' />
+              <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="dbList" />
+              <SearchInput />
+            </div>
+          </div>
+        </Toolbar>
         {this.state.loading ? <Spinner /> : this.databases()}
         {this.totalAmount()}
       </div>

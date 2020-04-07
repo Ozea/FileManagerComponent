@@ -6,10 +6,10 @@ import './CronJob.scss';
 
 class CronJob extends Component {
   render() {
-    const { data } = this.props;
+    const { data, toggled } = this.props;
 
     return (
-      <ListItem checked={false} toggled={false} date={data.DATE}>
+      <ListItem checked={false} toggled={toggled} date={data.DATE}>
         <Container className="cron-jobs-list r-col w-85">
           <div className="name">{data.CMD}</div>
           <div className="stats">

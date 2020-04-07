@@ -22,7 +22,7 @@ class Editor extends Component {
     return encodedPath;
   }
 
-  componentWillMount = () => {
+  UNSAFE_componentWillMount = () => {
     document.addEventListener("keydown", this.hotKey);
 
     const { history } = this.props;

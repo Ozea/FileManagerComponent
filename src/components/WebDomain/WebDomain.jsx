@@ -6,10 +6,10 @@ import './WebDomain.scss';
 
 class WebDomain extends Component {
   render(){
-    const { data } = this.props;
+    const { data, toggled } = this.props;
 
     return(
-      <ListItem checked={false} toggled={false} date={data.DATE}>
+      <ListItem checked={false} toggled={toggled} date={data.DATE}>
         <Container className="r-col w-85">
           <div className="name">{data.ALIAS}</div>
           <div>{data.IP}</div>
