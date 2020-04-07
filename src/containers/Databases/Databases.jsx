@@ -73,7 +73,7 @@ class Databases extends Component {
           <LeftButton name="Add Database" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <button className="btn btn-secondary" type="submit">PHPPGADMIN</button>
+              <a href="/phpgpadmin" className="button-extra" type="submit">PHPPGADMIN</a>
               <Checkbox toggleAll={this.toggleAll} />
               <Select list='dbList' />
               <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="dbList" />
