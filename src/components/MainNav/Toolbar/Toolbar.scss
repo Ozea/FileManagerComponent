@@ -4,34 +4,13 @@
   justify-content: space-between;
   background: white;
   position: fixed;
-  margin-top: 210px;
+  top: 0;
+  left: 0;
   width: 100%;
+  z-index: 1;
   padding: 0 20%;
   border-bottom: 1px solid #e0e0e0;
   padding-top: 5px;
-
-  .l-menu {
-    transform: translate(35px, 50%);
-
-    button {
-      background: #aacb0c;
-      border-radius: 100%;
-      color: white;
-      width: 45px;
-      height: 43px;
-      outline: none;
-      border: none;
-
-      &:hover {
-        background: #c1e411;
-      }
-
-      svg {
-        width: 31px;
-        height: 21px;
-      }
-    }
-  }
 
   .r-menu {
     display: flex;
@@ -119,6 +98,14 @@
         background-color: white;
       }
     }
+  }
+}
+
+.toolbar.justify-right {
+  justify-content: flex-end;
+
+  .r-menu > div > * {
+    margin: 0 10px;
   }
 }
 

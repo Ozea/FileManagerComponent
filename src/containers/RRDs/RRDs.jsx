@@ -32,11 +32,9 @@ class RRDs extends Component {
   }
 
   render() {
-    return(
+    return (
       <div className="rrd-list">
-        <div className="packages">
         {this.state.loading ? <Spinner /> : this.packages()}
-      </div>
       </div>
     );
   }

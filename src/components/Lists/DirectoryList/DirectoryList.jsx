@@ -34,7 +34,7 @@ class DirectoryList extends Component {
     cursor: 0
   };
 
-  componentWillMount = () => {
+  UNSAFE_componentWillMount = () => {
     if (localStorage.getItem(`${this.props.list}Sorting`) && localStorage.getItem(`${this.props.list}Order`)) {
       this.setState({ sortingType: localStorage.getItem(`${this.props.list}Sorting`), orderType: localStorage.getItem(`${this.props.list}Order`) });
     }
