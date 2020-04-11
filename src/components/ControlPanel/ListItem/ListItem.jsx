@@ -68,7 +68,6 @@ class ListItem extends Component {
   }
 
   render() {
-    console.log(this.props.leftNameText);
     return (
       <div className={this.className()}>
         <Container className="l-col w-15">
