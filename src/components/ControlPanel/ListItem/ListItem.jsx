@@ -19,13 +19,15 @@ class ListItem extends Component {
   }
 
   printDate = date => {
-    let newDate = new Date(date);
-    let day = newDate.getDate();
-    let month = newDate.getMonth();
-    let year = newDate.getFullYear();
-    let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-    return <div className="date">{day} &nbsp; {months[month - 1]} &nbsp; {year}</div>;
+    if (date) {
+      let newDate = new Date(date);
+      let day = newDate.getDate();
+      let month = newDate.getMonth();
+      let year = newDate.getFullYear();
+      let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  
+      return <div className="date">{day} &nbsp; {months[month - 1]} &nbsp; {year}</div>;
+    }
   }
 
   toggleItem = (event) => {
@@ -42,24 +44,38 @@ class ListItem extends Component {
   className = () => {
     const { toggled, starred } = this.state;
 
-    if (toggled && starred) {
-      return "list-item toggled starred";
-    } else if (toggled) {
+    if (toggled) {
+      if (starred) {
+        return "list-item toggled starred";
+      }
+
+      if (this.props.outdated) {
+        return "list-item outdated toggled";
+      }
+
       return "list-item toggled";
-    } else if (starred) {
+    }
+
+    if (starred) {
       return "list-item starred";
+    }
+
+    if (this.props.outdated) {
+      return "list-item outdated";
     }
 
     return "list-item";
   }
 
   render() {
+    console.log(this.props.leftNameText);
     return (
       <div className={this.className()}>
         <Container className="l-col w-15">
           <div className="checkbox"><input type="checkbox" onChange={(e) => this.toggleItem(e)} checked={this.state.checked} /></div>
           {this.printDate(this.props.date)}
-          <div onClick={this.starItem}><FontAwesomeIcon icon="star" /></div>
+          <div className="text-status">{this.props.leftNameText}</div>
+          <div className="star" onClick={this.starItem}><FontAwesomeIcon icon="star" /></div>
         </Container>
         {this.props.children}
       </div>
