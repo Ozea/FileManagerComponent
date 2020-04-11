@@ -40,7 +40,7 @@ class Panel extends Component {
             <div className={this.className("/list/stats")}><Link to="/list/stats">Statistics</Link></div>
             <div className={this.className("/list/logs")}><Link to="/list/logs">Logs</Link></div>
             <div className={this.className("/list/updates")}><Link to="/list/updates">Updates</Link></div>
-            <div>Firewall</div>
+            <div className={this.className("/list/firewall")}><Link to="/list/firewall">Firewall</Link></div>
             <div className="fm"><Link to="/list/directory">File Manager</Link></div>
             <div><Link to="/list/softaculous">Apps</Link></div>
             <div>Server</div>

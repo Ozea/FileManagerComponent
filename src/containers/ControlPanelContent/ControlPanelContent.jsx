@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import DomainNameSystems from '../DomainNameSystems/DomainNameSystems';
 import InternetProtocols from '../InternetProtocols/InternetProtocols';
 import Databases from '../../containers/Databases/Databases';
+import Firewalls from '../../containers/Firewalls/Firewalls';
 import CronJobs from '../../containers/CronJobs/CronJobs';
 import Packages from '../../containers/Packages/Packages';
 import Updates from '../../containers/Updates/Updates';
@@ -29,6 +30,7 @@ class ControlPanelContent extends Component {
             <Route path="/list/stats" component={Statistics} />
             <Route path="/list/logs" component={Logs} />
             <Route path="/list/updates" component={Updates} />
+            <Route path="/list/firewall" component={Firewalls} />
             <Route path="/list/user" component={Users} />
             <Route path="/list/web" component={Web} />
             <Route path="/list/dns" component={DomainNameSystems} />
