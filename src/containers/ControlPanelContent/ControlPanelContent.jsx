@@ -4,6 +4,7 @@ import InternetProtocols from '../InternetProtocols/InternetProtocols';
 import Databases from '../../containers/Databases/Databases';
 import CronJobs from '../../containers/CronJobs/CronJobs';
 import Packages from '../../containers/Packages/Packages';
+import Updates from '../../containers/Updates/Updates';
 import MainNav from '../../components/MainNav/MainNav';
 import Statistics from '../Statistics/Statistics';
 import Users from '../../containers/Users/Users';
@@ -27,6 +28,7 @@ class ControlPanelContent extends Component {
             <Route path="/list/rrd" component={RRDs} />
             <Route path="/list/stats" component={Statistics} />
             <Route path="/list/logs" component={Logs} />
+            <Route path="/list/updates" component={Updates} />
             <Route path="/list/user" component={Users} />
             <Route path="/list/web" component={Web} />
             <Route path="/list/dns" component={DomainNameSystems} />
