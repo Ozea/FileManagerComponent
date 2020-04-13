@@ -1,0 +1,10 @@
+.statistics-list.servers .r-col {
+  div.server-name {
+    font-size: 35px;
+    color: black;
+  }
+}
+
+.statistics-list.servers .list-item:nth-child(2) .r-col {
+  padding-left: 0;
+}

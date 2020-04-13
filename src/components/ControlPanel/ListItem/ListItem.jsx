@@ -64,6 +64,10 @@ class ListItem extends Component {
       return "list-item outdated";
     }
 
+    if (this.props.stopped) {
+      return "list-item stopped";
+    }
+
     return "list-item";
   }
 
