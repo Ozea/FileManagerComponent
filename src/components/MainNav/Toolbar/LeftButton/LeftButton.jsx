@@ -5,16 +5,28 @@ import './LeftButton.scss';
 function leftMenuClassName(props) {
   if (!props.showLeftMenu) {
     return "l-menu none";
-  } else {
-    return "l-menu";
   }
+
+  if (props.list === 'server') {
+    return "l-menu server-icon";
+  }
+
+  return "l-menu";
+}
+
+function renderIcon(props) {
+  if (props.list === 'server') {
+    return <FontAwesomeIcon icon="cog" />
+  }
+
+  return <FontAwesomeIcon icon="plus" />
 }
 
 const LeftButton = (props) => {
   return (
     <div className={leftMenuClassName(props)}>
       <button>
-        <FontAwesomeIcon icon="plus" />
+        {renderIcon(props)}
         <span className="add">{props.name}</span>
       </button>
     </div>

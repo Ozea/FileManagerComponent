@@ -6,6 +6,7 @@ import Firewalls from '../../containers/Firewalls/Firewalls';
 import CronJobs from '../../containers/CronJobs/CronJobs';
 import Packages from '../../containers/Packages/Packages';
 import Updates from '../../containers/Updates/Updates';
+import Servers from '../../containers/Servers/Servers';
 import MainNav from '../../components/MainNav/MainNav';
 import Statistics from '../Statistics/Statistics';
 import Users from '../../containers/Users/Users';
@@ -31,6 +32,7 @@ class ControlPanelContent extends Component {
             <Route path="/list/logs" component={Logs} />
             <Route path="/list/updates" component={Updates} />
             <Route path="/list/firewall" component={Firewalls} />
+            <Route path="/list/server" component={Servers} />
             <Route path="/list/user" component={Users} />
             <Route path="/list/web" component={Web} />
             <Route path="/list/dns" component={DomainNameSystems} />

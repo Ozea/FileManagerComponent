@@ -43,14 +43,14 @@ class Panel extends Component {
             <div className={this.className("/list/firewall")}><Link to="/list/firewall">Firewall</Link></div>
             <div className="fm"><Link to="/list/directory">File Manager</Link></div>
             <div><Link to="/list/softaculous">Apps</Link></div>
-            <div>Server</div>
+            <div className={this.className("/list/server")}><Link to="/list/server">Server</Link></div>
           </div>
           <div className="container profile-menu">
             <div className="bell">
               <FontAwesomeIcon icon="bell" />
             </div>
             <div>User</div>
-            <div><Link to="/logout">Logout</Link></div>
+            <div><Link to="/logout">Log out</Link></div>
           </div>
         </div>
 
