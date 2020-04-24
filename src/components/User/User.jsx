@@ -54,7 +54,7 @@ class User extends Component {
           </div>
         </Container>
         <div className="actions">
-          <div>LOGOUT <FontAwesomeIcon icon="user-lock" /></div>
+          <div>{data.NAME === 'admin' ? 'LOGOUT' : 'LOG IN'} <FontAwesomeIcon icon="user-lock" /></div>
           <div>EDIT <FontAwesomeIcon icon="pen" /></div>
           <div>SUSPEND <FontAwesomeIcon icon="lock" /></div>
           <div>DELETE <FontAwesomeIcon icon="times" /></div>

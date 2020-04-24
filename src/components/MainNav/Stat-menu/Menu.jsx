@@ -68,12 +68,14 @@ const Menu = (props) => {
           </Link>
         </div>
         <div className={statClassName("/list/mail")}>
-          <h3>Mail</h3>
-          <div className="stats">
-            <div>domains: <span>{users.admin.U_MAIL_DOMAINS}</span></div>
-            <div>accounts: <span>{users.admin.U_MAIL_ACCOUNTS}</span></div>
-            <div>suspended: <span>{users.admin.SUSPENDED_MAIL}</span></div>
-          </div>
+          <Link to="/list/mail">
+            <h3>Mail</h3>
+            <div className="stats">
+              <div>domains: <span>{users.admin.U_MAIL_DOMAINS}</span></div>
+              <div>accounts: <span>{users.admin.U_MAIL_ACCOUNTS}</span></div>
+              <div>suspended: <span>{users.admin.SUSPENDED_MAIL}</span></div>
+            </div>
+          </Link>
         </div>
         <div className={statClassName("/list/db")}>
           <Link to="/list/db">
