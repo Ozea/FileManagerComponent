@@ -5,7 +5,8 @@ import './Panel.scss';
 
 class Panel extends Component {
   state = {
-    smallNavigationClass: 'small-navigation hidden'
+    smallNavigationClass: 'small-navigation hidden',
+    user: 'admin'
   }
 
   toggleNavigation = () => {
@@ -49,7 +50,7 @@ class Panel extends Component {
             <div className="bell">
               <FontAwesomeIcon icon="bell" />
             </div>
-            <div>User</div>
+            <div>{this.state.user}</div>
             <div><Link to="/logout">Log out</Link></div>
           </div>
         </div>
