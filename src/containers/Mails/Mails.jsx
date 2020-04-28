@@ -71,7 +71,7 @@ class Mails extends Component {
     return (
       <div className="mails">
         <Toolbar mobile={false} >
-          <LeftButton name="Add DNS Domain" showLeftMenu={true} />
+          <LeftButton name="Add Mail Domain" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
               <a href="/webmail" className="button-extra" type="submit">OPEN WEBMAIL</a>

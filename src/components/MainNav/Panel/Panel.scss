@@ -101,7 +101,7 @@
       }
     }
 
-    div + div {
+    div + div a {
       color: #a4abad;
       font-weight: 700;
     
@@ -111,6 +111,7 @@
     }
 
     div + div + div a {
+      color: white;
       font-weight: 100;
 
       &:hover {

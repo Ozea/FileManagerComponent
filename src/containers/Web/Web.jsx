@@ -7,7 +7,7 @@ import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import WebDomain from '../../components/WebDomain/WebDomain';
 import Spinner from '../../components/Spinner/Spinner';
-import { web } from '../../mocks/web';
+import { web, webFavs } from '../../mocks/web';
 import './Web.scss';
 
 class Web extends Component {
@@ -58,6 +58,12 @@ class Web extends Component {
     const result = [];
 
     for (let i in webDomains) {
+      webDomains[i]['NAME'] = i;
+
+      if (webFavs[i]) {
+        webDomains[i]['STARRED'] = webFavs[i];
+      }
+      
       result.push(webDomains[i]);
     }
 

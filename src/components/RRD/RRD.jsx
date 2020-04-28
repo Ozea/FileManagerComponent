@@ -32,7 +32,7 @@ class RRD extends Component {
           <div className="name">{data.TITLE}</div>
           <div className="stats">
             <Container className="w-100">
-              <div>Image: <span className="stat rrd-image">{generateImagePath(this.state.period, data.TYPE)}</span></div>
+              <div><img src={generateImagePath(this.state.period, data.TYPE)} alt="img" /></div>
             </Container>
           </div>
         </Container>

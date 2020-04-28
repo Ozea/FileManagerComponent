@@ -64,6 +64,7 @@
         }
 
         > div:nth-child(2) {
+          width: 70%;
           justify-content: flex-end;
         }
       }
@@ -109,25 +110,42 @@
   background: #dfdedd;
 
   > div {
-    padding: 10px 15px;
     font-weight: bolder;
-    color: #777;
+    text-transform: uppercase;
+    height: 38px;
 
-    &:hover {
-      background: rgb(145, 145, 145);
-      color: white;
+    a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #777;
+      padding: 10px 15px;
+      text-decoration: none;
+
+      &:hover {
+        background: rgb(145, 145, 145);
+        color: white;
+
+        svg {
+          color: white;
+        }
+      }
+    }
+
+    svg {
+      color: #777;
     }
   }
 
-  > div:nth-child(2):hover {
+  > div:nth-child(2) a:hover {
     background: #9fbf0c;
   }
 
-  > div:nth-child(4):hover {
+  > div:nth-child(4) a:hover {
     background: #ff3438;
   }
 
   svg {
-    margin-left: 3px;
+    margin-left: 12px;
   }
 }

@@ -5,13 +5,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './WebDomain.scss';
 
 class WebDomain extends Component {
+  printStat = (stat, text) => {
+    if (text === 'no' || text === '') {
+      return <div className="crossed">{stat}</div>;
+    }
+
+    return <div>{stat}: <span className="stat">{text}</span></div>;
+  }
+
   render(){
     const { data, toggled } = this.props;
 
     return(
-      <ListItem checked={false} toggled={toggled} date={data.DATE}>
+      <ListItem checked={false} toggled={toggled} starred={data.STARRED} date={data.DATE}>
         <Container className="r-col w-85">
-          <div className="name">{data.ALIAS}</div>
+          <div className="name">{data.NAME} <span className="dns-name-span">{data.ALIAS}</span></div>
           <div>{data.IP}</div>
           <div className="stats">
             <Container className="c-1 w-25">
@@ -20,13 +28,13 @@ class WebDomain extends Component {
             </Container>
             <Container className="c-2 w-45">
               <div>Web Template: <span className="stat">{data.TPL}</span></div>
-              <div>SSL Support: <span className="stat">{data.SSL}</span></div>
-              <div className="web-stats">Web Statistics</div>
+              {this.printStat('SSL Support', data.SSL)}
+              {this.printStat('Web Statistics', data.STATS)}
             </Container>
             <Container className="c-3 w-35">
               <div>Backend Support: <span className="stat">{data.BACKEND}</span></div>
               <div>Backend Template: <span className="stat">{data.BACKEND}</span></div>
-              <div className="add-ftp">Additional FTP</div>
+              {this.printStat('Additional FTP', data.FTP_USER)}
             </Container>
           </div>
         </Container>

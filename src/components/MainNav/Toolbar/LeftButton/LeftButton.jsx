@@ -25,10 +25,10 @@ function renderIcon(props) {
 const LeftButton = (props) => {
   return (
     <div className={leftMenuClassName(props)}>
-      <button>
+      <a href={props.href}>
         {renderIcon(props)}
         <span className="add">{props.name}</span>
-      </button>
+      </a>
     </div>
   );
 }

@@ -7,6 +7,11 @@ class ListItem extends Component {
   state = {
     toggled: false,
     checked: false,
+    starred: false
+  }
+
+  UNSAFE_componentWillMount() {
+    this.setState({ starred: this.props.starred === 1 });
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
@@ -14,7 +19,7 @@ class ListItem extends Component {
 
     this.setState({
       toggled,
-      checked: toggled
+      checked: toggled,
     });
   }
 

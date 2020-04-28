@@ -44,3 +44,7 @@ export const web = {
     DATE: "2015-07-04"
   }
 }
+
+export const webFavs = {
+  "some.domain.pe": 1
+}
