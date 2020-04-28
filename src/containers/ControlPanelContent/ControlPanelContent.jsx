@@ -10,7 +10,7 @@ import Servers from '../../containers/Servers/Servers';
 import MainNav from '../../components/MainNav/MainNav';
 import Statistics from '../Statistics/Statistics';
 import Users from '../../containers/Users/Users';
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import Mails from '../../containers/Mails/Mails';
 import RRDs from '../../containers/RRDs/RRDs';
 import Web from '../../containers/Web/Web';
@@ -26,6 +26,7 @@ class ControlPanelContent extends Component {
         <MainNav />
         <div className="content">
           <Switch>
+            <Redirect from="/" exact to="/list/user" />
             <Route path="/list/packages" component={Packages} />
             <Route path="/list/ip" component={InternetProtocols} />
             <Route path="/list/rrd" component={RRDs} />

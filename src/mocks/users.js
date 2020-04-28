@@ -1,4 +1,4 @@
-export const users = {
+export const usersMock = {
   anton: {
     FNAME: "anton",
     LNAME: "reutov",
@@ -110,3 +110,5 @@ export const users = {
     DATE: "2015-07-04"
   }
 }
+
+export const users = window.GLOBAL.App.users;

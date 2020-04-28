@@ -71,7 +71,7 @@ class Users extends Component {
     return (
       <div>
         <Toolbar mobile={false} >
-          <LeftButton name="Add User" showLeftMenu={true} />
+          <LeftButton name="Add User" href="/add/user/" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
               <Checkbox toggleAll={this.toggleAll} />

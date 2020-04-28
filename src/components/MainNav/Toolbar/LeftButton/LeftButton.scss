@@ -1,7 +1,7 @@
 .l-menu {
   transform: translate(35px, 50%);
 
-  button {
+  a {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -12,6 +12,7 @@
     height: 43px;
     outline: none;
     border: none;
+    text-decoration: none;
 
     &:hover {
       background: #c1e411;

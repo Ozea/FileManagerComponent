@@ -6,7 +6,7 @@ import './Panel.scss';
 class Panel extends Component {
   state = {
     smallNavigationClass: 'small-navigation hidden',
-    user: 'admin'
+    user: window.GLOBAL.App.user
   }
 
   toggleNavigation = () => {
@@ -30,6 +30,8 @@ class Panel extends Component {
   }
 
   render() {
+    const { user } = this.state;
+
     return (
       <div className="panel-wrapper">
         <div className="top-panel">
@@ -42,16 +44,16 @@ class Panel extends Component {
             <div className={this.className("/list/logs")}><Link to="/list/logs">Logs</Link></div>
             <div className={this.className("/list/updates")}><Link to="/list/updates">Updates</Link></div>
             <div className={this.className("/list/firewall")}><Link to="/list/firewall">Firewall</Link></div>
-            <div className="fm"><Link to="/list/directory">File Manager</Link></div>
-            <div><Link to="/list/softaculous">Apps</Link></div>
+            <div className="fm"><a href="/list/directory">File Manager</a></div>
+            <div><a href="/list/softaculous">Apps</a></div>
             <div className={this.className("/list/server")}><Link to="/list/server">Server</Link></div>
           </div>
           <div className="container profile-menu">
             <div className="bell">
               <FontAwesomeIcon icon="bell" />
             </div>
-            <div>{this.state.user}</div>
-            <div><Link to="/logout">Log out</Link></div>
+            <div><a href={`/edit/user?user=${user}`}>{user}</a></div>
+            <div><a href="/logout">{window.GLOBAL.App.userI18N.LOG_OUT}</a></div>
           </div>
         </div>
 
@@ -68,8 +70,8 @@ class Panel extends Component {
             <div className="bell">
               <FontAwesomeIcon icon="bell" />
             </div>
-            <div>User</div>
-            <div>Logout</div>
+            <div><a href={`/edit/user?user=${user}`}>{user}</a></div>
+            <div><a href="/logout">{window.GLOBAL.App.userI18N.LOG_OUT}</a></div>
           </div>
         </div>
       </div>
