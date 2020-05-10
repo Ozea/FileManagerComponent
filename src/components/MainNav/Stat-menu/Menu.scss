@@ -40,7 +40,8 @@
 
         span {
           width: 100%;
-          text-align: center;
+          text-align: right;
+          padding-right: 1.25rem;
         }
       }
     }
@@ -97,9 +98,15 @@
   box-shadow: rgba(200, 200, 200, 0.5);
 }
 
+@media (max-width: 1350px) {
+  .menu-wrapper .menu-stat {
+    padding: 0 10%;
+  }
+}
+
 @media screen and (max-width: 1200px) {
   .menu-wrapper {
-    padding: 0 15%;
+    padding: 0 10%;
 
     .menu-stat {
       padding: 0;

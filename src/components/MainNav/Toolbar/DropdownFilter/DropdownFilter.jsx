@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import './DropdownFilter.scss';
+const { sort } = window.GLOBAL.App.toolbar;
 
 class DropdownFilter extends Component {
   state = {
-    usersList: ['DATE', 'USERNAME', 'DISK', 'BANDWIDTH', 'STARRED'],
-    webList: ['DATE', 'DOMAIN', 'IP ADDRESS', 'DISK', 'BANDWIDTH', 'STARRED'],
-    dnsList: ['DATE', 'EXPIRE', 'DOMAIN', 'IP ADDRESS', 'RECORDS', 'STARRED'],
-    mailList: ['DATE', 'DOMAIN', 'ACCOUNTS', 'DISK', 'STARRED'],
-    dbList: ['DATE', 'DATABASE', 'DISK', 'USER', 'HOST', 'STARRED'],
-    cronList: ['DATE', 'COMMAND', 'STARRED'],
-    packagesList: ['DATE', 'PACKAGE NAME', 'STARRED'],
-    internetProtocolsList: ['DATE', 'IP', 'NETMASK', 'INTERFACE', 'DOMAINS', 'OWNER', 'STARRED'],
-    firewallList: ['ACTION', 'PROTOCOL', 'PORT', 'IP ADDRESS', 'COMMENT', 'STARRED'],
+    usersList: [sort.Date, sort.Username, sort.Disk, sort.Bandwidth, sort.Starred],
+    webList: [sort.Date, sort.Domain, sort.IP_Address, sort.Disk, sort.Bandwidth, sort.Starred],
+    dnsList: [sort.Date, sort.Expire, sort.Domain, sort.IP_Address, sort.Records, sort.Starred],
+    mailList: [sort.Date, sort.Domain, sort.Accounts, sort.Disk, sort.Starred],
+    dbList: [sort.Date, sort.Database, sort.Disk, sort.User, sort.Host, sort.Starred],
+    cronList: [sort.Date, sort.Command, sort.Starred],
+    packagesList: [sort.Date, sort.Package_Name, sort.Starred],
+    internetProtocolsList: [sort.Date, sort.IP, sort.Netmask, sort.Interface, sort.Domain, sort.Owner, sort.Starred],
+    firewallList: [sort.Action, sort.Protocol, sort.Port, sort.IP_Address, sort.Comment, sort.Starred],
   }
 
   changeSorting = (type, order) => {
@@ -52,7 +53,7 @@ class DropdownFilter extends Component {
     return (
       <div className="btn-group">
         <button className="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Sort by: <b>{this.props.sorting}</b>
+          {sort.sort_by}: <b>{this.props.sorting}</b>
           {this.button()}
         </button>
         <div className="dropdown-menu">
