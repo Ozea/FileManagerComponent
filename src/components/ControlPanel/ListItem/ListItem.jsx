@@ -5,8 +5,6 @@ import './ListItem.scss';
 
 class ListItem extends Component {
   state = {
-    toggled: false,
-    checked: false,
     starred: false
   }
 
@@ -15,11 +13,8 @@ class ListItem extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(nextProps) {
-    const { toggled } = nextProps;
-
     this.setState({
-      toggled,
-      checked: toggled,
+      starred: nextProps.starred === 1
     });
   }
 
@@ -35,21 +30,21 @@ class ListItem extends Component {
     }
   }
 
-  toggleItem = (event) => {
-    this.setState({
-      toggled: event.target.checked,
-      checked: event.target.checked
-    });
+  toggleItem = () => {
+    this.props.checkItem();
   }
 
   starItem = () => {
-    this.setState({ starred: !this.state.starred });
+    this.setState({ starred: !this.state.starred }, () => {
+      this.props.toggleFav(this.state.starred);
+    });
   }
 
   className = () => {
-    const { toggled, starred } = this.state;
+    const { starred } = this.state;
+    const { checked }= this.props;
 
-    if (toggled) {
+    if ( checked) {
       if (starred) {
         return "list-item toggled starred";
       }
@@ -80,7 +75,7 @@ class ListItem extends Component {
     return (
       <div className={this.className()}>
         <Container className="l-col w-15">
-          <div className="checkbox"><input type="checkbox" onChange={(e) => this.toggleItem(e)} checked={this.state.checked} /></div>
+          <div className="checkbox"><input type="checkbox" onChange={(e) => this.toggleItem(e)} checked={this.props.checked} /></div>
           {this.printDate(this.props.date)}
           <div className="text-status">{this.props.leftNameText}</div>
           <div className="star" onClick={this.starItem}><FontAwesomeIcon icon="star" /></div>

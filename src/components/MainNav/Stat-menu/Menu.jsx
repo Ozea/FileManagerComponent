@@ -1,5 +1,4 @@
 import React from 'react';
-import { users } from '../../../mocks/users';
 import { Link } from "react-router-dom";
 import './Menu.scss';
 
@@ -34,73 +33,72 @@ function statClassName(activeName) {
 }
 
 const Menu = (props) => {
-  let usersAmount = Object.keys(users).length;
-  let user = window.GLOBAL.App.user;
+  const { user, panel, statMenu } = window.GLOBAL.App ;
   return (
     <div className="menu-wrapper">
       <div className={className(props.menuHeight)} style={{ height: style(props) }}>
         <div className={statClassName("/list/user/")}>
           <Link to="/list/user/">
-            <h3>User</h3>
+            <h3>{statMenu.USER}</h3>
             <div className="stats">
-              <div>users: <span>{usersAmount}</span></div>
-              <div>suspended: <span>{users[user].SUSPENDED_USERS}</span></div>
+              <div>{statMenu.users}: <span>{panel[user].U_USERS}</span></div>
+              <div>{statMenu.spnd}: <span>{panel[user].SUSPENDED_USERS}</span></div>
             </div>
           </Link>
         </div>
         <div className={statClassName("/list/web/")}>
           <Link to="/list/web/">
-            <h3>Web</h3>
+            <h3>{statMenu.WEB}</h3>
             <div className="stats">
-              <div>domains: <span>{users[user].U_WEB_DOMAINS}</span></div>
-              <div>aliases: <span>{users[user].U_WEB_ALIASES}</span></div>
-              <div>suspended: <span>{users[user].SUSPENDED_WEB}</span></div>
+              <div>{statMenu.domains}: <span>{panel[user].U_WEB_DOMAINS}</span></div>
+              <div>{statMenu.aliases}: <span>{panel[user].U_WEB_ALIASES}</span></div>
+              <div>{statMenu.spnd}: <span>{panel[user].SUSPENDED_WEB}</span></div>
             </div>
           </Link>
         </div>
         <div className={statClassName("/list/dns/")}>
           <Link to="/list/dns/">
-            <h3>Dns</h3>
+            <h3>{statMenu.DNS}</h3>
             <div className="stats">
-              <div>domains: <span>{users[user].U_DNS_DOMAINS}</span></div>
-              <div>records: <span>{users[user].U_DNS_RECORDS}</span></div>
-              <div>suspended: <span>{users[user].SUSPENDED_DNS}</span></div>
+              <div>{statMenu.domains}: <span>{panel[user].U_DNS_DOMAINS}</span></div>
+              <div>{statMenu.records}: <span>{panel[user].U_DNS_RECORDS}</span></div>
+              <div>{statMenu.spnd}: <span>{panel[user].SUSPENDED_DNS}</span></div>
             </div>
           </Link>
         </div>
         <div className={statClassName("/list/mail/")}>
           <Link to="/list/mail/">
-            <h3>Mail</h3>
+            <h3>{statMenu.MAIL}</h3>
             <div className="stats">
-              <div>domains: <span>{users[user].U_MAIL_DOMAINS}</span></div>
-              <div>accounts: <span>{users[user].U_MAIL_ACCOUNTS}</span></div>
-              <div>suspended: <span>{users[user].SUSPENDED_MAIL}</span></div>
+              <div>{statMenu.domains}: <span>{panel[user].U_MAIL_DOMAINS}</span></div>
+              <div>{statMenu.accounts}: <span>{panel[user].U_MAIL_ACCOUNTS}</span></div>
+              <div>{statMenu.spnd}: <span>{panel[user].SUSPENDED_MAIL}</span></div>
             </div>
           </Link>
         </div>
         <div className={statClassName("/list/db/")}>
           <Link to="/list/db/">
-            <h3>Db</h3>
+            <h3>{statMenu.DB}</h3>
             <div className="stats">
-              <div>databases: <span>{users[user].U_DATABASES}</span></div>
-              <div>suspended: <span>{users[user].SUSPENDED_DB}</span></div>
+              <div>{statMenu.databases}: <span>{panel[user].U_DATABASES}</span></div>
+              <div>{statMenu.spnd}: <span>{panel[user].SUSPENDED_DB}</span></div>
             </div>
           </Link>
         </div>
         <div className={statClassName("/list/cron/")}>
           <Link to="/list/cron/">
-            <h3>Cron</h3>
+            <h3>{statMenu.CRON}</h3>
             <div className="stats">
-              <div>jobs: <span>{users[user].U_CRON_JOBS}</span></div>
-              <div>suspended: <span>{users[user].SUSPENDED_CRON}</span></div>
+              <div>{statMenu.jobs}: <span>{panel[user].U_CRON_JOBS}</span></div>
+              <div>{statMenu.spnd}: <span>{panel[user].SUSPENDED_CRON}</span></div>
             </div>
           </Link>
         </div>
         <div className={statClassName("/list/backup/") + ' last'}>
           <Link to="/list/backup/">
-            <h3>Backup</h3>
+            <h3>{statMenu.BACKUP}</h3>
             <div className="stats">
-              <div>backups: <span>{users[user].U_BACKUPS}</span></div>
+              <div>{statMenu.backups}: <span>{panel[user].U_BACKUPS}</span></div>
             </div>
           </Link>
         </div>

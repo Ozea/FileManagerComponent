@@ -25,6 +25,13 @@
   }
 }
 
+span.stat.email{
+  display: block;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .r-col {
   .name {
     font-size: 35px;

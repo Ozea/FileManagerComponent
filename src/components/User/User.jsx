@@ -18,16 +18,28 @@ class User extends Component {
     if (currentUser === user) {
       return <div><a href="/logout">{window.GLOBAL.App.userI18N.LOGOUT} <FontAwesomeIcon icon="user-lock" /></a></div>;
     } else {
-      return <div><a href={`/login/?loginas=${user}`}>{window.GLOBAL.App.userI18N.LOGIN_AS} <FontAwesomeIcon icon="user-lock" /></a></div>;
+      return <div><a href={`/login/?loginas=${user}`}>{window.GLOBAL.App.userI18N.LOGIN_AS} {user} <FontAwesomeIcon icon="user-lock" /></a></div>;
     }
   }
 
+  toggleFav = (starred) => {
+    if (starred) {
+      this.props.toggleFav(this.props.data.NAME, 'add');
+    } else {
+      this.props.toggleFav(this.props.data.NAME, 'delete');
+    }
+  }
+
+  checkItem = () => {
+    this.props.checkItem(this.props.data.NAME);
+  }
+
   render() {
-    const { data, toggled } = this.props;
+    const { data } = this.props;
     const userI18N = window.GLOBAL.App.userI18N;
 
     return (
-      <ListItem checked={false} toggled={toggled} date={data.DATE}>
+      <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem}>
         <Container className="r-col w-85">
           <div className="name">{data.NAME}</div>
           <div>{data.FNAME} {data.LNAME}</div>
@@ -55,7 +67,7 @@ class User extends Component {
               <div>{userI18N.BACKUPS}: <span><span className="stat">{data.U_BACKUPS}</span>  / {data.BACKUPS}</span></div>
             </Container>
             <Container className="c-3 w-30">
-              <div>{userI18N.EMAIL}: <span className="stat">{data.CONTACT}</span></div>
+              <div>{userI18N.EMAIL}: <span className="stat email">{data.CONTACT}</span></div>
               <div>{userI18N.PACKAGE}: <span className="stat">{data.PACKAGE}</span></div>
               <div>{userI18N.SSH_ACCESS}: <span className="stat">{data.SHELL}</span></div>
               <div>{userI18N.IP_ADDRESSES}: <span className="stat">{data.IP_OWNED}</span></div>

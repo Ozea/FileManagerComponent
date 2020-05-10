@@ -1,18 +1,18 @@
 import React from 'react';
 import './Checkbox.scss';
 
-function toggleAll(props) {
-  props.toggleAll();
+function toggleAll(props, e) {
+  props.toggleAll(e.target.checked);
 }
 
 const Checkbox = (props) => {
   return (
     <div className="input-group-prepend">
       <div className="input-group-text">
-        <input type="checkbox" onChange={() => toggleAll(props)} aria-label="Checkbox for following text input" id="checkbox" />
+        <input type="checkbox" onChange={(e) => toggleAll(props, e)} aria-label="Checkbox for following text input" id="checkbox" checked={props.toggled} />
       </div>
       <span className="input-group-text">
-        <label htmlFor="checkbox">Toggle all</label>
+        <label htmlFor="checkbox">{window.GLOBAL.App.toolbar.toggle_all}</label>
       </span>
     </div>
   );
