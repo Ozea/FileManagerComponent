@@ -12,12 +12,12 @@
     max-height: 135px;
     height: 145px;
     width: 100%;
-    padding: 0 20%;
+    padding: 0 13%;
     
     > div {
       border-bottom: 3px solid white;
       overflow: hidden;
-      width: 14%;
+      width: 14.3%;
 
       h3, div {
         width: 100%;
@@ -38,10 +38,12 @@
         color: #a0a0a0;
         text-align: left;
 
-        span {
-          width: 100%;
-          text-align: right;
-          padding-right: 1.25rem;
+        > span:nth-child(1) {
+          width: 120px;
+        }
+
+        > span:nth-child(2) {
+          width: 80px;
         }
       }
     }

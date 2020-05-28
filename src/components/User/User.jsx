@@ -44,34 +44,34 @@ class User extends Component {
           <div className="name">{data.NAME}</div>
           <div>{data.FNAME} {data.LNAME}</div>
           <div className="stats">
-            <Container className="c-1 w-30">
+            <Container className="c-1">
               <div className="bandwidth">{userI18N.BANDWIDTH} <span><span className="stat">{data.U_BANDWIDTH}</span> mb</span></div>
               <div className="disk">{userI18N.DISK}: <span><span className="stat">{data.U_DISK}</span> mb</span></div>
               <div className="sub-disk-stats">
                 <div>
-                  <div>{userI18N.WEB}: <span><span className="stat">{data.U_DISK_WEB}</span> mb</span></div>
-                  <div>{userI18N.MAIL}: <span><span className="stat">{data.U_DISK_MAIL}</span> mb</span></div>
+                  <div><span>{userI18N.WEB}:</span> <span><b>{data.U_DISK_WEB}</b> mb</span></div>
+                  <div><span>{userI18N.MAIL}:</span> <span><b>{data.U_DISK_MAIL}</b> mb</span></div>
                 </div>
                 <div>
-                  <div>{userI18N.DATABASES}: <span><span className="stat">{data.U_DATABASES}</span> mb</span></div>
-                  <div>{userI18N.USER_DIRECTORIES}: <span><span className="stat">{data.U_DISK_DIRS}</span> mb</span></div>
+                  <div><span>{userI18N.DATABASES}:</span> <span><b>{data.U_DATABASES}</b> mb</span></div>
+                  <div><span>{userI18N.USER_DIRECTORIES}:</span> <span><b>{data.U_DISK_DIRS}</b> mb</span></div>
                 </div>
               </div>
             </Container>
-            <Container className="c-2 w-40">
-              <div>{userI18N.WEB_DOMAINS}: <span><span className="stat">{data.U_WEB_DOMAINS}</span> / {data.WEB_DOMAINS}</span></div>
-              <div>{userI18N.DNS_DOMAINS}: <span><span className="stat">{data.U_DNS_DOMAINS}</span> / {data.DNS_DOMAINS}</span></div>
-              <div>{userI18N.MAIL_DOMAINS}: <span><span className="stat">{data.U_MAIL_DOMAINS}</span>  / {data.MAIL_DOMAINS}</span></div>
-              <div>{userI18N.DATABASES}: <span><span className="stat">{data.U_DATABASES}</span>  / {data.DATABASES}</span></div>
-              <div>{userI18N.CRON_JOBS}: <span><span className="stat">{data.U_CRON_JOBS}</span>  / {data.CRON_JOBS}</span></div>
-              <div>{userI18N.BACKUPS}: <span><span className="stat">{data.U_BACKUPS}</span>  / {data.BACKUPS}</span></div>
+            <Container className="c-2">
+              <div><span>{userI18N.WEB_DOMAINS}:</span> <span><b>{data.U_WEB_DOMAINS}</b> / {data.WEB_DOMAINS}</span></div>
+              <div><span>{userI18N.DNS_DOMAINS}:</span> <span><b>{data.U_DNS_DOMAINS}</b> / {data.DNS_DOMAINS}</span></div>
+              <div><span>{userI18N.MAIL_DOMAINS}:</span> <span><b>{data.U_MAIL_DOMAINS}</b> / {data.MAIL_DOMAINS}</span></div>
+              <div><span>{userI18N.DATABASES}:</span> <span><b>{data.U_DATABASES}</b> / {data.DATABASES}</span></div>
+              <div><span>{userI18N.CRON_JOBS}:</span> <span><b>{data.U_CRON_JOBS}</b> / {data.CRON_JOBS}</span></div>
+              <div><span>{userI18N.BACKUPS}:</span> <span><b>{data.U_BACKUPS}</b> / {data.BACKUPS}</span></div>
             </Container>
-            <Container className="c-3 w-30">
-              <div>{userI18N.EMAIL}: <span className="stat email">{data.CONTACT}</span></div>
-              <div>{userI18N.PACKAGE}: <span className="stat">{data.PACKAGE}</span></div>
-              <div>{userI18N.SSH_ACCESS}: <span className="stat">{data.SHELL}</span></div>
-              <div>{userI18N.IP_ADDRESSES}: <span className="stat">{data.IP_OWNED}</span></div>
-              <div className="ns">{userI18N.NAME_SERVERS}: <span className="stat">{this.printNameServers(data.NS)}</span></div>
+            <Container className="c-3">
+              <div><span>{userI18N.EMAIL}:</span> <span className="stat email">{data.CONTACT}</span></div>
+              <div><span>{userI18N.PACKAGE}:</span> <span className="stat">{data.PACKAGE}</span></div>
+              <div><span>{userI18N.SSH_ACCESS}:</span> <span className="stat">{data.SHELL}</span></div>
+              <div><span>{userI18N.IP_ADDRESSES}:</span> <span className="stat">{data.IP_OWNED}</span></div>
+              <div className="ns"><span>{userI18N.NAME_SERVERS}:</span> <span className="stat">{this.printNameServers(data.NS)}</span></div>
             </Container>
           </div>
         </Container>

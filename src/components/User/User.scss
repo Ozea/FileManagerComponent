@@ -6,10 +6,10 @@
   margin: 10px 0;
 }
 
-.l-col div.star {
+.users-wrapper .l-col div.star {
   text-align: center;
 
-  > svg {
+  div > svg {
     cursor: pointer;
     opacity: 0;
     color: gray;
@@ -35,7 +35,7 @@ span.stat.email{
 .r-col {
   .name {
     font-size: 35px;
-    margin-top: 30px;
+    margin-bottom: 5px;
     color: black;
   }
   
@@ -49,30 +49,43 @@ span.stat.email{
     align-items: flex-start;
 
     .c-1, .c-2, .c-3 {
+      width: 32%;
+
       > div {
         display: flex;
-        justify-content: space-between;
         margin: 5px 0;
       }
 
       .bandwidth,
       .disk {
-        margin-bottom: 15px;
+        width: 200px;
+        justify-content: space-between;
+        margin-bottom: 25px;
         border-bottom: 1px dotted gray;
       }
 
       .sub-disk-stats {
+        width: 200px;
+
         > div {
           width: 50%;
           display: flex;
           flex-direction: column;
           justify-content: space-between;
           font-size: 11px;
+
+          span:nth-child(1) {
+            width: 40px;
+          }
         }
 
         > div:nth-child(2) {
           width: 70%;
           justify-content: flex-end;
+
+          span:nth-child(1) {
+            width: 80px;
+          }
         }
       }
     }
@@ -83,19 +96,38 @@ span.stat.email{
     }
 
     .c-2 {
-      margin: 0;
-      margin-top: 15px;
-      padding-left: 4rem;
+      margin: 15px 20px;
+
+      div {
+        > span:nth-child(1) {
+          width: 120px;
+        }
+
+        > span:nth-child(2) {
+          width: 150px;
+        }
+      }
     }
 
     .c-3 {
+      div {
+        > span:nth-child(1) {
+          width: 120px;
+        }
+
+        > span:nth-child(2) {
+          width: 200px;          
+        }
+      }
+
       div.ns {
         margin-top: 20px;
       }
     }
 
     > div {
-      margin: 15px 20px;
+      margin: 15px 0;
+      flex: 1 1 0;
     }
 
     .stat {

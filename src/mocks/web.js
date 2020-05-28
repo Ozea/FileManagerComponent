@@ -1,4 +1,4 @@
-export const web = {
+export const webMocks = {
   "some.domain.pe": {
     IP: "45.55.157.140",
     IP6: "",
@@ -45,6 +45,5 @@ export const web = {
   }
 }
 
-export const webFavs = {
-  "some.domain.pe": 1
-}
+export const web = window.GLOBAL.App.web;
+export const webFavs = window.GLOBAL.App.webFavs;

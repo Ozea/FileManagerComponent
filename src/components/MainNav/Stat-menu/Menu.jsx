@@ -33,7 +33,7 @@ function statClassName(activeName) {
 }
 
 const Menu = (props) => {
-  const { user, panel, statMenu } = window.GLOBAL.App ;
+  const { user, panel, statMenu } = window.GLOBAL.App;
   return (
     <div className="menu-wrapper">
       <div className={className(props.menuHeight)} style={{ height: style(props) }}>
@@ -41,8 +41,8 @@ const Menu = (props) => {
           <Link to="/list/user/">
             <h3>{statMenu.USER}</h3>
             <div className="stats">
-              <div>{statMenu.users}: <span>{panel[user].U_USERS}</span></div>
-              <div>{statMenu.spnd}: <span>{panel[user].SUSPENDED_USERS}</span></div>
+              <div><span>{statMenu.users}:</span> <span>{panel[user].U_USERS}</span></div>
+              <div><span>{statMenu.spnd}:</span> <span>{panel[user].SUSPENDED_USERS}</span></div>
             </div>
           </Link>
         </div>
@@ -50,9 +50,9 @@ const Menu = (props) => {
           <Link to="/list/web/">
             <h3>{statMenu.WEB}</h3>
             <div className="stats">
-              <div>{statMenu.domains}: <span>{panel[user].U_WEB_DOMAINS}</span></div>
-              <div>{statMenu.aliases}: <span>{panel[user].U_WEB_ALIASES}</span></div>
-              <div>{statMenu.spnd}: <span>{panel[user].SUSPENDED_WEB}</span></div>
+              <div><span>{statMenu.domains}:</span> <span>{panel[user].U_WEB_DOMAINS}</span></div>
+              <div><span>{statMenu.aliases}:</span> <span>{panel[user].U_WEB_ALIASES}</span></div>
+              <div><span>{statMenu.spnd}:</span> <span>{panel[user].SUSPENDED_WEB}</span></div>
             </div>
           </Link>
         </div>
@@ -60,9 +60,9 @@ const Menu = (props) => {
           <Link to="/list/dns/">
             <h3>{statMenu.DNS}</h3>
             <div className="stats">
-              <div>{statMenu.domains}: <span>{panel[user].U_DNS_DOMAINS}</span></div>
-              <div>{statMenu.records}: <span>{panel[user].U_DNS_RECORDS}</span></div>
-              <div>{statMenu.spnd}: <span>{panel[user].SUSPENDED_DNS}</span></div>
+              <div><span>{statMenu.domains}:</span> <span>{panel[user].U_DNS_DOMAINS}</span></div>
+              <div><span>{statMenu.records}:</span> <span>{panel[user].U_DNS_RECORDS}</span></div>
+              <div><span>{statMenu.spnd}:</span> <span>{panel[user].SUSPENDED_DNS}</span></div>
             </div>
           </Link>
         </div>
@@ -70,9 +70,9 @@ const Menu = (props) => {
           <Link to="/list/mail/">
             <h3>{statMenu.MAIL}</h3>
             <div className="stats">
-              <div>{statMenu.domains}: <span>{panel[user].U_MAIL_DOMAINS}</span></div>
-              <div>{statMenu.accounts}: <span>{panel[user].U_MAIL_ACCOUNTS}</span></div>
-              <div>{statMenu.spnd}: <span>{panel[user].SUSPENDED_MAIL}</span></div>
+              <div><span>{statMenu.domains}:</span> <span>{panel[user].U_MAIL_DOMAINS}</span></div>
+              <div><span>{statMenu.accounts}:</span> <span>{panel[user].U_MAIL_ACCOUNTS}</span></div>
+              <div><span>{statMenu.spnd}:</span> <span>{panel[user].SUSPENDED_MAIL}</span></div>
             </div>
           </Link>
         </div>
@@ -80,8 +80,8 @@ const Menu = (props) => {
           <Link to="/list/db/">
             <h3>{statMenu.DB}</h3>
             <div className="stats">
-              <div>{statMenu.databases}: <span>{panel[user].U_DATABASES}</span></div>
-              <div>{statMenu.spnd}: <span>{panel[user].SUSPENDED_DB}</span></div>
+              <div><span>{statMenu.databases}:</span> <span>{panel[user].U_DATABASES}</span></div>
+              <div><span>{statMenu.spnd}:</span> <span>{panel[user].SUSPENDED_DB}</span></div>
             </div>
           </Link>
         </div>
@@ -89,8 +89,8 @@ const Menu = (props) => {
           <Link to="/list/cron/">
             <h3>{statMenu.CRON}</h3>
             <div className="stats">
-              <div>{statMenu.jobs}: <span>{panel[user].U_CRON_JOBS}</span></div>
-              <div>{statMenu.spnd}: <span>{panel[user].SUSPENDED_CRON}</span></div>
+              <div><span>{statMenu.jobs}:</span> <span>{panel[user].U_CRON_JOBS}</span></div>
+              <div><span>{statMenu.spnd}:</span> <span>{panel[user].SUSPENDED_CRON}</span></div>
             </div>
           </Link>
         </div>
@@ -98,7 +98,7 @@ const Menu = (props) => {
           <Link to="/list/backup/">
             <h3>{statMenu.BACKUP}</h3>
             <div className="stats">
-              <div>{statMenu.backups}: <span>{panel[user].U_BACKUPS}</span></div>
+              <div><span>{statMenu.backups}:</span> <span>{panel[user].U_BACKUPS}</span></div>
             </div>
           </Link>
         </div>
