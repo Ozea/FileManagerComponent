@@ -25,7 +25,7 @@ class ListItem extends Component {
       let month = newDate.getMonth();
       let year = newDate.getFullYear();
       let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  
+
       return <div className="date">{day} &nbsp; {months[month - 1]} &nbsp; {year}</div>;
     }
   }
@@ -42,9 +42,9 @@ class ListItem extends Component {
 
   className = () => {
     const { starred } = this.state;
-    const { checked }= this.props;
+    const { checked } = this.props;
 
-    if ( checked) {
+    if (checked) {
       if (starred) {
         return "list-item toggled starred";
       }
@@ -74,11 +74,13 @@ class ListItem extends Component {
   render() {
     return (
       <div className={this.className()}>
-        <Container className="l-col w-15">
-          <div className="checkbox"><input type="checkbox" onChange={(e) => this.toggleItem(e)} checked={this.props.checked} /></div>
+        <Container className="l-col w-14">
           {this.printDate(this.props.date)}
           <div className="text-status">{this.props.leftNameText}</div>
-          <div className="star" onClick={this.starItem}><FontAwesomeIcon icon="star" /></div>
+          <div className="star">
+            <div className="checkbox"><input type="checkbox" onChange={(e) => this.toggleItem(e)} checked={this.props.checked} /></div>
+            <div onClick={this.starItem}><FontAwesomeIcon icon="star" /></div>
+          </div>
         </Container>
         {this.props.children}
       </div>

@@ -6,6 +6,7 @@ import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import WebDomain from '../../components/WebDomain/WebDomain';
+import { getWebList } from '../../ControlPanelService/Web';
 import Spinner from '../../components/Spinner/Spinner';
 import { web, webFavs } from '../../mocks/web';
 import './Web.scss';
@@ -21,10 +22,13 @@ class Web extends Component {
   }
 
   componentDidMount() {
-    this.setState({
-      loading: true,
-      webDomains: web
-    }, () => this.setState({ loading: false }));
+    this.setState({ loading: true }, () => {
+      getWebList()
+        .then(result => {
+          this.setState({ webDomains: result.data[0], loading: false });
+        })
+        .catch(err => console.error(err));
+    });
   }
 
   totalAmount = () => {
@@ -43,10 +47,10 @@ class Web extends Component {
   }
 
   changeSorting = (sorting, order) => {
-    this.setState({ 
+    this.setState({
       sorting,
       order
-     });
+    });
   }
 
   toggleAll = () => {
@@ -60,10 +64,10 @@ class Web extends Component {
     for (let i in webDomains) {
       webDomains[i]['NAME'] = i;
 
-      if (webFavs[i]) {
-        webDomains[i]['STARRED'] = webFavs[i];
-      }
-      
+      // if (webFavs[i]) {
+      //   webDomains[i]['STARRED'] = webFavs[i];
+      // }
+
       result.push(webDomains[i]);
     }
 

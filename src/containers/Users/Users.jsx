@@ -3,13 +3,13 @@ import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/Drop
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
+import { bulkAction, getUsersList } from '../../ControlPanelService/Users';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Spinner from '../../components/Spinner/Spinner';
 import { toast, ToastContainer } from 'react-toastify';
-import { users, userFav } from '../../mocks/users';
-import { bulkAction } from '../../ControlPanelService/Users';
+import { userFav } from '../../mocks/users';
 import User from '../../components/User/User';
 import './Users.scss';
 
@@ -21,29 +21,24 @@ class Users extends Component {
     sorting: window.GLOBAL.App.toolbar.sort.Date,
     order: "descending",
     selection: [],
-    total: 0
+    totalAmount: ''
   }
 
   componentDidMount() {
-    this.setState({
-      loading: true,
-      users
-    }, () => this.setState({ loading: false }));
-  }
-
-  totalAmount = () => {
-    const { users } = this.state;
-    let result = [];
-
-    for (let i in users) {
-      result.push(users[i]);
-    }
-
-    if (result.length < 2) {
-      return <div className="total">{window.GLOBAL.App.userI18N.ACCOUNT}</div>;
-    } else {
-      return <div className="total">{window.GLOBAL.App.userI18N.ACCOUNTS}</div>;
-    }
+    this.setState({ loading: true }, () => {
+      getUsersList()
+        .then(result => {
+          if (result.data.length) {
+            console.log(result.data[0]);
+            this.setState({
+              users: result.data[0],
+              totalAmount: result.data[0][window.GLOBAL.App.user]['account_amount'],
+              loading: false
+            });
+          }
+        })
+        .catch(err => console.error(err));
+    });
   }
 
   changeSorting = (sorting, order) => {
@@ -70,7 +65,7 @@ class Users extends Component {
 
     for (let i in users) {
       users[i]['NAME'] = i;
-      
+
       if (userFav[i]) {
         users[i]['STARRED'] = userFav[i];
       } else {
@@ -171,15 +166,15 @@ class Users extends Component {
     if (selection.length && action !== 'apply to selected') {
       this.setState({ loading: true }, () => {
         bulkAction(action, selection)
-        .then(result => {
-          if (result.status === 200) {
-            this.showNotification(`Success`);
-            this.setState({ loading: false }, () => {
-              this.toggleAll(false);
-            });
-          }
-        })
-        .catch(err => console.error(err));
+          .then(result => {
+            if (result.status === 200) {
+              this.showNotification(`Success`);
+              this.setState({ loading: false }, () => {
+                this.toggleAll(false);
+              });
+            }
+          })
+          .catch(err => console.error(err));
       });
     }
   }
@@ -199,8 +194,10 @@ class Users extends Component {
             </div>
           </div>
         </Toolbar>
-        {this.state.loading ? <Spinner /> : this.users()}
-        {this.totalAmount()}
+        <div className="users-wrapper">
+          {this.state.loading ? <Spinner /> : this.users()}
+        </div>
+        <div className="total">{this.state.totalAmount}</div>
       </div>
     );
   }
