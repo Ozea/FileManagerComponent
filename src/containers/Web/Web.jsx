@@ -1,49 +1,42 @@
 import React, { Component } from 'react';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
+import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import WebDomain from '../../components/WebDomain/WebDomain';
-import { getWebList } from '../../ControlPanelService/Web';
+import { bulkAction, getWebList } from '../../ControlPanelService/Web';
 import Spinner from '../../components/Spinner/Spinner';
-import { web, webFavs } from '../../mocks/web';
+import { toast } from 'react-toastify';
 import './Web.scss';
 
 class Web extends Component {
   state = {
     webDomains: [],
+    webFav: [],
     loading: false,
-    toggleAll: false,
-    sorting: "DATE",
+    toggledAll: false,
+    sorting: window.GLOBAL.App.toolbar.sort.Date,
     order: "descending",
-    total: 0
+    selection: [],
+    totalAmount: ''
   }
 
   componentDidMount() {
     this.setState({ loading: true }, () => {
       getWebList()
         .then(result => {
-          this.setState({ webDomains: result.data[0], loading: false });
+          this.setState({
+            webDomains: result.data.data,
+            webFav: result.data.webFav,
+            totalAmount: result.data.domain_amount,
+            loading: false
+          });
         })
         .catch(err => console.error(err));
     });
-  }
-
-  totalAmount = () => {
-    const { webDomains } = this.state;
-    let result = [];
-
-    for (let i in webDomains) {
-      result.push(webDomains[i]);
-    }
-
-    if (result.length < 2) {
-      return <div className="total">{result.length} domain</div>;
-    } else {
-      return <div className="total">{result.length} domains</div>;
-    }
   }
 
   changeSorting = (sorting, order) => {
@@ -54,44 +47,160 @@ class Web extends Component {
   }
 
   toggleAll = () => {
-    this.setState({ toggleAll: !this.state.toggleAll });
+    this.setState({ toggledAll: !this.state.toggledAll });
   }
 
   webDomains = () => {
-    const { webDomains, toggleAll } = this.state;
+    const { webDomains } = this.state;
+    const webFav = { ...this.state.webFav };
     const result = [];
 
     for (let i in webDomains) {
       webDomains[i]['NAME'] = i;
 
-      // if (webFavs[i]) {
-      //   webDomains[i]['STARRED'] = webFavs[i];
-      // }
+      if (webFav[i]) {
+        webDomains[i]['STARRED'] = webFav[i];
+      } else {
+        webDomains[i]['STARRED'] = 0;
+      }
 
       result.push(webDomains[i]);
     }
 
-    return result.map((item, index) => {
-      return <WebDomain data={item} toggled={toggleAll} key={index} />;
+    let sortedResult = this.sortArray(result);
+
+    return sortedResult.map((item, index) => {
+      return <WebDomain data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem}  />;
     });
+  }
+
+  checkItem = name => {
+    const { selection, webDomains } = this.state;
+    let duplicate = [...selection];
+    let webDomainsDuplicate = webDomains;
+    let checkedItem = duplicate.indexOf(name);
+
+    webDomainsDuplicate[name]['isChecked'] = !webDomainsDuplicate[name]['isChecked'];
+
+    if (checkedItem !== -1) {
+      duplicate.splice(checkedItem, 1);
+    } else {
+      duplicate.push(name);
+    }
+
+    this.setState({ webDomains: webDomainsDuplicate, selection: duplicate });
+  }
+
+  sortArray = array => {
+    const { order, sorting } = this.state;
+    let sortBy = this.sortBy(sorting);
+
+    if (order === "descending") {
+      return array.sort((a, b) => (a[sortBy] < b[sortBy]) ? 1 : ((b[sortBy] < a[sortBy]) ? -1 : 0));
+    } else {
+      return array.sort((a, b) => (a[sortBy] > b[sortBy]) ? 1 : ((b[sortBy] > a[sortBy]) ? -1 : 0));
+    }
+  }
+
+  sortBy = sorting => {
+    switch (sorting) {
+      case 'Date': return 'DATE';
+      case 'Domain': return 'ALIAS';
+      case 'IP Address': return 'IP';
+      case 'Disk': return 'U_DISK';
+      case 'Bandwidth': return 'U_BANDWIDTH';
+      case 'Starred': return 'STARRED';
+      default: break;
+    }
+  }
+
+  toggleFav = (value, type) => {
+    if (type === 'add') {
+      addFavorite(value, 'user')
+        .then(() => { })
+        .catch(err => {
+          this.showNotification(err)
+        });
+    } else {
+      deleteFavorite(value, 'user')
+        .then(() => { })
+        .catch(err => {
+          this.showNotification(err)
+        });
+    }
+  }
+
+  showNotification = text => {
+    toast.success(text, {
+      position: "bottom-center",
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true
+    });
+  }
+
+  toggleAll = toggled => {
+    const { webDomains, toggledAll } = this.state;
+    this.setState({ toggledAll: toggled });
+
+    if (!toggledAll) {
+      let webDomainNames = [];
+
+      for (let i in webDomains) {
+        webDomainNames.push(i);
+
+        webDomains[i]['isChecked'] = true;
+      }
+
+      this.setState({ webDomains, selection: webDomainNames });
+    } else {
+      for (let i in webDomains) {
+        webDomains[i]['isChecked'] = false;
+      }
+
+      this.setState({ webDomains, selection: [] });
+    }
+  }
+
+  bulk = action => {
+    const { selection } = this.state;
+
+    if (selection.length && action !== 'apply to selected') {
+      this.setState({ loading: true }, () => {
+        bulkAction(action, selection)
+          .then(result => {
+            if (result.status === 200) {
+              this.showNotification(`Success`);
+              this.setState({ loading: false }, () => {
+                this.toggleAll(false);
+              });
+            }
+          })
+          .catch(err => console.error(err));
+      });
+    }
   }
 
   render() {
     return (
       <div className="web">
         <Toolbar mobile={false} >
-          <LeftButton name="Add Web Domain" showLeftMenu={true} />
+          <LeftButton name="Add Web Domain" href="/add/web/" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <Checkbox toggleAll={this.toggleAll} />
-              <Select list='webList' />
+              <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
+              <Select list='webList' bulkAction={this.bulk} />
               <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="webList" />
               <SearchInput />
             </div>
           </div>
         </Toolbar>
-        {this.state.loading ? <Spinner /> : this.webDomains()}
-        {this.totalAmount()}
+        <div className="web-domains-wrapper">
+          {this.state.loading ? <Spinner /> : this.webDomains()}
+        </div>
+        <div className="total">{this.state.totalAmount}</div>
       </div>
     );
   }

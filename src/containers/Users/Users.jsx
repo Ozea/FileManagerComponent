@@ -8,14 +8,14 @@ import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Spinner from '../../components/Spinner/Spinner';
-import { toast, ToastContainer } from 'react-toastify';
-import { userFav } from '../../mocks/users';
+import { toast } from 'react-toastify';
 import User from '../../components/User/User';
 import './Users.scss';
 
 class Users extends Component {
   state = {
     users: [],
+    userFav: [],
     loading: false,
     toggledAll: false,
     sorting: window.GLOBAL.App.toolbar.sort.Date,
@@ -28,14 +28,12 @@ class Users extends Component {
     this.setState({ loading: true }, () => {
       getUsersList()
         .then(result => {
-          if (result.data.length) {
-            console.log(result.data[0]);
-            this.setState({
-              users: result.data[0],
-              totalAmount: result.data[0][window.GLOBAL.App.user]['account_amount'],
-              loading: false
-            });
-          }
+          this.setState({
+            users: result.data.data,
+            userFav: result.data.userFav,
+            totalAmount: result.data.account_amount,
+            loading: false
+          });
         })
         .catch(err => console.error(err));
     });
@@ -49,7 +47,7 @@ class Users extends Component {
   }
 
   showNotification = text => {
-    toast.success(text, {
+    toast.error(text, {
       position: "bottom-center",
       autoClose: 1500,
       hideProgressBar: false,
@@ -62,6 +60,7 @@ class Users extends Component {
   users = () => {
     const { users } = this.state;
     const result = [];
+    const userFav = { ...this.state.userFav };
 
     for (let i in users) {
       users[i]['NAME'] = i;
@@ -124,16 +123,16 @@ class Users extends Component {
   toggleFav = (value, type) => {
     if (type === 'add') {
       addFavorite(value, 'user')
-        .then(() => {
-          this.showNotification(`${value} has been added to favourites.`)
-        })
-        .catch(err => console.log(err));
+        .then(() => { })
+        .catch(err => {
+          this.showNotification(err)
+        });
     } else {
       deleteFavorite(value, 'user')
-        .then(() => {
-          this.showNotification(`${value} has been deleted from favourites.`)
-        })
-        .catch(err => console.log(err));
+        .then(() => { })
+        .catch(err => {
+          this.showNotification(err)
+        });
     }
   }
 
@@ -182,7 +181,6 @@ class Users extends Component {
   render() {
     return (
       <div>
-        <ToastContainer position="bottom-center" />
         <Toolbar mobile={false} >
           <LeftButton name="Add User" href="/add/user/" showLeftMenu={true} />
           <div className="r-menu">
