@@ -46,4 +46,4 @@ export const webMocks = {
 }
 
 export const web = window.GLOBAL.App.web;
-export const webFavs = window.GLOBAL.App.webFavs;
+export const webFav = window.GLOBAL.App.webFav;

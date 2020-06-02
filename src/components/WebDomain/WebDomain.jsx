@@ -13,13 +13,28 @@ class WebDomain extends Component {
     return <div>{stat}: <span className="stat">{text}</span></div>;
   }
 
-  render(){
-    const { data, toggled } = this.props;
+  toggleFav = (starred) => {
+    if (starred) {
+      this.props.toggleFav(this.props.data.NAME, 'add');
+    } else {
+      this.props.toggleFav(this.props.data.NAME, 'delete');
+    }
+  }
 
-    return(
-      <ListItem checked={false} toggled={toggled} starred={data.STARRED} date={data.DATE}>
+  checkItem = () => {
+    this.props.checkItem(this.props.data.NAME);
+  }
+
+  render() {
+    const { data } = this.props;
+
+    return (
+      <ListItem checked={data.isChecked} starred={data.STARRED} date={data.DATE} toggleFav={this.toggleFav} checkItem={this.checkItem}>
         <Container className="r-col w-85">
-          <div className="name">{data.NAME} <span className="dns-name-span">{data.ALIAS}</span></div>
+          <div className="name">
+            <div>{data.NAME}</div>
+            <div><span className="dns-name-span">{data.ALIAS}</span></div>
+          </div>
           <div>{data.IP}</div>
           <div className="stats">
             <Container className="c-1 w-25">
@@ -39,10 +54,10 @@ class WebDomain extends Component {
           </div>
         </Container>
         <div className="actions">
-          <div>EDIT <FontAwesomeIcon icon="pen" /></div>
-          <div>VIEW LOGS <FontAwesomeIcon icon="list" /></div>
-          <div>SUSPEND <FontAwesomeIcon icon="lock" /></div>
-          <div>DELETE <FontAwesomeIcon icon="times" /></div>
+          <div><a href={`/edit/web?domain=${data.NAME}`}>EDIT <FontAwesomeIcon icon="pen" /></a></div>
+          <div><a href={`/list/web-log?domain=${data.NAME}&type=access`}>VIEW LOGS <FontAwesomeIcon icon="list" /></a></div>
+          <div><a href={`#`}>SUSPEND <FontAwesomeIcon icon="lock" /></a></div>
+          <div><a href={`#`}>DELETE <FontAwesomeIcon icon="times" /></a></div>
         </div>
       </ListItem>
     );
