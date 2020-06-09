@@ -124,13 +124,13 @@ class Mails extends Component {
 
   toggleFav = (value, type) => {
     if (type === 'add') {
-      addFavorite(value, 'user')
+      addFavorite(value, 'mail')
         .then(() => { })
         .catch(err => {
           this.showNotification(err)
         });
     } else {
-      deleteFavorite(value, 'user')
+      deleteFavorite(value, 'mail')
         .then(() => { })
         .catch(err => {
           this.showNotification(err)
