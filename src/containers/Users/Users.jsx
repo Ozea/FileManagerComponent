@@ -11,6 +11,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import { toast } from 'react-toastify';
 import User from '../../components/User/User';
 import './Users.scss';
+const { inc } = window.GLOBAL.App;
 
 class Users extends Component {
   state = {
@@ -18,7 +19,7 @@ class Users extends Component {
     userFav: [],
     loading: false,
     toggledAll: false,
-    sorting: window.GLOBAL.App.toolbar.sort.Date,
+    sorting: inc.Date,
     order: "descending",
     selection: [],
     totalAmount: ''

@@ -12,7 +12,7 @@ const Checkbox = (props) => {
         <input type="checkbox" onChange={(e) => toggleAll(props, e)} aria-label="Checkbox for following text input" id="checkbox" checked={props.toggled} />
       </div>
       <span className="input-group-text">
-        <label htmlFor="checkbox">{window.GLOBAL.App.toolbar.toggle_all}</label>
+        <label htmlFor="checkbox">{window.GLOBAL.App.inc['toggle all']}</label>
       </span>
     </div>
   );
