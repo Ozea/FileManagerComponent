@@ -27,7 +27,11 @@ export const values = select => {
       { value: 'unsuspend', name: select.unsuspend },
       { value: 'delete', name: select.delete }
     ],
-    dbList: [select.suspend, select.unsuspend, select.delete],
+    dbList: [
+      { value: 'suspend', name: select.suspend },
+      { value: 'unsuspend', name: select.unsuspend },
+      { value: 'delete', name: select.delete }
+    ],
     cronList: [select.turn_on_notifications, select.suspend, select.unsuspend, select.delete],
     backupList: [select.delete],
     packagesList: [select.delete],
