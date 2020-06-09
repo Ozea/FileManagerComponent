@@ -18,7 +18,7 @@ class Web extends Component {
     webFav: [],
     loading: false,
     toggledAll: false,
-    sorting: window.GLOBAL.App.toolbar.sort.Date,
+    sorting: window.GLOBAL.App.inc.Date,
     order: "descending",
     selection: [],
     totalAmount: ''
@@ -70,7 +70,7 @@ class Web extends Component {
     let sortedResult = this.sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <WebDomain data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem}  />;
+      return <WebDomain data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} />;
     });
   }
 
@@ -116,13 +116,13 @@ class Web extends Component {
 
   toggleFav = (value, type) => {
     if (type === 'add') {
-      addFavorite(value, 'user')
+      addFavorite(value, 'web')
         .then(() => { })
         .catch(err => {
           this.showNotification(err)
         });
     } else {
-      deleteFavorite(value, 'user')
+      deleteFavorite(value, 'web')
         .then(() => { })
         .catch(err => {
           this.showNotification(err)
@@ -131,7 +131,7 @@ class Web extends Component {
   }
 
   showNotification = text => {
-    toast.success(text, {
+    toast.error(text, {
       position: "bottom-center",
       autoClose: 1500,
       hideProgressBar: false,

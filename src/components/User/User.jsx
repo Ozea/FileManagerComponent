@@ -16,9 +16,9 @@ class User extends Component {
   printLoginActionButton = user => {
     let currentUser = window.GLOBAL.App.user;
     if (currentUser === user) {
-      return <div><a href="/logout">{window.GLOBAL.App.userI18N.LOGOUT} <FontAwesomeIcon icon="user-lock" /></a></div>;
+      return <div><a href="/logout">{window.GLOBAL.App.inc['Log out']} <FontAwesomeIcon icon="user-lock" /></a></div>;
     } else {
-      return <div><a href={`/login/?loginas=${user}`}>{window.GLOBAL.App.userI18N.LOGIN_AS} {user} <FontAwesomeIcon icon="user-lock" /></a></div>;
+      return <div><a href={`/login/?loginas=${user}`}>{window.GLOBAL.App.inc['login as']} {user} <FontAwesomeIcon icon="user-lock" /></a></div>;
     }
   }
 
@@ -36,7 +36,7 @@ class User extends Component {
 
   render() {
     const { data } = this.props;
-    const userI18N = window.GLOBAL.App.userI18N;
+    const { inc } = window.GLOBAL.App;
 
     return (
       <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem}>
@@ -45,41 +45,41 @@ class User extends Component {
           <div>{data.FNAME} {data.LNAME}</div>
           <div className="stats">
             <Container className="c-1">
-              <div className="bandwidth">{userI18N.BANDWIDTH} <span><span className="stat">{data.U_BANDWIDTH}</span> mb</span></div>
-              <div className="disk">{userI18N.DISK}: <span><span className="stat">{data.U_DISK}</span> mb</span></div>
+              <div className="bandwidth">{inc.Bandwidth} <span><span className="stat">{data.U_BANDWIDTH}</span> mb</span></div>
+              <div className="disk">{inc.Disk}: <span><span className="stat">{data.U_DISK}</span> mb</span></div>
               <div className="sub-disk-stats">
                 <div>
-                  <div><span>{userI18N.WEB}:</span> <span><b>{data.U_DISK_WEB}</b> mb</span></div>
-                  <div><span>{userI18N.MAIL}:</span> <span><b>{data.U_DISK_MAIL}</b> mb</span></div>
+                  <div><span>{inc.Web}:</span> <span><b>{data.U_DISK_WEB}</b> mb</span></div>
+                  <div><span>{inc.Mail}:</span> <span><b>{data.U_DISK_MAIL}</b> mb</span></div>
                 </div>
                 <div>
-                  <div><span>{userI18N.DATABASES}:</span> <span><b>{data.U_DATABASES}</b> mb</span></div>
-                  <div><span>{userI18N.USER_DIRECTORIES}:</span> <span><b>{data.U_DISK_DIRS}</b> mb</span></div>
+                  <div><span>{inc.Databases}:</span> <span><b>{data.U_DATABASES}</b> mb</span></div>
+                  <div><span>{inc['User Directories']}:</span> <span><b>{data.U_DISK_DIRS}</b> mb</span></div>
                 </div>
               </div>
             </Container>
             <Container className="c-2">
-              <div><span>{userI18N.WEB_DOMAINS}:</span> <span><b>{data.U_WEB_DOMAINS}</b> / {data.WEB_DOMAINS}</span></div>
-              <div><span>{userI18N.DNS_DOMAINS}:</span> <span><b>{data.U_DNS_DOMAINS}</b> / {data.DNS_DOMAINS}</span></div>
-              <div><span>{userI18N.MAIL_DOMAINS}:</span> <span><b>{data.U_MAIL_DOMAINS}</b> / {data.MAIL_DOMAINS}</span></div>
-              <div><span>{userI18N.DATABASES}:</span> <span><b>{data.U_DATABASES}</b> / {data.DATABASES}</span></div>
-              <div><span>{userI18N.CRON_JOBS}:</span> <span><b>{data.U_CRON_JOBS}</b> / {data.CRON_JOBS}</span></div>
-              <div><span>{userI18N.BACKUPS}:</span> <span><b>{data.U_BACKUPS}</b> / {data.BACKUPS}</span></div>
+              <div><span>{inc['Web Domains']}:</span> <span><b>{data.U_WEB_DOMAINS}</b> / {data.WEB_DOMAINS}</span></div>
+              <div><span>{inc['DNS Domains']}:</span> <span><b>{data.U_DNS_DOMAINS}</b> / {data.DNS_DOMAINS}</span></div>
+              <div><span>{inc['Mail Domains']}:</span> <span><b>{data.U_MAIL_DOMAINS}</b> / {data.MAIL_DOMAINS}</span></div>
+              <div><span>{inc.Databases}:</span> <span><b>{data.U_DATABASES}</b> / {data.DATABASES}</span></div>
+              <div><span>{inc['Cron Jobs']}:</span> <span><b>{data.U_CRON_JOBS}</b> / {data.CRON_JOBS}</span></div>
+              <div><span>{inc.Backups}:</span> <span><b>{data.U_BACKUPS}</b> / {data.BACKUPS}</span></div>
             </Container>
             <Container className="c-3">
-              <div><span>{userI18N.EMAIL}:</span> <span className="stat email">{data.CONTACT}</span></div>
-              <div><span>{userI18N.PACKAGE}:</span> <span className="stat">{data.PACKAGE}</span></div>
-              <div><span>{userI18N.SSH_ACCESS}:</span> <span className="stat">{data.SHELL}</span></div>
-              <div><span>{userI18N.IP_ADDRESSES}:</span> <span className="stat">{data.IP_OWNED}</span></div>
-              <div className="ns"><span>{userI18N.NAME_SERVERS}:</span> <span className="stat">{this.printNameServers(data.NS)}</span></div>
+              <div><span>{inc.Email}:</span> <span className="stat email">{data.CONTACT}</span></div>
+              <div><span>{inc.Package}:</span> <span className="stat">{data.PACKAGE}</span></div>
+              <div><span>{inc['SSH Access']}:</span> <span className="stat">{data.SHELL}</span></div>
+              <div><span>{inc['IP Addresses']}:</span> <span className="stat">{data.IP_OWNED}</span></div>
+              <div className="ns"><span>{inc['Name Servers']}:</span> <span className="stat">{this.printNameServers(data.NS)}</span></div>
             </Container>
           </div>
         </Container>
         <div className="actions">
           {this.printLoginActionButton(data.NAME)}
-          <div><a href={`/edit/user?user=${data.NAME}`}>{userI18N.EDIT} <FontAwesomeIcon icon="pen" /></a></div>
+          <div><a href={`/edit/user?user=${data.NAME}`}>{inc.Edit} <FontAwesomeIcon icon="pen" /></a></div>
           <div><a href={`/suspend/user?user=${data.NAME}`} >{data.spnd_action_i18n} <FontAwesomeIcon icon="lock" /></a></div>
-          <div><a href="#">{userI18N.DELETE} <FontAwesomeIcon icon="times" /></a></div>
+          <div><a href="#">{inc.Delete} <FontAwesomeIcon icon="times" /></a></div>
         </div>
       </ListItem>
     );

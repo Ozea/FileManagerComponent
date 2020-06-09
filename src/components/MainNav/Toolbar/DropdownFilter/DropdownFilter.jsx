@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import './DropdownFilter.scss';
-const { sort } = window.GLOBAL.App.toolbar;
+const { inc } = window.GLOBAL.App;
 
 class DropdownFilter extends Component {
   state = {
-    usersList: [sort.Date, sort.Username, sort.Disk, sort.Bandwidth, sort.Starred],
-    webList: [sort.Date, sort.Domain, sort.IP_Address, sort.Disk, sort.Bandwidth, sort.Starred],
-    dnsList: [sort.Date, sort.Expire, sort.Domain, sort.IP_Address, sort.Records, sort.Starred],
-    mailList: [sort.Date, sort.Domain, sort.Accounts, sort.Disk, sort.Starred],
-    dbList: [sort.Date, sort.Database, sort.Disk, sort.User, sort.Host, sort.Starred],
-    cronList: [sort.Date, sort.Command, sort.Starred],
-    packagesList: [sort.Date, sort.Package_Name, sort.Starred],
-    internetProtocolsList: [sort.Date, sort.IP, sort.Netmask, sort.Interface, sort.Domain, sort.Owner, sort.Starred],
-    firewallList: [sort.Action, sort.Protocol, sort.Port, sort.IP_Address, sort.Comment, sort.Starred],
+    usersList: [inc.Date, inc.Username, inc.Disk, inc.Bandwidth, inc.Starred],
+    webList: [inc.Date, inc.Domain, inc['IP Addresses'], inc.Disk, inc.Bandwidth, inc.Starred],
+    dnsList: [inc.Date, inc.Expire, inc.Domain, inc['IP Addresses'], inc.Records, inc.Starred],
+    mailList: [inc.Date, inc.Domain, inc.Accounts, inc.Disk, inc.Starred],
+    dbList: [inc.Date, inc.Database, inc.Disk, inc.User, inc.Host, inc.Starred],
+    cronList: [inc.Date, inc.Command, inc.Starred],
+    packagesList: [inc.Date, inc.Package_Name, inc.Starred],
+    internetProtocolsList: [inc.Date, inc.IP, inc.Netmask, inc.Interface, inc.Domain, inc.Owner, inc.Starred],
+    firewallList: [inc.Action, inc.Protocol, inc.Port, inc['IP Addresses'], inc.Comment, inc.Starred],
   }
 
   changeSorting = (type, order) => {
@@ -53,7 +53,7 @@ class DropdownFilter extends Component {
     return (
       <div className="btn-group">
         <button className="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          {sort.sort_by}: <b>{this.props.sorting}</b>
+          {inc['sort by']}: <b>{this.props.sorting}</b>
           {this.button()}
         </button>
         <div className="dropdown-menu">
