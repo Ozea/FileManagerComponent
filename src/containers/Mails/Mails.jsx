@@ -1,89 +1,204 @@
 import React, { Component } from 'react';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
-import Mail from '../../components/Mail/Mail';
+import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
+import { bulkAction, getMailList } from '../../ControlPanelService/Mail';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Spinner from '../../components/Spinner/Spinner';
-import { mails } from '../../mocks/mails';
+import Mail from '../../components/Mail/Mail';
 import './Mails.scss';
+import { toast } from 'react-toastify';
 
 class Mails extends Component {
   state = {
     mails: [],
+    mailFav: [],
     loading: false,
     toggleAll: false,
-    sorting: "DATE",
+    webmail: '',
+    sorting: window.GLOBAL.App.inc.Date,
     order: "descending",
-    total: 0
+    selection: [],
+    totalAmount: ''
   }
 
   componentDidMount() {
-    this.setState({
-      loading: true,
-      mails
-    }, () => this.setState({ loading: false }));
-  }
-
-  totalAmount = () => {
-    const { mails } = this.state;
-    let result = [];
-    
-    for (let i in mails) {
-      result.push(mails[i]);
-    }
-
-    if ( result.length < 2 ) {
-      return <div className="total">{result.length} domain</div>;
-    } else {
-      return <div className="total">{result.length} domains</div>;
-    }
+    this.setState({ loading: true }, () => {
+      getMailList()
+        .then(result => {
+          this.setState({
+            mails: result.data.data,
+            webmail: result.data.webmail,
+            mailFav: result.data.mailFav,
+            totalAmount: result.data.domain_amount,
+            loading: false
+          });
+        })
+        .catch(err => console.error(err));
+    });
   }
 
   changeSorting = (sorting, order) => {
-    this.setState({ 
+    this.setState({
       sorting,
       order
-     });
+    });
   }
 
-  toggleAll = () => {
-    this.setState({ toggleAll: !this.state.toggleAll });
+  showNotification = text => {
+    toast.error(text, {
+      position: "bottom-center",
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true
+    });
   }
 
   mails = () => {
-    const { mails, toggleAll } = this.state;
+    const { mails } = this.state;
     const result = [];
+    const mailFav = { ...this.state.mailFav };
 
     for (let i in mails) {
-      mails[i].NAME = i;
+      mails[i]['NAME'] = i;
+
+      if (mailFav[i]) {
+        mails[i]['STARRED'] = mailFav[i];
+      } else {
+        mails[i]['STARRED'] = 0;
+      }
+
       result.push(mails[i]);
     }
 
-    return result.map((item, index) => {
-      return <Mail data={item} toggled={toggleAll} key={index} />;
+    let sortedResult = this.sortArray(result);
+
+    return sortedResult.map((item, index) => {
+      return <Mail data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} />;
     });
+  }
+
+  checkItem = name => {
+    const { selection, mails } = this.state;
+    let duplicate = [...selection];
+    let mailsDuplicate = mails;
+    let checkedItem = duplicate.indexOf(name);
+
+    mailsDuplicate[name]['isChecked'] = !mailsDuplicate[name]['isChecked'];
+
+    if (checkedItem !== -1) {
+      duplicate.splice(checkedItem, 1);
+    } else {
+      duplicate.push(name);
+    }
+
+    this.setState({ mails: mailsDuplicate, selection: duplicate });
+  }
+
+  sortArray = array => {
+    const { order, sorting } = this.state;
+    let sortBy = this.sortBy(sorting);
+
+    if (order === "descending") {
+      return array.sort((a, b) => (a[sortBy] < b[sortBy]) ? 1 : ((b[sortBy] < a[sortBy]) ? -1 : 0));
+    } else {
+      return array.sort((a, b) => (a[sortBy] > b[sortBy]) ? 1 : ((b[sortBy] > a[sortBy]) ? -1 : 0));
+    }
+  }
+
+  sortBy = sorting => {
+    switch (sorting) {
+      case 'Date': return 'DATE';
+      case 'Domains': return 'domain_account';
+      case 'Accounts': return 'ACCOUNTS';
+      case 'Disk': return 'U_DISK';
+      case 'Starred': return 'STARRED';
+      default: break;
+    }
+  }
+
+  toggleFav = (value, type) => {
+    if (type === 'add') {
+      addFavorite(value, 'user')
+        .then(() => { })
+        .catch(err => {
+          this.showNotification(err)
+        });
+    } else {
+      deleteFavorite(value, 'user')
+        .then(() => { })
+        .catch(err => {
+          this.showNotification(err)
+        });
+    }
+  }
+
+  toggleAll = toggled => {
+    const { mails, toggledAll } = this.state;
+    this.setState({ toggledAll: toggled });
+
+    if (!toggledAll) {
+      let userNames = [];
+
+      for (let i in mails) {
+        userNames.push(i);
+
+        mails[i]['isChecked'] = true;
+      }
+
+      this.setState({ mails, selection: userNames });
+    } else {
+      for (let i in mails) {
+        mails[i]['isChecked'] = false;
+      }
+
+      this.setState({ mails, selection: [] });
+    }
+  }
+
+  bulk = action => {
+    const { selection } = this.state;
+
+    if (selection.length && action !== 'apply to selected') {
+      this.setState({ loading: true }, () => {
+        bulkAction(action, selection)
+          .then(result => {
+            if (result.status === 200) {
+              this.showNotification(`Success`);
+              this.setState({ loading: false }, () => {
+                this.toggleAll(false);
+              });
+            }
+          })
+          .catch(err => console.error(err));
+      });
+    }
   }
 
   render() {
     return (
       <div className="mails">
         <Toolbar mobile={false} >
-          <LeftButton name="Add Mail Domain" showLeftMenu={true} />
+          <LeftButton name="Add Mail Domain" href="/add/mail" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <a href="/webmail" className="button-extra" type="submit">OPEN WEBMAIL</a>
-              <Checkbox toggleAll={this.toggleAll} />
-              <Select list='mailList' />
+              <a href={this.state.webmail} className="button-extra" type="submit">{window.GLOBAL.App.inc['open webmail']}</a>
+              <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
+              <Select list='mailList' bulkAction={this.bulk} />
               <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="mailList" />
               <SearchInput />
             </div>
           </div>
         </Toolbar>
-        {this.state.loading ? <Spinner /> : this.mails()}
-        {this.totalAmount()}
+        <div className="mails-wrapper">
+          {this.state.loading ? <Spinner /> : this.mails()}
+        </div>
+        <div className="total">{this.state.totalAmount}</div>
       </div>
     );
   }
