@@ -103,13 +103,15 @@ class Web extends Component {
   }
 
   sortBy = sorting => {
+    const { Date, Domain, Disk, Bandwidth,Starred } = window.GLOBAL.App.inc;
+
     switch (sorting) {
-      case 'Date': return 'DATE';
-      case 'Domain': return 'ALIAS';
-      case 'IP Address': return 'IP';
-      case 'Disk': return 'U_DISK';
-      case 'Bandwidth': return 'U_BANDWIDTH';
-      case 'Starred': return 'STARRED';
+      case Date: return 'DATE';
+      case Domain: return 'ALIAS';
+      case window.GLOBAL.App.inc['IP Addresses']: return 'IP';
+      case Disk: return 'U_DISK';
+      case Bandwidth: return 'U_BANDWIDTH';
+      case Starred: return 'STARRED';
       default: break;
     }
   }

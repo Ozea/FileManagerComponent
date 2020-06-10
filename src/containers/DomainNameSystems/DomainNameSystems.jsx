@@ -103,13 +103,15 @@ class DomainNameSystems extends Component {
   }
 
   sortBy = sorting => {
+    const { Date, Expire, Domain, IP, Records, Starred } = window.GLOBAL.App.inc;
+
     switch (sorting) {
-      case 'Date': return 'DATE';
-      case 'Expire': return 'EXP';
-      case 'Domain': return 'NAME';
-      case 'Ip': return 'IP';
-      case 'Records': return 'RECORDS';
-      case 'Starred': return 'STARRED';
+      case Date: return 'DATE';
+      case Expire: return 'EXP';
+      case Domain: return 'NAME';
+      case IP: return 'IP';
+      case Records: return 'RECORDS';
+      case Starred: return 'STARRED';
       default: break;
     }
   }
