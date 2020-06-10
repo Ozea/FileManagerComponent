@@ -114,13 +114,15 @@ class Databases extends Component {
   }
 
   sortBy = sorting => {
+    const { Date, Database, Disk, User, Host, Starred } = window.GLOBAL.App.inc;
+
     switch (sorting) {
-      case 'Date': return 'DATE';
-      case 'Database': return 'DATABASE';
-      case 'Disk': return 'U_DISK';
-      case 'User': return 'DBUSER';
-      case 'Host': return 'HOST';
-      case 'Starred': return 'STARRED';
+      case Date: return 'DATE';
+      case Database: return 'DATABASE';
+      case Disk: return 'U_DISK';
+      case User: return 'DBUSER';
+      case Host: return 'HOST';
+      case Starred: return 'STARRED';
       default: break;
     }
   }

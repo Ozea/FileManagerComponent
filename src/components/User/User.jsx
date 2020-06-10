@@ -77,7 +77,7 @@ class User extends Component {
         </Container>
         <div className="actions">
           {this.printLoginActionButton(data.NAME)}
-          <div><a href={`/edit/user?user=${data.NAME}`}>{inc.Edit} <FontAwesomeIcon icon="pen" /></a></div>
+          <div><a href={`/edit/user?user=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
           <div><a href={`/suspend/user?user=${data.NAME}`} >{data.spnd_action_i18n} <FontAwesomeIcon icon="lock" /></a></div>
           <div><a href="#">{inc.Delete} <FontAwesomeIcon icon="times" /></a></div>
         </div>

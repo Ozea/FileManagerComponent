@@ -111,12 +111,14 @@ class Users extends Component {
   }
 
   sortBy = sorting => {
+    const { Date, Username, Disk, Bandwidth, Starred } = window.GLOBAL.App.inc;
+
     switch (sorting) {
-      case 'Date': return 'DATE';
-      case 'Username': return 'NAME';
-      case 'Disk': return 'U_DISK';
-      case 'Bandwidth': return 'U_BANDWIDTH';
-      case 'Starred': return 'STARRED';
+      case Date: return 'DATE';
+      case Username: return 'NAME';
+      case Disk: return 'U_DISK';
+      case Bandwidth: return 'U_BANDWIDTH';
+      case Starred: return 'STARRED';
       default: break;
     }
   }

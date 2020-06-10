@@ -112,12 +112,14 @@ class Mails extends Component {
   }
 
   sortBy = sorting => {
+    const { Date, Domains, Accounts, Disk, Starred } = window.GLOBAL.App.inc;
+
     switch (sorting) {
-      case 'Date': return 'DATE';
-      case 'Domains': return 'domain_account';
-      case 'Accounts': return 'ACCOUNTS';
-      case 'Disk': return 'U_DISK';
-      case 'Starred': return 'STARRED';
+      case Date: return 'DATE';
+      case Domains: return 'domain_account';
+      case Accounts: return 'ACCOUNTS';
+      case Disk: return 'U_DISK';
+      case Starred: return 'STARRED';
       default: break;
     }
   }
