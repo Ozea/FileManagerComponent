@@ -39,7 +39,9 @@ export const values = select => {
       { value: 'unsuspend', name: select.unsuspend },
       { value: 'delete', name: select.delete }
     ],
-    backupList: [select.delete],
+    backupList: [
+      { value: 'delete', name: select.delete }
+    ],
     packagesList: [select.delete],
     internetProtocolsList: [select.reread_ip, select.delete],
     updatesList: [select.update],

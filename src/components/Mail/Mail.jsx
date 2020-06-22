@@ -48,11 +48,11 @@ class Mail extends Component {
           </div>
         </Container>
         <div className="actions">
-          <div><a href={`/list/mail/?domain=${data.NAME}`}>{data.list_accounts_button} <FontAwesomeIcon icon="list" /></a></div>
-          <div><a href={`/add/mail/?domain=${data.NAME}`}>{inc['add account']} <FontAwesomeIcon icon="plus" /></a></div>
-          <div><a href={`/edit/mail/?domain=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
-          <div><a href={`#`}>{inc.suspend} <FontAwesomeIcon icon="lock" /></a></div>
-          <div><a href={`#`}>{inc.delete} <FontAwesomeIcon icon="times" /></a></div>
+          <div><a className="link-gray" href={`/list/mail/?domain=${data.NAME}`}>{data.list_accounts_button} <FontAwesomeIcon icon="list" /></a></div>
+          <div><a className="link-edit" href={`/add/mail/?domain=${data.NAME}`}>{inc['add account']} <FontAwesomeIcon icon="plus" /></a></div>
+          <div><a className="link-edit" href={`/edit/mail/?domain=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
+          <div><a className="link-gray" href={`#`}>{inc.suspend} <FontAwesomeIcon icon="lock" /></a></div>
+          <div><a className="link-delete" href={`#`}>{inc.delete} <FontAwesomeIcon icon="times" /></a></div>
         </div>
       </ListItem>
     );

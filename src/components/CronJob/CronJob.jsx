@@ -44,8 +44,8 @@ class CronJob extends Component {
           </div>
         </Container>
         <div className="actions">
-          <div><a href={`/edit/cron/?job=${data.JOB}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
-          <div><a href={`#`}>{inc.delete} <FontAwesomeIcon icon="times" /></a></div>
+          <div><a className="link-edit" href={`/edit/cron/?job=${data.JOB}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
+          <div><a className="link-delete" href={`#`}>{inc.delete} <FontAwesomeIcon icon="times" /></a></div>
         </div>
       </ListItem>
     );
