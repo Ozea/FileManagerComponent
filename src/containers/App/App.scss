@@ -33,3 +33,24 @@
 .Toastify__toast-container {
   top: 15em;
 }
+
+.actions {
+  div {
+    a.link-download:hover,
+    a.link-edit:hover {
+      background: #9fbf0c !important;
+    }
+    
+    a.link-list:hover {
+      background: #55c9c0 !important;
+    }
+    
+    a.link-delete:hover {
+      background: #ff3438 !important;
+    }
+
+    a.link-gray:hover {
+      background: #afafac !important;
+    }
+  }
+}

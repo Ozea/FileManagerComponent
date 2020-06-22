@@ -3,13 +3,13 @@ import FileManager from '../FileManager/FileManager';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Preview from '../../components/Preview/Preview';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faBook, faFile, faDownload, faFileAlt, faImage, faFolderOpen, faEllipsisH, faFolder, faItalic, faUser, faCopy, faPaste, faTrash, faBoxOpen, faArrowDown, faArrowUp, faBell, faPlus, faAngleRight, faStar, faUserLock, faPen, faLock, faTimes, faSearch, faCog, faList } from '@fortawesome/free-solid-svg-icons';
+import { faBook, faFile, faDownload, faFileAlt, faImage, faFolderOpen, faEllipsisH, faFolder, faItalic, faUser, faCopy, faPaste, faTrash, faBoxOpen, faArrowDown, faArrowUp, faBell, faPlus, faAngleRight, faStar, faUserLock, faPen, faLock, faTimes, faSearch, faCog, faList, faWrench, faFileDownload } from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.min';
 import './App.scss';
 import ControlPanelContent from '../ControlPanelContent/ControlPanelContent';
 
-library.add(faBook, faDownload, faFile, faFileAlt, faFolderOpen, faImage, faEllipsisH, faFolder, faItalic, faUser, faCopy, faPaste, faTrash, faBoxOpen, faArrowDown, faArrowUp, faBell, faPlus, faAngleRight, faStar, faUserLock, faPen, faLock, faTimes, faSearch, faCog, faList);
+library.add(faBook, faDownload, faFile, faFileAlt, faFolderOpen, faImage, faEllipsisH, faFolder, faItalic, faUser, faCopy, faPaste, faTrash, faBoxOpen, faArrowDown, faArrowUp, faBell, faPlus, faAngleRight, faStar, faUserLock, faPen, faLock, faTimes, faSearch, faCog, faList, faWrench, faFileDownload);
 
 class App extends Component {
 

@@ -55,10 +55,10 @@ class WebDomain extends Component {
           </div>
         </Container>
         <div className="actions">
-          <div><a href={`/edit/web?domain=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
-          <div><a href={`/list/web-log?domain=${data.NAME}&type=access`}>{inc['view logs']} <FontAwesomeIcon icon="list" /></a></div>
-          <div><a href={`#`}>{inc.suspend} <FontAwesomeIcon icon="lock" /></a></div>
-          <div><a href={`#`}>{inc.delete} <FontAwesomeIcon icon="times" /></a></div>
+          <div><a className="link-edit" href={`/edit/web?domain=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
+          <div><a className="link-gray" href={`/list/web-log?domain=${data.NAME}&type=access`}>{inc['view logs']} <FontAwesomeIcon icon="list" /></a></div>
+          <div><a className="link-gray" href={`#`}>{inc.suspend} <FontAwesomeIcon icon="lock" /></a></div>
+          <div><a className="link-delete" href={`#`}>{inc.delete} <FontAwesomeIcon icon="times" /></a></div>
         </div>
       </ListItem>
     );

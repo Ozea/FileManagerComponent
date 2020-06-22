@@ -43,11 +43,11 @@ class DomainNameSystem extends Component {
           </div>
         </Container>
         <div className="actions">
-          <div><a href={`/list/dns/?domain=${data.NAME}`}>{data.RECORDS_I18N} <FontAwesomeIcon icon="list" /></a></div>
-          <div><a href={`/add/dns/?domain=${data.NAME}`}>{inc['add record']} <FontAwesomeIcon icon="add" /></a></div>
-          <div><a href={`/edit/dns/?domain=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
-          <div><a href={`#`}>{inc.suspend} <FontAwesomeIcon icon="lock" /></a></div>
-          <div><a href={`#`}>{inc.delete} <FontAwesomeIcon icon="times" /></a></div>
+          <div><a className="link-gray" href={`/list/dns/?domain=${data.NAME}`}>{data.RECORDS_I18N} <FontAwesomeIcon icon="list" /></a></div>
+          <div><a className="link-edit" href={`/add/dns/?domain=${data.NAME}`}>{inc['add record']} <FontAwesomeIcon icon="add" /></a></div>
+          <div><a className="link-edit" href={`/edit/dns/?domain=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
+          <div><a className="link-gray" href={`#`}>{inc.suspend} <FontAwesomeIcon icon="lock" /></a></div>
+          <div><a className="link-delete" href={`#`}>{inc.delete} <FontAwesomeIcon icon="times" /></a></div>
         </div>
       </ListItem>
     );
