@@ -22,7 +22,7 @@ class Panel extends Component {
   className = (activeName) => {
     let path = window.location.pathname;
 
-    if (path === activeName ) {
+    if (path === activeName) {
       return "top-link active";
     }
 
@@ -38,16 +38,16 @@ class Panel extends Component {
         <div className="top-panel">
           <div className="container left-menu">
             <div className="logo">LOGO</div>
-            <div className={this.className("/list/packages")}><Link to="/list/packages">{topPanel.PACKAGES}</Link></div>
-            <div className={this.className("/list/ip")}><Link to="/list/ip">{topPanel.IP}</Link></div>
-            <div className={this.className("/list/rrd")}><Link to="/list/rrd">{topPanel.GRAPHS}</Link></div>
-            <div className={this.className("/list/stats")}><Link to="/list/stats">{topPanel.STATISTICS}</Link></div>
-            <div className={this.className("/list/logs")}><Link to="/list/logs">{topPanel.LOG}</Link></div>
-            <div className={this.className("/list/updates")}><Link to="/list/updates">{topPanel.UPDATES}</Link></div>
-            {firewallSystem && <div className={this.className("/list/firewall")}><Link to="/list/firewall">{topPanel.FIREWALL}</Link></div>}
-            {fileManagerKey && <div className="fm"><a href="/list/directory">{topPanel.FILE_MANAGER}</a></div>}
-            {softaculous === "yes" && <div><a href="/list/softaculous">{topPanel.APPS}</a></div>}
-            <div className={this.className("/list/server")}><Link to="/list/server">{topPanel.SERVER}</Link></div>
+            <div className={this.className("/list/package/")}><Link to="/list/package/">{topPanel.PACKAGES}</Link></div>
+            <div className={this.className("/list/ip/")}><Link to="/list/ip/">{topPanel.IP}</Link></div>
+            <div className={this.className("/list/rrd/")}><Link to="/list/rrd/">{topPanel.GRAPHS}</Link></div>
+            <div className={this.className("/list/stats/")}><Link to="/list/stats/">{topPanel.STATISTICS}</Link></div>
+            <div className={this.className("/list/logs/")}><Link to="/list/logs/">{topPanel.LOG}</Link></div>
+            <div className={this.className("/list/updates/")}><Link to="/list/updates/">{topPanel.UPDATES}</Link></div>
+            {firewallSystem && <div className={this.className("/list/firewall/")}><Link to="/list/firewall">{topPanel.FIREWALL}</Link></div>}
+            {fileManagerKey && <div className="fm"><Link to="/list/directory/">{topPanel.FILE_MANAGER}</Link></div>}
+            {softaculous === "yes" && <div><a href="/list/softaculous/">{topPanel.APPS}</a></div>}
+            <div className={this.className("/list/server/")}><Link to="/list/server">{topPanel.SERVER}</Link></div>
           </div>
           <div className="container profile-menu">
             <div className="bell">

@@ -27,7 +27,7 @@ class App extends Component {
         <Router>
           <Switch>
             <Route path="/list/directory/preview" component={(props) => <Preview onClose={() => this.onClose(props.history)} />} />
-            <Route path="/list/directory" exact component={FileManager} />
+            <Route path="/list/directory/" exact component={FileManager} />
             <Route path="/" component={ControlPanelContent} />
           </Switch>
         </Router>

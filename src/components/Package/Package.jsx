@@ -13,44 +13,55 @@ class Package extends Component {
     );
   }
 
+  toggleFav = (starred) => {
+    if (starred) {
+      this.props.toggleFav(this.props.data.NAME, 'add');
+    } else {
+      this.props.toggleFav(this.props.data.NAME, 'delete');
+    }
+  }
+
+  checkItem = () => {
+    this.props.checkItem(this.props.data.NAME);
+  }
+
   render() {
-    const { data, toggled } = this.props;
+    const { data } = this.props;
+    const { inc } = window.GLOBAL.App;
 
     return (
-      <ListItem checked={false} toggled={toggled} date={data.DATE}>
+      <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem}>
         <Container className="r-col w-85">
           <div className="name">{data.NAME}</div>
           <div>{data.FNAME} {data.LNAME}</div>
           <div className="stats">
             <Container className="c-1 w-30">
-              <div>Web Template: <span className="stat">{data.WEB_TEMPLATE}</span></div>
-              <div>Proxy Template: <span className="stat">{data.PROXY_TEMPLATE}</span></div>
-              <div>DNS Template: <span className="stat">{data.DNS_TEMPLATE}</span></div>
-              <div>SSH Access: <span className="stat">{data.SHELL}</span></div>
-              <div>Web Domains: <span className="stat">{data.WEB_DOMAINS}</span></div>
-              <div>Web Aliases: <span className="stat">{data.WEB_ALIASES}</span></div>
+              <div>{inc['Web Template']}: <span><span className="stat">{data.WEB_TEMPLATE}</span></span></div>
+              <div>{inc['Proxy Template']}: <span><span className="stat">{data.PROXY_TEMPLATE}</span></span></div>
+              <div>{inc['DNS Template']}: <span><span className="stat">{data.DNS_TEMPLATE}</span></span></div>
+              <div>{inc['SSH Access']}: <span><span className="stat">{data.SHELL}</span></span></div>
+              <div>{inc['Web Domains']}: <span><span className="stat">{data.WEB_DOMAINS}</span></span></div>
+              <div>{inc['Web Aliases']}: <span><span className="stat">{data.WEB_ALIASES}</span></span></div>
             </Container>
             <Container className="c-2 w-35">
-              <div>DNS Domains: <span className="stat">{data.DNS_DOMAINS}</span></div>
-              <div>DNS Records: <span className="stat">{data.DNS_RECORDS}</span></div>
-              <div>Mail Domains: <span className="stat">{data.MAIL_DOMAINS}</span></div>
-              <div>Mail Accounts: <span className="stat">{data.MAIL_ACCOUNTS}</span></div>
-              <div>Databases: <span className="stat">{data.DATABASES}</span></div>
-              <div>Cron Jobs: <span className="stat">{data.CRON_JOBS}</span></div>
+              <div>{inc['DNS domains']}: <span><span className="stat">{data.DNS_DOMAINS}</span></span></div>
+              <div>{inc['DNS records']}: <span><span className="stat">{data.DNS_RECORDS}</span></span></div>
+              <div>{inc['Mail Domains']}: <span><span className="stat">{data.MAIL_DOMAINS}</span></span></div>
+              <div>{inc['Mail Accounts']}: <span><span className="stat">{data.MAIL_ACCOUNTS}</span></span></div>
+              <div>{inc.Databases}: <span><span className="stat">{data.DATABASES}</span></span></div>
+              <div>{inc['Cron Jobs']}: <span><span className="stat">{data.CRON_JOBS}</span></span></div>
             </Container>
             <Container className="c-3 w-35">
-              <div>Backups: <span className="stat">{data.BACKUPS}</span></div>
-              <div>Bandwidth: <span><span className="stat">{data.BANDWIDTH}</span> mb</span></div>
-              <div>Disk: <span><span className="stat">{data.DISK_QUOTA}</span> mb</span></div>
-              <div className="ns">Name Servers: <span className="stat">{this.printNameServers(data.NS)}</span></div>
+              <div><span>{inc.Backups}:</span> <span><span className="stat">{data.BACKUPS}</span></span></div>
+              <div><span>{inc.Bandwidth}:</span> <span><span><span className="stat">{data.BANDWIDTH}</span> mb</span></span></div>
+              <div><span>{inc.Disk}:</span> <span><span><span className="stat">{data.DISK_QUOTA}</span> mb</span></span></div>
+              <div className="ns"><span>{inc['Name Servers']}:</span> <span><span className="stat">{this.printNameServers(data.NS)}</span></span></div>
             </Container>
           </div>
         </Container>
         <div className="actions">
-          <div>LOGOUT <FontAwesomeIcon icon="user-lock" /></div>
-          <div>EDIT <FontAwesomeIcon icon="pen" /></div>
-          <div>SUSPEND <FontAwesomeIcon icon="lock" /></div>
-          <div>DELETE <FontAwesomeIcon icon="times" /></div>
+          <div><a className="link-edit" href={`/edit/package/?package=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
+          <div><a className="link-delete" href={`#`}>{inc.delete} <FontAwesomeIcon icon="times" /></a></div>
         </div>
       </ListItem>
     );
