@@ -45,7 +45,7 @@ class Panel extends Component {
             <div className={this.className("/list/logs/")}><Link to="/list/logs/">{topPanel.LOG}</Link></div>
             <div className={this.className("/list/updates/")}><Link to="/list/updates/">{topPanel.UPDATES}</Link></div>
             {firewallSystem && <div className={this.className("/list/firewall/")}><Link to="/list/firewall">{topPanel.FIREWALL}</Link></div>}
-            {fileManagerKey && <div className="fm"><Link to="/list/directory/">{topPanel.FILE_MANAGER}</Link></div>}
+            {fileManagerKey && <div className="fm"><a href="/list/directory/">{topPanel.FILE_MANAGER}</a></div>}
             {softaculous === "yes" && <div><a href="/list/softaculous/">{topPanel.APPS}</a></div>}
             <div className={this.className("/list/server/")}><Link to="/list/server">{topPanel.SERVER}</Link></div>
           </div>

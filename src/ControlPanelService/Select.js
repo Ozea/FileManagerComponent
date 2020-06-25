@@ -45,7 +45,10 @@ export const values = (select = {}) => {
     packagesList: [
       { value: 'delete', name: select.delete }
     ],
-    internetProtocolsList: [select.reread_ip, select.delete],
+    internetProtocolsList: [
+      { value: 'reread IP', name: select['reread IP'] },
+      { value: 'delete', name: select.delete }
+    ],
     updatesList: [select.update],
     firewallList: [select.delete],
     serverList: [select.stop, select.start, select.restart]
