@@ -27,7 +27,7 @@ class ControlPanelContent extends Component {
         <div className="content">
           <Switch>
             <Redirect from="/" exact to="/list/user" />
-            <Route path="/list/packages" component={Packages} />
+            <Route path="/list/package" component={Packages} />
             <Route path="/list/ip" component={InternetProtocols} />
             <Route path="/list/rrd" component={RRDs} />
             <Route path="/list/stats" component={Statistics} />

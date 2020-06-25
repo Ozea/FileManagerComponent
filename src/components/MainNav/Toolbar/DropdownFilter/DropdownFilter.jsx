@@ -10,7 +10,7 @@ class DropdownFilter extends Component {
     mailList: [inc.Date, inc.Domain, inc.Accounts, inc.Disk, inc.Starred],
     dbList: [inc.Date, inc.Database, inc.Disk, inc.User, inc.Host, inc.Starred],
     cronList: [inc.Date, inc.Command, inc.Starred],
-    packagesList: [inc.Date, inc.Package_Name, inc.Starred],
+    packagesList: [inc.Date, inc['Package Name'], inc.Starred],
     internetProtocolsList: [inc.Date, inc.IP, inc.Netmask, inc.Interface, inc.Domain, inc.Owner, inc.Starred],
     firewallList: [inc.Action, inc.Protocol, inc.Port, inc['IP Addresses'], inc.Comment, inc.Starred],
   }

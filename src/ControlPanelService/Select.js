@@ -1,4 +1,4 @@
-export const values = select => {
+export const values = (select = {}) => {
   return {
     usersList: [
       { value: 'rebuild', name: select.rebuild },
@@ -42,7 +42,9 @@ export const values = select => {
     backupList: [
       { value: 'delete', name: select.delete }
     ],
-    packagesList: [select.delete],
+    packagesList: [
+      { value: 'delete', name: select.delete }
+    ],
     internetProtocolsList: [select.reread_ip, select.delete],
     updatesList: [select.update],
     firewallList: [select.delete],
