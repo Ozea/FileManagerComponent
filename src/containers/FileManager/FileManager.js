@@ -44,7 +44,6 @@ class FileManager extends Component {
   }
 
   UNSAFE_componentWillMount = () => {
-    console.log('FM Mount');
     FM.cacheData(this.state.currentUser, this.props.history);
     let currentPath = FM.activeWindowPath();
     this.setState({ currentPath });
