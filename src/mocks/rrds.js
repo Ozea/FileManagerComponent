@@ -1,7 +1,3 @@
-export function generateImagePath(period, type) {
-  return `/list/rrd/image.php?/rrd/${type}/${period}-${type}.png`;
-}
-
 export const rrds = {
   "1": {
     "TYPE": "la",
