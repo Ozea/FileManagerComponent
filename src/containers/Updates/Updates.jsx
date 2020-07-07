@@ -3,28 +3,45 @@ import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInpu
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
+import { bulkAction, getUpdatesList, enableAutoUpdate, disableAutoUpdate } from '../../ControlPanelService/Updates';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Spinner from '../../components/Spinner/Spinner';
 import Update from '../../components/Update/Update';
-import { updates } from '../../mocks/updates';
 import './Updates.scss';
+
+const { inc } = window.GLOBAL.App;
 
 class Updates extends Component {
   state = {
     updates: [],
+    selection: [],
+    autoUpdate: '',
+    token: '',
     loading: false,
     toggleAll: false
   }
 
   componentDidMount() {
-    this.setState({
-      loading: true,
-      updates
-    }, () => this.setState({ loading: false }));
+    this.fetchData();
+  }
+
+  fetchData = () => {
+    this.setState({ loading: true }, () => {
+      getUpdatesList()
+        .then(result => {
+          this.setState({
+            updates: result.data.data,
+            token: result.data.token,
+            autoUpdate: result.data.autoUpdate,
+            loading: false
+          });
+        })
+        .catch(err => console.error(err));
+    });
   }
 
   updates = () => {
-    const { updates, toggleAll } = this.state;
+    const { updates } = this.state;
     const result = [];
 
     for (let i in updates) {
@@ -33,12 +50,91 @@ class Updates extends Component {
     }
 
     return result.map((item, index) => {
-      return <Update data={item} toggled={toggleAll} key={index} />;
+      return <Update data={item} key={index} checkItem={this.checkItem} />;
     });
   }
 
   toggleAll = () => {
     this.setState({ toggleAll: !this.state.toggleAll });
+  }
+
+  checkItem = name => {
+    const { selection, updates } = this.state;
+    let duplicate = [...selection];
+    let updatesDuplicate = updates;
+    let checkedItem = duplicate.indexOf(name);
+
+    updatesDuplicate[name]['isChecked'] = !updatesDuplicate[name]['isChecked'];
+
+    if (checkedItem !== -1) {
+      duplicate.splice(checkedItem, 1);
+    } else {
+      duplicate.push(name);
+    }
+
+    this.setState({ updates: updatesDuplicate, selection: duplicate });
+  }
+
+  toggleAll = toggled => {
+    const { updates, toggledAll } = this.state;
+    this.setState({ toggledAll: toggled });
+
+    if (!toggledAll) {
+      let names = [];
+
+      for (let i in updates) {
+        names.push(i);
+
+        updates[i]['isChecked'] = true;
+      }
+
+      this.setState({ updates, selection: names });
+    } else {
+      for (let i in updates) {
+        updates[i]['isChecked'] = false;
+      }
+
+      this.setState({ updates, selection: [] });
+    }
+  }
+
+  bulk = action => {
+    const { selection } = this.state;
+
+    if (selection.length && action !== 'apply to selected') {
+      this.setState({ loading: true }, () => {
+        bulkAction(action, selection)
+          .then(result => {
+            if (result.status === 200) {
+              this.showNotification(`Success`);
+              this.setState({ loading: false }, () => {
+                this.toggleAll(false);
+              });
+            }
+          })
+          .catch(err => console.error(err));
+      });
+    }
+  }
+
+  handleAutoUpdate = () => {
+    if (this.state.autoUpdate === 'Enabled') {
+      disableAutoUpdate()
+        .then(() => this.fetchData())
+        .catch(err => console.error(err));
+    } else {
+      enableAutoUpdate()
+        .then(() => this.fetchData())
+        .catch(err => console.error(err));
+    }
+  }
+
+  printAutoUpdateButtonName = () => {
+    if (this.state.autoUpdate === 'Enabled') {
+      return inc['disable autoupdate'];
+    } else {
+      return inc['enable autoupdate'];
+    }
   }
 
   render() {
@@ -48,9 +144,9 @@ class Updates extends Component {
           <LeftButton name="Add Cron Job" showLeftMenu={false} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <button className="btn btn-secondary extra" type="submit">ENABLE AUTOUPDATE</button>
+              <button onClick={this.handleAutoUpdate} className="button-extra">{this.printAutoUpdateButtonName()}</button>
               <Checkbox toggleAll={this.toggleAll} />
-              <Select list='statisticsList' />
+              <Select list='updatesList' />
               <SearchInput />
             </div>
           </div>

@@ -16,25 +16,37 @@ class Update extends Component {
     return status !== "no";
   }
 
+  checkItem = () => {
+    this.props.checkItem(this.props.data.NAME);
+  }
+
   render() {
-    const { data, toggled } = this.props;
+    const { data } = this.props;
+    const { inc } = window.GLOBAL.App;
 
     return (
-      <ListItem checked={false} toggled={toggled} date={false} outdated={this.isOutdated(data.UPDATED)} leftNameText={this.isUpdated(data.UPDATED)}>
+      <ListItem
+        outdated={this.isOutdated(data.UPDATED)}
+        leftNameText={this.isUpdated(data.UPDATED)}
+        checkItem={this.checkItem}
+        checked={data.isChecked}
+        date={false}>
+
         <Container className="r-col w-85">
           <div className="name">{data.NAME}</div>
           <div className="stats">
-            <Container className="c-1 w-40">
+            <Container className="c-1">
               <div className="descr"><span className="stat">{data.DESCR}</span></div>
             </Container>
-            <Container className="c-2 w-30">
-              <div>Version: <span><span className="stat">{data.VERSION}</span> {`(${data.ARCH})`}</span></div>
+            <Container className="c-2">
+              <div>{inc.Version}: <span><span className="stat">{data.VERSION}</span> {`(${data.ARCH})`}</span></div>
             </Container>
-            <Container className="c-3 w-30">
-              <div>Release: <span className="stat">{data.RELEASE}</span></div>
+            <Container className="c-3">
+              <div>{inc.Release}: <span className="stat">{data.RELEASE}</span></div>
             </Container>
           </div>
         </Container>
+
       </ListItem>
     );
   }
