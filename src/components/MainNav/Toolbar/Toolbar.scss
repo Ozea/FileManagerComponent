@@ -17,7 +17,9 @@
     justify-content: center;
     align-items: center;
 
-    a.button-extra {
+    a.button-extra, button.button-extra {
+      background: none;
+      border: none;
       padding: 0 0.75rem;
       text-decoration: none;
       color: rgb(129, 125, 125);

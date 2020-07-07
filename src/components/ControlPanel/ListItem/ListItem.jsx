@@ -76,7 +76,10 @@ class ListItem extends Component {
       <div className={this.className()}>
         <Container className="l-col w-14">
           {this.printDate(this.props.date)}
-          <div className="text-status">{this.props.leftNameText}</div>
+          <div className="text-status">
+            <div className="checkbox"><input type="checkbox" onChange={(e) => this.toggleItem(e)} checked={this.props.checked} /></div>
+            {this.props.leftNameText}
+          </div>
           <div className="star">
             <div className="checkbox"><input type="checkbox" onChange={(e) => this.toggleItem(e)} checked={this.props.checked} /></div>
             <div onClick={this.starItem}><FontAwesomeIcon icon="star" /></div>
