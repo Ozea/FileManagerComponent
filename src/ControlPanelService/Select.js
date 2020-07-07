@@ -52,7 +52,9 @@ export const values = (select = {}) => {
     updatesList: [
       { value: 'update', name: select.update }
     ],
-    firewallList: [select.delete],
+    firewallList: [
+      { value: 'delete', name: select.delete }
+    ],
     serverList: [select.stop, select.start, select.restart]
   }
 };

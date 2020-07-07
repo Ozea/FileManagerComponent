@@ -5,35 +5,47 @@ import ListItem from '../ControlPanel/ListItem/ListItem';
 import './Firewall.scss';
 
 class Firewall extends Component {
+  toggleFav = (starred) => {
+    if (starred) {
+      this.props.toggleFav(this.props.data.NAME, 'add');
+    } else {
+      this.props.toggleFav(this.props.data.NAME, 'delete');
+    }
+  }
+
+  checkItem = () => {
+    this.props.checkItem(this.props.data.NAME);
+  }
+
   render() {
-    const { data, toggled } = this.props;
+    const { data } = this.props;
+    const { inc } = window.GLOBAL.App;
 
     return (
-      <ListItem checked={false} toggled={toggled} date={data.DATE}>
+      <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem}>
         <Container className="cron-jobs-list r-col w-85">
           <div className="stats">
-            <Container className="cron-col w-20">
+            <Container className="cron-col">
               <div><span className="stat">{data.ACTION}</span></div>
             </Container>
-            <Container className="cron-col w-30">
+            <Container className="cron-col">
               <div><span><span className="stat">{data.PROTOCOL}</span> / {data.COMMENT}</span></div>
             </Container>
-            <Container className="cron-col w-10">
+            <Container className="cron-col">
               <div></div>
             </Container>
-            <Container className="cron-col w-20">
+            <Container className="cron-col">
               <div><span className="stat">{data.PORT}</span></div>
             </Container>
-            <Container className="cron-col w-20">
+            <Container className="cron-col">
               <div><span className="stat">{data.IP}</span></div>
             </Container>
           </div>
         </Container>
         <div className="actions">
-          <div>LOGOUT <FontAwesomeIcon icon="user-lock" /></div>
-          <div>EDIT <FontAwesomeIcon icon="pen" /></div>
-          <div>SUSPEND <FontAwesomeIcon icon="lock" /></div>
-          <div>DELETE <FontAwesomeIcon icon="times" /></div>
+          <div><a className="link-edit" href={`/edit/firewall?rule=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
+          <div><a className="link-gray" href={`/suspend/firewall?rule=${data.NAME}`} >{data.suspend} <FontAwesomeIcon icon="lock" /></a></div>
+          <div><a className="link-delete" href="#">{inc.Delete} <FontAwesomeIcon icon="times" /></a></div>
         </div>
       </ListItem>
     );

@@ -11,6 +11,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import { toast } from 'react-toastify';
 import User from '../../components/User/User';
 import './Users.scss';
+
 const { inc } = window.GLOBAL.App;
 
 class Users extends Component {
@@ -185,7 +186,7 @@ class Users extends Component {
     return (
       <div>
         <Toolbar mobile={false} >
-          <LeftButton name="Add User" href="/add/user/" showLeftMenu={true} />
+          <LeftButton name={inc['Add User']} href="/add/user/" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
               <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
