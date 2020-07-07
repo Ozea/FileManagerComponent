@@ -31,7 +31,7 @@ class ControlPanelContent extends Component {
             <Route path="/list/ip" component={InternetProtocols} />
             <Route path="/list/rrd" component={RRDs} />
             <Route path="/list/stats" component={Statistics} />
-            <Route path="/list/logs" component={Logs} />
+            <Route path="/list/log" component={Logs} />
             <Route path="/list/updates" component={Updates} />
             <Route path="/list/firewall" component={Firewalls} />
             <Route path="/list/server" component={Servers} />

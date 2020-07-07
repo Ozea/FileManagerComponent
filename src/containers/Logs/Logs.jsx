@@ -1,39 +1,32 @@
 import React, { Component } from 'react';
+import { getLogsList } from '../../ControlPanelService/Logs';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Spinner from '../../components/Spinner/Spinner';
 import Log from '../../components/Log/Log';
-import { logs } from '../../mocks/logs';
 import './Logs.scss';
 
 class Logs extends Component {
   state = {
     logs: [],
+    totalAmount: '',
     loading: false,
     total: 0
   }
 
   componentDidMount() {
-    this.setState({
-      loading: true,
-      logs
-    }, () => this.setState({ loading: false }));
-  }
-
-  totalAmount = () => {
-    const { logs } = this.state;
-    let result = [];
-
-    for (let i in logs) {
-      result.push(logs[i]);
-    }
-
-    if (result.length < 2) {
-      return <div className="total">{result.length} log record</div>;
-    } else {
-      return <div className="total">{result.length} log records</div>;
-    }
+    this.setState({ loading: true }, () => {
+      getLogsList()
+        .then(result => {
+          this.setState({
+            logs: result.data.data,
+            totalAmount: result.data.logsAmount,
+            loading: false
+          });
+        })
+        .catch(err => console.error(err));
+    });
   }
 
   logs = () => {
@@ -60,8 +53,10 @@ class Logs extends Component {
             </div>
           </div>
         </Toolbar>
-        {this.state.loading ? <Spinner /> : this.logs()}
-        {this.totalAmount()}
+        <div className="statistics-wrapper">
+          {this.state.loading ? <Spinner /> : this.logs()}
+        </div>
+        <div className="total">{this.state.totalAmount}</div>
       </div>
     );
   }
