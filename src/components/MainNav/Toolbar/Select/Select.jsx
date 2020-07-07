@@ -16,23 +16,12 @@ class Select extends Component {
     backupList: listValues.backupList,
     packagesList: listValues.packagesList,
     internetProtocolsList: listValues.internetProtocolsList,
-    statisticsList: this.printUserNames,
+    statisticsList: [],
     updatesList: listValues.updatesList,
     firewallList: listValues.firewallList,
     serverList: listValues.serverList,
     selected: '',
   };
-
-  printUserNames = () => {
-    const { users } = window.GLOBAL.App.users;
-    const result = [];
-
-    for (let i in users) {
-      result.push(i);
-    }
-
-    return result;
-  }
 
   defaultValue = () => {
     if (this.props.list === 'statisticsList') {
@@ -52,9 +41,11 @@ class Select extends Component {
     const { list } = this.props;
     let activeList = this.state[list];
 
-    return activeList.map((item, index) => {
-      return <option key={index} value={item.value}>{item.name}</option>
-    })
+    if (list === 'statisticsList') {
+      return this.props.users.map((item, index) => { return <option key={index} value={item}>{item}</option> });
+    } else {
+      return activeList.map((item, index) => { return <option key={index} value={item.value}>{item.name}</option> });
+    }
   }
 
   handleSelect = event => {

@@ -1,49 +1,41 @@
 import React, { Component } from 'react';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
-import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
+import { getStatisticsList } from '../../ControlPanelService/Statistics';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Statistic from '../../components/Statistic/Statistic';
 import Spinner from '../../components/Spinner/Spinner';
-import { statistics } from '../../mocks/statistics';
+import { Link } from 'react-router-dom';
 import './Statistics.scss';
 
 class Statistics extends Component {
   state = {
     statistics: [],
+    users: [],
+    totalAmount: '',
     loading: false,
-    sorting: "DATE",
-    order: "descending",
-    total: 0
   }
 
-  componentDidMount() {
-    this.setState({
-      loading: true,
-      statistics
-    }, () => this.setState({ loading: false }));
+  componentWillMount() {
+    this.fetchData();
   }
 
-  totalAmount = () => {
-    const { statistics } = this.state;
-    let result = [];
+  fetchData = () => {
+    const { search } = this.props.location;
+    let user = search ? search.split('=')[1] : '';
 
-    for (let i in statistics) {
-      result.push(statistics[i]);
-    }
-
-    if (result.length < 2) {
-      return <div className="total">{result.length} month</div>;
-    } else {
-      return <div className="total">{result.length} months</div>;
-    }
-  }
-
-  changeSorting = (sorting, order) => {
-    this.setState({ 
-      sorting,
-      order
-     });
+    this.setState({ loading: true }, () => {
+      getStatisticsList(user)
+        .then(result => {
+          this.setState({
+            statistics: result.data.data,
+            users: result.data.users,
+            totalAmount: result.data.statsAmount,
+            loading: false
+          });
+        })
+        .catch(err => console.error(err));
+    });
   }
 
   statistics = () => {
@@ -60,21 +52,28 @@ class Statistics extends Component {
     });
   }
 
+  bulkAction = value => {
+    let user = value !== ( window.GLOBAL.App.inc['show per user'] || '' ) ? `?user=${value}` : '';
+    this.props.history.push({ search: user });
+    this.fetchData();
+  };
+
   render() {
     return (
       <div className="statistics-list">
         <Toolbar mobile={false} className="justify-right">
-          <LeftButton name="Add Cron Job" showLeftMenu={false} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <button className="btn btn-secondary extra" type="submit">OVERALL STATISTICS</button>
-              <Select list='statisticsList' />
+              <Link to="/list/stats/" className="button-extra" type="submit">{window.GLOBAL.App.inc['Overall Statistics']}</Link>
+              <Select list='statisticsList' users={this.state.users} bulkAction={this.bulkAction} />
               <SearchInput />
             </div>
           </div>
         </Toolbar>
-        {this.state.loading ? <Spinner /> : this.statistics()}
-        {this.totalAmount()}
+        <div className="statistics-wrapper">
+          {this.state.loading ? <Spinner /> : this.statistics()}
+        </div>
+        <div className="total">{this.state.totalAmount}</div>
       </div>
     );
   }
