@@ -1,32 +1,45 @@
 import React, { Component } from 'react';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
+import { bulkAction, getServersList } from '../../ControlPanelService/Server';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import ServerSys from '../../components/Server/ServerSys';
 import Spinner from '../../components/Spinner/Spinner';
 import Server from '../../components/Server/Server';
-import { serverSys } from '../../mocks/serverSys';
-import { servers } from '../../mocks/servers';
 import './Servers.scss';
+
+const { inc } = window.GLOBAL.App;
 
 class Servers extends Component {
   state = {
     servers: [],
+    selection: [],
+    sysInfo: {},
     loading: false,
-    toggleAll: false
+    toggledAll: false,
+    sorting: inc.Action,
+    order: "descending",
   }
 
   componentDidMount() {
-    this.setState({
-      loading: true,
-      servers
-    }, () => this.setState({ loading: false }));
+    this.setState({ loading: true }, () => {
+      getServersList()
+        .then(result => {
+          console.log(result);
+          this.setState({
+            servers: result.data.data,
+            sysInfo: result.data.sys.sysinfo,
+            loading: false
+          });
+        })
+        .catch(err => console.error(err));
+    });
   }
 
   servers = () => {
-    const { servers, toggleAll } = this.state;
+    const { servers } = this.state;
     const result = [];
 
     for (let i in servers) {
@@ -35,30 +48,89 @@ class Servers extends Component {
     }
 
     return result.map((item, index) => {
-      return <Server data={item} toggled={toggleAll} key={index} />;
+      return <Server data={item} key={index} checkItem={this.checkItem} />;
     });
   }
 
-  toggleAll = () => {
-    this.setState({ toggleAll: !this.state.toggleAll });
+  toggleAll = toggled => {
+    const { servers, toggledAll } = this.state;
+    this.setState({ toggledAll: toggled });
+
+    if (!toggledAll) {
+      let serverNames = [];
+
+      for (let i in servers) {
+        serverNames.push(i);
+
+        servers[i]['isChecked'] = true;
+      }
+
+      this.setState({ servers, selection: serverNames });
+    } else {
+      for (let i in servers) {
+        servers[i]['isChecked'] = false;
+      }
+
+      this.setState({ servers, selection: [] });
+    }
+  }
+
+  bulk = action => {
+    const { selection } = this.state;
+
+    if (selection.length && action !== 'apply to selected') {
+      this.setState({ loading: true }, () => {
+        bulkAction(action, selection)
+          .then(result => {
+            if (result.status === 200) {
+              this.showNotification(`Success`);
+              this.setState({ loading: false }, () => {
+                this.toggleAll(false);
+              });
+            }
+          })
+          .catch(err => console.error(err));
+      });
+    }
+  }
+
+  checkItem = name => {
+    const { selection, servers } = this.state;
+    let duplicate = [...selection];
+    let serversDuplicate = servers;
+    let checkedItem = duplicate.indexOf(name);
+
+    serversDuplicate[name]['isChecked'] = !serversDuplicate[name]['isChecked'];
+
+    if (checkedItem !== -1) {
+      duplicate.splice(checkedItem, 1);
+    } else {
+      duplicate.push(name);
+    }
+
+    this.setState({ servers: serversDuplicate, selection: duplicate });
   }
 
   render() {
     return (
-      <div className="statistics-list servers">
+      <div className="servers-list">
         <Toolbar mobile={false}>
-          <LeftButton list="server" name="Configure" showLeftMenu={true} />
+          <LeftButton href="/edit/server/" list="server" name={inc.configure} showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <button className="btn btn-secondary extra" type="submit">SHOW: CPU / MEM / NET / DISK</button>
-              <Checkbox toggleAll={this.toggleAll} />
-              <Select list='statisticsList' />
+              <a href="/list/server/?cpu" className="button-extra">{inc['show: CPU / MEM / NET / DISK']}</a>
+              <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
+              <Select list='serverList' />
               <SearchInput />
             </div>
           </div>
         </Toolbar>
-        <ServerSys data={serverSys.sysinfo} toggled={this.state.toggleAll} />
-        {this.state.loading ? <Spinner /> : this.servers()}
+        <div className="sys-info">
+          <ServerSys data={this.state.sysInfo} />
+        </div>
+        <div className="servers-wrapper">
+          {this.state.loading ? <Spinner /> : this.servers()}
+        </div>
       </div>
     );
   }
