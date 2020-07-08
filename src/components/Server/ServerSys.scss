@@ -1,10 +1,32 @@
-.statistics-list.servers .r-col {
-  div.server-name {
-    font-size: 35px;
-    color: black;
-  }
-}
+.servers-list {
+  .sys-info .list-item {
+    .r-col {
+      padding: 0;
 
-.statistics-list.servers .list-item:nth-child(2) .r-col {
-  padding-left: 0;
+      .name {
+        font-size: 35px;
+      }
+
+      .c-2 span > span.stat {
+        margin-left: 10px;
+      }
+
+      .c-3 {
+        padding-right: 0;
+
+        > div > span {
+          width: 100%;
+        }
+      }
+    }
+
+    .l-col div.text-status {
+      display: none;
+    }
+  }
+
+  .actions a.link-gray.restart svg {
+    width: 1rem;
+    height: 1rem;
+  }
 }

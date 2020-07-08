@@ -15,33 +15,47 @@ class Server extends Component {
     return days;
   }
 
+  checkItem = () => {
+    this.props.checkItem(this.props.data.NAME);
+  }
+
   render() {
-    const { data, toggled } = this.props;
+    const { data } = this.props;
+    const { inc } = window.GLOBAL.App;
 
     return (
-      <ListItem checked={false} toggled={toggled} date={false} stopped={this.isActive(data.STATE)}>
+      <ListItem checked={data.isChecked} checkItem={this.checkItem}>
         <Container className="r-col w-85">
-          <div className="name">{data.NAME}</div>
+          <div className="server-name">{data.NAME}</div>
           <div className="stats">
-            <Container className="c-1 w-35">
-              <div className="descr"><span className="stat">{data.SYSTEM}</span></div>
+            <Container className="c-1">
+              <div className="descr"><span className="stat">{inc[data.SYSTEM]}</span></div>
             </Container>
-            <Container className="c-1 w-15">
-              <div className="descr"><span>CPU: <span className="stat">{data.CPU}</span></span></div>
+            <Container className="c-1" />
+            <Container className="c-1">
+              <div className="descr"><span>{inc.CPU}: <span className="stat">{data.CPU}</span></span></div>
             </Container>
-            <Container className="c-2 w-20">
-              <div><span>Memory: <span className="stat">{data.MEM} mb</span></span></div>
+            <Container className="c-2">
+              <div><span>{inc.Memory}: <span className="stat">{data.MEM} {inc.mb}</span></span></div>
             </Container>
-            <Container className="c-3 w-30">
-              <div><span>Uptime: <span className="stat">{this.printTime(data.RTIME)} days</span></span></div>
+            <Container className="c-3">
+              <div><span>{inc.Uptime}: <span className="stat">{this.printTime(data.RTIME)} {inc.days}</span></span></div>
             </Container>
+            <Container className="c-1" />
           </div>
         </Container>
         <div className="actions">
-          <div>LOGOUT <FontAwesomeIcon icon="user-lock" /></div>
-          <div>EDIT <FontAwesomeIcon icon="pen" /></div>
-          <div>SUSPEND <FontAwesomeIcon icon="lock" /></div>
-          <div>DELETE <FontAwesomeIcon icon="times" /></div>
+          <div><a className="link-download" href={`/edit/server/${data.NAME}`}>{inc.configure} <FontAwesomeIcon icon="cogs" /></a></div>
+          <div><a className="link-delete" href={`/stop/service/?srv=${data.NAME}`} >{inc.stop} <FontAwesomeIcon icon="stop" /></a></div>
+          <div>
+            <a className="link-gray restart" href={`/restart/service?srv=${data.NAME}`} >
+              {inc.restart}
+              <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-repeat" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M2.854 7.146a.5.5 0 0 0-.708 0l-2 2a.5.5 0 1 0 .708.708L2.5 8.207l1.646 1.647a.5.5 0 0 0 .708-.708l-2-2zm13-1a.5.5 0 0 0-.708 0L13.5 7.793l-1.646-1.647a.5.5 0 0 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0 0-.708z" />
+                <path fill-rule="evenodd" d="M8 3a4.995 4.995 0 0 0-4.192 2.273.5.5 0 0 1-.837-.546A6 6 0 0 1 14 8a.5.5 0 0 1-1.001 0 5 5 0 0 0-5-5zM2.5 7.5A.5.5 0 0 1 3 8a5 5 0 0 0 9.192 2.727.5.5 0 1 1 .837.546A6 6 0 0 1 2 8a.5.5 0 0 1 .501-.5z" />
+              </svg>
+            </a>
+          </div>
         </div>
       </ListItem>
     );

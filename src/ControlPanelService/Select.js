@@ -55,6 +55,10 @@ export const values = (select = {}) => {
     firewallList: [
       { value: 'delete', name: select.delete }
     ],
-    serverList: [select.stop, select.start, select.restart]
+    serverList: [
+      { value: 'stop', name: select.stop },
+      { value: 'start', name: select.start },
+      { value: 'restart', name: select.restart }
+    ]
   }
 };
