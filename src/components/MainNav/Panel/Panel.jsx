@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { getUsersList } from '../../../ControlPanelService/Users';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Notifications from './Notifications/Notifications';
 import { Link } from "react-router-dom";
 import './Panel.scss';
 
@@ -7,6 +9,16 @@ class Panel extends Component {
   state = {
     smallNavigationClass: 'small-navigation hidden',
     user: window.GLOBAL.App.user
+  }
+
+  componentDidMount() {
+    this.getToken();
+  }
+
+  getToken = () => {
+    getUsersList()
+      .then(res => localStorage.setItem("token", res.data.token))
+      .catch()
   }
 
   toggleNavigation = () => {
@@ -54,9 +66,7 @@ class Panel extends Component {
             <div className={this.className("/list/server/")}><Link to="/list/server/">{topPanel.SERVER}</Link></div>
           </div>
           <div className="container profile-menu">
-            <div className="bell">
-              <FontAwesomeIcon icon="bell" />
-            </div>
+            <Notifications />
             <div><a href={`/edit/user?user=${user}`}>{user}</a></div>
             <div><a href="/logout">{window.GLOBAL.App.userI18N.LOG_OUT}</a></div>
           </div>
