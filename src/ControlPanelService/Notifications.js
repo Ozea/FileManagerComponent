@@ -7,9 +7,12 @@ export const getAppNotifications = () => {
   return axios.get(BASE_URL + getNotificationsUri);
 }
 
-export const deleteNotification = (del, id) => {
+export const deleteNotification = id => {
   return axios.get(BASE_URL + deleteNotificationsUri, {
-    'delete': del,
-    'notification_id': id
+    params: {
+      'delete': 1,
+      'notification_id': id,
+      'token': localStorage.getItem("token")
+    }
   });
 }

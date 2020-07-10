@@ -59,6 +59,10 @@ button:active, a:active, .period:active {
   color: #55C9C0;
 }
 
+.list-item:first-child {
+  margin-top: 5px;
+}
+
 .list-item .text-status {
   display: none;
 }
