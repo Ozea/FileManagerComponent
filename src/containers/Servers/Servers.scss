@@ -8,7 +8,11 @@
   }
 
   .servers-wrapper {
-    .r-col {
+    .list-item:first-child {
+      margin-top: 0;
+    }
+
+    .l-col {
       width: 16.3%;
 
       .server-name {

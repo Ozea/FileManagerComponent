@@ -24,8 +24,7 @@ class RRDs extends Component {
 
   countDown = () => {
     if (this.state.time === 0) {
-      this.setState({ time: 14 });
-      this.fetchData();
+      this.setState({ time: 14, period: this.state.period });
     } else {
       this.setState({ time: this.state.time - 1 });
     }

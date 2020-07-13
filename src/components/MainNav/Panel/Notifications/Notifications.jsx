@@ -52,7 +52,7 @@ const Notifications = () => {
       });
     } else {
       return (
-        <div className="dropdown-item" style={{ cursor: 'default' }}>
+        <div className="dropdown-item" style={{ cursor: 'default', marginBottom: '10' }}>
           <span className="title">{window.GLOBAL.App.Constants.NOTIFICATIONS_EMPTY}</span>
         </div>
       );

@@ -65,7 +65,7 @@ span.stat.email{
       }
 
       .sub-disk-stats {
-        width: 200px;
+        width: 250px;
 
         > div {
           width: 50%;
@@ -105,6 +105,7 @@ span.stat.email{
 
         > span:nth-child(2) {
           width: 150px;
+          padding-left: 15px;
         }
       }
     }
