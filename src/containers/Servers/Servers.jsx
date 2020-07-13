@@ -27,7 +27,6 @@ class Servers extends Component {
     this.setState({ loading: true }, () => {
       getServersList()
         .then(result => {
-          console.log(result);
           this.setState({
             servers: result.data.data,
             sysInfo: result.data.sys.sysinfo,

@@ -24,7 +24,6 @@ class RRD extends Component {
       <div className="rrd-item">
         <Container className="l-col w-15">
           {this.printDate(data.DATE)}
-          <div className="time">{data.TIME}</div>
         </Container>
         <Container className="r-col w-85">
           <div className="name">{inc[data.TITLE]}</div>

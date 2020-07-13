@@ -49,18 +49,18 @@ class Statistic extends Component {
               </div>
             </Container>
             <Container className="c-2">
-              <div>{inc['Web Domains']}: <span className="stat">{data.U_WEB_DOMAINS}</span></div>
-              <div>{inc['SSL Domains']}: <span className="stat">{data.U_WEB_SSL}</span></div>
-              <div>{inc['Web Aliases']}: <span className="stat">{data.U_WEB_ALIASES}</span></div>
-              <div>{inc['DNS Domains']}: <span className="stat">{data.U_DNS_DOMAINS}</span></div>
-              <div>{inc['DNS records']}: <span className="stat">{data.U_DNS_RECORDS}</span></div>
+              <div><span>{inc['Web Domains']}:</span> <span className="stat">{data.U_WEB_DOMAINS}</span></div>
+              <div><span>{inc['SSL Domains']}:</span> <span className="stat">{data.U_WEB_SSL}</span></div>
+              <div><span>{inc['Web Aliases']}:</span> <span className="stat">{data.U_WEB_ALIASES}</span></div>
+              <div><span>{inc['DNS Domains']}:</span> <span className="stat">{data.U_DNS_DOMAINS}</span></div>
+              <div><span>{inc['DNS records']}:</span> <span className="stat">{data.U_DNS_RECORDS}</span></div>
             </Container>
             <Container className="c-3">
-              <div>{inc['Mail Domains']}: <span className="stat">{data.U_MAIL_DOMAINS}</span></div>
-              <div>{inc['Mail Accounts']}: <span className="stat">{data.U_MAIL_ACCOUNTS}</span></div>
-              <div>{inc['Databases']}: <span className="stat">{data.U_DATABASES}</span></div>
-              <div>{inc['Cron Jobs']}: <span className="stat">{data.U_CRON_JOBS}</span></div>
-              <div>{inc['IP Addresses']}: <span className="stat">{data.IP_OWNED}</span></div>
+              <div><span>{inc['Mail Domains']}:</span> <span className="stat">{data.U_MAIL_DOMAINS}</span></div>
+              <div><span>{inc['Mail Accounts']}:</span> <span className="stat">{data.U_MAIL_ACCOUNTS}</span></div>
+              <div><span>{inc['Databases']}:</span> <span className="stat">{data.U_DATABASES}</span></div>
+              <div><span>{inc['Cron Jobs']}:</span> <span className="stat">{data.U_CRON_JOBS}</span></div>
+              <div><span>{inc['IP Addresses']}:</span> <span className="stat">{data.IP_OWNED}</span></div>
             </Container>
           </div>
         </Container>

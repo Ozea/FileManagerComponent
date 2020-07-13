@@ -34,9 +34,10 @@ export default class Timer extends Component {
           {this.state.paused ? <FontAwesomeIcon icon="play" /> : <FontAwesomeIcon icon="pause" />}
         </button>
         <div className="circle-wrapper">
-          <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
+          {/* <svg version="1.1" xmlns="http://www.w3.org/2000/svg">
             <circle class="stroke-1" cx="15" cy="15" r="10" fill="white" style={{ strokeDashoffset: 9 + this.props.time * 4.2 }}></circle>
-          </svg>
+          </svg> */}
+          <span className="seconds">{this.props.time}</span>
         </div>
       </div>
     )

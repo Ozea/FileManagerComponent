@@ -44,7 +44,7 @@ class Firewall extends Component {
         </Container>
         <div className="actions">
           <div><a className="link-edit" href={`/edit/firewall?rule=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
-          <div><a className="link-gray" href={`/suspend/firewall?rule=${data.NAME}`} >{data.suspend} <FontAwesomeIcon icon="lock" /></a></div>
+          <div><a className="link-gray" href={`/suspend/firewall?rule=${data.NAME}`} >{inc.suspend} <FontAwesomeIcon icon="lock" /></a></div>
           <div><a className="link-delete" href="#">{inc.Delete} <FontAwesomeIcon icon="times" /></a></div>
         </div>
       </ListItem>

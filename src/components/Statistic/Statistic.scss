@@ -28,6 +28,11 @@
 
     .c-2 {
       margin-right: 0;
+
+      div>span:nth-child(2) {
+        margin: 0;
+        padding: 0;
+      }
     }
 
     .c-3.w-35 {
@@ -35,9 +40,14 @@
         width: 80px;
       }
 
+      
       div > span {
         width: 50%;
         text-align: left;
+      }
+
+      div>span:nth-child(2) {
+        width: 100px;
       }
     }
   }
