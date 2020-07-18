@@ -22,11 +22,13 @@
   }
 
   .actions {
-    > div:nth-child(1) a:hover {
+    > div:nth-child(1) a:hover,
+    > div:nth-child(1) button:hover {
       background: #9fbf0c;
     }
 
-    > div:nth-child(2) a:hover {
+    > div:nth-child(2) a:hover,
+    > div:nth-child(2) button:hover {
       background: #ff3438;
     }
   }

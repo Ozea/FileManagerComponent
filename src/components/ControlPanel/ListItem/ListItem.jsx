@@ -42,14 +42,14 @@ class ListItem extends Component {
 
   className = () => {
     const { starred } = this.state;
-    const { checked } = this.props;
+    const { checked, outdated, suspended, stopped } = this.props;
 
     if (checked) {
       if (starred) {
         return "list-item toggled starred";
       }
 
-      if (this.props.outdated) {
+      if (outdated) {
         return "list-item outdated toggled";
       }
 
@@ -57,14 +57,23 @@ class ListItem extends Component {
     }
 
     if (starred) {
+
+      if (suspended) {
+        return "list-item starred suspended"
+      }
+
       return "list-item starred";
     }
 
-    if (this.props.outdated) {
+    if (outdated) {
       return "list-item outdated";
     }
 
-    if (this.props.stopped) {
+    if (suspended) {
+      return "list-item suspended"
+    }
+
+    if (stopped) {
       return "list-item stopped";
     }
 
@@ -84,6 +93,7 @@ class ListItem extends Component {
             <div className="checkbox"><input type="checkbox" onChange={(e) => this.toggleItem(e)} checked={this.props.checked} /></div>
             <div onClick={this.starItem}><FontAwesomeIcon icon="star" /></div>
           </div>
+          {this.props.suspended && <div className='suspended'>{window.GLOBAL.App.inc.suspended}</div>}
         </Container>
         {this.props.children}
       </div>

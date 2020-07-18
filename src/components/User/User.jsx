@@ -37,9 +37,10 @@ class User extends Component {
   render() {
     const { data } = this.props;
     const { inc } = window.GLOBAL.App;
+    const token = localStorage.getItem("token");
 
     return (
-      <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem}>
+      <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem} suspended={data.SUSPENDED === 'yes'}>
         <Container className="r-col w-85">
           <div className="name">{data.NAME}</div>
           <div>{data.FNAME} {data.LNAME}</div>
@@ -78,8 +79,20 @@ class User extends Component {
         <div className="actions">
           {this.printLoginActionButton(data.NAME)}
           <div><a href={`/edit/user?user=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
-          <div><a href={`/suspend/user?user=${data.NAME}`} >{data.spnd_action_i18n} <FontAwesomeIcon icon="lock" /></a></div>
-          <div><a href="#">{inc.Delete} <FontAwesomeIcon icon="times" /></a></div>
+          <div>
+            <button
+              className="link-gray"
+              onClick={() => this.props.handleModal(data.spnd_conf_i18n, `/${data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend'}/user?user=${data.NAME}&token=${token}`)}>
+              {data.spnd_action_i18n}
+              <FontAwesomeIcon icon={data.SUSPENDED === 'yes' ? 'unlock' : 'lock'} />
+            </button>
+          </div>
+          <div>
+            <button className="link-delete" onClick={() => this.props.handleModal(data.delete_conf_i18n, `/delete/user?user=${data.NAME}&token=${token}`)}>
+              {inc.Delete}
+              <FontAwesomeIcon icon="times" />
+            </button>
+          </div>
         </div>
       </ListItem>
     );

@@ -3,12 +3,12 @@ import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/Drop
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
-import { bulkAction, getUsersList } from '../../ControlPanelService/Users';
+import { bulkAction, getUsersList, deleteUser } from '../../ControlPanelService/Users';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
+import Modal from '../../components/ControlPanel/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
-import { toast } from 'react-toastify';
 import User from '../../components/User/User';
 import './Users.scss';
 
@@ -18,6 +18,9 @@ class Users extends Component {
   state = {
     users: [],
     userFav: [],
+    modalText: '',
+    modalVisible: false,
+    modalActionUrl: '',
     loading: false,
     toggledAll: false,
     sorting: inc.Date,
@@ -27,6 +30,10 @@ class Users extends Component {
   }
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = () => {
     this.setState({ loading: true }, () => {
       getUsersList()
         .then(result => {
@@ -45,17 +52,6 @@ class Users extends Component {
     this.setState({
       sorting,
       order
-    });
-  }
-
-  showNotification = text => {
-    toast.error(text, {
-      position: "bottom-center",
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true
     });
   }
 
@@ -79,7 +75,7 @@ class Users extends Component {
     let sortedResult = this.sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <User data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} />;
+      return <User data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
     });
   }
 
@@ -125,61 +121,95 @@ class Users extends Component {
   }
 
   toggleFav = (value, type) => {
+    const { userFav } = this.state;
+    let userFavDuplicate = userFav;
+
     if (type === 'add') {
+      userFavDuplicate[value] = 1;
+
       addFavorite(value, 'user')
-        .then(() => { })
+        .then(() => {
+          this.setState({ userFav: userFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     } else {
+      userFavDuplicate[value] = undefined;
+
       deleteFavorite(value, 'user')
-        .then(() => { })
+        .then(() => {
+          this.setState({ userFav: userFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     }
   }
 
   toggleAll = toggled => {
-    const { users, toggledAll } = this.state;
-    this.setState({ toggledAll: toggled });
+    const { users } = this.state;
+    this.setState({ toggledAll: toggled }, () => {
+      if (this.state.toggledAll) {
+        let userNames = [];
 
-    if (!toggledAll) {
-      let userNames = [];
+        for (let i in users) {
+          userNames.push(i);
 
-      for (let i in users) {
-        userNames.push(i);
+          users[i]['isChecked'] = true;
+        }
 
-        users[i]['isChecked'] = true;
+        this.setState({ users, selection: userNames });
+      } else {
+        for (let i in users) {
+          users[i]['isChecked'] = false;
+        }
+
+        this.setState({ users, selection: [] });
       }
-
-      this.setState({ users, selection: userNames });
-    } else {
-      for (let i in users) {
-        users[i]['isChecked'] = false;
-      }
-
-      this.setState({ users, selection: [] });
-    }
+    });
   }
 
   bulk = action => {
     const { selection } = this.state;
 
-    if (selection.length && action !== 'apply to selected') {
+    if (selection.length && action) {
       this.setState({ loading: true }, () => {
         bulkAction(action, selection)
           .then(result => {
             if (result.status === 200) {
-              this.showNotification(`Success`);
-              this.setState({ loading: false }, () => {
-                this.toggleAll(false);
-              });
+              this.fetchData();
+              this.toggleAll(false);
             }
           })
           .catch(err => console.error(err));
       });
     }
+  }
+
+  displayModal = (text, url) => {
+    this.setState({
+      modalVisible: !this.state.modalVisible,
+      modalText: text,
+      modalActionUrl: url
+    });
+  }
+
+  modalConfirmHandler = () => {
+    deleteUser(this.state.modalActionUrl)
+      .then(() => {
+        this.fetchData();
+        this.modalCancelHandler();
+      })
+      .catch(err => console.error(err));
+  }
+
+  modalCancelHandler = () => {
+    this.setState({
+      modalVisible: false,
+      modalText: '',
+      modalActionUrl: ''
+    });
   }
 
   render() {
@@ -200,6 +230,11 @@ class Users extends Component {
           {this.state.loading ? <Spinner /> : this.users()}
         </div>
         <div className="total">{this.state.totalAmount}</div>
+        <Modal
+          onSave={this.modalConfirmHandler}
+          onCancel={this.modalCancelHandler}
+          show={this.state.modalVisible}
+          text={this.state.modalText} />
       </div>
     );
   }

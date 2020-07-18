@@ -16,6 +16,10 @@
   }
 
   .l-col {
+    .suspended {
+      letter-spacing: 3px;
+    }
+    
     .text-status {
       font-size: 10px;
     }
@@ -66,6 +70,15 @@
       opacity: 1;
       color: #ff6701;
     }
+  }
+}
+
+.list-item.suspended {
+  background: #eaeaea;
+  color: #c0c0c0;
+
+  div, span {
+    color: #c0c0c0 !important;
   }
 }
 
