@@ -22,6 +22,6 @@ export const bulkAction = (action, selectedUsers) => {
   return axios.post(BASE_URL + '/bulk/user/', formData);
 };
 
-export const deleteUser = uri => {
+export const handleAction = uri => {
   return axios.get(BASE_URL + uri);
 }
