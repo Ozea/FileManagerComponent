@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { bulkAction, getWebList, handleAction } from '../../ControlPanelService/Web';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
@@ -7,10 +8,10 @@ import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import WebDomain from '../../components/WebDomain/WebDomain';
-import { bulkAction, getWebList } from '../../ControlPanelService/Web';
 import Spinner from '../../components/Spinner/Spinner';
 import { toast } from 'react-toastify';
 import './Web.scss';
+import Modal from '../../components/ControlPanel/Modal/Modal';
 
 class Web extends Component {
   state = {
@@ -18,6 +19,9 @@ class Web extends Component {
     webFav: [],
     loading: false,
     toggledAll: false,
+    modalText: '',
+    modalVisible: false,
+    modalActionUrl: '',
     sorting: window.GLOBAL.App.inc.Date,
     order: "descending",
     selection: [],
@@ -25,6 +29,10 @@ class Web extends Component {
   }
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = () => {
     this.setState({ loading: true }, () => {
       getWebList()
         .then(result => {
@@ -70,7 +78,7 @@ class Web extends Component {
     let sortedResult = this.sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <WebDomain data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} />;
+      return <WebDomain data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
     });
   }
 
@@ -103,7 +111,7 @@ class Web extends Component {
   }
 
   sortBy = sorting => {
-    const { Date, Domain, Disk, Bandwidth,Starred } = window.GLOBAL.App.inc;
+    const { Date, Domain, Disk, Bandwidth, Starred } = window.GLOBAL.App.inc;
 
     switch (sorting) {
       case Date: return 'DATE';
@@ -117,17 +125,28 @@ class Web extends Component {
   }
 
   toggleFav = (value, type) => {
+    const { webFav } = this.state;
+    let webFavDuplicate = webFav;
+
     if (type === 'add') {
+      webFavDuplicate[value] = 1;
+
       addFavorite(value, 'web')
-        .then(() => { })
+        .then(() => {
+          this.setState({ webFav: webFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     } else {
+      webFavDuplicate[value] = undefined;
+
       deleteFavorite(value, 'web')
-        .then(() => { })
+        .then(() => {
+          this.setState({ webFav: webFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     }
   }
@@ -144,45 +163,68 @@ class Web extends Component {
   }
 
   toggleAll = toggled => {
-    const { webDomains, toggledAll } = this.state;
-    this.setState({ toggledAll: toggled });
+    const { webDomains } = this.state;
+    this.setState({ toggledAll: toggled }, () => {
+      if (this.state.toggledAll) {
+        let webDomainNames = [];
 
-    if (!toggledAll) {
-      let webDomainNames = [];
+        for (let i in webDomains) {
+          webDomainNames.push(i);
 
-      for (let i in webDomains) {
-        webDomainNames.push(i);
+          webDomains[i]['isChecked'] = true;
+        }
 
-        webDomains[i]['isChecked'] = true;
+        this.setState({ webDomains, selection: webDomainNames });
+      } else {
+        for (let i in webDomains) {
+          webDomains[i]['isChecked'] = false;
+        }
+
+        this.setState({ webDomains, selection: [] });
       }
-
-      this.setState({ webDomains, selection: webDomainNames });
-    } else {
-      for (let i in webDomains) {
-        webDomains[i]['isChecked'] = false;
-      }
-
-      this.setState({ webDomains, selection: [] });
-    }
+    });
   }
 
   bulk = action => {
     const { selection } = this.state;
 
-    if (selection.length && action !== 'apply to selected') {
+    if (selection.length && action) {
       this.setState({ loading: true }, () => {
         bulkAction(action, selection)
           .then(result => {
             if (result.status === 200) {
-              this.showNotification(`Success`);
-              this.setState({ loading: false }, () => {
-                this.toggleAll(false);
-              });
+              this.fetchData();
+              this.toggleAll(false);
             }
           })
           .catch(err => console.error(err));
       });
     }
+  }
+
+  displayModal = (text, url) => {
+    this.setState({
+      modalVisible: !this.state.modalVisible,
+      modalText: text,
+      modalActionUrl: url
+    });
+  }
+
+  modalConfirmHandler = () => {
+    handleAction(this.state.modalActionUrl)
+      .then(() => {
+        this.fetchData();
+        this.modalCancelHandler();
+      })
+      .catch(err => console.error(err));
+  }
+
+  modalCancelHandler = () => {
+    this.setState({
+      modalVisible: false,
+      modalText: '',
+      modalActionUrl: ''
+    });
   }
 
   render() {
@@ -203,6 +245,11 @@ class Web extends Component {
           {this.state.loading ? <Spinner /> : this.webDomains()}
         </div>
         <div className="total">{this.state.totalAmount}</div>
+        <Modal
+          onSave={this.modalConfirmHandler}
+          onCancel={this.modalCancelHandler}
+          show={this.state.modalVisible}
+          text={this.state.modalText} />
       </div>
     );
   }

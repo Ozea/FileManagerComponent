@@ -3,7 +3,7 @@ import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/Drop
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
-import { bulkAction, getUsersList, deleteUser } from '../../ControlPanelService/Users';
+import { bulkAction, getUsersList, handleAction } from '../../ControlPanelService/Users';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
@@ -196,7 +196,7 @@ class Users extends Component {
   }
 
   modalConfirmHandler = () => {
-    deleteUser(this.state.modalActionUrl)
+    handleAction(this.state.modalActionUrl)
       .then(() => {
         this.fetchData();
         this.modalCancelHandler();

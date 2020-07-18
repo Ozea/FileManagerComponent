@@ -28,9 +28,10 @@ class WebDomain extends Component {
   render() {
     const { data } = this.props;
     const { inc } = window.GLOBAL.App;
+    const token = localStorage.getItem("token");
 
     return (
-      <ListItem checked={data.isChecked} starred={data.STARRED} date={data.DATE} toggleFav={this.toggleFav} checkItem={this.checkItem}>
+      <ListItem checked={data.isChecked} starred={data.STARRED} date={data.DATE} toggleFav={this.toggleFav} checkItem={this.checkItem} suspended={data.SUSPENDED === 'yes'}>
         <Container className="r-col w-85">
           <div className="name">
             <div>{data.NAME}</div>
@@ -57,8 +58,20 @@ class WebDomain extends Component {
         <div className="actions">
           <div><a className="link-edit" href={`/edit/web?domain=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
           <div><a className="link-gray" href={`/list/web-log?domain=${data.NAME}&type=access`}>{inc['view logs']} <FontAwesomeIcon icon="list" /></a></div>
-          <div><a className="link-gray" href={`#`}>{inc.suspend} <FontAwesomeIcon icon="lock" /></a></div>
-          <div><a className="link-delete" href={`#`}>{inc.delete} <FontAwesomeIcon icon="times" /></a></div>
+          <div>
+            <button
+              className="link-gray"
+              onClick={() => this.props.handleModal(data.spnd_confirmation, `/${data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend'}/web?domain=${data.NAME}&token=${token}`)}>
+              {inc[data.spnd_action]}
+              <FontAwesomeIcon icon={data.status === 'yes' ? 'unlock' : 'lock'} />
+            </button>
+          </div>
+          <div>
+            <button className="link-delete" onClick={() => this.props.handleModal(data.delete_confirmation, `/delete/web/?domain=${data.NAME}&token=${token}`)}>
+              {inc.Delete}
+              <FontAwesomeIcon icon="times" />
+            </button>
+          </div>
         </div>
       </ListItem>
     );
