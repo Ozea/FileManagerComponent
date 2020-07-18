@@ -36,21 +36,31 @@
 
 .actions {
   div {
-    a.link-download:hover,
-    a.link-edit:hover {
+    a.link-download:hover, button.link-download:hover,
+    a.link-edit:hover, button.link-edit:hover {
       background: #9fbf0c !important;
     }
     
-    a.link-list:hover {
+    a.link-list:hover,
+    button.link-list:hover {
       background: #55c9c0 !important;
     }
     
-    a.link-delete:hover {
+    a.link-delete:hover,
+    button.link-delete:hover {
       background: #ff3438 !important;
     }
 
-    a.link-gray:hover {
+    a.link-gray:hover,
+    button.link-gray:hover {
       background: #afafac !important;
+    }
+
+    button {
+      text-transform: inherit;
+      font-weight: bolder;
+      background: #dfdedd;
+      border: none;
     }
   }
 }
