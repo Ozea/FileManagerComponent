@@ -28,9 +28,10 @@ class Mail extends Component {
   render() {
     const { data } = this.props;
     const { inc } = window.GLOBAL.App;
+    const token = localStorage.getItem("token");
 
     return (
-      <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem}>
+      <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem} suspended={data.SUSPENDED === 'yes'}>
         <Container className="r-col w-85">
           <div className="name">{data.NAME}</div>
           <div className="stats">
@@ -51,8 +52,20 @@ class Mail extends Component {
           <div><a className="link-gray" href={`/list/mail/?domain=${data.NAME}`}>{data.list_accounts_button} <FontAwesomeIcon icon="list" /></a></div>
           <div><a className="link-edit" href={`/add/mail/?domain=${data.NAME}`}>{inc['add account']} <FontAwesomeIcon icon="plus" /></a></div>
           <div><a className="link-edit" href={`/edit/mail/?domain=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
-          <div><a className="link-gray" href={`#`}>{inc.suspend} <FontAwesomeIcon icon="lock" /></a></div>
-          <div><a className="link-delete" href={`#`}>{inc.delete} <FontAwesomeIcon icon="times" /></a></div>
+          <div>
+            <button
+              className="link-gray"
+              onClick={() => this.props.handleModal(data.suspend_conf, `/${data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend'}/mail?domain=${data.NAME}&token=${token}`)}>
+              {data.suspend_action}
+              <FontAwesomeIcon icon={data.SUSPENDED === 'yes' ? 'unlock' : 'lock'} />
+            </button>
+          </div>
+          <div>
+            <button className="link-delete" onClick={() => this.props.handleModal(data.delete_conf, `/delete/mail?domain=${data.NAME}&token=${token}`)}>
+              {inc.Delete}
+              <FontAwesomeIcon icon="times" />
+            </button>
+          </div>
         </div>
       </ListItem>
     );
