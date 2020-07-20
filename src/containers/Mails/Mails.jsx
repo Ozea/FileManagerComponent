@@ -3,14 +3,14 @@ import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/Drop
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
-import { bulkAction, getMailList } from '../../ControlPanelService/Mail';
+import { bulkAction, getMailList, handleAction } from '../../ControlPanelService/Mail';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
+import Modal from '../../components/ControlPanel/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
 import Mail from '../../components/Mail/Mail';
 import './Mails.scss';
-import { toast } from 'react-toastify';
 
 class Mails extends Component {
   state = {
@@ -18,6 +18,9 @@ class Mails extends Component {
     mailFav: [],
     loading: false,
     toggleAll: false,
+    modalText: '',
+    modalVisible: false,
+    modalActionUrl: '',
     webmail: '',
     sorting: window.GLOBAL.App.inc.Date,
     order: "descending",
@@ -26,6 +29,10 @@ class Mails extends Component {
   }
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = () => {
     this.setState({ loading: true }, () => {
       getMailList()
         .then(result => {
@@ -45,17 +52,6 @@ class Mails extends Component {
     this.setState({
       sorting,
       order
-    });
-  }
-
-  showNotification = text => {
-    toast.error(text, {
-      position: "bottom-center",
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true
     });
   }
 
@@ -79,7 +75,7 @@ class Mails extends Component {
     let sortedResult = this.sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <Mail data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} />;
+      return <Mail data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
     });
   }
 
@@ -125,61 +121,95 @@ class Mails extends Component {
   }
 
   toggleFav = (value, type) => {
+    const { mailFav } = this.state;
+    let mailFavDuplicate = mailFav;
+
     if (type === 'add') {
+      mailFavDuplicate[value] = 1;
+
       addFavorite(value, 'mail')
-        .then(() => { })
+        .then(() => {
+          this.setState({ mailFav: mailFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     } else {
+      mailFavDuplicate[value] = undefined;
+
       deleteFavorite(value, 'mail')
-        .then(() => { })
+        .then(() => {
+          this.setState({ mailFav: mailFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     }
   }
 
   toggleAll = toggled => {
-    const { mails, toggledAll } = this.state;
-    this.setState({ toggledAll: toggled });
+    const { mails } = this.state;
+    this.setState({ toggledAll: toggled }, () => {
+      if (this.state.toggledAll) {
+        let mailNames = [];
 
-    if (!toggledAll) {
-      let userNames = [];
+        for (let i in mails) {
+          mailNames.push(i);
 
-      for (let i in mails) {
-        userNames.push(i);
+          mails[i]['isChecked'] = true;
+        }
 
-        mails[i]['isChecked'] = true;
+        this.setState({ mails, selection: mailNames });
+      } else {
+        for (let i in mails) {
+          mails[i]['isChecked'] = false;
+        }
+
+        this.setState({ mails, selection: [] });
       }
-
-      this.setState({ mails, selection: userNames });
-    } else {
-      for (let i in mails) {
-        mails[i]['isChecked'] = false;
-      }
-
-      this.setState({ mails, selection: [] });
-    }
+    });
   }
 
   bulk = action => {
     const { selection } = this.state;
 
-    if (selection.length && action !== 'apply to selected') {
+    if (selection.length && action) {
       this.setState({ loading: true }, () => {
         bulkAction(action, selection)
           .then(result => {
             if (result.status === 200) {
-              this.showNotification(`Success`);
-              this.setState({ loading: false }, () => {
-                this.toggleAll(false);
-              });
+              this.fetchData();
+              this.toggleAll(false);
             }
           })
           .catch(err => console.error(err));
       });
     }
+  }
+
+  displayModal = (text, url) => {
+    this.setState({
+      modalVisible: !this.state.modalVisible,
+      modalText: text,
+      modalActionUrl: url
+    });
+  }
+
+  modalConfirmHandler = () => {
+    handleAction(this.state.modalActionUrl)
+      .then(() => {
+        this.fetchData();
+        this.modalCancelHandler();
+      })
+      .catch(err => console.error(err));
+  }
+
+  modalCancelHandler = () => {
+    this.setState({
+      modalVisible: false,
+      modalText: '',
+      modalActionUrl: ''
+    });
   }
 
   render() {
@@ -201,6 +231,11 @@ class Mails extends Component {
           {this.state.loading ? <Spinner /> : this.mails()}
         </div>
         <div className="total">{this.state.totalAmount}</div>
+        <Modal
+          onSave={this.modalConfirmHandler}
+          onCancel={this.modalCancelHandler}
+          show={this.state.modalVisible}
+          text={this.state.modalText} />
       </div>
     );
   }
