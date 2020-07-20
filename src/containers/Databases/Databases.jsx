@@ -3,13 +3,13 @@ import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/Drop
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
-import { bulkAction, getDatabaseList } from '../../ControlPanelService/Db';
+import { bulkAction, getDatabaseList, handleAction } from '../../ControlPanelService/Db';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
+import Modal from '../../components/ControlPanel/Modal/Modal';
 import Database from '../../components/Database/Database';
 import Spinner from '../../components/Spinner/Spinner';
-import { toast } from 'react-toastify';
 import './Databases.scss';
 
 class Databases extends Component {
@@ -18,6 +18,9 @@ class Databases extends Component {
     dbFav: [],
     loading: false,
     toggleAll: false,
+    modalText: '',
+    modalVisible: false,
+    modalActionUrl: '',
     dbAdmin: '',
     dbAdminLink: '',
     sorting: window.GLOBAL.App.inc.Date,
@@ -27,6 +30,10 @@ class Databases extends Component {
   }
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = () => {
     this.setState({ loading: true }, () => {
       getDatabaseList()
         .then(result => {
@@ -40,17 +47,6 @@ class Databases extends Component {
           });
         })
         .catch(err => console.error(err));
-    });
-  }
-
-  showNotification = text => {
-    toast.error(text, {
-      position: "bottom-center",
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true
     });
   }
 
@@ -81,7 +77,7 @@ class Databases extends Component {
     let sortedResult = this.sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <Database data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} />;
+      return <Database data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
     });
   }
 
@@ -128,61 +124,95 @@ class Databases extends Component {
   }
 
   toggleFav = (value, type) => {
+    const { dbFav } = this.state;
+    let dbFavDuplicate = dbFav;
+
     if (type === 'add') {
+      dbFavDuplicate[value] = 1;
+
       addFavorite(value, 'db')
-        .then(() => { })
+        .then(() => {
+          this.setState({ dbFav: dbFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     } else {
+      dbFavDuplicate[value] = undefined;
+
       deleteFavorite(value, 'db')
-        .then(() => { })
+        .then(() => {
+          this.setState({ dbFav: dbFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     }
   }
 
   toggleAll = toggled => {
-    const { databases, toggledAll } = this.state;
-    this.setState({ toggledAll: toggled });
+    const { databases } = this.state;
+    this.setState({ toggledAll: toggled }, () => {
+      if (this.state.toggledAll) {
+        let dbNames = [];
 
-    if (!toggledAll) {
-      let names = [];
+        for (let i in databases) {
+          dbNames.push(i);
 
-      for (let i in databases) {
-        names.push(i);
+          databases[i]['isChecked'] = true;
+        }
 
-        databases[i]['isChecked'] = true;
+        this.setState({ databases, selection: dbNames });
+      } else {
+        for (let i in databases) {
+          databases[i]['isChecked'] = false;
+        }
+
+        this.setState({ databases, selection: [] });
       }
-
-      this.setState({ databases, selection: names });
-    } else {
-      for (let i in databases) {
-        databases[i]['isChecked'] = false;
-      }
-
-      this.setState({ databases, selection: [] });
-    }
+    });
   }
 
   bulk = action => {
     const { selection } = this.state;
 
-    if (selection.length && action !== 'apply to selected') {
+    if (selection.length && action) {
       this.setState({ loading: true }, () => {
         bulkAction(action, selection)
           .then(result => {
             if (result.status === 200) {
-              this.showNotification(`Success`);
-              this.setState({ loading: false }, () => {
-                this.toggleAll(false);
-              });
+              this.fetchData();
+              this.toggleAll(false);
             }
           })
           .catch(err => console.error(err));
       });
     }
+  }
+
+  displayModal = (text, url) => {
+    this.setState({
+      modalVisible: !this.state.modalVisible,
+      modalText: text,
+      modalActionUrl: url
+    });
+  }
+
+  modalConfirmHandler = () => {
+    handleAction(this.state.modalActionUrl)
+      .then(() => {
+        this.fetchData();
+        this.modalCancelHandler();
+      })
+      .catch(err => console.error(err));
+  }
+
+  modalCancelHandler = () => {
+    this.setState({
+      modalVisible: false,
+      modalText: '',
+      modalActionUrl: ''
+    });
   }
 
   render() {
@@ -204,6 +234,11 @@ class Databases extends Component {
           {this.state.loading ? <Spinner /> : this.databases()}
         </div>
         <div className="total">{this.state.totalAmount}</div>
+        <Modal
+          onSave={this.modalConfirmHandler}
+          onCancel={this.modalCancelHandler}
+          show={this.state.modalVisible}
+          text={this.state.modalText} />
       </div>
     );
   }
