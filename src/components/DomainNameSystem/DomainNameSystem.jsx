@@ -21,9 +21,10 @@ class DomainNameSystem extends Component {
   render() {
     const { data } = this.props;
     const { inc } = window.GLOBAL.App;
+    const token = localStorage.getItem("token");
 
     return (
-      <ListItem checked={data.isChecked} starred={data.STARRED} date={data.DATE} toggleFav={this.toggleFav} checkItem={this.checkItem}>
+      <ListItem checked={data.isChecked} starred={data.STARRED} date={data.DATE} toggleFav={this.toggleFav} checkItem={this.checkItem} suspended={data.SUSPENDED === 'yes'}>
         <Container className="r-col w-85">
           <div className="name">{data.NAME} <span className="dns-records">/ {data.RECORDS}</span></div>
           <br />
@@ -46,8 +47,20 @@ class DomainNameSystem extends Component {
           <div><a className="link-gray" href={`/list/dns/?domain=${data.NAME}`}>{data.RECORDS_I18N} <FontAwesomeIcon icon="list" /></a></div>
           <div><a className="link-edit" href={`/add/dns/?domain=${data.NAME}`}>{inc['add record']} <FontAwesomeIcon icon="add" /></a></div>
           <div><a className="link-edit" href={`/edit/dns/?domain=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
-          <div><a className="link-gray" href={`#`}>{inc.suspend} <FontAwesomeIcon icon="lock" /></a></div>
-          <div><a className="link-delete" href={`#`}>{inc.delete} <FontAwesomeIcon icon="times" /></a></div>
+          <div>
+            <button
+              className="link-gray"
+              onClick={() => this.props.handleModal(data.suspend_conf, `/${data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend'}/dns?domain=${data.NAME}&token=${token}`)}>
+              {data.suspend_action}
+              <FontAwesomeIcon icon={data.SUSPENDED === 'yes' ? 'unlock' : 'lock'} />
+            </button>
+          </div>
+          <div>
+            <button className="link-delete" onClick={() => this.props.handleModal(data.delete_conf, `/delete/dns?domain=${data.NAME}&token=${token}`)}>
+              {inc.Delete}
+              <FontAwesomeIcon icon="times" />
+            </button>
+          </div>
         </div>
       </ListItem>
     );
