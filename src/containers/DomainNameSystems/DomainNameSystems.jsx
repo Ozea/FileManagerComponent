@@ -5,9 +5,10 @@ import DomainNameSystem from '../../components/DomainNameSystem/DomainNameSystem
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
-import { bulkAction, getDnsList } from '../../ControlPanelService/Dns';
+import { bulkAction, getDnsList, handleAction } from '../../ControlPanelService/Dns';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
+import Modal from '../../components/ControlPanel/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
 import { toast } from 'react-toastify';
 import './DomainNameSystems.scss';
@@ -18,6 +19,9 @@ class DomainNameSystems extends Component {
     dnsFav: [],
     loading: false,
     toggledAll: false,
+    modalText: '',
+    modalVisible: false,
+    modalActionUrl: '',
     sorting: window.GLOBAL.App.inc.Date,
     order: "descending",
     selection: [],
@@ -25,6 +29,10 @@ class DomainNameSystems extends Component {
   }
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = () => {
     this.setState({ loading: true }, () => {
       getDnsList()
         .then(result => {
@@ -70,7 +78,7 @@ class DomainNameSystems extends Component {
     let sortedResult = this.sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <DomainNameSystem data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} />;
+      return <DomainNameSystem data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
     });
   }
 
@@ -116,73 +124,96 @@ class DomainNameSystems extends Component {
     }
   }
 
-  showNotification = text => {
-    toast.error(text, {
-      position: "bottom-center",
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true
-    });
-  }
-
   toggleFav = (value, type) => {
+    const { dnsFav } = this.state;
+    let dnsFavDuplicate = dnsFav;
+
     if (type === 'add') {
+      dnsFavDuplicate[value] = 1;
+
       addFavorite(value, 'dns')
-        .then(() => { })
+        .then(() => {
+          this.setState({ dnsFav: dnsFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     } else {
+      dnsFavDuplicate[value] = undefined;
+
       deleteFavorite(value, 'dns')
-        .then(() => { })
+        .then(() => {
+          this.setState({ dnsFav: dnsFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     }
   }
 
   toggleAll = toggled => {
-    const { domainNameSystems, toggledAll } = this.state;
-    this.setState({ toggledAll: toggled });
+    const { domainNameSystems } = this.state;
+    this.setState({ toggledAll: toggled }, () => {
+      if (this.state.toggledAll) {
+        let dnsNames = [];
 
-    if (!toggledAll) {
-      let domainNameSystemsNames = [];
+        for (let i in domainNameSystems) {
+          dnsNames.push(i);
 
-      for (let i in domainNameSystems) {
-        domainNameSystemsNames.push(i);
+          domainNameSystems[i]['isChecked'] = true;
+        }
 
-        domainNameSystems[i]['isChecked'] = true;
+        this.setState({ domainNameSystems, selection: dnsNames });
+      } else {
+        for (let i in domainNameSystems) {
+          domainNameSystems[i]['isChecked'] = false;
+        }
+
+        this.setState({ domainNameSystems, selection: [] });
       }
-
-      this.setState({ domainNameSystems, selection: domainNameSystemsNames });
-    } else {
-      for (let i in domainNameSystems) {
-        domainNameSystems[i]['isChecked'] = false;
-      }
-
-      this.setState({ domainNameSystems, selection: [] });
-    }
+    });
   }
 
   bulk = action => {
     const { selection } = this.state;
 
-    if (selection.length && action !== 'apply to selected') {
+    if (selection.length && action) {
       this.setState({ loading: true }, () => {
         bulkAction(action, selection)
           .then(result => {
             if (result.status === 200) {
-              this.showNotification(`Success`);
-              this.setState({ loading: false }, () => {
-                this.toggleAll(false);
-              });
+              this.fetchData();
+              this.toggleAll(false);
             }
           })
           .catch(err => console.error(err));
       });
     }
+  }
+
+  displayModal = (text, url) => {
+    this.setState({
+      modalVisible: !this.state.modalVisible,
+      modalText: text,
+      modalActionUrl: url
+    });
+  }
+
+  modalConfirmHandler = () => {
+    handleAction(this.state.modalActionUrl)
+      .then(() => {
+        this.fetchData();
+        this.modalCancelHandler();
+      })
+      .catch(err => console.error(err));
+  }
+
+  modalCancelHandler = () => {
+    this.setState({
+      modalVisible: false,
+      modalText: '',
+      modalActionUrl: ''
+    });
   }
 
   render() {
@@ -203,6 +234,11 @@ class DomainNameSystems extends Component {
           {this.state.loading ? <Spinner /> : this.dns()}
         </div>
         <div className="total">{this.state.totalAmount}</div>
+        <Modal
+          onSave={this.modalConfirmHandler}
+          onCancel={this.modalCancelHandler}
+          show={this.state.modalVisible}
+          text={this.state.modalText} />
       </div>
     );
   }
