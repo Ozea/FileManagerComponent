@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
+import { bulkAction, getCronList, handleAction } from '../../ControlPanelService/Cron';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
-import { bulkAction, getCronList } from '../../ControlPanelService/Cron';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
+import Modal from '../../components/ControlPanel/Modal/Modal';
 import CronJob from '../../components/CronJob/CronJob';
 import Spinner from '../../components/Spinner/Spinner';
-import { toast } from 'react-toastify';
 import './CronJobs.scss';
+
+const { inc } = window.GLOBAL.App;
 
 class CronJobs extends Component {
   state = {
@@ -18,14 +20,21 @@ class CronJobs extends Component {
     cronFav: [],
     loading: false,
     toggleAll: false,
+    modalText: '',
+    modalVisible: false,
+    modalActionUrl: '',
     cronReports: '',
-    sorting: window.GLOBAL.App.inc.Date,
+    sorting: inc.Date,
     order: "descending",
     selection: [],
     totalAmount: ''
   }
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = () => {
     this.setState({ loading: true }, () => {
       getCronList()
         .then(result => {
@@ -36,19 +45,9 @@ class CronJobs extends Component {
             totalAmount: result.data.jobs_amount,
             loading: false
           });
+          this.toggleAll(false);
         })
         .catch(err => console.error(err));
-    });
-  }
-
-  showNotification = text => {
-    toast.error(text, {
-      position: "bottom-center",
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true
     });
   }
 
@@ -83,7 +82,7 @@ class CronJobs extends Component {
     let sortedResult = this.sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <CronJob data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} />;
+      return <CronJob data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
     });
   }
 
@@ -127,56 +126,65 @@ class CronJobs extends Component {
   }
 
   toggleFav = (value, type) => {
+    const { cronFav } = this.state;
+    let cronFavDuplicate = cronFav;
+
     if (type === 'add') {
+      cronFavDuplicate[value] = 1;
+
       addFavorite(value, 'cron')
-        .then(() => { })
+        .then(() => {
+          this.setState({ cronFav: cronFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     } else {
+      cronFavDuplicate[value] = undefined;
+
       deleteFavorite(value, 'cron')
-        .then(() => { })
+        .then(() => {
+          this.setState({ cronFav: cronFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     }
   }
 
   toggleAll = toggled => {
-    const { cronJobs, toggledAll } = this.state;
-    this.setState({ toggledAll: toggled });
+    const { cronJobs } = this.state;
+    this.setState({ toggledAll: toggled }, () => {
+      if (this.state.toggledAll) {
+        let cronJobNames = [];
 
-    if (!toggledAll) {
-      let names = [];
+        for (let i in cronJobs) {
+          cronJobNames.push(i);
 
-      for (let i in cronJobs) {
-        names.push(i);
+          cronJobs[i]['isChecked'] = true;
+        }
 
-        cronJobs[i]['isChecked'] = true;
+        this.setState({ cronJobs, selection: cronJobNames });
+      } else {
+        for (let i in cronJobs) {
+          cronJobs[i]['isChecked'] = false;
+        }
+
+        this.setState({ cronJobs, selection: [] });
       }
-
-      this.setState({ cronJobs, selection: names });
-    } else {
-      for (let i in cronJobs) {
-        cronJobs[i]['isChecked'] = false;
-      }
-
-      this.setState({ cronJobs, selection: [] });
-    }
+    });
   }
 
   bulk = action => {
     const { selection } = this.state;
 
-    if (selection.length && action !== 'apply to selected') {
+    if (selection.length && action) {
       this.setState({ loading: true }, () => {
         bulkAction(action, selection)
           .then(result => {
             if (result.status === 200) {
-              this.showNotification(`Success`);
-              this.setState({ loading: false }, () => {
-                this.toggleAll(false);
-              });
+              this.fetchData();
+              this.toggleAll(false);
             }
           })
           .catch(err => console.error(err));
@@ -184,25 +192,73 @@ class CronJobs extends Component {
     }
   }
 
+  displayModal = (text, url) => {
+    this.setState({
+      modalVisible: !this.state.modalVisible,
+      modalText: text,
+      modalActionUrl: url
+    });
+  }
+
+  modalConfirmHandler = () => {
+    handleAction(this.state.modalActionUrl)
+      .then(() => {
+        this.fetchData();
+        this.modalCancelHandler();
+      })
+      .catch(err => console.error(err));
+  }
+
+  modalCancelHandler = () => {
+    this.setState({
+      modalVisible: false,
+      modalText: '',
+      modalActionUrl: ''
+    });
+  }
+
+  handleCronNotifications = () => {
+    const token = localStorage.getItem("token");
+
+    if (this.state.cronReports === 'yes') {
+      handleAction(`/delete/cron/reports/?token=${token}`)
+        .then(() => this.fetchData())
+        .catch(err => console.error(err));
+    } else {
+      handleAction(`/add/cron/reports/?token=${token}`)
+        .then(() => this.fetchData())
+        .catch(err => console.error(err));
+    }
+  }
+
   render() {
+    const { cronReports, modalVisible, modalText, totalAmount, loading, sorting, order, toggledAll } = this.state;
+
     return (
       <div className="cronJobs">
         <Toolbar mobile={false} >
-          <LeftButton name={window.GLOBAL.App.inc['Add Cron Job']} href="/add/cron" showLeftMenu={true} />
+          <LeftButton name={inc['Add Cron Job']} href="/add/cron" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <a href='#' className="button-extra" type="submit">{this.state.cronReports}</a>
-              <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
+              <button onClick={this.handleCronNotifications} className="button-extra" type="submit">
+                {cronReports === 'yes' ? inc['turn off notifications'] : inc['turn on notifications']}
+              </button>
+              <Checkbox toggleAll={this.toggleAll} toggled={toggledAll} />
               <Select list='cronList' bulkAction={this.bulk} />
-              <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="cronList" />
+              <DropdownFilter changeSorting={this.changeSorting} sorting={sorting} order={order} list="cronList" />
               <SearchInput />
             </div>
           </div>
         </Toolbar>
         <div className="cron-wrapper">
-          {this.state.loading ? <Spinner /> : this.cronJobs()}
+          {loading ? <Spinner /> : this.cronJobs()}
         </div>
-        <div className="total">{this.state.totalAmount}</div>
+        <div className="total">{totalAmount}</div>
+        <Modal
+          onSave={this.modalConfirmHandler}
+          onCancel={this.modalCancelHandler}
+          show={modalVisible}
+          text={modalText} />
       </div>
     );
   }
