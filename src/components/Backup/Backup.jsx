@@ -21,6 +21,7 @@ class Backup extends Component {
   render() {
     const { data } = this.props;
     const { inc } = window.GLOBAL.App;
+    const token = localStorage.getItem("token");
 
     return (
       <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem}>
@@ -42,7 +43,12 @@ class Backup extends Component {
           {data.UPDATED === 'no' && <div><a href={`/update/vesta/?pkg=${data.NAME}`}>{inc.update} <FontAwesomeIcon icon="wrench" /></a></div>}
           <div><a className="link-download" href={`/download/backup/?backup=${data.NAME}`}>{inc.download} <FontAwesomeIcon icon={faFileDownload} /></a></div>
           <div><a className="link-list" href={`/list/backup/?backup=${data.NAME}`}>{inc['configure restore settings']} <FontAwesomeIcon icon="list" /></a></div>
-          <div><a className="link-delete" href={`#`}>{inc.delete} <FontAwesomeIcon icon="times" /></a></div>
+          <div>
+            <button className="link-delete" onClick={() => this.props.handleModal(data.delete_conf, `/delete/backup?backup=${data.NAME}&token=${token}`)}>
+              {inc.Delete}
+              <FontAwesomeIcon icon="times" />
+            </button>
+          </div>
         </div>
       </ListItem>
     );
