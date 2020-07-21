@@ -10,8 +10,9 @@ import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Modal from '../../components/ControlPanel/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
-import { toast } from 'react-toastify';
 import './DomainNameSystems.scss';
+
+const { inc } = window.GLOBAL.App;
 
 class DomainNameSystems extends Component {
   state = {
@@ -22,7 +23,7 @@ class DomainNameSystems extends Component {
     modalText: '',
     modalVisible: false,
     modalActionUrl: '',
-    sorting: window.GLOBAL.App.inc.Date,
+    sorting: inc.Date,
     order: "descending",
     selection: [],
     totalAmount: '',
@@ -220,7 +221,7 @@ class DomainNameSystems extends Component {
     return (
       <div className="dns">
         <Toolbar mobile={false} >
-          <LeftButton name="Add DNS Domain" href="/add/dns" showLeftMenu={true} />
+          <LeftButton name={inc['Add DNS Domain']} href="/add/dns" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
               <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />

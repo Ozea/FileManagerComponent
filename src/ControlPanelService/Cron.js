@@ -1,5 +1,6 @@
 import axios from "axios";
 
+const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
 const webApiUri = '/list/cron/cron.php';
 
@@ -7,15 +8,20 @@ export const getCronList = () => {
   return axios.get(BASE_URL + webApiUri);
 }
 
-export const bulkAction = (action, users) => {
+export const bulkAction = (action, domainNameSystems) => {
   const formData = new FormData();
   formData.append("action", action);
+  formData.append("token", token);
 
-  users.forEach(item => {
-    formData.append("mail[]", item);
-    formData.append("suspend_url", `/suspend/user/?user=${item}`);
-    formData.append("delete_url", `/delete/user/?user=${item}`);
+  domainNameSystems.forEach(domainNameSystem => {
+    formData.append("job[]", domainNameSystem);
+    formData.append("suspend_url", `/suspend/cron/?job=${domainNameSystem}&token=${token}`);
+    formData.append("delete_url", `/delete/cron/?job=${domainNameSystem}&token=${token}`);
   });
 
-  return axios.post(BASE_URL + '/bulk/mail/', formData);
+  return axios.post(BASE_URL + '/bulk/cron/', formData);
 };
+
+export const handleAction = uri => {
+  return axios.get(BASE_URL + uri);
+}

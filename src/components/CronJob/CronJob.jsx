@@ -20,9 +20,10 @@ class CronJob extends Component {
   render() {
     const { data } = this.props;
     const { inc } = window.GLOBAL.App;
+    const token = localStorage.getItem("token");
 
     return (
-      <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem}>
+      <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem} suspended={data.SUSPENDED === 'yes'}>
         <Container className="cron-jobs-list r-col w-85">
           <div className="name">{data.CMD}</div>
           <div className="stats">
@@ -45,7 +46,20 @@ class CronJob extends Component {
         </Container>
         <div className="actions">
           <div><a className="link-edit" href={`/edit/cron/?job=${data.JOB}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
-          <div><a className="link-delete" href={`#`}>{inc.delete} <FontAwesomeIcon icon="times" /></a></div>
+          <div>
+            <button
+              className="link-gray"
+              onClick={() => this.props.handleModal(data.suspend_conf, `/${data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend'}/cron?job=${data.NAME}&token=${token}`)}>
+              {data.suspend_action}
+              <FontAwesomeIcon icon={data.SUSPENDED === 'yes' ? 'unlock' : 'lock'} />
+            </button>
+          </div>
+          <div>
+            <button className="link-delete" onClick={() => this.props.handleModal(data.delete_conf, `/delete/cron?job=${data.NAME}&token=${token}`)}>
+              {inc.Delete}
+              <FontAwesomeIcon icon="times" />
+            </button>
+          </div>
         </div>
       </ListItem>
     );

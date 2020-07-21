@@ -33,8 +33,8 @@ export const values = (select = {}) => {
       { value: 'delete', name: select.delete }
     ],
     cronList: [
-      { value: 'turn on notifications', name: select['turn on notifications'] },
-      { value: 'turn off notifications', name: select['turn off notifications'] },
+      { value: 'add-cron-reports', name: select['turn on notifications'] },
+      { value: 'delete-cron-reports', name: select['turn off notifications'] },
       { value: 'suspend', name: select.suspend },
       { value: 'unsuspend', name: select.unsuspend },
       { value: 'delete', name: select.delete }

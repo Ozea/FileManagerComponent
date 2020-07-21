@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './Select.scss';
 import { values } from '../../../../ControlPanelService/Select';
+import './Select.scss';
+
 const { inc } = window.GLOBAL.App;
 const listValues = values(inc);
 
