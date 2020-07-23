@@ -28,6 +28,7 @@ class Package extends Component {
   render() {
     const { data } = this.props;
     const { inc } = window.GLOBAL.App;
+    const token = localStorage.getItem("token");
 
     return (
       <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem}>
@@ -53,15 +54,20 @@ class Package extends Component {
             </Container>
             <Container className="c-3 w-35">
               <div><span>{inc.Backups}:</span> <span><span className="stat">{data.BACKUPS}</span></span></div>
-              <div><span>{inc.Bandwidth}:</span> <span><span><span className="stat">{data.BANDWIDTH}</span> mb</span></span></div>
-              <div><span>{inc.Disk}:</span> <span><span><span className="stat">{data.DISK_QUOTA}</span> mb</span></span></div>
+              <div><span>{inc.Bandwidth}:</span> <span><span><span className="stat">{data.BANDWIDTH}</span> {inc.mb}</span></span></div>
+              <div><span>{inc.Disk}:</span> <span><span><span className="stat">{data.DISK_QUOTA}</span> {inc.mb}</span></span></div>
               <div className="ns"><span>{inc['Name Servers']}:</span> <span><span className="stat">{this.printNameServers(data.NS)}</span></span></div>
             </Container>
           </div>
         </Container>
         <div className="actions">
           <div><a className="link-edit" href={`/edit/package/?package=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
-          <div><a className="link-delete" href={`#`}>{inc.delete} <FontAwesomeIcon icon="times" /></a></div>
+          <div>
+            <button className="link-delete" onClick={() => this.props.handleModal(data.delete_conf, `/delete/package?package=${data.NAME}&token=${token}`)}>
+              {inc.Delete}
+              <FontAwesomeIcon icon="times" />
+            </button>
+          </div>
         </div>
       </ListItem>
     );
