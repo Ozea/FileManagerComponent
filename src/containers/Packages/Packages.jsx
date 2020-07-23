@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
+import { bulkAction, getPackageList, handleAction } from '../../ControlPanelService/Package';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
-import { bulkAction, getPackageList } from '../../ControlPanelService/Package';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
+import Modal from '../../components/ControlPanel/Modal/Modal';
 import Package from '../../components/Package/Package';
 import Spinner from '../../components/Spinner/Spinner';
-import { toast } from 'react-toastify';
 import './Packages.scss';
 
 class Packages extends Component {
@@ -18,6 +18,9 @@ class Packages extends Component {
     packagesFav: [],
     loading: false,
     toggleAll: false,
+    modalText: '',
+    modalVisible: false,
+    modalActionUrl: '',
     sorting: window.GLOBAL.App.inc.Date,
     order: "descending",
     selection: [],
@@ -25,6 +28,10 @@ class Packages extends Component {
   }
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = () => {
     this.setState({ loading: true }, () => {
       getPackageList()
         .then(result => {
@@ -36,17 +43,6 @@ class Packages extends Component {
           });
         })
         .catch(err => console.error(err));
-    });
-  }
-
-  showNotification = text => {
-    toast.error(text, {
-      position: "bottom-center",
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true
     });
   }
 
@@ -81,7 +77,7 @@ class Packages extends Component {
     let sortedResult = this.sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <Package data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} />;
+      return <Package data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
     });
   }
 
@@ -125,61 +121,96 @@ class Packages extends Component {
   }
 
   toggleFav = (value, type) => {
+    const { packagesFav } = this.state;
+    let packagesFavDuplicate = packagesFav;
+
     if (type === 'add') {
+      packagesFavDuplicate[value] = 1;
+
       addFavorite(value, 'package')
-        .then(() => { })
+        .then(() => {
+          this.setState({ packagesFav: packagesFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     } else {
+      packagesFavDuplicate[value] = undefined;
+
       deleteFavorite(value, 'package')
-        .then(() => { })
+        .then(() => {
+          this.setState({ packagesFav: packagesFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     }
   }
 
   toggleAll = toggled => {
-    const { packages, toggledAll } = this.state;
-    this.setState({ toggledAll: toggled });
+    const { packages } = this.state;
 
-    if (!toggledAll) {
-      let names = [];
+    this.setState({ toggledAll: toggled }, () => {
+      if (this.state.toggledAll) {
+        let packageNames = [];
 
-      for (let i in packages) {
-        names.push(i);
+        for (let i in packages) {
+          packageNames.push(i);
 
-        packages[i]['isChecked'] = true;
+          packages[i]['isChecked'] = true;
+        }
+
+        this.setState({ packages, selection: packageNames });
+      } else {
+        for (let i in packages) {
+          packages[i]['isChecked'] = false;
+        }
+
+        this.setState({ packages, selection: [] });
       }
-
-      this.setState({ packages, selection: names });
-    } else {
-      for (let i in packages) {
-        packages[i]['isChecked'] = false;
-      }
-
-      this.setState({ packages, selection: [] });
-    }
+    });
   }
 
   bulk = action => {
     const { selection } = this.state;
 
-    if (selection.length && action !== 'apply to selected') {
+    if (selection.length && action) {
       this.setState({ loading: true }, () => {
         bulkAction(action, selection)
           .then(result => {
             if (result.status === 200) {
-              this.showNotification(`Success`);
-              this.setState({ loading: false }, () => {
-                this.toggleAll(false);
-              });
+              this.fetchData();
+              this.toggleAll(false);
             }
           })
           .catch(err => console.error(err));
       });
     }
+  }
+
+  displayModal = (text, url) => {
+    this.setState({
+      modalVisible: !this.state.modalVisible,
+      modalText: text,
+      modalActionUrl: url
+    });
+  }
+
+  modalConfirmHandler = () => {
+    handleAction(this.state.modalActionUrl)
+      .then(() => {
+        this.fetchData();
+        this.modalCancelHandler();
+      })
+      .catch(err => console.error(err));
+  }
+
+  modalCancelHandler = () => {
+    this.setState({
+      modalVisible: false,
+      modalText: '',
+      modalActionUrl: ''
+    });
   }
 
   render() {
@@ -200,6 +231,11 @@ class Packages extends Component {
           {this.state.loading ? <Spinner /> : this.packages()}
         </div>
         <div className="total">{this.state.totalAmount}</div>
+        <Modal
+          onSave={this.modalConfirmHandler}
+          onCancel={this.modalCancelHandler}
+          show={this.state.modalVisible}
+          text={this.state.modalText} />
       </div>
     );
   }
