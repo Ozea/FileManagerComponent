@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
+import { bulkAction, getIpList, handleAction } from '../../ControlPanelService/Ip';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import InternetProtocol from '../../components/InternetProtocol/InternetProtocol';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
-import { bulkAction, getIpList } from '../../ControlPanelService/Ip';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
+import Modal from '../../components/ControlPanel/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
-import { toast } from 'react-toastify';
 import './InternetProtocols.scss';
 
 class InternetProtocols extends Component {
@@ -18,6 +18,9 @@ class InternetProtocols extends Component {
     ipFav: [],
     loading: false,
     toggleAll: false,
+    modalText: '',
+    modalVisible: false,
+    modalActionUrl: '',
     sorting: window.GLOBAL.App.inc.Date,
     order: "descending",
     selection: [],
@@ -25,6 +28,10 @@ class InternetProtocols extends Component {
   }
 
   componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData = () => {
     this.setState({ loading: true }, () => {
       getIpList()
         .then(result => {
@@ -36,17 +43,6 @@ class InternetProtocols extends Component {
           });
         })
         .catch(err => console.error(err));
-    });
-  }
-
-  showNotification = text => {
-    toast.error(text, {
-      position: "bottom-center",
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true
     });
   }
 
@@ -67,7 +63,7 @@ class InternetProtocols extends Component {
     const result = [];
 
     for (let i in internetProtocols) {
-      internetProtocols[i]['IP'] = i;
+      internetProtocols[i]['NAME'] = i;
 
       if (ipFav[i]) {
         internetProtocols[i]['STARRED'] = ipFav[i];
@@ -81,7 +77,7 @@ class InternetProtocols extends Component {
     let sortedResult = this.sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <InternetProtocol data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} />;
+      return <InternetProtocol data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
     });
   }
 
@@ -129,42 +125,54 @@ class InternetProtocols extends Component {
   }
 
   toggleFav = (value, type) => {
+    const { ipFav } = this.state;
+    let ipFavDuplicate = ipFav;
+
     if (type === 'add') {
+      ipFavDuplicate[value] = 1;
+
       addFavorite(value, 'ip')
-        .then(() => { })
+        .then(() => {
+          this.setState({ ipFav: ipFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     } else {
+      ipFavDuplicate[value] = undefined;
+
       deleteFavorite(value, 'ip')
-        .then(() => { })
+        .then(() => {
+          this.setState({ ipFav: ipFavDuplicate });
+        })
         .catch(err => {
-          this.showNotification(err)
+          console.error(err);
         });
     }
   }
 
   toggleAll = toggled => {
-    const { internetProtocols, toggledAll } = this.state;
-    this.setState({ toggledAll: toggled });
+    const { internetProtocols } = this.state;
 
-    if (!toggledAll) {
-      let names = [];
+    this.setState({ toggledAll: toggled }, () => {
+      if (this.state.toggledAll) {
+        let ipNames = [];
 
-      for (let i in internetProtocols) {
-        names.push(i);
+        for (let i in internetProtocols) {
+          ipNames.push(i);
 
-        internetProtocols[i]['isChecked'] = true;
+          internetProtocols[i]['isChecked'] = true;
+        }
+
+        this.setState({ internetProtocols, selection: ipNames });
+      } else {
+        for (let i in internetProtocols) {
+          internetProtocols[i]['isChecked'] = false;
+        }
+
+        this.setState({ internetProtocols, selection: [] });
       }
-
-      this.setState({ internetProtocols, selection: names });
-    } else {
-      for (let i in internetProtocols) {
-        internetProtocols[i]['isChecked'] = false;
-      }
-
-      this.setState({ internetProtocols, selection: [] });
-    }
+    });
   }
 
   bulk = action => {
@@ -186,6 +194,47 @@ class InternetProtocols extends Component {
     }
   }
 
+  bulk = action => {
+    const { selection } = this.state;
+
+    if (selection.length && action) {
+      this.setState({ loading: true }, () => {
+        bulkAction(action, selection)
+          .then(result => {
+            if (result.status === 200) {
+              this.fetchData();
+              this.toggleAll(false);
+            }
+          })
+          .catch(err => console.error(err));
+      });
+    }
+  }
+
+  displayModal = (text, url) => {
+    this.setState({
+      modalVisible: !this.state.modalVisible,
+      modalText: text,
+      modalActionUrl: url
+    });
+  }
+
+  modalConfirmHandler = () => {
+    handleAction(this.state.modalActionUrl)
+      .then(() => {
+        this.fetchData();
+        this.modalCancelHandler();
+      })
+      .catch(err => console.error(err));
+  }
+
+  modalCancelHandler = () => {
+    this.setState({
+      modalVisible: false,
+      modalText: '',
+      modalActionUrl: ''
+    });
+  }
 
   render() {
     return (
@@ -205,6 +254,11 @@ class InternetProtocols extends Component {
           {this.state.loading ? <Spinner /> : this.dns()}
         </div>
         <div className="total">{this.state.totalAmount}</div>
+        <Modal
+          onSave={this.modalConfirmHandler}
+          onCancel={this.modalCancelHandler}
+          show={this.state.modalVisible}
+          text={this.state.modalText} />
       </div>
     );
   }
