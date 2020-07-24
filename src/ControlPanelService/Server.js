@@ -1,21 +1,25 @@
 import axios from "axios";
 
 const BASE_URL = window.location.origin;
+const token = localStorage.getItem("token");
 const webApiUri = '/list/server/server.php';
 
 export const getServersList = () => {
   return axios.get(BASE_URL + webApiUri);
 }
 
-export const bulkAction = (action, packages) => {
+export const bulkAction = (action, servers) => {
   const formData = new FormData();
   formData.append("action", action);
+  formData.append("token", token);
 
-  packages.forEach(item => {
-    formData.append("mail[]", item);
-    formData.append("suspend_url", `/suspend/user/?user=${item}`);
-    formData.append("delete_url", `/delete/user/?user=${item}`);
+  servers.forEach(server => {
+    formData.append("service[]", server);
   });
 
-  return axios.post(BASE_URL + '/bulk/mail/', formData);
+  return axios.post(BASE_URL + '/bulk/service/', formData);
 };
+
+export const handleAction = uri => {
+  return axios.get(BASE_URL + uri);
+}

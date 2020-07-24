@@ -11,12 +11,17 @@ class Server extends Component {
     return days;
   }
 
+  checkItem = () => {
+    this.props.checkItem(this.props.data.HOSTNAME);
+  }
+
   render() {
     const { data } = this.props;
+    const token = localStorage.getItem("token");
     const { i18n } = window.GLOBAL.App;
 
     return (
-      <ListItem>
+      <ListItem checked={data.isChecked} checkItem={this.checkItem}>
         <Container className="r-col w-85">
           <div className="name">{data.HOSTNAME}</div>
           <div className="stats">
@@ -32,9 +37,9 @@ class Server extends Component {
           </div>
         </Container>
         <div className="actions">
-          <div><a className="link-download" href='/edit/server'>{i18n.configure} <FontAwesomeIcon icon="cogs" /></a></div>
+          <div><a className="link-list" href='/edit/server'>{i18n.configure} <FontAwesomeIcon icon="cogs" /></a></div>
           <div>
-            <a className="link-gray restart" href={`/restart/system?hostname=${data.HOSTNAME}`}>
+            <a className="link-download restart" href={`/restart/system?hostname=${data.HOSTNAME}`}>
               {i18n.restart}
               <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-arrow-repeat" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" d="M2.854 7.146a.5.5 0 0 0-.708 0l-2 2a.5.5 0 1 0 .708.708L2.5 8.207l1.646 1.647a.5.5 0 0 0 .708-.708l-2-2zm13-1a.5.5 0 0 0-.708 0L13.5 7.793l-1.646-1.647a.5.5 0 0 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0 0-.708z" />
