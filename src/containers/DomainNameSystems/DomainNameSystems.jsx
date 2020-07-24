@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
+import { bulkAction, getDnsList, handleAction } from '../../ControlPanelService/Dns';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import DomainNameSystem from '../../components/DomainNameSystem/DomainNameSystem';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
-import { bulkAction, getDnsList, handleAction } from '../../ControlPanelService/Dns';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Modal from '../../components/ControlPanel/Modal/Modal';
