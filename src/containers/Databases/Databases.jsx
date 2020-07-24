@@ -23,7 +23,7 @@ class Databases extends Component {
     modalActionUrl: '',
     dbAdmin: '',
     dbAdminLink: '',
-    sorting: window.GLOBAL.App.inc.Date,
+    sorting: window.GLOBAL.App.i18n.Date,
     order: "descending",
     selection: [],
     totalAmount: ''
@@ -110,7 +110,7 @@ class Databases extends Component {
   }
 
   sortBy = sorting => {
-    const { Date, Database, Disk, User, Host, Starred } = window.GLOBAL.App.inc;
+    const { Date, Database, Disk, User, Host, Starred } = window.GLOBAL.App.i18n;
 
     switch (sorting) {
       case Date: return 'DATE';

@@ -27,7 +27,7 @@ class Package extends Component {
 
   render() {
     const { data } = this.props;
-    const { inc } = window.GLOBAL.App;
+    const { i18n } = window.GLOBAL.App;
     const token = localStorage.getItem("token");
 
     return (
@@ -37,34 +37,34 @@ class Package extends Component {
           <div>{data.FNAME} {data.LNAME}</div>
           <div className="stats">
             <Container className="c-1 w-30">
-              <div>{inc['Web Template']}: <span><span className="stat">{data.WEB_TEMPLATE}</span></span></div>
-              <div>{inc['Proxy Template']}: <span><span className="stat">{data.PROXY_TEMPLATE}</span></span></div>
-              <div>{inc['DNS Template']}: <span><span className="stat">{data.DNS_TEMPLATE}</span></span></div>
-              <div>{inc['SSH Access']}: <span><span className="stat">{data.SHELL}</span></span></div>
-              <div>{inc['Web Domains']}: <span><span className="stat">{data.WEB_DOMAINS}</span></span></div>
-              <div>{inc['Web Aliases']}: <span><span className="stat">{data.WEB_ALIASES}</span></span></div>
+              <div>{i18n['Web Template']}: <span><span className="stat">{data.WEB_TEMPLATE}</span></span></div>
+              <div>{i18n['Proxy Template']}: <span><span className="stat">{data.PROXY_TEMPLATE}</span></span></div>
+              <div>{i18n['DNS Template']}: <span><span className="stat">{data.DNS_TEMPLATE}</span></span></div>
+              <div>{i18n['SSH Access']}: <span><span className="stat">{data.SHELL}</span></span></div>
+              <div>{i18n['Web Domains']}: <span><span className="stat">{data.WEB_DOMAINS}</span></span></div>
+              <div>{i18n['Web Aliases']}: <span><span className="stat">{data.WEB_ALIASES}</span></span></div>
             </Container>
             <Container className="c-2 w-35">
-              <div>{inc['DNS domains']}: <span><span className="stat">{data.DNS_DOMAINS}</span></span></div>
-              <div>{inc['DNS records']}: <span><span className="stat">{data.DNS_RECORDS}</span></span></div>
-              <div>{inc['Mail Domains']}: <span><span className="stat">{data.MAIL_DOMAINS}</span></span></div>
-              <div>{inc['Mail Accounts']}: <span><span className="stat">{data.MAIL_ACCOUNTS}</span></span></div>
-              <div>{inc.Databases}: <span><span className="stat">{data.DATABASES}</span></span></div>
-              <div>{inc['Cron Jobs']}: <span><span className="stat">{data.CRON_JOBS}</span></span></div>
+              <div>{i18n['DNS domains']}: <span><span className="stat">{data.DNS_DOMAINS}</span></span></div>
+              <div>{i18n['DNS records']}: <span><span className="stat">{data.DNS_RECORDS}</span></span></div>
+              <div>{i18n['Mail Domains']}: <span><span className="stat">{data.MAIL_DOMAINS}</span></span></div>
+              <div>{i18n['Mail Accounts']}: <span><span className="stat">{data.MAIL_ACCOUNTS}</span></span></div>
+              <div>{i18n.Databases}: <span><span className="stat">{data.DATABASES}</span></span></div>
+              <div>{i18n['Cron Jobs']}: <span><span className="stat">{data.CRON_JOBS}</span></span></div>
             </Container>
             <Container className="c-3 w-35">
-              <div><span>{inc.Backups}:</span> <span><span className="stat">{data.BACKUPS}</span></span></div>
-              <div><span>{inc.Bandwidth}:</span> <span><span><span className="stat">{data.BANDWIDTH}</span> {inc.mb}</span></span></div>
-              <div><span>{inc.Disk}:</span> <span><span><span className="stat">{data.DISK_QUOTA}</span> {inc.mb}</span></span></div>
-              <div className="ns"><span>{inc['Name Servers']}:</span> <span><span className="stat">{this.printNameServers(data.NS)}</span></span></div>
+              <div><span>{i18n.Backups}:</span> <span><span className="stat">{data.BACKUPS}</span></span></div>
+              <div><span>{i18n.Bandwidth}:</span> <span><span><span className="stat">{data.BANDWIDTH}</span> {i18n.mb}</span></span></div>
+              <div><span>{i18n.Disk}:</span> <span><span><span className="stat">{data.DISK_QUOTA}</span> {i18n.mb}</span></span></div>
+              <div className="ns"><span>{i18n['Name Servers']}:</span> <span><span className="stat">{this.printNameServers(data.NS)}</span></span></div>
             </Container>
           </div>
         </Container>
         <div className="actions">
-          <div><a className="link-edit" href={`/edit/package/?package=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
+          <div><a className="link-edit" href={`/edit/package/?package=${data.NAME}`}>{i18n.edit} <FontAwesomeIcon icon="pen" /></a></div>
           <div>
             <button className="link-delete" onClick={() => this.props.handleModal(data.delete_conf, `/delete/package?package=${data.NAME}&token=${token}`)}>
-              {inc.Delete}
+              {i18n.Delete}
               <FontAwesomeIcon icon="times" />
             </button>
           </div>

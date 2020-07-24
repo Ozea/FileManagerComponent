@@ -1,31 +1,35 @@
 import axios from "axios";
 
-const BASE_URL = window.location.origin;
-const webApiUri = '/list/updates/updates.php';
-const addAutoUpdateUri = '/add/cron/autoupdate/';
 const deleteAutoUpdateUri = '/delete/cron/autoupdate/';
+const addAutoUpdateUri = '/add/cron/autoupdate/';
+const webApiUri = '/list/updates/updates.php';
+const token = localStorage.getItem("token");
+const BASE_URL = window.location.origin;
 
 export const getUpdatesList = () => {
   return axios.get(BASE_URL + webApiUri);
 }
 
-export const bulkAction = (action, packages) => {
+export const bulkAction = (action, updates) => {
   const formData = new FormData();
   formData.append("action", action);
+  formData.append("token", token);
 
-  packages.forEach(item => {
-    formData.append("mail[]", item);
-    formData.append("suspend_url", `/suspend/user/?user=${item}`);
-    formData.append("delete_url", `/delete/user/?user=${item}`);
+  updates.forEach(update => {
+    formData.append("pkg[]", update);
   });
 
-  return axios.post(BASE_URL + '/bulk/mail/', formData);
+  return axios.post(BASE_URL + '/bulk/vesta/', formData);
 };
 
+export const handleAction = uri => {
+  return axios.get(`${BASE_URL}${uri}?token=${token}`);
+}
+
 export const enableAutoUpdate = () => {
-  return axios.get(BASE_URL + addAutoUpdateUri);
+  return axios.get(`${BASE_URL}${addAutoUpdateUri}?token=${token}`);
 };
 
 export const disableAutoUpdate = () => {
-  return axios.get(BASE_URL + deleteAutoUpdateUri);
+  return axios.get(`${BASE_URL}${deleteAutoUpdateUri}?token=${token}`);
 };

@@ -1,6 +1,8 @@
 import React from 'react';
 import './Dropdown.scss';
 
+const { i18n } = window.GLOBAL.App;
+
 function changeSorting(field, order, props) {
   if (!props.isActive) {
     return;
@@ -11,13 +13,13 @@ function changeSorting(field, order, props) {
 
 function sort(sorting) {
   if (sorting === "Type") {
-    return window.GLOBAL.App.Constants.FM_type;
+    return i18n.type;
   } else if (sorting === "Size") {
-    return window.GLOBAL.App.Constants.FM_size;
+    return i18n.size;
   } else if (sorting === "Date") {
-    return window.GLOBAL.App.Constants.FM_date;
+    return i18n.date;
   } else if (sorting === "Name") {
-    return window.GLOBAL.App.Constants.FM_name;
+    return i18n.name;
   }
 }
 
@@ -46,19 +48,19 @@ const Dropdown = (props) => {
       <div class="dropdown-menu">
         <ul className="dropdown-list">
           <li>
-            <span className={props.sorting === "Type" && props.order === "descending" ? "dropdown-item active" : "dropdown-item"} onClick={() => changeSorting("Type", "descending", props)}>{window.GLOBAL.App.Constants.FM_type}<span className="arrow-down">&#8595;</span></span>
+            <span className={props.sorting === "Type" && props.order === "descending" ? "dropdown-item active" : "dropdown-item"} onClick={() => changeSorting("Type", "descending", props)}>{i18n.type}<span className="arrow-down">&#8595;</span></span>
             <span className={props.sorting === "Type" && props.order === "ascending" ? "dropdown-item active" : "dropdown-item"} onClick={() => changeSorting("Type", "ascending", props)}><span>&#8593;</span></span>
           </li>
           <li>
-            <span className={props.sorting === "Size" && props.order === "descending" ? "dropdown-item active" : "dropdown-item"} onClick={() => changeSorting("Size", "descending", props)}>{window.GLOBAL.App.Constants.FM_size}<span className="arrow-down">&#8595;</span></span>
+            <span className={props.sorting === "Size" && props.order === "descending" ? "dropdown-item active" : "dropdown-item"} onClick={() => changeSorting("Size", "descending", props)}>{i18n.size}<span className="arrow-down">&#8595;</span></span>
             <span className={props.sorting === "Size" && props.order === "ascending" ? "dropdown-item active" : "dropdown-item"} onClick={() => changeSorting("Size", "ascending", props)}><span>&#8593;</span></span>
           </li>
           <li>
-            <span className={props.sorting === "Date" && props.order === "descending" ? "dropdown-item active" : "dropdown-item"} onClick={() => changeSorting("Date", "descending", props)}>{window.GLOBAL.App.Constants.FM_date}<span className="arrow-down">&#8595;</span></span>
+            <span className={props.sorting === "Date" && props.order === "descending" ? "dropdown-item active" : "dropdown-item"} onClick={() => changeSorting("Date", "descending", props)}>{i18n.date}<span className="arrow-down">&#8595;</span></span>
             <span className={props.sorting === "Date" && props.order === "ascending" ? "dropdown-item active" : "dropdown-item"} onClick={() => changeSorting("Date", "ascending", props)}><span>&#8593;</span></span>
           </li>
           <li>
-            <span className={props.sorting === "Name" && props.order === "descending" ? "dropdown-item active" : "dropdown-item"} onClick={() => changeSorting("Name", "descending", props)}>{window.GLOBAL.App.Constants.FM_name}<span className="arrow-down">&#8595;</span></span>
+            <span className={props.sorting === "Name" && props.order === "descending" ? "dropdown-item active" : "dropdown-item"} onClick={() => changeSorting("Name", "descending", props)}>{i18n.name}<span className="arrow-down">&#8595;</span></span>
             <span className={props.sorting === "Name" && props.order === "ascending" ? "dropdown-item active" : "dropdown-item"} onClick={() => changeSorting("Name", "ascending", props)}><span>&#8593;</span></span>
           </li>
         </ul>

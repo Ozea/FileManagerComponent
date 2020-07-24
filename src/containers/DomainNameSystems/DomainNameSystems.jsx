@@ -12,7 +12,7 @@ import Modal from '../../components/ControlPanel/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
 import './DomainNameSystems.scss';
 
-const { inc } = window.GLOBAL.App;
+const { i18n } = window.GLOBAL.App;
 
 class DomainNameSystems extends Component {
   state = {
@@ -23,7 +23,7 @@ class DomainNameSystems extends Component {
     modalText: '',
     modalVisible: false,
     modalActionUrl: '',
-    sorting: inc.Date,
+    sorting: i18n.Date,
     order: "descending",
     selection: [],
     totalAmount: '',
@@ -112,7 +112,7 @@ class DomainNameSystems extends Component {
   }
 
   sortBy = sorting => {
-    const { Date, Expire, Domain, IP, Records, Starred } = window.GLOBAL.App.inc;
+    const { Date, Expire, Domain, IP, Records, Starred } = window.GLOBAL.App.i18n;
 
     switch (sorting) {
       case Date: return 'DATE';
@@ -221,7 +221,7 @@ class DomainNameSystems extends Component {
     return (
       <div className="dns">
         <Toolbar mobile={false} >
-          <LeftButton name={inc['Add DNS Domain']} href="/add/dns" showLeftMenu={true} />
+          <LeftButton name={i18n['Add DNS Domain']} href="/add/dns" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
               <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />

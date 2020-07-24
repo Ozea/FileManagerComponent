@@ -1,7 +1,7 @@
 import React from 'react';
 import './Modal.scss';
 
-const { inc } = window.GLOBAL.App;
+const { i18n } = window.GLOBAL.App;
 
 const Modal = ({ show, text, onSave, onCancel }) => (
   <div>
@@ -9,7 +9,7 @@ const Modal = ({ show, text, onSave, onCancel }) => (
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">{inc.Confirmation}</h5>
+            <h5 class="modal-title" id="exampleModalLabel">{i18n.Confirmation}</h5>
             <button type="button" onClick={() => onCancel()} class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -18,8 +18,8 @@ const Modal = ({ show, text, onSave, onCancel }) => (
             {text}
           </div>
           <div class="modal-footer">
-            <button onClick={() => onCancel()} type="button" class="btn btn-secondary" data-dismiss="modal">{inc.Cancel}</button>
-            <button onClick={() => onSave()} type="button" class="btn btn-primary">{inc.OK}</button>
+            <button onClick={() => onCancel()} type="button" class="btn btn-secondary" data-dismiss="modal">{i18n.Cancel}</button>
+            <button onClick={() => onSave()} type="button" class="btn btn-primary">{i18n.OK}</button>
           </div>
         </div>
       </div>

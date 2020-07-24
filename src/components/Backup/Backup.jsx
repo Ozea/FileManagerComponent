@@ -20,7 +20,7 @@ class Backup extends Component {
 
   render() {
     const { data } = this.props;
-    const { inc } = window.GLOBAL.App;
+    const { i18n } = window.GLOBAL.App;
     const token = localStorage.getItem("token");
 
     return (
@@ -29,23 +29,23 @@ class Backup extends Component {
           <div className="name">{data.NAME}</div>
           <div className="stats">
             <Container className="c-1">
-              <div>{inc['Backup Size']}: <span><span className="stat">{data.SIZE}</span> mb</span></div>
+              <div>{i18n['Backup Size']}: <span><span className="stat">{data.SIZE}</span>{i18n.mb}</span></div>
             </Container>
             <Container className="c-2">
-              <div>{inc.Type}: <span className="stat">{data.TYPE}</span></div>
+              <div>{i18n.Type}: <span className="stat">{data.TYPE}</span></div>
             </Container>
             <Container className="c-3">
-              <div>{inc['Run Time']}: <span className="stat">{data.RUNTIME} minute</span></div>
+              <div>{i18n['Run Time']}: <span className="stat">{data.RUNTIME} minute</span></div>
             </Container>
           </div>
         </Container>
         <div className="actions">
-          {data.UPDATED === 'no' && <div><a href={`/update/vesta/?pkg=${data.NAME}`}>{inc.update} <FontAwesomeIcon icon="wrench" /></a></div>}
-          <div><a className="link-download" href={`/download/backup/?backup=${data.NAME}`}>{inc.download} <FontAwesomeIcon icon={faFileDownload} /></a></div>
-          <div><a className="link-list" href={`/list/backup/?backup=${data.NAME}`}>{inc['configure restore settings']} <FontAwesomeIcon icon="list" /></a></div>
+          {data.UPDATED === 'no' && <div><a href={`/update/vesta/?pkg=${data.NAME}`}>{i18n.update} <FontAwesomeIcon icon="wrench" /></a></div>}
+          <div><a className="link-download" href={`/download/backup/?backup=${data.NAME}`}>{i18n.download} <FontAwesomeIcon icon={faFileDownload} /></a></div>
+          <div><a className="link-list" href={`/list/backup/?backup=${data.NAME}`}>{i18n['configure restore settings']} <FontAwesomeIcon icon="list" /></a></div>
           <div>
             <button className="link-delete" onClick={() => this.props.handleModal(data.delete_conf, `/delete/backup?backup=${data.NAME}&token=${token}`)}>
-              {inc.Delete}
+              {i18n.Delete}
               <FontAwesomeIcon icon="times" />
             </button>
           </div>

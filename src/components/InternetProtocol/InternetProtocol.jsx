@@ -19,7 +19,7 @@ class InternetProtocol extends Component {
 
   render() {
     const { data } = this.props;
-    const { inc } = window.GLOBAL.App;
+    const { i18n } = window.GLOBAL.App;
     const token = localStorage.getItem("token");
 
     return (
@@ -33,20 +33,20 @@ class InternetProtocol extends Component {
               <div className="soa"><span className="stat">{data.INTERFACE}</span></div>
             </Container>
             <Container className="c-2 w-30">
-              <div>{inc.Domains}: <span className="stat">{data.U_WEB_DOMAINS}</span></div>
-              <div>{inc.Status}: <span className="stat">{data.STATUS}</span></div>
+              <div>{i18n.Domains}: <span className="stat">{data.U_WEB_DOMAINS}</span></div>
+              <div>{i18n.Status}: <span className="stat">{data.STATUS}</span></div>
             </Container>
             <Container className="c-3 w-35">
-              <div>{inc.Owner}: <span className="stat">{data.OWNER}</span></div>
-              <div>{inc.Users}: <span className="stat">{data.U_SYS_USERS.replace(',', ', ')}</span></div>
+              <div>{i18n.Owner}: <span className="stat">{data.OWNER}</span></div>
+              <div>{i18n.Users}: <span className="stat">{data.U_SYS_USERS.replace(',', ', ')}</span></div>
             </Container>
           </div>
         </Container>
         <div className="actions">
-          <div><a className="link-edit" href={`/edit/ip/?ip=${data.IP}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
+          <div><a className="link-edit" href={`/edit/ip/?ip=${data.IP}`}>{i18n.edit} <FontAwesomeIcon icon="pen" /></a></div>
           <div>
             <button className="link-delete" onClick={() => this.props.handleModal(data.delete_conf, `/delete/ip?ip=${data.NAME}&token=${token}`)}>
-              {inc.Delete}
+              {i18n.Delete}
               <FontAwesomeIcon icon="times" />
             </button>
           </div>

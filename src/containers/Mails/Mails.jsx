@@ -22,7 +22,7 @@ class Mails extends Component {
     modalVisible: false,
     modalActionUrl: '',
     webmail: '',
-    sorting: window.GLOBAL.App.inc.Date,
+    sorting: window.GLOBAL.App.i18n.Date,
     order: "descending",
     selection: [],
     totalAmount: ''
@@ -108,7 +108,7 @@ class Mails extends Component {
   }
 
   sortBy = sorting => {
-    const { Date, Domains, Accounts, Disk, Starred } = window.GLOBAL.App.inc;
+    const { Date, Domains, Accounts, Disk, Starred } = window.GLOBAL.App.i18n;
 
     switch (sorting) {
       case Date: return 'DATE';
@@ -219,7 +219,7 @@ class Mails extends Component {
           <LeftButton name="Add Mail Domain" href="/add/mail" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <a href={this.state.webmail} className="button-extra" type="submit">{window.GLOBAL.App.inc['open webmail']}</a>
+              <a href={this.state.webmail} className="button-extra" type="submit">{window.GLOBAL.App.i18n['open webmail']}</a>
               <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
               <Select list='mailList' bulkAction={this.bulk} />
               <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="mailList" />

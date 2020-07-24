@@ -182,10 +182,10 @@ class Backups extends Component {
     return (
       <div className="backups">
         <Toolbar mobile={false} >
-          <LeftButton name={window.GLOBAL.App.inc["Create Backup"]} href="/schedule/backup" showLeftMenu={true} />
+          <LeftButton name={window.GLOBAL.App.i18n["Create Backup"]} href="/schedule/backup" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <a href='/list/backup/exclusions/' className="button-extra" type="submit">{window.GLOBAL.App.inc['backup exclusions']}</a>
+              <a href='/list/backup/exclusions/' className="button-extra" type="submit">{window.GLOBAL.App.i18n['backup exclusions']}</a>
               <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
               <Select list='backupList' bulkAction={this.bulk} />
               <SearchInput />

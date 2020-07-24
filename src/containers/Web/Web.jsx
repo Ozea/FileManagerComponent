@@ -22,7 +22,7 @@ class Web extends Component {
     modalText: '',
     modalVisible: false,
     modalActionUrl: '',
-    sorting: window.GLOBAL.App.inc.Date,
+    sorting: window.GLOBAL.App.i18n.Date,
     order: "descending",
     selection: [],
     totalAmount: ''
@@ -111,12 +111,12 @@ class Web extends Component {
   }
 
   sortBy = sorting => {
-    const { Date, Domain, Disk, Bandwidth, Starred } = window.GLOBAL.App.inc;
+    const { Date, Domain, Disk, Bandwidth, Starred } = window.GLOBAL.App.i18n;
 
     switch (sorting) {
       case Date: return 'DATE';
       case Domain: return 'ALIAS';
-      case window.GLOBAL.App.inc['IP Addresses']: return 'IP';
+      case window.GLOBAL.App.i18n['IP Addresses']: return 'IP';
       case Disk: return 'U_DISK';
       case Bandwidth: return 'U_BANDWIDTH';
       case Starred: return 'STARRED';

@@ -21,7 +21,7 @@ class InternetProtocols extends Component {
     modalText: '',
     modalVisible: false,
     modalActionUrl: '',
-    sorting: window.GLOBAL.App.inc.Date,
+    sorting: window.GLOBAL.App.i18n.Date,
     order: "descending",
     selection: [],
     totalAmount: ''
@@ -110,7 +110,7 @@ class InternetProtocols extends Component {
   }
 
   sortBy = sorting => {
-    const { Date, IP, Domains, Netmask, Interface, Owner, Starred } = window.GLOBAL.App.inc;
+    const { Date, IP, Domains, Netmask, Interface, Owner, Starred } = window.GLOBAL.App.i18n;
 
     switch (sorting) {
       case Date: return 'DATE';
@@ -240,7 +240,7 @@ class InternetProtocols extends Component {
     return (
       <div className="internetProtocols">
         <Toolbar mobile={false} >
-          <LeftButton name={window.GLOBAL.App.inc['Add IP']} href="/add/ip/" showLeftMenu={true} />
+          <LeftButton name={window.GLOBAL.App.i18n['Add IP']} href="/add/ip/" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
               <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />

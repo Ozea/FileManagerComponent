@@ -18,7 +18,7 @@ class RRD extends Component {
 
   render() {
     const { data } = this.props;
-    const { inc } = window.GLOBAL.App;
+    const { i18n } = window.GLOBAL.App;
 
     return (
       <div className="rrd-item">
@@ -26,7 +26,7 @@ class RRD extends Component {
           {this.printDate(data.DATE)}
         </Container>
         <Container className="r-col w-85">
-          <div className="name">{inc[data.TITLE]}</div>
+          <div className="name">{i18n[data.TITLE]}</div>
           <div className="stats">
             <Container className="w-100">
               <div><img src={generateImagePath(this.props.period, data.TYPE, data.RRD)} alt="img" /></div>
@@ -35,7 +35,7 @@ class RRD extends Component {
         </Container>
         <div className="actions">
           <div>
-            <a className="link-download" href={generateImagePath(this.props.period, data.TYPE, data.RRD)}>{inc.download} <FontAwesomeIcon icon={faFileDownload} /></a>
+            <a className="link-download" href={generateImagePath(this.props.period, data.TYPE, data.RRD)}>{i18n.download} <FontAwesomeIcon icon={faFileDownload} /></a>
           </div>
         </div>
       </div>

@@ -20,7 +20,7 @@ class DomainNameSystem extends Component {
 
   render() {
     const { data } = this.props;
-    const { inc } = window.GLOBAL.App;
+    const { i18n } = window.GLOBAL.App;
     const token = localStorage.getItem("token");
 
     return (
@@ -34,19 +34,19 @@ class DomainNameSystem extends Component {
               <div className="soa"><span className="stat">{data.SOA}</span></div>
             </Container>
             <Container className="c-2 w-30">
-              <div>{inc.TTL}: <span className="stat">{data.TTL}</span></div>
-              <div>{inc.Serial}: <span className="stat">{data.SERIAL}</span></div>
+              <div>{i18n.TTL}: <span className="stat">{data.TTL}</span></div>
+              <div>{i18n.Serial}: <span className="stat">{data.SERIAL}</span></div>
             </Container>
             <Container className="c-3 w-35">
-              <div>{inc.Template}: <span className="stat">{data.TPL}</span></div>
-              <div>{inc.Expire}: <span className="stat">{data.EXP}</span></div>
+              <div>{i18n.Template}: <span className="stat">{data.TPL}</span></div>
+              <div>{i18n.Expire}: <span className="stat">{data.EXP}</span></div>
             </Container>
           </div>
         </Container>
         <div className="actions">
           <div><a className="link-gray" href={`/list/dns/?domain=${data.NAME}`}>{data.RECORDS_I18N} <FontAwesomeIcon icon="list" /></a></div>
-          <div><a className="link-edit" href={`/add/dns/?domain=${data.NAME}`}>{inc['add record']} <FontAwesomeIcon icon="add" /></a></div>
-          <div><a className="link-edit" href={`/edit/dns/?domain=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
+          <div><a className="link-edit" href={`/add/dns/?domain=${data.NAME}`}>{i18n['add record']} <FontAwesomeIcon icon="add" /></a></div>
+          <div><a className="link-edit" href={`/edit/dns/?domain=${data.NAME}`}>{i18n.edit} <FontAwesomeIcon icon="pen" /></a></div>
           <div>
             <button
               className="link-gray"
@@ -57,7 +57,7 @@ class DomainNameSystem extends Component {
           </div>
           <div>
             <button className="link-delete" onClick={() => this.props.handleModal(data.delete_conf, `/delete/dns?domain=${data.NAME}&token=${token}`)}>
-              {inc.Delete}
+              {i18n.Delete}
               <FontAwesomeIcon icon="times" />
             </button>
           </div>

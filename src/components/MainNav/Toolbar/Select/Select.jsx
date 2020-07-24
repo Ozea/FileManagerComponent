@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { values } from '../../../../ControlPanelService/Select';
 import './Select.scss';
 
-const { inc } = window.GLOBAL.App;
-const listValues = values(inc);
+const { i18n } = window.GLOBAL.App;
+const listValues = values(i18n);
 
 class Select extends Component {
   state = {
@@ -61,7 +61,7 @@ class Select extends Component {
     return (
       <div className="select-wrapper">
         <select className="custom-select" id="inputGroupSelect04" onChange={this.handleSelect}>
-          <option defaultValue={this.defaultValue()}>{this.props.list === "statisticsList" ? inc['show per user'] : inc['apply to selected']}</option>
+          <option defaultValue={this.defaultValue()}>{this.props.list === "statisticsList" ? i18n['show per user'] : i18n['apply to selected']}</option>
           {this.renderOptions()}
         </select>
         <div className="input-group-append">

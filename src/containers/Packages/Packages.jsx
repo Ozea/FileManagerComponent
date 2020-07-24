@@ -21,7 +21,7 @@ class Packages extends Component {
     modalText: '',
     modalVisible: false,
     modalActionUrl: '',
-    sorting: window.GLOBAL.App.inc.Date,
+    sorting: window.GLOBAL.App.i18n.Date,
     order: "descending",
     selection: [],
     totalAmount: ''
@@ -110,11 +110,11 @@ class Packages extends Component {
   }
 
   sortBy = sorting => {
-    const { Date, Starred } = window.GLOBAL.App.inc;
+    const { Date, Starred } = window.GLOBAL.App.i18n;
 
     switch (sorting) {
       case Date: return 'DATE';
-      case window.GLOBAL.App.inc['Package Name']: return 'NAME';
+      case window.GLOBAL.App.i18n['Package Name']: return 'NAME';
       case Starred: return 'STARRED';
       default: break;
     }
@@ -217,7 +217,7 @@ class Packages extends Component {
     return (
       <div className="packages">
         <Toolbar mobile={false} >
-          <LeftButton name={window.GLOBAL.App.inc['Add Package']} href="/add/package/" showLeftMenu={true} />
+          <LeftButton name={window.GLOBAL.App.i18n['Add Package']} href="/add/package/" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
               <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />

@@ -44,6 +44,3 @@ export const webMocks = {
     DATE: "2015-07-04"
   }
 }
-
-export const web = window.GLOBAL.App.web;
-export const webFav = window.GLOBAL.App.webFav;

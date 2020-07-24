@@ -19,7 +19,7 @@ class Database extends Component {
 
   render() {
     const { data } = this.props;
-    const { inc } = window.GLOBAL.App;
+    const { i18n } = window.GLOBAL.App;
     const token = localStorage.getItem("token");
 
     return (
@@ -29,20 +29,20 @@ class Database extends Component {
           <br />
           <div className="stats">
             <Container className="c-1">
-              <div className="disk">{inc.Disk}: <span><span className="stat">{data.U_DISK}</span> mb</span></div>
+              <div className="disk">{i18n.Disk}: <span><span className="stat">{data.U_DISK}</span>{i18n.mb}</span></div>
             </Container>
             <Container className="c-2">
-              <div>{inc.User}: <span className="stat">{data.DBUSER}</span></div>
-              <div>{inc.Charset}: <span className="stat">{data.CHARSET}</span></div>
+              <div>{i18n.User}: <span className="stat">{data.DBUSER}</span></div>
+              <div>{i18n.Charset}: <span className="stat">{data.CHARSET}</span></div>
             </Container>
             <Container className="c-3">
-              <div>{inc.Host}: <span className="stat">{data.HOST}</span></div>
-              <div>{inc.Type}: <span className="stat">{data.TYPE}</span></div>
+              <div>{i18n.Host}: <span className="stat">{data.HOST}</span></div>
+              <div>{i18n.Type}: <span className="stat">{data.TYPE}</span></div>
             </Container>
           </div>
         </Container>
         <div className="actions">
-          <div><a className="link-edit" href={`/edit/db/?database=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
+          <div><a className="link-edit" href={`/edit/db/?database=${data.NAME}`}>{i18n.edit} <FontAwesomeIcon icon="pen" /></a></div>
           <div>
             <button
               className="link-gray"
@@ -53,7 +53,7 @@ class Database extends Component {
           </div>
           <div>
             <button className="link-delete" onClick={() => this.props.handleModal(data.delete_conf, `/delete/db/?database=${data.NAME}&token=${token}`)}>
-              {inc.Delete}
+              {i18n.Delete}
               <FontAwesomeIcon icon="times" />
             </button>
           </div>

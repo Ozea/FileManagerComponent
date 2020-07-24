@@ -5,10 +5,12 @@ import Notifications from './Notifications/Notifications';
 import { Link } from "react-router-dom";
 import './Panel.scss';
 
+const { i18n, user, fileManagerKey, softaculous, firewallSystem } = window.GLOBAL.App;
+
 class Panel extends Component {
   state = {
     smallNavigationClass: 'small-navigation hidden',
-    user: window.GLOBAL.App.user
+    user
   }
 
   componentDidMount() {
@@ -43,7 +45,6 @@ class Panel extends Component {
 
   render() {
     const { user } = this.state;
-    const { topPanel, fileManagerKey, softaculous, firewallSystem } = window.GLOBAL.App;
 
     return (
       <div className="panel-wrapper">
@@ -54,21 +55,21 @@ class Panel extends Component {
                 <img src="/images/logo.png" alt="LOGO" />
               </Link>
             </div>
-            <div className={this.className("/list/package/")}><Link to="/list/package/">{topPanel.PACKAGES}</Link></div>
-            <div className={this.className("/list/ip/")}><Link to="/list/ip/">{topPanel.IP}</Link></div>
-            <div className={this.className("/list/rrd/")}><Link to="/list/rrd/">{topPanel.GRAPHS}</Link></div>
-            <div className={this.className("/list/stats/")}><Link to="/list/stats/">{topPanel.STATISTICS}</Link></div>
-            <div className={this.className("/list/log/")}><Link to="/list/log/">{topPanel.LOG}</Link></div>
-            <div className={this.className("/list/updates/")}><Link to="/list/updates/">{topPanel.UPDATES}</Link></div>
-            {firewallSystem && <div className={this.className("/list/firewall/")}><Link to="/list/firewall/">{topPanel.FIREWALL}</Link></div>}
-            {fileManagerKey && <div className="fm"><a href="/list/directory/">{topPanel.FILE_MANAGER}</a></div>}
-            {softaculous === "yes" && <div><a href="/list/softaculous/">{topPanel.APPS}</a></div>}
-            <div className={this.className("/list/server/")}><Link to="/list/server/">{topPanel.SERVER}</Link></div>
+            <div className={this.className("/list/package/")}><Link to="/list/package/">{i18n.Packages}</Link></div>
+            <div className={this.className("/list/ip/")}><Link to="/list/ip/">{i18n.IP}</Link></div>
+            <div className={this.className("/list/rrd/")}><Link to="/list/rrd/">{i18n.Graphs}</Link></div>
+            <div className={this.className("/list/stats/")}><Link to="/list/stats/">{i18n.Statistics}</Link></div>
+            <div className={this.className("/list/log/")}><Link to="/list/log/">{i18n.Log}</Link></div>
+            <div className={this.className("/list/updates/")}><Link to="/list/updates/">{i18n.Updates}</Link></div>
+            {firewallSystem && <div className={this.className("/list/firewall/")}><Link to="/list/firewall/">{i18n.Firewall}</Link></div>}
+            {fileManagerKey && <div className="fm"><a href="/list/directory/">{i18n['File Manager']}</a></div>}
+            {softaculous === "yes" && <div><a href="/list/softaculous/">{i18n.Apps}</a></div>}
+            <div className={this.className("/list/server/")}><Link to="/list/server/">{i18n.Server}</Link></div>
           </div>
           <div className="container profile-menu">
             <Notifications />
             <div><a href={`/edit/user?user=${user}`}>{user}</a></div>
-            <div><a href="/logout">{window.GLOBAL.App.userI18N.LOG_OUT}</a></div>
+            <div><a href="/logout">{i18n['Log out']}</a></div>
           </div>
         </div>
 
@@ -86,7 +87,7 @@ class Panel extends Component {
               <FontAwesomeIcon icon="bell" />
             </div>
             <div><a href={`/edit/user?user=${user}`}>{user}</a></div>
-            <div><a href="/logout">{window.GLOBAL.App.userI18N.LOG_OUT}</a></div>
+            <div><a href="/logout">{i18n['Log out']}</a></div>
           </div>
         </div>
       </div>
