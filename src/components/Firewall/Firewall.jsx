@@ -19,7 +19,7 @@ class Firewall extends Component {
 
   render() {
     const { data } = this.props;
-    const { inc } = window.GLOBAL.App;
+    const { i18n } = window.GLOBAL.App;
 
     return (
       <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem}>
@@ -43,9 +43,9 @@ class Firewall extends Component {
           </div>
         </Container>
         <div className="actions">
-          <div><a className="link-edit" href={`/edit/firewall?rule=${data.NAME}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
-          <div><a className="link-gray" href={`/suspend/firewall?rule=${data.NAME}`} >{inc.suspend} <FontAwesomeIcon icon="lock" /></a></div>
-          <div><a className="link-delete" href="#">{inc.Delete} <FontAwesomeIcon icon="times" /></a></div>
+          <div><a className="link-edit" href={`/edit/firewall?rule=${data.NAME}`}>{i18n.edit} <FontAwesomeIcon icon="pen" /></a></div>
+          <div><a className="link-gray" href={`/suspend/firewall?rule=${data.NAME}`} >{i18n.suspend} <FontAwesomeIcon icon="lock" /></a></div>
+          <div><a className="link-delete" href="#">{i18n.Delete} <FontAwesomeIcon icon="times" /></a></div>
         </div>
       </ListItem>
     );

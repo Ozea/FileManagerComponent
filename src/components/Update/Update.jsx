@@ -22,7 +22,7 @@ class Update extends Component {
 
   render() {
     const { data } = this.props;
-    const { inc } = window.GLOBAL.App;
+    const { i18n } = window.GLOBAL.App;
 
     return (
       <ListItem
@@ -39,10 +39,10 @@ class Update extends Component {
               <div className="descr"><span className="stat">{data.DESCR}</span></div>
             </Container>
             <Container className="c-2">
-              <div>{inc.Version}: <span><span className="stat">{data.VERSION}</span> {`(${data.ARCH})`}</span></div>
+              <div>{i18n.Version}: <span><span className="stat">{data.VERSION}</span> {`(${data.ARCH})`}</span></div>
             </Container>
             <Container className="c-3">
-              <div>{inc.Release}: <span className="stat">{data.RELEASE}</span></div>
+              <div>{i18n.Release}: <span className="stat">{data.RELEASE}</span></div>
             </Container>
           </div>
         </Container>

@@ -10,7 +10,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import Server from '../../components/Server/Server';
 import './Servers.scss';
 
-const { inc } = window.GLOBAL.App;
+const { i18n } = window.GLOBAL.App;
 
 class Servers extends Component {
   state = {
@@ -19,7 +19,7 @@ class Servers extends Component {
     sysInfo: {},
     loading: false,
     toggledAll: false,
-    sorting: inc.Action,
+    sorting: i18n.Action,
     order: "descending",
   }
 
@@ -114,10 +114,10 @@ class Servers extends Component {
     return (
       <div className="servers-list">
         <Toolbar mobile={false}>
-          <LeftButton href="/edit/server/" list="server" name={inc.configure} showLeftMenu={true} />
+          <LeftButton href="/edit/server/" list="server" name={i18n.configure} showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <a href="/list/server/?cpu" className="button-extra">{inc['show: CPU / MEM / NET / DISK']}</a>
+              <a href="/list/server/?cpu" className="button-extra">{i18n['show: CPU / MEM / NET / DISK']}</a>
               <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
               <Select list='serverList' />
               <SearchInput />

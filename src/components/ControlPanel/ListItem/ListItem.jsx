@@ -93,7 +93,7 @@ class ListItem extends Component {
             <div className="checkbox"><input type="checkbox" onChange={(e) => this.toggleItem(e)} checked={this.props.checked} /></div>
             <div onClick={this.starItem}><FontAwesomeIcon icon="star" /></div>
           </div>
-          {this.props.suspended && <div className='suspended'>{window.GLOBAL.App.inc.suspended}</div>}
+          {this.props.suspended && <div className='suspended'>{window.GLOBAL.App.i18n.suspended}</div>}
         </Container>
         {this.props.children}
       </div>

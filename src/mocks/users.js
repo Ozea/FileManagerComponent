@@ -110,19 +110,3 @@ export const usersMock = {
     DATE: "2015-07-04"
   }
 }
-
-// window.GLOBAL = {
-//   App: {
-//     users: {},
-//     statMenu: {},
-//     panel: {
-//       'admin': {}
-//     },
-//     topPanel: {},
-//     user: 'admin',
-//     userI18N: {}
-//   }
-// }
-
-export const users = window.GLOBAL.App.users;
-export const userFav = window.GLOBAL.App.userFav;

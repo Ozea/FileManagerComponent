@@ -12,7 +12,7 @@ import CronJob from '../../components/CronJob/CronJob';
 import Spinner from '../../components/Spinner/Spinner';
 import './CronJobs.scss';
 
-const { inc } = window.GLOBAL.App;
+const { i18n } = window.GLOBAL.App;
 
 class CronJobs extends Component {
   state = {
@@ -24,7 +24,7 @@ class CronJobs extends Component {
     modalVisible: false,
     modalActionUrl: '',
     cronReports: '',
-    sorting: inc.Date,
+    sorting: i18n.Date,
     order: "descending",
     selection: [],
     totalAmount: ''
@@ -115,7 +115,7 @@ class CronJobs extends Component {
   }
 
   sortBy = sorting => {
-    const { Date, Command, Starred } = window.GLOBAL.App.inc;
+    const { Date, Command, Starred } = window.GLOBAL.App.i18n;
 
     switch (sorting) {
       case Date: return 'DATE';
@@ -237,11 +237,11 @@ class CronJobs extends Component {
     return (
       <div className="cronJobs">
         <Toolbar mobile={false} >
-          <LeftButton name={inc['Add Cron Job']} href="/add/cron" showLeftMenu={true} />
+          <LeftButton name={i18n['Add Cron Job']} href="/add/cron" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
               <button onClick={this.handleCronNotifications} className="button-extra" type="submit">
-                {cronReports === 'yes' ? inc['turn off notifications'] : inc['turn on notifications']}
+                {cronReports === 'yes' ? i18n['turn off notifications'] : i18n['turn on notifications']}
               </button>
               <Checkbox toggleAll={this.toggleAll} toggled={toggledAll} />
               <Select list='cronList' bulkAction={this.bulk} />

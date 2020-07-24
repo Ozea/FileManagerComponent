@@ -12,7 +12,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import User from '../../components/User/User';
 import './Users.scss';
 
-const { inc } = window.GLOBAL.App;
+const { i18n } = window.GLOBAL.App;
 
 class Users extends Component {
   state = {
@@ -23,7 +23,7 @@ class Users extends Component {
     modalActionUrl: '',
     loading: false,
     toggledAll: false,
-    sorting: inc.Date,
+    sorting: i18n.Date,
     order: "descending",
     selection: [],
     totalAmount: ''
@@ -108,7 +108,7 @@ class Users extends Component {
   }
 
   sortBy = sorting => {
-    const { Date, Username, Disk, Bandwidth, Starred } = window.GLOBAL.App.inc;
+    const { Date, Username, Disk, Bandwidth, Starred } = window.GLOBAL.App.i18n;
 
     switch (sorting) {
       case Date: return 'DATE';
@@ -216,7 +216,7 @@ class Users extends Component {
     return (
       <div>
         <Toolbar mobile={false} >
-          <LeftButton name={inc['Add User']} href="/add/user/" showLeftMenu={true} />
+          <LeftButton name={i18n['Add User']} href="/add/user/" showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
               <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />

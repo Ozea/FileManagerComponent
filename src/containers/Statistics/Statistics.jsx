@@ -53,7 +53,7 @@ class Statistics extends Component {
   }
 
   bulkAction = value => {
-    let user = value !== ( window.GLOBAL.App.inc['show per user'] || '' ) ? `?user=${value}` : '';
+    let user = value !== ( window.GLOBAL.App.i18n['show per user'] || '' ) ? `?user=${value}` : '';
     this.props.history.push({ search: user });
     this.fetchData();
   };
@@ -64,7 +64,7 @@ class Statistics extends Component {
         <Toolbar mobile={false} className="justify-right">
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <Link to="/list/stats/" className="button-extra" type="submit">{window.GLOBAL.App.inc['Overall Statistics']}</Link>
+              <Link to="/list/stats/" className="button-extra" type="submit">{window.GLOBAL.App.i18n['Overall Statistics']}</Link>
               <Select list='statisticsList' users={this.state.users} bulkAction={this.bulkAction} />
               <SearchInput />
             </div>

@@ -19,7 +19,7 @@ class CronJob extends Component {
 
   render() {
     const { data } = this.props;
-    const { inc } = window.GLOBAL.App;
+    const { i18n } = window.GLOBAL.App;
     const token = localStorage.getItem("token");
 
     return (
@@ -28,24 +28,24 @@ class CronJob extends Component {
           <div className="name">{data.CMD}</div>
           <div className="stats">
             <Container className="cron-col">
-              <div>{inc.Min} <span>{data.MIN}</span></div>
+              <div>{i18n.Min} <span>{data.MIN}</span></div>
             </Container>
             <Container className="cron-col">
-              <div>{inc.Hour} <span>{data.HOUR}</span></div>
+              <div>{i18n.Hour} <span>{data.HOUR}</span></div>
             </Container>
             <Container className="cron-col">
-              <div>{inc.Day} <span>{data.DAY}</span></div>
+              <div>{i18n.Day} <span>{data.DAY}</span></div>
             </Container>
             <Container className="cron-col">
-              <div>{inc.Month} <span>{data.MONTH}</span></div>
+              <div>{i18n.Month} <span>{data.MONTH}</span></div>
             </Container>
             <Container className="cron-col">
-              <div>{inc['Day of week']} <span>{data.WDAY}</span></div>
+              <div>{i18n['Day of week']} <span>{data.WDAY}</span></div>
             </Container>
           </div>
         </Container>
         <div className="actions">
-          <div><a className="link-edit" href={`/edit/cron/?job=${data.JOB}`}>{inc.edit} <FontAwesomeIcon icon="pen" /></a></div>
+          <div><a className="link-edit" href={`/edit/cron/?job=${data.JOB}`}>{i18n.edit} <FontAwesomeIcon icon="pen" /></a></div>
           <div>
             <button
               className="link-gray"
@@ -56,7 +56,7 @@ class CronJob extends Component {
           </div>
           <div>
             <button className="link-delete" onClick={() => this.props.handleModal(data.delete_conf, `/delete/cron?job=${data.NAME}&token=${token}`)}>
-              {inc.Delete}
+              {i18n.Delete}
               <FontAwesomeIcon icon="times" />
             </button>
           </div>

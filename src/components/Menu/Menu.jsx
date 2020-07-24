@@ -142,6 +142,8 @@ class Menu extends Component {
 
   render() {
     let matchArchive = this.props.name.match(/.zip|.tgz|.tar.gz|.gzip|.tbz|.tar.bz|.gz|.zip|.tar|.rar/g);
+    const { i18n } = window.GLOBAL.App;
+
     return (
       <div className="menu">
         <div className="logo">
@@ -151,27 +153,27 @@ class Menu extends Component {
         </div>
         <div className="btn-group" role="group" aria-label="First group">
           <input type="file" className="upload" multiple onChange={this.upload} ref={inputFile => this.inputFile = inputFile} />
-          <button type="button" className="btn btn-light" id="upload" onClick={() => this.inputFile.click()}>{window.GLOBAL.App.Constants.FM_UPLOAD}</button>
-          <button type="button" className="btn btn-light big" onClick={this.newFile}>{window.GLOBAL.App.Constants.FM_NEW_FILE}</button>
-          <button type="button" className="btn btn-light small" onClick={this.newFile} title={window.GLOBAL.App.Constants.FM_NEW_FILE}><FontAwesomeIcon icon="file" className="icon file" /></button>
-          <button type="button" className="btn btn-light big" onClick={this.newDirectory}>{window.GLOBAL.App.Constants.FM_NEW_DIR}</button>
-          <button type="button" className="btn btn-light small" onClick={this.newDirectory} title={window.GLOBAL.App.Constants.FM_NEW_DIR}><FontAwesomeIcon icon="folder" className="icon folder-close" /></button>
-          <button type="button" className="btn btn-light big" onClick={this.download}>{window.GLOBAL.App.Constants.FM_DOWNLOAD}</button>
-          <button type="button" className="btn btn-light small" onClick={this.download} title={window.GLOBAL.App.Constants.FM_DOWNLOAD}><FontAwesomeIcon icon="download" className="icon download" /></button>
-          <button type="button" className="btn btn-light big" onClick={this.rename}>{window.GLOBAL.App.Constants.FM_RENAME_BUTTON}</button>
-          <button type="button" className="btn btn-light small" onClick={this.rename} title={window.GLOBAL.App.Constants.FM_RENAME_BUTTON}><FontAwesomeIcon icon="italic" className="icon italic" /></button>
-          <button type="button" className="btn btn-light big" onClick={this.permissions}>{window.GLOBAL.App.Constants.FM_RIGHTS}</button>
-          <button type="button" className="btn btn-light small" onClick={this.permissions} title={window.GLOBAL.App.Constants.FM_RIGHTS}><FontAwesomeIcon icon="user" className="icon user" /></button>
-          <button type="button" className="btn btn-light big" onClick={this.copy}>{window.GLOBAL.App.Constants.FM_COPY_BUTTON}</button>
-          <button type="button" className="btn btn-light small" onClick={this.copy} title={window.GLOBAL.App.Constants.FM_COPY_BUTTON}><FontAwesomeIcon icon="copy" className="icon copy" /></button>
-          <button type="button" className="btn btn-light big" onClick={this.move}>{window.GLOBAL.App.Constants.FM_MOVE_BUTTON}</button>
-          <button type="button" className="btn btn-light small" onClick={this.move} title={window.GLOBAL.App.Constants.FM_MOVE_BUTTON}><FontAwesomeIcon icon="paste" className="icon paste" /></button>
-          {matchArchive ? null : <button type="button" className="btn btn-light big" onClick={this.archive}>{window.GLOBAL.App.Constants.FM_ARCHIVE}</button>}
-          {matchArchive ? null : <button type="button" className="btn btn-light small" onClick={this.archive} title={window.GLOBAL.App.Constants.FM_ARCHIVE}><FontAwesomeIcon icon="book" className="icon book" /></button>}
-          {matchArchive ? <button type="button" className="btn btn-light big" onClick={this.extract}>{window.GLOBAL.App.Constants.FM_EXTRACT}</button> : null}
-          {matchArchive ? <button type="button" className="btn btn-light small" onClick={this.extract} title={window.GLOBAL.App.Constants.FM_EXTRACT}><FontAwesomeIcon icon="box-open" className="icon open" /></button> : null}
-          <button type="button" className="btn btn-light big delete" onClick={this.delete} >{window.GLOBAL.App.Constants.FM_DELETE_BUTTON}</button>
-          <button type="button" className="btn btn-light small" onClick={this.delete} title={window.GLOBAL.App.Constants.FM_DELETE_BUTTON}><FontAwesomeIcon icon="trash" className="icon trash" /></button>
+          <button type="button" className="btn btn-light" id="upload" onClick={() => this.inputFile.click()}>{i18n.UPLOAD}</button>
+          <button type="button" className="btn btn-light big" onClick={this.newFile}>{i18n['NEW FILE']}</button>
+          <button type="button" className="btn btn-light small" onClick={this.newFile} title={i18n['NEW FILE']}><FontAwesomeIcon icon="file" className="icon file" /></button>
+          <button type="button" className="btn btn-light big" onClick={this.newDirectory}>{i18n['NEW DIR']}</button>
+          <button type="button" className="btn btn-light small" onClick={this.newDirectory} title={i18n['NEW DIR']}><FontAwesomeIcon icon="folder" className="icon folder-close" /></button>
+          <button type="button" className="btn btn-light big" onClick={this.download}>{i18n.DOWNLOAD}</button>
+          <button type="button" className="btn btn-light small" onClick={this.download} title={i18n.DOWNLOAD}><FontAwesomeIcon icon="download" className="icon download" /></button>
+          <button type="button" className="btn btn-light big" onClick={this.rename}>{i18n.RENAME}</button>
+          <button type="button" className="btn btn-light small" onClick={this.rename} title={i18n.RENAME}><FontAwesomeIcon icon="italic" className="icon italic" /></button>
+          <button type="button" className="btn btn-light big" onClick={this.permissions}>{i18n.RIGHTS}</button>
+          <button type="button" className="btn btn-light small" onClick={this.permissions} title={i18n.RIGHTS}><FontAwesomeIcon icon="user" className="icon user" /></button>
+          <button type="button" className="btn btn-light big" onClick={this.copy}>{i18n.COPY}</button>
+          <button type="button" className="btn btn-light small" onClick={this.copy} title={i18n.COPY}><FontAwesomeIcon icon="copy" className="icon copy" /></button>
+          <button type="button" className="btn btn-light big" onClick={this.move}>{i18n.MOVE}</button>
+          <button type="button" className="btn btn-light small" onClick={this.move} title={i18n.MOVE}><FontAwesomeIcon icon="paste" className="icon paste" /></button>
+          {matchArchive ? null : <button type="button" className="btn btn-light big" onClick={this.archive}>{i18n.ARCHIVE}</button>}
+          {matchArchive ? null : <button type="button" className="btn btn-light small" onClick={this.archive} title={i18n.ARCHIVE}><FontAwesomeIcon icon="book" className="icon book" /></button>}
+          {matchArchive ? <button type="button" className="btn btn-light big" onClick={this.extract}>{i18n.EXTRACT}</button> : null}
+          {matchArchive ? <button type="button" className="btn btn-light small" onClick={this.extract} title={i18n.EXTRACT}><FontAwesomeIcon icon="box-open" className="icon open" /></button> : null}
+          <button type="button" className="btn btn-light big delete" onClick={this.delete} >{i18n.DELETE}</button>
+          <button type="button" className="btn btn-light small" onClick={this.delete} title={i18n.DELETE}><FontAwesomeIcon icon="trash" className="icon trash" /></button>
         </div>
       </div>
     );

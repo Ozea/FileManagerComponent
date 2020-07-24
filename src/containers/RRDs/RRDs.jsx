@@ -6,13 +6,14 @@ import Spinner from '../../components/Spinner/Spinner';
 import RRD from '../../components/RRD/RRD';
 import './RRDs.scss';
 import Timer from '../../components/RRD/Timer/Timer';
-const { inc } = window.GLOBAL.App;
+
+const { i18n } = window.GLOBAL.App;
 
 class RRDs extends Component {
   state = {
     rrds: [],
     period: 'daily',
-    periodI18N: inc.Daily,
+    periodI18N: i18n.Daily,
     time: 15,
     loading: false,
     total: 0
@@ -59,7 +60,7 @@ class RRDs extends Component {
   }
 
   printPeriods = () => {
-    const periods = [inc.Daily, inc.Weekly, inc.Monthly, inc.Yearly];
+    const periods = [i18n.Daily, i18n.Weekly, i18n.Monthly, i18n.Yearly];
 
     return periods.map(period => (<div className={this.periodClass(period)} onClick={() => this.changePeriod(period)}>{period}</div>));
   }
@@ -74,10 +75,10 @@ class RRDs extends Component {
 
   changePeriod = period => {
     switch (period) {
-      case inc.Daily: this.setState({ period: 'daily', periodI18N: inc.Daily, time: 15 }); break;
-      case inc.Weekly: this.setState({ period: 'weekly', periodI18N: inc.Weekly, time: 15 }); break;
-      case inc.Monthly: this.setState({ period: 'monthly', periodI18N: inc.Monthly, time: 15 }); break;
-      case inc.Yearly: this.setState({ period: 'yearly', periodI18N: inc.Yearly, time: 15 }); break;
+      case i18n.Daily: this.setState({ period: 'daily', periodI18N: i18n.Daily, time: 15 }); break;
+      case i18n.Weekly: this.setState({ period: 'weekly', periodI18N: i18n.Weekly, time: 15 }); break;
+      case i18n.Monthly: this.setState({ period: 'monthly', periodI18N: i18n.Monthly, time: 15 }); break;
+      case i18n.Yearly: this.setState({ period: 'yearly', periodI18N: i18n.Yearly, time: 15 }); break;
       default: break;
     }
   }

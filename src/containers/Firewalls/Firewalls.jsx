@@ -12,7 +12,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import { toast } from 'react-toastify';
 import './Firewalls.scss';
 
-const { inc } = window.GLOBAL.App;
+const { i18n } = window.GLOBAL.App;
 
 class Firewalls extends Component {
   state = {
@@ -22,7 +22,7 @@ class Firewalls extends Component {
     firewallExtension: '',
     loading: false,
     toggledAll: false,
-    sorting: inc.Action,
+    sorting: i18n.Action,
     order: "descending",
     totalAmount: ''
   }
@@ -114,13 +114,13 @@ class Firewalls extends Component {
   }
 
   sortBy = sorting => {
-    const { Action, Protocol, Port, Comment, Starred } = window.GLOBAL.App.inc;
+    const { Action, Protocol, Port, Comment, Starred } = window.GLOBAL.App.i18n;
 
     switch (sorting) {
       case Action: return 'ACTION';
       case Protocol: return 'PROTOCOL';
       case Port: return 'PORT';
-      case inc['IP address']: return 'IP';
+      case i18n['IP address']: return 'IP';
       case Comment: return 'COMMENT';
       case Starred: return 'STARRED';
       default: break;
@@ -189,10 +189,10 @@ class Firewalls extends Component {
     return (
       <div className="firewalls">
         <Toolbar mobile={false} >
-          <LeftButton href="/add/firewall/" name={inc['Add Rule']} showLeftMenu={true} />
+          <LeftButton href="/add/firewall/" name={i18n['Add Rule']} showLeftMenu={true} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <a href='/list/firewall/banlist/' className="button-extra" type="submit">{window.GLOBAL.App.inc['list fail2ban']}</a>
+              <a href='/list/firewall/banlist/' className="button-extra" type="submit">{window.GLOBAL.App.i18n['list fail2ban']}</a>
               <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
               <Select list='firewallList' />
               <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="firewallList" />

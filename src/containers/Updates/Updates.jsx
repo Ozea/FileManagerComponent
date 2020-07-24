@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
+import { bulkAction, getUpdatesList, enableAutoUpdate, disableAutoUpdate } from '../../ControlPanelService/Updates';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
-import { bulkAction, getUpdatesList, enableAutoUpdate, disableAutoUpdate } from '../../ControlPanelService/Updates';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Spinner from '../../components/Spinner/Spinner';
 import Update from '../../components/Update/Update';
 import './Updates.scss';
 
-const { inc } = window.GLOBAL.App;
+const { i18n } = window.GLOBAL.App;
 
 class Updates extends Component {
   state = {
@@ -76,26 +76,27 @@ class Updates extends Component {
   }
 
   toggleAll = toggled => {
-    const { updates, toggledAll } = this.state;
-    this.setState({ toggledAll: toggled });
+    const { updates } = this.state;
 
-    if (!toggledAll) {
-      let names = [];
+    this.setState({ toggledAll: toggled }, () => {
+      if (this.state.toggledAll) {
+        let updateNames = [];
 
-      for (let i in updates) {
-        names.push(i);
+        for (let i in updates) {
+          updateNames.push(i);
 
-        updates[i]['isChecked'] = true;
+          updates[i]['isChecked'] = true;
+        }
+
+        this.setState({ updates, selection: updateNames });
+      } else {
+        for (let i in updates) {
+          updates[i]['isChecked'] = false;
+        }
+
+        this.setState({ updates, selection: [] });
       }
-
-      this.setState({ updates, selection: names });
-    } else {
-      for (let i in updates) {
-        updates[i]['isChecked'] = false;
-      }
-
-      this.setState({ updates, selection: [] });
-    }
+    });
   }
 
   bulk = action => {
@@ -106,7 +107,6 @@ class Updates extends Component {
         bulkAction(action, selection)
           .then(result => {
             if (result.status === 200) {
-              this.showNotification(`Success`);
               this.setState({ loading: false }, () => {
                 this.toggleAll(false);
               });
@@ -131,9 +131,9 @@ class Updates extends Component {
 
   printAutoUpdateButtonName = () => {
     if (this.state.autoUpdate === 'Enabled') {
-      return inc['disable autoupdate'];
+      return i18n['disable autoupdate'];
     } else {
-      return inc['enable autoupdate'];
+      return i18n['enable autoupdate'];
     }
   }
 
@@ -146,7 +146,7 @@ class Updates extends Component {
             <div className="input-group input-group-sm">
               <button onClick={this.handleAutoUpdate} className="button-extra">{this.printAutoUpdateButtonName()}</button>
               <Checkbox toggleAll={this.toggleAll} />
-              <Select list='updatesList' />
+              <Select list='updatesList' bulkAction={this.bulk} />
               <SearchInput />
             </div>
           </div>
