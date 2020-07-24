@@ -19,10 +19,11 @@ class Firewall extends Component {
 
   render() {
     const { data } = this.props;
+    const token = localStorage.getItem("token");
     const { i18n } = window.GLOBAL.App;
 
     return (
-      <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem}>
+      <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem} suspended={data.SUSPENDED === 'yes'}>
         <Container className="cron-jobs-list r-col w-85">
           <div className="stats">
             <Container className="cron-col">
@@ -44,8 +45,20 @@ class Firewall extends Component {
         </Container>
         <div className="actions">
           <div><a className="link-edit" href={`/edit/firewall?rule=${data.NAME}`}>{i18n.edit} <FontAwesomeIcon icon="pen" /></a></div>
-          <div><a className="link-gray" href={`/suspend/firewall?rule=${data.NAME}`} >{i18n.suspend} <FontAwesomeIcon icon="lock" /></a></div>
-          <div><a className="link-delete" href="#">{i18n.Delete} <FontAwesomeIcon icon="times" /></a></div>
+          <div>
+            <button
+              className="link-gray"
+              onClick={() => this.props.handleModal(data.suspend_conf, `/${data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend'}/firewall?rule=${data.NAME}&token=${token}`)}>
+              {i18n[data.suspend_action]}
+              <FontAwesomeIcon icon={data.SUSPENDED === 'yes' ? 'unlock' : 'lock'} />
+            </button>
+          </div>
+          <div>
+            <button className="link-delete" onClick={() => this.props.handleModal(data.delete_conf, `/delete/firewall?rule=${data.NAME}&token=${token}`)}>
+              {i18n.Delete}
+              <FontAwesomeIcon icon="times" />
+            </button>
+          </div>
         </div>
       </ListItem>
     );

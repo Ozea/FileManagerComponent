@@ -6,14 +6,14 @@ import './Update.scss';
 class Update extends Component {
   isUpdated = status => {
     if (status === 'no') {
-      return 'UPDATED';
+      return 'OUTDATED';
     }
 
-    return 'OUTDATED';
+    return 'UPDATED';
   }
 
   isOutdated = status => {
-    return status !== "no";
+    return status === "no";
   }
 
   checkItem = () => {
