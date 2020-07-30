@@ -38,7 +38,7 @@ class InternetProtocols extends Component {
           this.setState({
             internetProtocols: result.data.data,
             ipFav: result.data.ipFav,
-            totalAmount: result.data.ipAmount,
+            totalAmount: result.data.totalAmount,
             loading: false
           });
         })

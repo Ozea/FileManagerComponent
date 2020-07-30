@@ -39,7 +39,7 @@ class Web extends Component {
           this.setState({
             webDomains: result.data.data,
             webFav: result.data.webFav,
-            totalAmount: result.data.domain_amount,
+            totalAmount: result.data.totalAmount,
             loading: false
           });
         })

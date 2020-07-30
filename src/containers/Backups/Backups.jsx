@@ -35,7 +35,7 @@ class Backups extends Component {
           this.setState({
             backups: result.data.data,
             backupFav: result.data.backup_fav,
-            totalAmount: result.data.jobs_amount,
+            totalAmount: result.data.totalAmount,
             loading: false
           });
         })

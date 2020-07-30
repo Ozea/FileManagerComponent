@@ -32,7 +32,7 @@ class Updates extends Component {
           this.setState({
             updates: result.data.data,
             token: result.data.token,
-            autoUpdate: result.data.autoUpdate,
+            autoUpdate: result.data.totalAmount,
             loading: false
           });
         })

@@ -21,7 +21,7 @@ class Logs extends Component {
         .then(result => {
           this.setState({
             logs: result.data.data,
-            totalAmount: result.data.logsAmount,
+            totalAmount: result.data.totalAmount,
             loading: false
           });
         })

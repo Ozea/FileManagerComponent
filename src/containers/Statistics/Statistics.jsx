@@ -30,7 +30,7 @@ class Statistics extends Component {
           this.setState({
             statistics: result.data.data,
             users: result.data.users,
-            totalAmount: result.data.statsAmount,
+            totalAmount: result.data.totalAmount,
             loading: false
           });
         })

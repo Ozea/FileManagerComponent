@@ -42,7 +42,7 @@ class CronJobs extends Component {
             cronJobs: result.data.data,
             cronReports: result.data.cron_reports,
             cronFav: result.data.cron_fav,
-            totalAmount: result.data.jobs_amount,
+            totalAmount: result.data.totalAmount,
             loading: false
           });
           this.toggleAll(false);
