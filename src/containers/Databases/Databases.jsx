@@ -226,7 +226,7 @@ class Databases extends Component {
               <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
               <Select list='dbList' bulkAction={this.bulk} />
               <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="dbList" />
-              <SearchInput />
+              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
             </div>
           </div>
         </Toolbar>

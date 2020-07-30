@@ -222,7 +222,7 @@ class Users extends Component {
               <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
               <Select list='usersList' bulkAction={this.bulk} />
               <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="usersList" />
-              <SearchInput />
+              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
             </div>
           </div>
         </Toolbar>

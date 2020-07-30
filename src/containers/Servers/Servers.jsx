@@ -163,7 +163,7 @@ class Servers extends Component {
               <a href="/list/server/?cpu" className="button-extra">{i18n['show: CPU / MEM / NET / DISK']}</a>
               <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
               <Select list='serverList' bulkAction={this.bulk} />
-              <SearchInput />
+              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
             </div>
           </div>
         </Toolbar>

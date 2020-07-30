@@ -21,7 +21,7 @@ class Statistics extends Component {
   }
 
   fetchData = () => {
-    const { search } = this.props.location;
+    const { search } = this.props.history;
     let user = search ? search.split('=')[1] : '';
 
     this.setState({ loading: true }, () => {
@@ -53,7 +53,7 @@ class Statistics extends Component {
   }
 
   bulkAction = value => {
-    let user = value !== ( window.GLOBAL.App.i18n['show per user'] || '' ) ? `?user=${value}` : '';
+    let user = value !== '' ? `?user=${value}` : '';
     this.props.history.push({ search: user });
     this.fetchData();
   };
@@ -66,7 +66,7 @@ class Statistics extends Component {
             <div className="input-group input-group-sm">
               <Link to="/list/stats/" className="button-extra" type="submit">{window.GLOBAL.App.i18n['Overall Statistics']}</Link>
               <Select list='statisticsList' users={this.state.users} bulkAction={this.bulkAction} />
-              <SearchInput />
+              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
             </div>
           </div>
         </Toolbar>

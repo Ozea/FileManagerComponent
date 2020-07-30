@@ -17,7 +17,6 @@ class Server extends Component {
 
   render() {
     const { data } = this.props;
-    const token = localStorage.getItem("token");
     const { i18n } = window.GLOBAL.App;
 
     return (

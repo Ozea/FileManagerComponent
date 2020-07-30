@@ -188,7 +188,7 @@ class Backups extends Component {
               <a href='/list/backup/exclusions/' className="button-extra" type="submit">{window.GLOBAL.App.i18n['backup exclusions']}</a>
               <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
               <Select list='backupList' bulkAction={this.bulk} />
-              <SearchInput />
+              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
             </div>
           </div>
         </Toolbar>

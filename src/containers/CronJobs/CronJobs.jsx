@@ -246,7 +246,7 @@ class CronJobs extends Component {
               <Checkbox toggleAll={this.toggleAll} toggled={toggledAll} />
               <Select list='cronList' bulkAction={this.bulk} />
               <DropdownFilter changeSorting={this.changeSorting} sorting={sorting} order={order} list="cronList" />
-              <SearchInput />
+              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
             </div>
           </div>
         </Toolbar>

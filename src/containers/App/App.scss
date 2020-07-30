@@ -80,3 +80,9 @@ button:active, a:active, .period:active {
 .list-item .text-status {
   display: none;
 }
+
+button {
+  &:hover, &:active, &:focus {
+    outline: none;
+  }
+}

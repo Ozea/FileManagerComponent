@@ -13,6 +13,7 @@ class DropdownFilter extends Component {
     packagesList: [i18n.Date, i18n['Package Name'], i18n.Starred],
     internetProtocolsList: [i18n.Date, i18n.IP, i18n.Netmask, i18n.Interface, i18n.Domain, i18n.Owner, i18n.Starred],
     firewallList: [i18n.Action, i18n.Protocol, i18n.Port, i18n['IP Addresses'], i18n.Comment, i18n.Starred],
+    searchList: [i18n.Date, i18n.Name, i18n.Starred]
   }
 
   changeSorting = (type, order) => {
