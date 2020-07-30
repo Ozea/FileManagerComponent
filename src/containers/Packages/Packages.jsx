@@ -38,7 +38,7 @@ class Packages extends Component {
           this.setState({
             packages: result.data.data,
             packagesFav: result.data.packagesFav,
-            totalAmount: result.data.packagesAmount,
+            totalAmount: result.data.totalAmount,
             loading: false
           });
         })

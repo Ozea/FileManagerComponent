@@ -40,7 +40,7 @@ class DomainNameSystems extends Component {
           this.setState({
             domainNameSystems: result.data.data,
             dnsFav: result.data.dnsFav,
-            totalAmount: result.data.domain_amount,
+            totalAmount: result.data.totalAmount,
             loading: false
           });
         })

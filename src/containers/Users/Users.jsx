@@ -40,7 +40,7 @@ class Users extends Component {
           this.setState({
             users: result.data.data,
             userFav: result.data.userFav,
-            totalAmount: result.data.account_amount,
+            totalAmount: result.data.totalAmount,
             loading: false
           });
         })

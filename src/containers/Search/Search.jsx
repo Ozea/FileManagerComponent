@@ -45,7 +45,7 @@ class Search extends Component {
         .then(result => {
           this.setState({
             searchResults: result.data.data,
-            totalAmount: result.data.total_amount,
+            totalAmount: result.data.totalAmount,
             loading: false
           });
         })

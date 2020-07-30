@@ -42,7 +42,7 @@ class Databases extends Component {
             dbAdmin: result.data.db_admin,
             dbAdminLink: result.data.db_admin_link,
             dbFav: result.data.dbFav,
-            totalAmount: result.data.domain_amount,
+            totalAmount: result.data.totalAmount,
             loading: false
           });
         })

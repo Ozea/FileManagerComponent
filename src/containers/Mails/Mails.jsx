@@ -40,7 +40,7 @@ class Mails extends Component {
             mails: result.data.data,
             webmail: result.data.webmail,
             mailFav: result.data.mailFav,
-            totalAmount: result.data.domain_amount,
+            totalAmount: result.data.totalAmount,
             loading: false
           });
         })

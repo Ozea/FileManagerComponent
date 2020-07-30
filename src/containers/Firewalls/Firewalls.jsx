@@ -42,7 +42,7 @@ class Firewalls extends Component {
             firewalls: result.data.data,
             firewallFav: result.data.firewallFav,
             firewallExtension: result.data.firewallExtension,
-            totalAmount: result.data.account_amount,
+            totalAmount: result.data.totalAmount,
             loading: false
           });
         })
