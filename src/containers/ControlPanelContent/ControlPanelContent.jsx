@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import DomainNameSystems from '../DomainNameSystems/DomainNameSystems';
 import InternetProtocols from '../InternetProtocols/InternetProtocols';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Databases from '../../containers/Databases/Databases';
 import Firewalls from '../../containers/Firewalls/Firewalls';
 import { Route, Switch, Redirect } from "react-router-dom";
@@ -34,6 +35,10 @@ class ControlPanelContent extends Component {
     });
   }
 
+  scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
   render() {
     return (
       <div>
@@ -58,6 +63,9 @@ class ControlPanelContent extends Component {
             <Route path="/list/backup" component={() => <Backups changeSearchTerm={this.handleSearchTerm} />} />
             <Route path="/search/" component={props => <Search {...props} changeSearchTerm={this.handleSearchTerm} searchTerm={this.state.searchTerm} />} />
           </Switch>
+        </div>
+        <div className="scroll-to-top">
+          <button onClick={() => this.scrollToTop()}><FontAwesomeIcon icon="long-arrow-alt-up" /></button>
         </div>
       </div>
     );
