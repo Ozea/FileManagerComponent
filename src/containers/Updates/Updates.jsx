@@ -147,7 +147,7 @@ class Updates extends Component {
               <button onClick={this.handleAutoUpdate} className="button-extra">{this.printAutoUpdateButtonName()}</button>
               <Checkbox toggleAll={this.toggleAll} />
               <Select list='updatesList' bulkAction={this.bulk} />
-              <SearchInput />
+              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
             </div>
           </div>
         </Toolbar>

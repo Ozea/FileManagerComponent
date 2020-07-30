@@ -227,7 +227,7 @@ class DomainNameSystems extends Component {
               <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
               <Select list='dnsList' bulkAction={this.bulk} />
               <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="dnsList" />
-              <SearchInput />
+              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
             </div>
           </div>
         </Toolbar>

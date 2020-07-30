@@ -91,7 +91,7 @@ class RRDs extends Component {
             {this.printPeriods()}
             <Timer time={this.state.time} countDown={this.countDown} />
           </div>
-          <SearchInput />
+          <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
         </Toolbar>
         <div className="rrd-wrapper">
           {this.state.loading ? <Spinner /> : this.packages()}

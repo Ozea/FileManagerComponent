@@ -26,10 +26,10 @@ class Select extends Component {
 
   defaultValue = () => {
     if (this.props.list === 'statisticsList') {
-      return 'show per user';
+      return i18n['show per user'];
     }
 
-    return 'apply to selected';
+    return i18n['apply to selected'];
   }
 
   componentDidMount() {
@@ -61,7 +61,7 @@ class Select extends Component {
     return (
       <div className="select-wrapper">
         <select className="custom-select" id="inputGroupSelect04" onChange={this.handleSelect}>
-          <option defaultValue={this.defaultValue()}>{this.props.list === "statisticsList" ? i18n['show per user'] : i18n['apply to selected']}</option>
+          <option defaultValue={this.defaultValue()} value={this.defaultValue()}>{this.props.list === "statisticsList" ? i18n['show per user'] : i18n['apply to selected']}</option>
           {this.renderOptions()}
         </select>
         <div className="input-group-append">

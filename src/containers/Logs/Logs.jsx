@@ -49,7 +49,7 @@ class Logs extends Component {
           <LeftButton name="Add Cron Job" showLeftMenu={false} />
           <div className="r-menu">
             <div className="input-group input-group-sm">
-              <SearchInput />
+              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
             </div>
           </div>
         </Toolbar>
