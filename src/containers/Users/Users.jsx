@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
@@ -10,12 +10,20 @@ import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Modal from '../../components/ControlPanel/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
 import User from '../../components/User/User';
+// import { usersFull } from '../../mocks/users';
 import './Users.scss';
 
-const { i18n } = window.GLOBAL.App;
+import { useDispatch, useSelector } from 'react-redux';
+import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
+import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 
-class Users extends Component {
-  state = {
+const Users = props => {
+  const { i18n } = window.GLOBAL.App;
+  const token = localStorage.getItem("token");
+  const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
+  const { focusedElement } = useSelector(state => state.mainNavigation);
+  const dispatch = useDispatch();
+  const [state, setState] = useState({
     users: [],
     userFav: [],
     modalText: '',
@@ -27,65 +35,197 @@ class Users extends Component {
     order: "descending",
     selection: [],
     totalAmount: ''
+  });
+
+  useEffect(() => {
+    dispatch(removeControlPanelContentFocusedElement());
+    fetchData();
+
+    return () => {
+      dispatch(removeControlPanelContentFocusedElement());
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleContentSelection);
+    window.addEventListener("keydown", handleFocusedElementShortcuts);
+
+    return () => {
+      window.removeEventListener("keydown", handleContentSelection);
+      window.removeEventListener("keydown", handleFocusedElementShortcuts);
+    };
+  }, [controlPanelFocusedElement, focusedElement, state.users]);
+
+  const fetchData = () => {
+    getUsersList()
+      .then(result => {
+        setState({
+          ...state,
+          users: reformatData(result.data.data),
+          userFav: result.data.userFav,
+          totalAmount: result.data.totalAmount,
+          loading: false
+        });
+      })
+      .catch(err => console.error(err));
   }
 
-  componentDidMount() {
-    this.fetchData();
+  const handleFocusedElementShortcuts = event => {
+    let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
+
+    if (controlPanelFocusedElement && !isSearchInputFocused) {
+      switch (event.keyCode) {
+        case 76: return handleLogin();
+        case 83: return handleSuspend();
+        case 8: return handleDelete();
+        case 13: return handleEdit();
+        default: break;
+      }
+    }
   }
 
-  fetchData = () => {
-    this.setState({ loading: true }, () => {
-      getUsersList()
-        .then(result => {
-          this.setState({
-            users: result.data.data,
-            userFav: result.data.userFav,
-            totalAmount: result.data.totalAmount,
-            loading: false
-          });
-        })
-        .catch(err => console.error(err));
-    });
+  const handleLogin = () => {
+    if (window.GLOBAL.App.user === controlPanelFocusedElement) {
+      props.history.push('/logout');
+    } else {
+      props.history.push(`/login/?loginas=${controlPanelFocusedElement}`);
+    }
   }
 
-  changeSorting = (sorting, order) => {
-    this.setState({
+  const handleEdit = () => {
+    props.history.push(`/edit/user?user=${controlPanelFocusedElement}`);
+  }
+
+  const handleSuspend = () => {
+    const { users } = state;
+    let currentUserData = users.filter(user => user.NAME === controlPanelFocusedElement)[0];
+    let suspendedStatus = currentUserData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
+
+    displayModal(currentUserData.spnd_conf, `/${suspendedStatus}/user?user=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const handleDelete = () => {
+    const { users } = state;
+    let currentUserData = users.filter(user => user.NAME === controlPanelFocusedElement)[0];
+
+    displayModal(currentUserData.delete_conf, `/delete/user?user=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const handleContentSelection = event => {
+    if (event.keyCode === 38 || event.keyCode === 40) {
+      if (focusedElement) {
+        dispatch(MainNavigation.removeFocusedElement());
+      }
+    }
+
+    if (event.keyCode === 38) {
+      event.preventDefault();
+      handleArrowUp();
+    } else if (event.keyCode === 40) {
+      event.preventDefault();
+      handleArrowDown();
+    }
+  }
+
+  const initFocusedElement = users => {
+    users[0]['FOCUSED'] = users[0]['NAME'];
+    setState({ ...state, users });
+    dispatch(addControlPanelContentFocusedElement(users[0]['NAME']));
+  }
+
+  const handleArrowDown = () => {
+    let users = [...state.users];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(users);
+      return;
+    }
+
+    let focusedElementPosition = users.findIndex(user => user.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== users.length - 1) {
+      let nextFocusedElement = users[focusedElementPosition + 1];
+      users[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, users });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const handleArrowUp = () => {
+    let users = [...state.users];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(users);
+      return;
+    }
+
+    let focusedElementPosition = users.findIndex(user => user.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== 0) {
+      let nextFocusedElement = users[focusedElementPosition - 1];
+      users[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, users });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const changeSorting = (sorting, order) => {
+    setState({
+      ...state,
       sorting,
       order
     });
   }
 
-  users = () => {
-    const { users } = this.state;
-    const result = [];
-    const userFav = { ...this.state.userFav };
+  const reformatData = data => {
+    let users = [];
 
-    for (let i in users) {
-      users[i]['NAME'] = i;
-
-      if (userFav[i]) {
-        users[i]['STARRED'] = userFav[i];
-      } else {
-        users[i]['STARRED'] = 0;
-      }
-
-      result.push(users[i]);
+    for (let i in data) {
+      data[i]['NAME'] = i;
+      data[i]['FOCUSED'] = controlPanelFocusedElement === i;
+      users.push(data[i]);
     }
 
-    let sortedResult = this.sortArray(result);
+    return users;
+  }
+
+  const users = () => {
+    const userFav = { ...state.userFav };
+    let users = [...state.users];
+
+    users.forEach(user => {
+      user.FOCUSED = controlPanelFocusedElement === user.NAME;
+
+      if (userFav[user.NAME]) {
+        user.STARRED = userFav[user.NAME];
+      } else {
+        user.STARRED = 0;
+      }
+    });
+
+    let sortedResult = sortArray(users);
 
     return sortedResult.map((item, index) => {
-      return <User data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
+      return <User data={item} key={index} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
     });
   }
 
-  checkItem = name => {
-    const { selection, users } = this.state;
-    let duplicate = [...selection];
-    let usersDuplicate = users;
+  const checkItem = name => {
+    let duplicate = [...state.selection];
     let checkedItem = duplicate.indexOf(name);
-
-    usersDuplicate[name]['isChecked'] = !usersDuplicate[name]['isChecked'];
+    let users = state.users.map(user => user.NAME === name ? user.isChecked = !user.isChecked : null);
 
     if (checkedItem !== -1) {
       duplicate.splice(checkedItem, 1);
@@ -93,21 +233,20 @@ class Users extends Component {
       duplicate.push(name);
     }
 
-    this.setState({ users: usersDuplicate, selection: duplicate });
+    setState({ ...state, users, selection: duplicate });
   }
 
-  sortArray = array => {
-    const { order, sorting } = this.state;
-    let sortBy = this.sortBy(sorting);
+  const sortArray = array => {
+    let sortingColumn = sortBy(state.sorting);
 
-    if (order === "descending") {
-      return array.sort((a, b) => (a[sortBy] < b[sortBy]) ? 1 : ((b[sortBy] < a[sortBy]) ? -1 : 0));
+    if (state.order === "descending") {
+      return array.sort((a, b) => (a[sortingColumn] < b[sortingColumn]) ? 1 : ((b[sortingColumn] < a[sortingColumn]) ? -1 : 0));
     } else {
-      return array.sort((a, b) => (a[sortBy] > b[sortBy]) ? 1 : ((b[sortBy] > a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] > b[sortingColumn]) ? 1 : ((b[sortingColumn] > a[sortingColumn]) ? -1 : 0));
     }
   }
 
-  sortBy = sorting => {
+  const sortBy = sorting => {
     const { Date, Username, Disk, Bandwidth, Starred } = window.GLOBAL.App.i18n;
 
     switch (sorting) {
@@ -120,16 +259,15 @@ class Users extends Component {
     }
   }
 
-  toggleFav = (value, type) => {
-    const { userFav } = this.state;
-    let userFavDuplicate = userFav;
+  const toggleFav = (value, type) => {
+    let userFavDuplicate = state.userFav;
 
     if (type === 'add') {
       userFavDuplicate[value] = 1;
 
       addFavorite(value, 'user')
         .then(() => {
-          this.setState({ userFav: userFavDuplicate });
+          setState({ ...state, userFav: userFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -139,7 +277,7 @@ class Users extends Component {
 
       deleteFavorite(value, 'user')
         .then(() => {
-          this.setState({ userFav: userFavDuplicate });
+          setState({ ...state, userFav: userFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -147,97 +285,89 @@ class Users extends Component {
     }
   }
 
-  toggleAll = toggled => {
-    const { users } = this.state;
-    this.setState({ toggledAll: toggled }, () => {
-      if (this.state.toggledAll) {
-        let userNames = [];
+  const toggleAll = toggled => {
+    setState({ ...state, toggledAll: toggled });
+    if (state.toggledAll) {
+      let userNames = [];
 
-        for (let i in users) {
-          userNames.push(i);
-
-          users[i]['isChecked'] = true;
-        }
-
-        this.setState({ users, selection: userNames });
-      } else {
-        for (let i in users) {
-          users[i]['isChecked'] = false;
-        }
-
-        this.setState({ users, selection: [] });
-      }
-    });
-  }
-
-  bulk = action => {
-    const { selection } = this.state;
-
-    if (selection.length && action) {
-      this.setState({ loading: true }, () => {
-        bulkAction(action, selection)
-          .then(result => {
-            if (result.status === 200) {
-              this.fetchData();
-              this.toggleAll(false);
-            }
-          })
-          .catch(err => console.error(err));
+      let users = state.users.map(user => {
+        userNames.push(user.NAME);
+        user.isChecked = true;
       });
+
+      setState({ ...state, users, selection: userNames });
+    } else {
+      let users = state.users.map(user => user.isChecked = false);
+
+      setState({ ...state, users, selection: [] });
     }
   }
 
-  displayModal = (text, url) => {
-    this.setState({
-      modalVisible: !this.state.modalVisible,
+  const bulk = action => {
+    if (state.selection.length && action) {
+      setState({ ...state, loading: true });
+      bulkAction(action, state.selection)
+        .then(result => {
+          if (result.status === 200) {
+            fetchData();
+            toggleAll(false);
+          }
+        })
+        .catch(err => console.error(err));
+    }
+  }
+
+  const displayModal = (text, url) => {
+    setState({
+      ...state,
+      modalVisible: !state.modalVisible,
       modalText: text,
       modalActionUrl: url
     });
   }
 
-  modalConfirmHandler = () => {
-    handleAction(this.state.modalActionUrl)
+  const modalConfirmHandler = () => {
+    handleAction(state.modalActionUrl)
       .then(() => {
-        this.fetchData();
-        this.modalCancelHandler();
+        fetchData();
+        modalCancelHandler();
       })
       .catch(err => console.error(err));
   }
 
-  modalCancelHandler = () => {
-    this.setState({
+  const modalCancelHandler = () => {
+    setState({
+      ...state,
       modalVisible: false,
       modalText: '',
       modalActionUrl: ''
     });
   }
 
-  render() {
-    return (
-      <div>
-        <Toolbar mobile={false} >
-          <LeftButton name={i18n['Add User']} href="/add/user/" showLeftMenu={true} />
-          <div className="r-menu">
-            <div className="input-group input-group-sm">
-              <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
-              <Select list='usersList' bulkAction={this.bulk} />
-              <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="usersList" />
-              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
-            </div>
+  return (
+    <div>
+      <Toolbar mobile={false} >
+        <LeftButton name={i18n['Add User']} href="/add/user/" showLeftMenu={true} />
+        <div className="r-menu">
+          <div className="input-group input-group-sm">
+            <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
+            <Select list='usersList' bulkAction={bulk} />
+            <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="usersList" />
+            <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
           </div>
-        </Toolbar>
-        <div className="users-wrapper">
-          {this.state.loading ? <Spinner /> : this.users()}
         </div>
-        <div className="total">{this.state.totalAmount}</div>
-        <Modal
-          onSave={this.modalConfirmHandler}
-          onCancel={this.modalCancelHandler}
-          show={this.state.modalVisible}
-          text={this.state.modalText} />
+      </Toolbar>
+      <div className="users-wrapper">
+        {state.loading ? <Spinner /> : users()}
       </div>
-    );
-  }
+      <div className="total">{state.totalAmount}</div>
+      <Modal
+        onSave={modalConfirmHandler}
+        onCancel={modalCancelHandler}
+        show={state.modalVisible}
+        text={state.modalText} />
+    </div>
+  );
 }
 
 export default Users;
