@@ -10,7 +10,6 @@ import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Modal from '../../components/ControlPanel/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
 import User from '../../components/User/User';
-// import { usersFull } from '../../mocks/users';
 import './Users.scss';
 
 import { useDispatch, useSelector } from 'react-redux';
