@@ -27,7 +27,7 @@
       justify-content: center;
       align-items: center;
       
-      a {
+      a, button {
         display: flex;
         justify-content: center;
         align-items: center;
@@ -38,6 +38,11 @@
         color: white;
       }
 
+      button {
+        background: none;
+        border: none;
+      }
+
       &:hover {
         cursor: pointer;
       }
@@ -46,16 +51,21 @@
     div.active {
       background: white;
       
-      a {
-        color: #ff6700;
+      a, button {
+        color: #f79b44;
 
         &:hover {
+          color: white;
+        }
+
+        &:active {
+          background: #ff6701;
           color: white;
         }
       }
 
       &:hover {
-        background: #ff6700;
+        background: #f79b44;
       }
     }
   }
@@ -86,6 +96,13 @@
     div.fm {
       width: 10rem;
     }
+
+    .top-link.focus {
+      a, button {
+        color: #5edad0;
+        text-decoration: underline;
+      }
+    }
   }
 
   .profile-menu {
@@ -109,6 +126,10 @@
         &:hover {
           background: rgba(255, 255, 255, 0.4);
         }
+
+        &:hover {
+          background: #c0e6198a;
+        }
       }
     }
 
@@ -119,6 +140,10 @@
       &:hover {
         color: #ffd62e;
       }
+
+      &:active {
+        color: #f79b44;
+      }
     }
 
     div + div + div a {
@@ -127,6 +152,10 @@
 
       &:hover {
         color: #C0E60E;
+      }
+
+      &:active {
+        color: #ffd62e;
       }
     }
   }

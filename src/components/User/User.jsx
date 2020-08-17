@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import ListItem from '../ControlPanel/ListItem/ListItem';
 import Container from '../ControlPanel/Container/Container';
+import ListItem from '../ControlPanel/ListItem/ListItem';
 import './User.scss';
 
 const { i18n } = window.GLOBAL.App;
@@ -18,9 +18,21 @@ class User extends Component {
   printLoginActionButton = user => {
     let currentUser = window.GLOBAL.App.user;
     if (currentUser === user) {
-      return <div><a href="/logout">{i18n['Log out']} <FontAwesomeIcon icon="user-lock" /></a></div>;
+      return (
+        <div>
+          <a href="/logout">{i18n['Log out']}
+            {this.props.data.FOCUSED ? <span className="shortcut-button">L</span> : <FontAwesomeIcon icon="user-lock" />}
+          </a>
+        </div>
+      );
     } else {
-      return <div><a href={`/login/?loginas=${user}`}>{i18n['login as']} {user} <FontAwesomeIcon icon="user-lock" /></a></div>;
+      return (
+        <div>
+          <a href={`/login/?loginas=${user}`}>{i18n['login as']} {user}
+            {this.props.data.FOCUSED ? <span className="shortcut-button">L</span> : <FontAwesomeIcon icon="user-lock" />}
+          </a>
+        </div>
+      );
     }
   }
 
@@ -36,12 +48,30 @@ class User extends Component {
     this.props.checkItem(this.props.data.NAME);
   }
 
+  handleSuspend = token => {
+    let suspendedStatus = this.props.data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
+    this.props.handleModal(this.props.data.spnd_conf, `/${suspendedStatus}/user?user=${this.props.data.NAME}&token=${token}`);
+  }
+
+  handleDelete = token => {
+    this.props.handleModal(this.props.data.delete_conf, `/delete/user?user=${this.props.data.NAME}&token=${token}`);
+  }
+
   render() {
     const { data } = this.props;
     const token = localStorage.getItem("token");
 
     return (
-      <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem} suspended={data.SUSPENDED === 'yes'}>
+      <ListItem
+        id={data.NAME}
+        date={data.DATE}
+        checked={data.isChecked}
+        starred={data.STARRED}
+        toggleFav={this.toggleFav}
+        checkItem={this.checkItem}
+        focused={data.FOCUSED}
+        suspended={data.SUSPENDED === 'yes'}>
+
         <Container className="r-col w-85">
           <div className="name">{data.NAME}</div>
           <div>{data.FNAME} {data.LNAME}</div>
@@ -79,19 +109,23 @@ class User extends Component {
         </Container>
         <div className="actions">
           {this.printLoginActionButton(data.NAME)}
-          <div><a href={`/edit/user?user=${data.NAME}`}>{i18n.edit} <FontAwesomeIcon icon="pen" /></a></div>
+          <div>
+            <a href={`/edit/user?user=${data.NAME}`}>{i18n.edit}
+              {this.props.data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
+            </a>
+          </div>
           <div>
             <button
               className="link-gray"
-              onClick={() => this.props.handleModal(data.spnd_conf, `/${data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend'}/user?user=${data.NAME}&token=${token}`)}>
+              onClick={() => this.handleSuspend(token)}>
               {data.spnd_action}
-              <FontAwesomeIcon icon={data.SUSPENDED === 'yes' ? 'unlock' : 'lock'} />
+              {this.props.data.FOCUSED ? <span className="shortcut-button">S</span> : <FontAwesomeIcon icon={data.SUSPENDED === 'yes' ? 'unlock' : 'lock'} />}
             </button>
           </div>
           <div>
-            <button className="link-delete" onClick={() => this.props.handleModal(data.delete_conf, `/delete/user?user=${data.NAME}&token=${token}`)}>
+            <button className="link-delete" onClick={() => this.handleDelete(token)}>
               {i18n.Delete}
-              <FontAwesomeIcon icon="times" />
+              {this.props.data.FOCUSED ? <span className="shortcut-button del">Del</span> : <FontAwesomeIcon icon="times" />}
             </button>
           </div>
         </div>

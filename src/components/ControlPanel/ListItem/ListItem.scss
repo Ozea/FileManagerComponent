@@ -99,3 +99,39 @@
 .list-item.stopped {
   background: #eaeaea;
 }
+
+.list-item.focused {
+  border-left: 2px solid #5edad0;
+
+  .actions {
+    opacity: 1;
+
+    div > a,
+    div > button {
+      padding-top: 6.5px;
+      padding-bottom: 6.5px;
+
+      .shortcut-button {
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        margin-left: 15px;
+        background: #69a298;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+      }
+
+      .shortcut-button.html-unicode {
+        align-items: flex-end;
+      }
+
+      .shortcut-button.del {
+        text-transform: capitalize;
+        font-size: 10px;
+      }
+    }
+  }
+}

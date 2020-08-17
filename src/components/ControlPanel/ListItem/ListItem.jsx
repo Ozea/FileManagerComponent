@@ -42,47 +42,39 @@ class ListItem extends Component {
 
   className = () => {
     const { starred } = this.state;
-    const { checked, outdated, suspended, stopped } = this.props;
+    const { checked, outdated, suspended, stopped, focused } = this.props;
+    let className = 'list-item';
 
     if (checked) {
-      if (starred) {
-        return "list-item toggled starred";
-      }
-
-      if (outdated) {
-        return "list-item outdated toggled";
-      }
-
-      return "list-item toggled";
+      className += ' toggled';
     }
 
     if (starred) {
-
-      if (suspended) {
-        return "list-item starred suspended"
-      }
-
-      return "list-item starred";
+      className += ' starred';
     }
 
     if (outdated) {
-      return "list-item outdated";
+      className += ' outdated';
     }
 
     if (suspended) {
-      return "list-item suspended"
+      className += ' suspended';
     }
 
     if (stopped) {
-      return "list-item stopped";
+      className += ' stopped';
     }
 
-    return "list-item";
+    if (focused) {
+      className += ' focused';
+    }
+
+    return className;
   }
 
   render() {
     return (
-      <div className={this.className()}>
+      <div className={this.className()} id={this.props.id}>
         <Container className="l-col w-14">
           {this.printDate(this.props.date)}
           <div className="text-status">
