@@ -9,7 +9,7 @@ const Hotkeys = props => {
     window.addEventListener("keyup", toggleShortcutsLit);
 
     return () => window.removeEventListener("keyup", toggleShortcutsLit);
-  }, []);
+  }, [props.reference]);
 
   const toggleShortcutsLit = event => {
     let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
