@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
-import { bulkAction, getWebList, handleAction } from '../../ControlPanelService/Web';
+import React, { Component, useState, useEffect } from 'react';
+import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
+import { bulkAction, getWebList, handleAction } from '../../ControlPanelService/Web';
+import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
@@ -9,12 +11,18 @@ import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import WebDomain from '../../components/WebDomain/WebDomain';
 import Spinner from '../../components/Spinner/Spinner';
-import { toast } from 'react-toastify';
-import './Web.scss';
 import Modal from '../../components/ControlPanel/Modal/Modal';
+import { useDispatch, useSelector } from 'react-redux';
+import './Web.scss';
+import { webFull } from '../../mocks/web';
 
-class Web extends Component {
-  state = {
+const Web = props => {
+  const { i18n } = window.GLOBAL.App;
+  const token = localStorage.getItem("token");
+  const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
+  const { focusedElement } = useSelector(state => state.mainNavigation);
+  const dispatch = useDispatch();
+  const [state, setState] = useState({
     webDomains: [],
     webFav: [],
     loading: false,
@@ -26,66 +34,192 @@ class Web extends Component {
     order: "descending",
     selection: [],
     totalAmount: ''
+  });
+
+  useEffect(() => {
+    dispatch(removeControlPanelContentFocusedElement());
+    fetchData();
+
+    return () => {
+      dispatch(removeControlPanelContentFocusedElement());
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleContentSelection);
+    window.addEventListener("keydown", handleFocusedElementShortcuts);
+
+    return () => {
+      window.removeEventListener("keydown", handleContentSelection);
+      window.removeEventListener("keydown", handleFocusedElementShortcuts);
+    };
+  }, [controlPanelFocusedElement, focusedElement, state.webDomains]);
+
+  const handleContentSelection = event => {
+    if (event.keyCode === 38 || event.keyCode === 40) {
+      if (focusedElement) {
+        dispatch(MainNavigation.removeFocusedElement());
+      }
+    }
+
+    if (event.keyCode === 38) {
+      event.preventDefault();
+      handleArrowUp();
+    } else if (event.keyCode === 40) {
+      event.preventDefault();
+      handleArrowDown();
+    }
   }
 
-  componentDidMount() {
-    this.fetchData();
+  const initFocusedElement = webDomains => {
+    webDomains[0]['FOCUSED'] = webDomains[0]['NAME'];
+    setState({ ...state, webDomains });
+    dispatch(addControlPanelContentFocusedElement(webDomains[0]['NAME']));
   }
 
-  fetchData = () => {
-    this.setState({ loading: true }, () => {
-      getWebList()
-        .then(result => {
-          this.setState({
-            webDomains: result.data.data,
-            webFav: result.data.webFav,
-            totalAmount: result.data.totalAmount,
-            loading: false
-          });
-        })
-        .catch(err => console.error(err));
-    });
+  const handleArrowDown = () => {
+    let webDomains = [...state.webDomains];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(webDomains);
+      return;
+    }
+
+    let focusedElementPosition = webDomains.findIndex(webDomain => webDomain.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== webDomains.length - 1) {
+      let nextFocusedElement = webDomains[focusedElementPosition + 1];
+      webDomains[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, webDomains });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
   }
 
-  changeSorting = (sorting, order) => {
-    this.setState({
+  const handleArrowUp = () => {
+    let webDomains = [...state.webDomains];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(webDomains);
+      return;
+    }
+
+    let focusedElementPosition = webDomains.findIndex(webDomain => webDomain.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== 0) {
+      let nextFocusedElement = webDomains[focusedElementPosition - 1];
+      webDomains[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, webDomains });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const handleFocusedElementShortcuts = event => {
+    let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
+
+    if (controlPanelFocusedElement && !isSearchInputFocused) {
+      switch (event.keyCode) {
+        case 76: return handleLogs();
+        case 83: return handleSuspend();
+        case 8: return handleDelete();
+        case 13: return handleEdit();
+        default: break;
+      }
+    }
+  }
+
+  const handleLogs = () => {
+    props.history.push(`/list/web-log?domain=${controlPanelFocusedElement}&type=access`);
+  }
+
+  const handleEdit = () => {
+    props.history.push(`/edit/web?domain=${controlPanelFocusedElement}`);
+  }
+
+  const handleSuspend = () => {
+    const { webDomains } = state;
+    let currentWebDomainData = webDomains.filter(webDomain => webDomain.NAME === controlPanelFocusedElement)[0];
+    let suspendedStatus = currentWebDomainData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
+
+    displayModal(currentWebDomainData.spnd_confirmation, `/${suspendedStatus}/web?domain=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const handleDelete = () => {
+    const { webDomains } = state;
+    let currentWebDomainData = webDomains.filter(webDomain => webDomain.NAME === controlPanelFocusedElement)[0];
+
+    displayModal(currentWebDomainData.delete_confirmation, `/delete/web/?domain=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const fetchData = () => {
+    getWebList()
+      .then(result => {
+        setState({
+          ...state,
+          webDomains: reformatData(result.data.data),
+          webFav: result.data.webFav,
+          totalAmount: result.data.totalAmount,
+          loading: false
+        });
+      })
+      .catch(err => console.error(err));
+  }
+
+  const changeSorting = (sorting, order) => {
+    setState({
+      ...state,
       sorting,
       order
     });
   }
 
-  toggleAll = () => {
-    this.setState({ toggledAll: !this.state.toggledAll });
-  }
+  const reformatData = data => {
+    let webDomains = [];
 
-  webDomains = () => {
-    const { webDomains } = this.state;
-    const webFav = { ...this.state.webFav };
-    const result = [];
-
-    for (let i in webDomains) {
-      webDomains[i]['NAME'] = i;
-
-      if (webFav[i]) {
-        webDomains[i]['STARRED'] = webFav[i];
-      } else {
-        webDomains[i]['STARRED'] = 0;
-      }
-
-      result.push(webDomains[i]);
+    for (let i in data) {
+      data[i]['NAME'] = i;
+      data[i]['FOCUSED'] = controlPanelFocusedElement === i;
+      webDomains.push(data[i]);
     }
 
-    let sortedResult = this.sortArray(result);
+    return webDomains;
+  }
+
+  const webDomains = () => {
+    const webFav = { ...state.webFav };
+    let webDomains = [...state.webDomains];
+
+    webDomains.forEach(webDomain => {
+      webDomain.FOCUSED = controlPanelFocusedElement === webDomain.NAME;
+
+      if (webFav[webDomain.NAME]) {
+        webDomain.STARRED = webFav[webDomain.NAME];
+      } else {
+        webDomain.STARRED = 0;
+      }
+    });
+
+    let sortedResult = sortArray(webDomains);
 
     return sortedResult.map((item, index) => {
-      return <WebDomain data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
+      return <WebDomain data={item} key={index} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
     });
   }
 
-  checkItem = name => {
-    const { selection, webDomains } = this.state;
-    let duplicate = [...selection];
-    let webDomainsDuplicate = webDomains;
+  const checkItem = name => {
+    let duplicate = [...state.selection];
+    let webDomainsDuplicate = state.webDomains;
     let checkedItem = duplicate.indexOf(name);
 
     webDomainsDuplicate[name]['isChecked'] = !webDomainsDuplicate[name]['isChecked'];
@@ -96,22 +230,21 @@ class Web extends Component {
       duplicate.push(name);
     }
 
-    this.setState({ webDomains: webDomainsDuplicate, selection: duplicate });
+    setState({ ...state, webDomains: webDomainsDuplicate, selection: duplicate });
   }
 
-  sortArray = array => {
-    const { order, sorting } = this.state;
-    let sortBy = this.sortBy(sorting);
+  const sortArray = array => {
+    let sortingColumn = sortBy(state.sorting);
 
-    if (order === "descending") {
-      return array.sort((a, b) => (a[sortBy] < b[sortBy]) ? 1 : ((b[sortBy] < a[sortBy]) ? -1 : 0));
+    if (state.order === "descending") {
+      return array.sort((a, b) => (a[sortingColumn] < b[sortingColumn]) ? 1 : ((b[sortingColumn] < a[sortingColumn]) ? -1 : 0));
     } else {
-      return array.sort((a, b) => (a[sortBy] > b[sortBy]) ? 1 : ((b[sortBy] > a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] > b[sortingColumn]) ? 1 : ((b[sortingColumn] > a[sortingColumn]) ? -1 : 0));
     }
   }
 
-  sortBy = sorting => {
-    const { Date, Domain, Disk, Bandwidth, Starred } = window.GLOBAL.App.i18n;
+  const sortBy = sorting => {
+    const { Date, Domain, Disk, Bandwidth, Starred } = i18n;
 
     switch (sorting) {
       case Date: return 'DATE';
@@ -124,16 +257,15 @@ class Web extends Component {
     }
   }
 
-  toggleFav = (value, type) => {
-    const { webFav } = this.state;
-    let webFavDuplicate = webFav;
+  const toggleFav = (value, type) => {
+    let webFavDuplicate = state.webFav;
 
     if (type === 'add') {
       webFavDuplicate[value] = 1;
 
       addFavorite(value, 'web')
         .then(() => {
-          this.setState({ webFav: webFavDuplicate });
+          setState({ ...state, webFav: webFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -143,7 +275,7 @@ class Web extends Component {
 
       deleteFavorite(value, 'web')
         .then(() => {
-          this.setState({ webFav: webFavDuplicate });
+          setState({ ...state, webFav: webFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -151,50 +283,32 @@ class Web extends Component {
     }
   }
 
-  showNotification = text => {
-    toast.error(text, {
-      position: "bottom-center",
-      autoClose: 1500,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true
-    });
+  const toggleAll = toggled => {
+    setState({ ...state, toggledAll: toggled });
+    if (state.toggledAll) {
+      let webDomainNames = [];
+
+      let webDomains = state.webDomains.map(webDomain => {
+        webDomainNames.push(webDomain.NAME);
+        webDomain.isChecked = true;
+      });
+
+      setState({ ...state, webDomains, selection: webDomainNames });
+    } else {
+      let webDomains = state.webDomains.map(webDomain => webDomain.isChecked = false);
+
+      setState({ ...state, webDomains, selection: [] });
+    }
   }
 
-  toggleAll = toggled => {
-    const { webDomains } = this.state;
-    this.setState({ toggledAll: toggled }, () => {
-      if (this.state.toggledAll) {
-        let webDomainNames = [];
-
-        for (let i in webDomains) {
-          webDomainNames.push(i);
-
-          webDomains[i]['isChecked'] = true;
-        }
-
-        this.setState({ webDomains, selection: webDomainNames });
-      } else {
-        for (let i in webDomains) {
-          webDomains[i]['isChecked'] = false;
-        }
-
-        this.setState({ webDomains, selection: [] });
-      }
-    });
-  }
-
-  bulk = action => {
-    const { selection } = this.state;
-
-    if (selection.length && action) {
-      this.setState({ loading: true }, () => {
-        bulkAction(action, selection)
+  const bulk = action => {
+    if (state.selection.length && action) {
+      setState({ ...state, loading: true }, () => {
+        bulkAction(action, state.selection)
           .then(result => {
             if (result.status === 200) {
-              this.fetchData();
-              this.toggleAll(false);
+              fetchData();
+              toggleAll(false);
             }
           })
           .catch(err => console.error(err));
@@ -202,57 +316,57 @@ class Web extends Component {
     }
   }
 
-  displayModal = (text, url) => {
-    this.setState({
-      modalVisible: !this.state.modalVisible,
+  const displayModal = (text, url) => {
+    setState({
+      ...state,
+      modalVisible: !state.modalVisible,
       modalText: text,
       modalActionUrl: url
     });
   }
 
-  modalConfirmHandler = () => {
-    handleAction(this.state.modalActionUrl)
+  const modalConfirmHandler = () => {
+    handleAction(state.modalActionUrl)
       .then(() => {
-        this.fetchData();
-        this.modalCancelHandler();
+        fetchData();
+        modalCancelHandler();
       })
       .catch(err => console.error(err));
   }
 
-  modalCancelHandler = () => {
-    this.setState({
+  const modalCancelHandler = () => {
+    setState({
+      ...state,
       modalVisible: false,
       modalText: '',
       modalActionUrl: ''
     });
   }
 
-  render() {
-    return (
-      <div className="web">
-        <Toolbar mobile={false} >
-          <LeftButton name="Add Web Domain" href="/add/web/" showLeftMenu={true} />
-          <div className="r-menu">
-            <div className="input-group input-group-sm">
-              <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
-              <Select list='webList' bulkAction={this.bulk} />
-              <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="webList" />
-              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
-            </div>
+  return (
+    <div className="web">
+      <Toolbar mobile={false} >
+        <LeftButton name="Add Web Domain" href="/add/web/" showLeftMenu={true} />
+        <div className="r-menu">
+          <div className="input-group input-group-sm">
+            <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
+            <Select list='webList' bulkAction={bulk} />
+            <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="webList" />
+            <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
           </div>
-        </Toolbar>
-        <div className="web-domains-wrapper">
-          {this.state.loading ? <Spinner /> : this.webDomains()}
         </div>
-        <div className="total">{this.state.totalAmount}</div>
-        <Modal
-          onSave={this.modalConfirmHandler}
-          onCancel={this.modalCancelHandler}
-          show={this.state.modalVisible}
-          text={this.state.modalText} />
+      </Toolbar>
+      <div className="web-domains-wrapper">
+        {state.loading ? <Spinner /> : webDomains()}
       </div>
-    );
-  }
+      <div className="total">{state.totalAmount}</div>
+      <Modal
+        onSave={modalConfirmHandler}
+        onCancel={modalCancelHandler}
+        show={state.modalVisible}
+        text={state.modalText} />
+    </div>
+  );
 }
 
 export default Web;

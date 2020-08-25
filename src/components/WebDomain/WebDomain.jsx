@@ -25,13 +25,30 @@ class WebDomain extends Component {
     this.props.checkItem(this.props.data.NAME);
   }
 
+  handleSuspend = token => {
+    let suspendedStatus = this.props.data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
+    this.props.handleModal(this.props.data.spnd_confirmation, `/${suspendedStatus}/web?domain=${this.props.data.NAME}&token=${token}`);
+  }
+
+  handleDelete = token => {
+    this.props.handleModal(this.props.data.delete_confirmation, `/delete/web/?domain=${this.props.data.NAME}&token=${token}`);
+  }
+
   render() {
     const { data } = this.props;
     const { i18n } = window.GLOBAL.App;
     const token = localStorage.getItem("token");
 
     return (
-      <ListItem checked={data.isChecked} starred={data.STARRED} date={data.DATE} toggleFav={this.toggleFav} checkItem={this.checkItem} suspended={data.SUSPENDED === 'yes'}>
+      <ListItem
+        id={data.NAME}
+        checked={data.isChecked}
+        starred={data.STARRED}
+        date={data.DATE}
+        toggleFav={this.toggleFav}
+        checkItem={this.checkItem}
+        suspended={data.SUSPENDED === 'yes'}
+        focused={data.FOCUSED} >
         <Container className="r-col w-85">
           <div className="name">
             <div>{data.NAME}</div>
@@ -56,20 +73,30 @@ class WebDomain extends Component {
           </div>
         </Container>
         <div className="actions">
-          <div><a className="link-edit" href={`/edit/web?domain=${data.NAME}`}>{i18n.edit} <FontAwesomeIcon icon="pen" /></a></div>
-          <div><a className="link-gray" href={`/list/web-log?domain=${data.NAME}&type=access`}>{i18n['view logs']} <FontAwesomeIcon icon="list" /></a></div>
+          <div>
+            <a className="link-edit" href={`/edit/web?domain=${data.NAME}`}>
+              {i18n.edit}
+              {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
+            </a>
+          </div>
+          <div>
+            <a className="link-gray" href={`/list/web-log?domain=${data.NAME}&type=access`}>
+              {i18n['view logs']}
+              {data.FOCUSED ? <span className="shortcut-button">L</span> : <FontAwesomeIcon icon="list" />}
+            </a>
+          </div>
           <div>
             <button
               className="link-gray"
-              onClick={() => this.props.handleModal(data.spnd_confirmation, `/${data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend'}/web?domain=${data.NAME}&token=${token}`)}>
+              onClick={() => this.handleSuspend(token)}>
               {i18n[data.spnd_action]}
-              <FontAwesomeIcon icon={data.status === 'yes' ? 'unlock' : 'lock'} />
+              {data.FOCUSED ? <span className="shortcut-button">S</span> : <FontAwesomeIcon icon={data.SUSPENDED === 'yes' ? 'unlock' : 'lock'} />}
             </button>
           </div>
           <div>
-            <button className="link-delete" onClick={() => this.props.handleModal(data.delete_confirmation, `/delete/web/?domain=${data.NAME}&token=${token}`)}>
+            <button className="link-delete" onClick={() => this.handleDelete(token)}>
               {i18n.Delete}
-              <FontAwesomeIcon icon="times" />
+              {data.FOCUSED ? <span className="shortcut-button del">Del</span> : <FontAwesomeIcon icon="times" />}
             </button>
           </div>
         </div>
