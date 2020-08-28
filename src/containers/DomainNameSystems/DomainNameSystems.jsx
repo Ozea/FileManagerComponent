@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import { bulkAction, getDnsList, handleAction } from '../../ControlPanelService/Dns';
+import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import DomainNameSystem from '../../components/DomainNameSystem/DomainNameSystem';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
@@ -12,13 +14,18 @@ import Modal from '../../components/ControlPanel/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
 import './DomainNameSystems.scss';
 
-const { i18n } = window.GLOBAL.App;
+import { useDispatch, useSelector } from 'react-redux';
 
-class DomainNameSystems extends Component {
-  state = {
+const DomainNameSystems = props => {
+  const { i18n } = window.GLOBAL.App;
+  const token = localStorage.getItem("token");
+  const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
+  const { focusedElement } = useSelector(state => state.mainNavigation);
+  const dispatch = useDispatch();
+  const [state, setState] = useState({
     domainNameSystems: [],
     dnsFav: [],
-    loading: false,
+    loading: true,
     toggledAll: false,
     modalText: '',
     modalVisible: false,
@@ -27,64 +34,199 @@ class DomainNameSystems extends Component {
     order: "descending",
     selection: [],
     totalAmount: '',
+  });
+
+  useEffect(() => {
+    dispatch(removeControlPanelContentFocusedElement());
+    fetchData();
+
+    return () => {
+      dispatch(removeControlPanelContentFocusedElement());
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleContentSelection);
+    window.addEventListener("keydown", handleFocusedElementShortcuts);
+
+    return () => {
+      window.removeEventListener("keydown", handleContentSelection);
+      window.removeEventListener("keydown", handleFocusedElementShortcuts);
+    };
+  }, [controlPanelFocusedElement, focusedElement, state.domainNameSystems]);
+
+  const handleContentSelection = event => {
+    if (event.keyCode === 38 || event.keyCode === 40) {
+      if (focusedElement) {
+        dispatch(MainNavigation.removeFocusedElement());
+      }
+    }
+
+    if (event.keyCode === 38) {
+      event.preventDefault();
+      handleArrowUp();
+    } else if (event.keyCode === 40) {
+      event.preventDefault();
+      handleArrowDown();
+    }
   }
 
-  componentDidMount() {
-    this.fetchData();
+  const initFocusedElement = domainNameSystems => {
+    domainNameSystems[0]['FOCUSED'] = domainNameSystems[0]['NAME'];
+    setState({ ...state, domainNameSystems });
+    dispatch(addControlPanelContentFocusedElement(domainNameSystems[0]['NAME']));
   }
 
-  fetchData = () => {
-    this.setState({ loading: true }, () => {
-      getDnsList()
-        .then(result => {
-          this.setState({
-            domainNameSystems: result.data.data,
-            dnsFav: result.data.dnsFav,
-            totalAmount: result.data.totalAmount,
-            loading: false
-          });
-        })
-        .catch(err => console.error(err));
-    });
+  const handleArrowDown = () => {
+    let domainNameSystems = [...state.domainNameSystems];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(domainNameSystems);
+      return;
+    }
+
+    let focusedElementPosition = domainNameSystems.findIndex(domainNameSystem => domainNameSystem.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== domainNameSystems.length - 1) {
+      let nextFocusedElement = domainNameSystems[focusedElementPosition + 1];
+      domainNameSystems[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, domainNameSystems });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
   }
 
-  changeSorting = (sorting, order) => {
-    this.setState({
+  const handleArrowUp = () => {
+    let domainNameSystems = [...state.domainNameSystems];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(domainNameSystems);
+      return;
+    }
+
+    let focusedElementPosition = domainNameSystems.findIndex(domainNameSystem => domainNameSystem.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== 0) {
+      let nextFocusedElement = domainNameSystems[focusedElementPosition - 1];
+      domainNameSystems[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, domainNameSystems });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const handleFocusedElementShortcuts = event => {
+    let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
+
+    if (controlPanelFocusedElement && !isSearchInputFocused) {
+      switch (event.keyCode) {
+        case 8: return handleDelete();
+        case 13: return handleEdit();
+        case 76: return handleLogs();
+        case 78: return handleAddRecord();
+        case 83: return handleSuspend();
+        default: break;
+      }
+    }
+  }
+
+  const handleAddRecord = () => {
+    props.history.push(`/add/dns/?domain=${controlPanelFocusedElement}`);
+  }
+
+  const handleLogs = () => {
+    props.history.push(`/list/dns?domain=${controlPanelFocusedElement}&type=access`);
+  }
+
+  const handleEdit = () => {
+    props.history.push(`/edit/dns?domain=${controlPanelFocusedElement}`);
+  }
+
+  const handleSuspend = () => {
+    const { domainNameSystems } = state;
+    let currentDomainNameSystemData = domainNameSystems.filter(domainNameSystem => domainNameSystem.NAME === controlPanelFocusedElement)[0];
+    let suspendedStatus = currentDomainNameSystemData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
+
+    displayModal(currentDomainNameSystemData.suspend_conf, `/${suspendedStatus}/dns?domain=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const handleDelete = () => {
+    const { domainNameSystems } = state;
+    let currentDomainNameSystemData = domainNameSystems.filter(domainNameSystem => domainNameSystem.NAME === controlPanelFocusedElement)[0];
+
+    displayModal(currentDomainNameSystemData.suspend_conf, `/delete/dns/?domain=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const fetchData = () => {
+    getDnsList()
+      .then(result => {
+        setState({
+          ...state,
+          domainNameSystems: reformatData(result.data.data),
+          dnsFav: result.data.dnsFav,
+          totalAmount: result.data.totalAmount,
+          loading: false
+        });
+      })
+      .catch(err => console.error(err));
+  }
+
+  const reformatData = data => {
+    let domainNameSystems = [];
+
+    for (let i in data) {
+      data[i]['NAME'] = i;
+      data[i]['FOCUSED'] = controlPanelFocusedElement === i;
+      domainNameSystems.push(data[i]);
+    }
+
+    return domainNameSystems;
+  }
+
+  const changeSorting = (sorting, order) => {
+    setState({
+      ...state,
       sorting,
       order
     });
   }
 
-  toggleAll = () => {
-    this.setState({ toggleAll: !this.state.toggleAll });
-  }
-
-  dns = () => {
-    const { domainNameSystems } = this.state;
-    const dnsFav = { ...this.state.dnsFav };
+  const dns = () => {
+    const { domainNameSystems } = state;
+    const dnsFav = { ...state.dnsFav };
     const result = [];
 
-    for (let i in domainNameSystems) {
-      domainNameSystems[i]['NAME'] = i;
+    domainNameSystems.forEach(domainNameSystem => {
+      domainNameSystem.FOCUSED = controlPanelFocusedElement === domainNameSystem.NAME;
 
-      if (dnsFav[i]) {
-        domainNameSystems[i]['STARRED'] = dnsFav[i];
+      if (dnsFav[domainNameSystem.NAME]) {
+        domainNameSystem.STARRED = dnsFav[domainNameSystem.NAME];
       } else {
-        domainNameSystems[i]['STARRED'] = 0;
+        domainNameSystem.STARRED = 0;
       }
 
-      result.push(domainNameSystems[i]);
-    }
+      result.push(domainNameSystem);
+    });
 
-    let sortedResult = this.sortArray(result);
+    let sortedResult = sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <DomainNameSystem data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
+      return <DomainNameSystem data={item} key={index} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
     });
   }
 
-  checkItem = name => {
-    const { selection, domainNameSystems } = this.state;
+  const checkItem = name => {
+    const { selection, domainNameSystems } = state;
     let duplicate = [...selection];
     let domainNameSystemsDuplicate = domainNameSystems;
     let checkedItem = duplicate.indexOf(name);
@@ -97,21 +239,21 @@ class DomainNameSystems extends Component {
       duplicate.push(name);
     }
 
-    this.setState({ domainNameSystems: domainNameSystemsDuplicate, selection: duplicate });
+    setState({ ...state, domainNameSystems: domainNameSystemsDuplicate, selection: duplicate });
   }
 
-  sortArray = array => {
-    const { order, sorting } = this.state;
-    let sortBy = this.sortBy(sorting);
+  const sortArray = array => {
+    const { order, sorting } = state;
+    let sortingColumn = sortBy(sorting);
 
     if (order === "descending") {
-      return array.sort((a, b) => (a[sortBy] < b[sortBy]) ? 1 : ((b[sortBy] < a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] < b[sortingColumn]) ? 1 : ((b[sortingColumn] < a[sortingColumn]) ? -1 : 0));
     } else {
-      return array.sort((a, b) => (a[sortBy] > b[sortBy]) ? 1 : ((b[sortBy] > a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] > b[sortingColumn]) ? 1 : ((b[sortingColumn] > a[sortingColumn]) ? -1 : 0));
     }
   }
 
-  sortBy = sorting => {
+  const sortBy = sorting => {
     const { Date, Expire, Domain, IP, Records, Starred } = window.GLOBAL.App.i18n;
 
     switch (sorting) {
@@ -125,8 +267,8 @@ class DomainNameSystems extends Component {
     }
   }
 
-  toggleFav = (value, type) => {
-    const { dnsFav } = this.state;
+  const toggleFav = (value, type) => {
+    const { dnsFav } = state;
     let dnsFavDuplicate = dnsFav;
 
     if (type === 'add') {
@@ -134,7 +276,7 @@ class DomainNameSystems extends Component {
 
       addFavorite(value, 'dns')
         .then(() => {
-          this.setState({ dnsFav: dnsFavDuplicate });
+          setState({ ...state, dnsFav: dnsFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -144,7 +286,7 @@ class DomainNameSystems extends Component {
 
       deleteFavorite(value, 'dns')
         .then(() => {
-          this.setState({ dnsFav: dnsFavDuplicate });
+          setState({ ...state, dnsFav: dnsFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -152,97 +294,90 @@ class DomainNameSystems extends Component {
     }
   }
 
-  toggleAll = toggled => {
-    const { domainNameSystems } = this.state;
-    this.setState({ toggledAll: toggled }, () => {
-      if (this.state.toggledAll) {
-        let dnsNames = [];
+  const toggleAll = toggled => {
+    setState({ ...state, toggledAll: toggled });
+    if (state.toggledAll) {
+      let domainNameSystemsNames = [];
 
-        for (let i in domainNameSystems) {
-          dnsNames.push(i);
-
-          domainNameSystems[i]['isChecked'] = true;
-        }
-
-        this.setState({ domainNameSystems, selection: dnsNames });
-      } else {
-        for (let i in domainNameSystems) {
-          domainNameSystems[i]['isChecked'] = false;
-        }
-
-        this.setState({ domainNameSystems, selection: [] });
-      }
-    });
-  }
-
-  bulk = action => {
-    const { selection } = this.state;
-
-    if (selection.length && action) {
-      this.setState({ loading: true }, () => {
-        bulkAction(action, selection)
-          .then(result => {
-            if (result.status === 200) {
-              this.fetchData();
-              this.toggleAll(false);
-            }
-          })
-          .catch(err => console.error(err));
+      let domainNameSystems = state.domainNameSystems.map(domainNameSystem => {
+        domainNameSystemsNames.push(domainNameSystem.NAME);
+        domainNameSystem.isChecked = true;
       });
+
+      setState({ ...state, domainNameSystems, selection: domainNameSystemsNames });
+    } else {
+      let domainNameSystems = state.domainNameSystems.map(domainNameSystem => domainNameSystem.isChecked = false);
+
+      setState({ ...state, domainNameSystems, selection: [] });
     }
   }
 
-  displayModal = (text, url) => {
-    this.setState({
-      modalVisible: !this.state.modalVisible,
+  const bulk = action => {
+    const { selection } = state;
+
+    if (selection.length && action) {
+      bulkAction(action, selection)
+        .then(result => {
+          if (result.status === 200) {
+            fetchData();
+            toggleAll(false);
+          }
+        })
+        .catch(err => console.error(err));
+    }
+  }
+
+  const displayModal = (text, url) => {
+    setState({
+      ...state,
+      modalVisible: !state.modalVisible,
       modalText: text,
       modalActionUrl: url
     });
   }
 
-  modalConfirmHandler = () => {
-    handleAction(this.state.modalActionUrl)
+  const modalConfirmHandler = () => {
+    handleAction(state.modalActionUrl)
       .then(() => {
-        this.fetchData();
-        this.modalCancelHandler();
+        fetchData();
+        modalCancelHandler();
       })
       .catch(err => console.error(err));
   }
 
-  modalCancelHandler = () => {
-    this.setState({
+  const modalCancelHandler = () => {
+    setState({
+      ...state,
       modalVisible: false,
       modalText: '',
       modalActionUrl: ''
     });
   }
 
-  render() {
-    return (
-      <div className="dns">
-        <Toolbar mobile={false} >
-          <LeftButton name={i18n['Add DNS Domain']} href="/add/dns" showLeftMenu={true} />
-          <div className="r-menu">
-            <div className="input-group input-group-sm">
-              <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
-              <Select list='dnsList' bulkAction={this.bulk} />
-              <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="dnsList" />
-              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
-            </div>
+  return (
+    <div className="dns">
+      <Toolbar mobile={false} >
+        <LeftButton name={i18n['Add DNS Domain']} href="/add/dns" showLeftMenu={true} />
+        <div className="r-menu">
+          <div className="input-group input-group-sm">
+            <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
+            <Select list='dnsList' bulkAction={bulk} />
+            <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="dnsList" />
+            <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
           </div>
-        </Toolbar>
-        <div className="dns-wrapper">
-          {this.state.loading ? <Spinner /> : this.dns()}
         </div>
-        <div className="total">{this.state.totalAmount}</div>
-        <Modal
-          onSave={this.modalConfirmHandler}
-          onCancel={this.modalCancelHandler}
-          show={this.state.modalVisible}
-          text={this.state.modalText} />
+      </Toolbar>
+      <div className="dns-wrapper">
+        {state.loading ? <Spinner /> : dns()}
       </div>
-    );
-  }
+      <div className="total">{state.totalAmount}</div>
+      <Modal
+        onSave={modalConfirmHandler}
+        onCancel={modalCancelHandler}
+        show={state.modalVisible}
+        text={state.modalText} />
+    </div>
+  );
 }
 
 export default DomainNameSystems;
