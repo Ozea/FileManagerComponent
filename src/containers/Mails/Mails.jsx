@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
+import { bulkAction, getMailList, handleAction } from '../../ControlPanelService/Mail';
+import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
-import { bulkAction, getMailList, handleAction } from '../../ControlPanelService/Mail';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
@@ -12,8 +14,15 @@ import Spinner from '../../components/Spinner/Spinner';
 import Mail from '../../components/Mail/Mail';
 import './Mails.scss';
 
-class Mails extends Component {
-  state = {
+import { useSelector, useDispatch } from 'react-redux';
+
+const Mails = props => {
+  const { i18n } = window.GLOBAL.App;
+  const token = localStorage.getItem("token");
+  const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
+  const { focusedElement } = useSelector(state => state.mainNavigation);
+  const dispatch = useDispatch();
+  const [state, setState] = useState({
     mails: [],
     mailFav: [],
     loading: false,
@@ -22,65 +31,202 @@ class Mails extends Component {
     modalVisible: false,
     modalActionUrl: '',
     webmail: '',
-    sorting: window.GLOBAL.App.i18n.Date,
+    sorting: i18n.Date,
     order: "descending",
     selection: [],
     totalAmount: ''
+  });
+
+  useEffect(() => {
+    dispatch(removeControlPanelContentFocusedElement());
+    fetchData();
+
+    return () => {
+      dispatch(removeControlPanelContentFocusedElement());
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleContentSelection);
+    window.addEventListener("keydown", handleFocusedElementShortcuts);
+
+    return () => {
+      window.removeEventListener("keydown", handleContentSelection);
+      window.removeEventListener("keydown", handleFocusedElementShortcuts);
+    };
+  }, [controlPanelFocusedElement, focusedElement, state.mails]);
+
+  const handleContentSelection = event => {
+    if (event.keyCode === 38 || event.keyCode === 40) {
+      if (focusedElement) {
+        dispatch(MainNavigation.removeFocusedElement());
+      }
+    }
+
+    if (event.keyCode === 38) {
+      event.preventDefault();
+      handleArrowUp();
+    } else if (event.keyCode === 40) {
+      event.preventDefault();
+      handleArrowDown();
+    }
   }
 
-  componentDidMount() {
-    this.fetchData();
+  const initFocusedElement = mails => {
+    mails[0]['FOCUSED'] = mails[0]['NAME'];
+    setState({ ...state, mails });
+    dispatch(addControlPanelContentFocusedElement(mails[0]['NAME']));
   }
 
-  fetchData = () => {
-    this.setState({ loading: true }, () => {
-      getMailList()
-        .then(result => {
-          this.setState({
-            mails: result.data.data,
-            webmail: result.data.webmail,
-            mailFav: result.data.mailFav,
-            totalAmount: result.data.totalAmount,
-            loading: false
-          });
-        })
-        .catch(err => console.error(err));
-    });
+  const handleArrowDown = () => {
+    let mails = [...state.mails];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(mails);
+      return;
+    }
+
+    let focusedElementPosition = mails.findIndex(mail => mail.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== mails.length - 1) {
+      let nextFocusedElement = mails[focusedElementPosition + 1];
+      mails[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, mails });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
   }
 
-  changeSorting = (sorting, order) => {
-    this.setState({
+  const handleArrowUp = () => {
+    let mails = [...state.mails];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(mails);
+      return;
+    }
+
+    let focusedElementPosition = mails.findIndex(mail => mail.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== 0) {
+      let nextFocusedElement = mails[focusedElementPosition - 1];
+      mails[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, mails });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const handleFocusedElementShortcuts = event => {
+    let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
+
+    if (controlPanelFocusedElement && !isSearchInputFocused) {
+      switch (event.keyCode) {
+        case 8: return handleDelete();
+        case 13: return handleEdit();
+        case 76: return handleLogs();
+        case 78: return handleAddRecord();
+        case 83: return handleSuspend();
+        default: break;
+      }
+    }
+  }
+
+  const handleAddRecord = () => {
+    props.history.push(`/add/mail/?domain=${controlPanelFocusedElement}`);
+  }
+
+  const handleLogs = () => {
+    props.history.push(`/list/mail?domain=${controlPanelFocusedElement}&type=access`);
+  }
+
+  const handleEdit = () => {
+    props.history.push(`/edit/mail?domain=${controlPanelFocusedElement}`);
+  }
+
+  const handleSuspend = () => {
+    const { mails } = state;
+    let currentmailData = mails.filter(mail => mail.NAME === controlPanelFocusedElement)[0];
+    let suspendedStatus = currentmailData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
+
+    displayModal(currentmailData.suspend_conf, `/${suspendedStatus}/mail?domain=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const handleDelete = () => {
+    const { mails } = state;
+    let currentmailData = mails.filter(mail => mail.NAME === controlPanelFocusedElement)[0];
+
+    displayModal(currentmailData.delete_conf, `/delete/mail/?domain=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const fetchData = () => {
+    getMailList()
+      .then(result => {
+        setState({
+          mails: reformatData(result.data.data),
+          webmail: result.data.webmail,
+          mailFav: result.data.mailFav,
+          totalAmount: result.data.totalAmount,
+          loading: false
+        });
+      })
+      .catch(err => console.error(err));
+  }
+
+  const reformatData = data => {
+    let mails = [];
+
+    for (let i in data) {
+      data[i]['NAME'] = i;
+      data[i]['FOCUSED'] = controlPanelFocusedElement === i;
+      mails.push(data[i]);
+    }
+
+    return mails;
+  }
+
+  const changeSorting = (sorting, order) => {
+    setState({
+      ...state,
       sorting,
       order
     });
   }
 
-  mails = () => {
-    const { mails } = this.state;
+  const mails = () => {
+    const { mails } = state;
+    const mailFav = { ...state.mailFav };
     const result = [];
-    const mailFav = { ...this.state.mailFav };
 
-    for (let i in mails) {
-      mails[i]['NAME'] = i;
+    mails.forEach(mail => {
+      mail.FOCUSED = controlPanelFocusedElement === mail.NAME;
 
-      if (mailFav[i]) {
-        mails[i]['STARRED'] = mailFav[i];
+      if (mailFav[mail.NAME]) {
+        mail.STARRED = mailFav[mail.NAME];
       } else {
-        mails[i]['STARRED'] = 0;
+        mail.STARRED = 0;
       }
 
-      result.push(mails[i]);
-    }
-
-    let sortedResult = this.sortArray(result);
+      result.push(mail);
+    });
+    let sortedResult = sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <Mail data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
+      return <Mail data={item} key={index} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
     });
   }
 
-  checkItem = name => {
-    const { selection, mails } = this.state;
+  const checkItem = name => {
+    const { selection, mails } = state;
     let duplicate = [...selection];
     let mailsDuplicate = mails;
     let checkedItem = duplicate.indexOf(name);
@@ -93,21 +239,21 @@ class Mails extends Component {
       duplicate.push(name);
     }
 
-    this.setState({ mails: mailsDuplicate, selection: duplicate });
+    setState({ ...state, mails: mailsDuplicate, selection: duplicate });
   }
 
-  sortArray = array => {
-    const { order, sorting } = this.state;
-    let sortBy = this.sortBy(sorting);
+  const sortArray = array => {
+    const { order, sorting } = state;
+    let sortingColumn = sortBy(sorting);
 
     if (order === "descending") {
-      return array.sort((a, b) => (a[sortBy] < b[sortBy]) ? 1 : ((b[sortBy] < a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] < b[sortingColumn]) ? 1 : ((b[sortingColumn] < a[sortingColumn]) ? -1 : 0));
     } else {
-      return array.sort((a, b) => (a[sortBy] > b[sortBy]) ? 1 : ((b[sortBy] > a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] > b[sortingColumn]) ? 1 : ((b[sortingColumn] > a[sortingColumn]) ? -1 : 0));
     }
   }
 
-  sortBy = sorting => {
+  const sortBy = sorting => {
     const { Date, Domains, Accounts, Disk, Starred } = window.GLOBAL.App.i18n;
 
     switch (sorting) {
@@ -120,8 +266,8 @@ class Mails extends Component {
     }
   }
 
-  toggleFav = (value, type) => {
-    const { mailFav } = this.state;
+  const toggleFav = (value, type) => {
+    const { mailFav } = state;
     let mailFavDuplicate = mailFav;
 
     if (type === 'add') {
@@ -129,7 +275,7 @@ class Mails extends Component {
 
       addFavorite(value, 'mail')
         .then(() => {
-          this.setState({ mailFav: mailFavDuplicate });
+          setState({ ...state, mailFav: mailFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -139,7 +285,7 @@ class Mails extends Component {
 
       deleteFavorite(value, 'mail')
         .then(() => {
-          this.setState({ mailFav: mailFavDuplicate });
+          setState({ ...state, mailFav: mailFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -147,98 +293,96 @@ class Mails extends Component {
     }
   }
 
-  toggleAll = toggled => {
-    const { mails } = this.state;
-    this.setState({ toggledAll: toggled }, () => {
-      if (this.state.toggledAll) {
-        let mailNames = [];
+  const toggleAll = toggled => {
+    const { mails } = state;
+    setState({ ...state, toggledAll: toggled });
 
-        for (let i in mails) {
-          mailNames.push(i);
+    if (state.toggledAll) {
+      let mailNames = [];
 
-          mails[i]['isChecked'] = true;
-        }
+      for (let i in mails) {
+        mailNames.push(i);
 
-        this.setState({ mails, selection: mailNames });
-      } else {
-        for (let i in mails) {
-          mails[i]['isChecked'] = false;
-        }
-
-        this.setState({ mails, selection: [] });
+        mails[i]['isChecked'] = true;
       }
-    });
-  }
 
-  bulk = action => {
-    const { selection } = this.state;
+      setState({ ...state, mails, selection: mailNames });
+    } else {
+      for (let i in mails) {
+        mails[i]['isChecked'] = false;
+      }
 
-    if (selection.length && action) {
-      this.setState({ loading: true }, () => {
-        bulkAction(action, selection)
-          .then(result => {
-            if (result.status === 200) {
-              this.fetchData();
-              this.toggleAll(false);
-            }
-          })
-          .catch(err => console.error(err));
-      });
+      setState({ ...state, mails, selection: [] });
     }
   }
 
-  displayModal = (text, url) => {
-    this.setState({
-      modalVisible: !this.state.modalVisible,
+  const bulk = action => {
+    const { selection } = state;
+
+    if (selection.length && action) {
+      bulkAction(action, selection)
+        .then(result => {
+          if (result.status === 200) {
+            fetchData();
+            toggleAll(false);
+          }
+        })
+        .catch(err => console.error(err));
+    }
+  }
+
+  const displayModal = (text, url) => {
+    setState({
+      ...state,
+      modalVisible: !state.modalVisible,
       modalText: text,
       modalActionUrl: url
     });
   }
 
-  modalConfirmHandler = () => {
-    handleAction(this.state.modalActionUrl)
+  const modalConfirmHandler = () => {
+    handleAction(state.modalActionUrl)
       .then(() => {
-        this.fetchData();
-        this.modalCancelHandler();
+        fetchData();
+        modalCancelHandler();
       })
       .catch(err => console.error(err));
   }
 
-  modalCancelHandler = () => {
-    this.setState({
+  const modalCancelHandler = () => {
+    setState({
+      ...state,
       modalVisible: false,
       modalText: '',
       modalActionUrl: ''
     });
   }
 
-  render() {
-    return (
-      <div className="mails">
-        <Toolbar mobile={false} >
-          <LeftButton name="Add Mail Domain" href="/add/mail" showLeftMenu={true} />
-          <div className="r-menu">
-            <div className="input-group input-group-sm">
-              <a href={this.state.webmail} className="button-extra" type="submit">{window.GLOBAL.App.i18n['open webmail']}</a>
-              <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
-              <Select list='mailList' bulkAction={this.bulk} />
-              <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="mailList" />
-              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
-            </div>
+  return (
+    <div className="mails">
+      <Toolbar mobile={false} >
+        <LeftButton name="Add Mail Domain" href="/add/mail" showLeftMenu={true} />
+        <div className="r-menu">
+          <div className="input-group input-group-sm">
+            <a href={state.webmail} className="button-extra" type="submit">{window.GLOBAL.App.i18n['open webmail']}</a>
+            <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
+            <Select list='mailList' bulkAction={bulk} />
+            <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="mailList" />
+            <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
           </div>
-        </Toolbar>
-        <div className="mails-wrapper">
-          {this.state.loading ? <Spinner /> : this.mails()}
         </div>
-        <div className="total">{this.state.totalAmount}</div>
-        <Modal
-          onSave={this.modalConfirmHandler}
-          onCancel={this.modalCancelHandler}
-          show={this.state.modalVisible}
-          text={this.state.modalText} />
+      </Toolbar>
+      <div className="mails-wrapper">
+        {state.loading ? <Spinner /> : mails()}
       </div>
-    );
-  }
+      <div className="total">{state.totalAmount}</div>
+      <Modal
+        onSave={modalConfirmHandler}
+        onCancel={modalCancelHandler}
+        show={state.modalVisible}
+        text={state.modalText} />
+    </div>
+  );
 }
 
 export default Mails;

@@ -164,7 +164,7 @@ const DomainNameSystems = props => {
     const { domainNameSystems } = state;
     let currentDomainNameSystemData = domainNameSystems.filter(domainNameSystem => domainNameSystem.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentDomainNameSystemData.suspend_conf, `/delete/dns/?domain=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentDomainNameSystemData.delete_conf, `/delete/dns/?domain=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const fetchData = () => {
