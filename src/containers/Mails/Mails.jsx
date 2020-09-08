@@ -30,7 +30,7 @@ const Mails = props => {
     modalText: '',
     modalVisible: false,
     modalActionUrl: '',
-    webmail: '',
+    webMail: '',
     sorting: i18n.Date,
     order: "descending",
     selection: [],
@@ -155,17 +155,17 @@ const Mails = props => {
 
   const handleSuspend = () => {
     const { mails } = state;
-    let currentmailData = mails.filter(mail => mail.NAME === controlPanelFocusedElement)[0];
-    let suspendedStatus = currentmailData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
+    let currentMailData = mails.filter(mail => mail.NAME === controlPanelFocusedElement)[0];
+    let suspendedStatus = currentMailData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
 
-    displayModal(currentmailData.suspend_conf, `/${suspendedStatus}/mail?domain=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentMailData.suspend_conf, `/${suspendedStatus}/mail?domain=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const handleDelete = () => {
     const { mails } = state;
-    let currentmailData = mails.filter(mail => mail.NAME === controlPanelFocusedElement)[0];
+    let currentMailData = mails.filter(mail => mail.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentmailData.delete_conf, `/delete/mail/?domain=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentMailData.delete_conf, `/delete/mail/?domain=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const fetchData = () => {
@@ -173,7 +173,7 @@ const Mails = props => {
       .then(result => {
         setState({
           mails: reformatData(result.data.data),
-          webmail: result.data.webmail,
+          webMail: result.data.webMail,
           mailFav: result.data.mailFav,
           totalAmount: result.data.totalAmount,
           loading: false
@@ -364,7 +364,7 @@ const Mails = props => {
         <LeftButton name="Add Mail Domain" href="/add/mail" showLeftMenu={true} />
         <div className="r-menu">
           <div className="input-group input-group-sm">
-            <a href={state.webmail} className="button-extra" type="submit">{window.GLOBAL.App.i18n['open webmail']}</a>
+            <a href={state.webMail} className="button-extra" type="submit">{window.GLOBAL.App.i18n['open webMail']}</a>
             <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
             <Select list='mailList' bulkAction={bulk} />
             <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="mailList" />

@@ -1,9 +1,11 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
+import { bulkAction, getDatabaseList, handleAction } from '../../ControlPanelService/Db';
+import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
-import { bulkAction, getDatabaseList, handleAction } from '../../ControlPanelService/Db';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
@@ -11,9 +13,15 @@ import Modal from '../../components/ControlPanel/Modal/Modal';
 import Database from '../../components/Database/Database';
 import Spinner from '../../components/Spinner/Spinner';
 import './Databases.scss';
+import { useSelector, useDispatch } from 'react-redux';
 
-class Databases extends Component {
-  state = {
+const Databases = props => {
+  const { i18n } = window.GLOBAL.App;
+  const token = localStorage.getItem("token");
+  const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
+  const { focusedElement } = useSelector(state => state.mainNavigation);
+  const dispatch = useDispatch();
+  const [state, setState] = useState({
     databases: [],
     dbFav: [],
     loading: false,
@@ -23,66 +31,195 @@ class Databases extends Component {
     modalActionUrl: '',
     dbAdmin: '',
     dbAdminLink: '',
-    sorting: window.GLOBAL.App.i18n.Date,
+    sorting: i18n.Date,
     order: "descending",
     selection: [],
     totalAmount: ''
+  });
+
+  useEffect(() => {
+    dispatch(removeControlPanelContentFocusedElement());
+    fetchData();
+
+    return () => {
+      dispatch(removeControlPanelContentFocusedElement());
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleContentSelection);
+    window.addEventListener("keydown", handleFocusedElementShortcuts);
+
+    return () => {
+      window.removeEventListener("keydown", handleContentSelection);
+      window.removeEventListener("keydown", handleFocusedElementShortcuts);
+    };
+  }, [controlPanelFocusedElement, focusedElement, state.databases]);
+
+  const handleContentSelection = event => {
+    if (event.keyCode === 38 || event.keyCode === 40) {
+      if (focusedElement) {
+        dispatch(MainNavigation.removeFocusedElement());
+      }
+    }
+
+    if (event.keyCode === 38) {
+      event.preventDefault();
+      handleArrowUp();
+    } else if (event.keyCode === 40) {
+      event.preventDefault();
+      handleArrowDown();
+    }
   }
 
-  componentDidMount() {
-    this.fetchData();
+  const initFocusedElement = databases => {
+    console.log(databases);
+    databases[0]['FOCUSED'] = databases[0]['NAME'];
+    setState({ ...state, databases });
+    dispatch(addControlPanelContentFocusedElement(databases[0]['NAME']));
   }
 
-  fetchData = () => {
-    this.setState({ loading: true }, () => {
-      getDatabaseList()
-        .then(result => {
-          this.setState({
-            databases: result.data.data,
-            dbAdmin: result.data.db_admin,
-            dbAdminLink: result.data.db_admin_link,
-            dbFav: result.data.dbFav,
-            totalAmount: result.data.totalAmount,
-            loading: false
-          });
-        })
-        .catch(err => console.error(err));
-    });
+  const handleArrowDown = () => {
+    let databases = [...state.databases];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(databases);
+      return;
+    }
+
+    let focusedElementPosition = databases.findIndex(database => database.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== databases.length - 1) {
+      let nextFocusedElement = databases[focusedElementPosition + 1];
+      databases[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, databases });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
   }
 
-  changeSorting = (sorting, order) => {
-    this.setState({
+  const handleArrowUp = () => {
+    let databases = [...state.databases];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(databases);
+      return;
+    }
+
+    let focusedElementPosition = databases.findIndex(database => database.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== 0) {
+      let nextFocusedElement = databases[focusedElementPosition - 1];
+      databases[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, databases });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const handleFocusedElementShortcuts = event => {
+    let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
+
+    if (controlPanelFocusedElement && !isSearchInputFocused) {
+      switch (event.keyCode) {
+        case 8: return handleDelete();
+        case 13: return handleEdit();
+        case 83: return handleSuspend();
+        default: break;
+      }
+    }
+  }
+
+  const handleEdit = () => {
+    props.history.push(`/edit/database?domain=${controlPanelFocusedElement}`);
+  }
+
+  const handleSuspend = () => {
+    const { databases } = state;
+    let currentDatabaseData = databases.filter(database => database.NAME === controlPanelFocusedElement)[0];
+    let suspendedStatus = currentDatabaseData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
+
+    displayModal(currentDatabaseData.suspend_conf, `/${suspendedStatus}/database?domain=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const handleDelete = () => {
+    const { databases } = state;
+    let currentDatabaseData = databases.filter(database => database.NAME === controlPanelFocusedElement)[0];
+
+    displayModal(currentDatabaseData.delete_conf, `/delete/database/?domain=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const fetchData = () => {
+    getDatabaseList()
+      .then(result => {
+        setState({
+          databases: reformatData(result.data.data),
+          dbAdmin: result.data.db_admin,
+          dbAdminLink: result.data.db_admin_link,
+          dbFav: result.data.dbFav,
+          totalAmount: result.data.totalAmount,
+          loading: false
+        });
+      })
+      .catch(err => console.error(err));
+  }
+
+  const reformatData = data => {
+    let databases = [];
+
+    for (let i in data) {
+      data[i]['NAME'] = i;
+      data[i]['FOCUSED'] = controlPanelFocusedElement === i;
+      databases.push(data[i]);
+    }
+
+    return databases;
+  }
+
+  const changeSorting = (sorting, order) => {
+    setState({
+      ...state,
       sorting,
       order
     });
   }
 
-  databases = () => {
-    const { databases } = this.state;
+  const databases = () => {
+    const { databases } = state;
     const result = [];
-    const dbFav = { ...this.state.dbFav };
+    const dbFav = { ...state.dbFav };
 
-    for (let i in databases) {
-      databases[i]['NAME'] = i;
+    databases.forEach(database => {
+      database.FOCUSED = controlPanelFocusedElement === database.NAME;
 
-      if (dbFav[i]) {
-        databases[i]['STARRED'] = dbFav[i];
+      if (dbFav[database.NAME]) {
+        database.STARRED = dbFav[database.NAME];
       } else {
-        databases[i]['STARRED'] = 0;
+        database.STARRED = 0;
       }
 
-      result.push(databases[i]);
-    }
+      result.push(database);
+    });
 
-    let sortedResult = this.sortArray(result);
+    let sortedResult = sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <Database data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
+      return <Database data={item} key={index} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
     });
   }
 
-  checkItem = name => {
-    const { selection, databases } = this.state;
+  const checkItem = name => {
+    const { selection, databases } = state;
     let duplicate = [...selection];
     let dbDuplicate = databases;
     let checkedItem = duplicate.indexOf(name);
@@ -95,22 +232,22 @@ class Databases extends Component {
       duplicate.push(name);
     }
 
-    this.setState({ databases: dbDuplicate, selection: duplicate });
+    setState({ ...state, databases: dbDuplicate, selection: duplicate });
   }
 
-  sortArray = array => {
-    const { order, sorting } = this.state;
-    let sortBy = this.sortBy(sorting);
+  const sortArray = array => {
+    const { order, sorting } = state;
+    let sortingColumn = sortBy(sorting);
 
     if (order === "descending") {
-      return array.sort((a, b) => (a[sortBy] < b[sortBy]) ? 1 : ((b[sortBy] < a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] < b[sortingColumn]) ? 1 : ((b[sortingColumn] < a[sortingColumn]) ? -1 : 0));
     } else {
-      return array.sort((a, b) => (a[sortBy] > b[sortBy]) ? 1 : ((b[sortBy] > a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] > b[sortingColumn]) ? 1 : ((b[sortingColumn] > a[sortingColumn]) ? -1 : 0));
     }
   }
 
-  sortBy = sorting => {
-    const { Date, Database, Disk, User, Host, Starred } = window.GLOBAL.App.i18n;
+  const sortBy = sorting => {
+    const { Date, Database, Disk, User, Host, Starred } = i18n;
 
     switch (sorting) {
       case Date: return 'DATE';
@@ -123,8 +260,8 @@ class Databases extends Component {
     }
   }
 
-  toggleFav = (value, type) => {
-    const { dbFav } = this.state;
+  const toggleFav = (value, type) => {
+    const { dbFav } = state;
     let dbFavDuplicate = dbFav;
 
     if (type === 'add') {
@@ -132,7 +269,7 @@ class Databases extends Component {
 
       addFavorite(value, 'db')
         .then(() => {
-          this.setState({ dbFav: dbFavDuplicate });
+          setState({ ...state, dbFav: dbFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -142,7 +279,7 @@ class Databases extends Component {
 
       deleteFavorite(value, 'db')
         .then(() => {
-          this.setState({ dbFav: dbFavDuplicate });
+          setState({ ...state, dbFav: dbFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -150,98 +287,96 @@ class Databases extends Component {
     }
   }
 
-  toggleAll = toggled => {
-    const { databases } = this.state;
-    this.setState({ toggledAll: toggled }, () => {
-      if (this.state.toggledAll) {
-        let dbNames = [];
+  const toggleAll = toggled => {
+    const { databases } = state;
+    setState({ ...state, toggledAll: toggled });
 
-        for (let i in databases) {
-          dbNames.push(i);
+    if (state.toggledAll) {
+      let dbNames = [];
 
-          databases[i]['isChecked'] = true;
-        }
+      for (let i in databases) {
+        dbNames.push(i);
 
-        this.setState({ databases, selection: dbNames });
-      } else {
-        for (let i in databases) {
-          databases[i]['isChecked'] = false;
-        }
-
-        this.setState({ databases, selection: [] });
+        databases[i]['isChecked'] = true;
       }
-    });
-  }
 
-  bulk = action => {
-    const { selection } = this.state;
+      setState({ ...state, databases, selection: dbNames });
+    } else {
+      for (let i in databases) {
+        databases[i]['isChecked'] = false;
+      }
 
-    if (selection.length && action) {
-      this.setState({ loading: true }, () => {
-        bulkAction(action, selection)
-          .then(result => {
-            if (result.status === 200) {
-              this.fetchData();
-              this.toggleAll(false);
-            }
-          })
-          .catch(err => console.error(err));
-      });
+      setState({ ...state, databases, selection: [] });
     }
   }
 
-  displayModal = (text, url) => {
-    this.setState({
-      modalVisible: !this.state.modalVisible,
+  const bulk = action => {
+    const { selection } = state;
+
+    if (selection.length && action) {
+      bulkAction(action, selection)
+        .then(result => {
+          if (result.status === 200) {
+            fetchData();
+            toggleAll(false);
+          }
+        })
+        .catch(err => console.error(err));
+    }
+  }
+
+  const displayModal = (text, url) => {
+    setState({
+      ...state,
+      modalVisible: !state.modalVisible,
       modalText: text,
       modalActionUrl: url
     });
   }
 
-  modalConfirmHandler = () => {
-    handleAction(this.state.modalActionUrl)
+  const modalConfirmHandler = () => {
+    handleAction(state.modalActionUrl)
       .then(() => {
-        this.fetchData();
-        this.modalCancelHandler();
+        fetchData();
+        modalCancelHandler();
       })
       .catch(err => console.error(err));
   }
 
-  modalCancelHandler = () => {
-    this.setState({
+  const modalCancelHandler = () => {
+    setState({
+      ...state,
       modalVisible: false,
       modalText: '',
       modalActionUrl: ''
     });
   }
 
-  render() {
-    return (
-      <div className="databases">
-        <Toolbar mobile={false} >
-          <LeftButton name="Add Database" href="/add/db" showLeftMenu={true} />
-          <div className="r-menu">
-            <div className="input-group input-group-sm">
-              <a href={this.state.dbAdminLink} className="button-extra" type="submit">{this.state.db_admin}</a>
-              <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
-              <Select list='dbList' bulkAction={this.bulk} />
-              <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="dbList" />
-              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
-            </div>
+  return (
+    <div className="databases">
+      <Toolbar mobile={false} >
+        <LeftButton name="Add Database" href="/add/db" showLeftMenu={true} />
+        <div className="r-menu">
+          <div className="input-group input-group-sm">
+            <a href={state.dbAdminLink} className="button-extra" type="submit">{state.db_admin}</a>
+            <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
+            <Select list='dbList' bulkAction={bulk} />
+            <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="dbList" />
+            <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
           </div>
-        </Toolbar>
-        <div className="mails-wrapper">
-          {this.state.loading ? <Spinner /> : this.databases()}
         </div>
-        <div className="total">{this.state.totalAmount}</div>
-        <Modal
-          onSave={this.modalConfirmHandler}
-          onCancel={this.modalCancelHandler}
-          show={this.state.modalVisible}
-          text={this.state.modalText} />
+      </Toolbar>
+      <div className="mails-wrapper">
+        {state.loading ? <Spinner /> : databases()}
       </div>
-    );
-  }
+      <div className="total">{state.totalAmount}</div>
+      <Modal
+        onSave={modalConfirmHandler}
+        onCancel={modalCancelHandler}
+        show={state.modalVisible}
+        text={state.modalText} />
+    </div>
+  );
 }
 
 export default Databases;
