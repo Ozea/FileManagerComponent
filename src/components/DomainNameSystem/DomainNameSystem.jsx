@@ -27,7 +27,7 @@ const DomainNameSystem = props => {
   }
 
   const handleDelete = () => {
-    props.handleModal(data.delete_confirmation, `/delete/dns?domain=${data.NAME}&token=${token}`);
+    props.handleModal(data.delete_conf, `/delete/dns?domain=${data.NAME}&token=${token}`);
   }
 
   return (
