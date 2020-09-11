@@ -25,7 +25,7 @@ const Mails = props => {
   const [state, setState] = useState({
     mails: [],
     mailFav: [],
-    loading: false,
+    loading: true,
     toggleAll: false,
     modalText: '',
     modalVisible: false,

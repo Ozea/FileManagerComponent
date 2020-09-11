@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import { bulkAction, getCronList, handleAction } from '../../ControlPanelService/Cron';
+import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
@@ -10,15 +12,19 @@ import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Modal from '../../components/ControlPanel/Modal/Modal';
 import CronJob from '../../components/CronJob/CronJob';
 import Spinner from '../../components/Spinner/Spinner';
+import { useSelector, useDispatch } from 'react-redux';
 import './CronJobs.scss';
 
-const { i18n } = window.GLOBAL.App;
-
-class CronJobs extends Component {
-  state = {
+const CronJobs = props => {
+  const { i18n } = window.GLOBAL.App;
+  const token = localStorage.getItem("token");
+  const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
+  const { focusedElement } = useSelector(state => state.mainNavigation);
+  const dispatch = useDispatch();
+  const [state, setState] = useState({
     cronJobs: [],
     cronFav: [],
-    loading: false,
+    loading: true,
     toggleAll: false,
     modalText: '',
     modalVisible: false,
@@ -28,66 +34,190 @@ class CronJobs extends Component {
     order: "descending",
     selection: [],
     totalAmount: ''
+  });
+
+  useEffect(() => {
+    dispatch(removeControlPanelContentFocusedElement());
+    fetchData();
+
+    return () => {
+      dispatch(removeControlPanelContentFocusedElement());
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleContentSelection);
+    window.addEventListener("keydown", handleFocusedElementShortcuts);
+
+    return () => {
+      window.removeEventListener("keydown", handleContentSelection);
+      window.removeEventListener("keydown", handleFocusedElementShortcuts);
+    };
+  }, [controlPanelFocusedElement, focusedElement, state.cronJobs]);
+
+  const handleContentSelection = event => {
+    if (event.keyCode === 38 || event.keyCode === 40) {
+      if (focusedElement) {
+        dispatch(MainNavigation.removeFocusedElement());
+      }
+    }
+
+    if (event.keyCode === 38) {
+      event.preventDefault();
+      handleArrowUp();
+    } else if (event.keyCode === 40) {
+      event.preventDefault();
+      handleArrowDown();
+    }
   }
 
-  componentDidMount() {
-    this.fetchData();
+  const initFocusedElement = cronJobs => {
+    cronJobs[0]['FOCUSED'] = cronJobs[0]['NAME'];
+    setState({ ...state, cronJobs });
+    dispatch(addControlPanelContentFocusedElement(cronJobs[0]['NAME']));
   }
 
-  fetchData = () => {
-    this.setState({ loading: true }, () => {
-      getCronList()
-        .then(result => {
-          this.setState({
-            cronJobs: result.data.data,
-            cronReports: result.data.cron_reports,
-            cronFav: result.data.cron_fav,
-            totalAmount: result.data.totalAmount,
-            loading: false
-          });
-          this.toggleAll(false);
-        })
-        .catch(err => console.error(err));
-    });
+  const handleArrowDown = () => {
+    let cronJobs = [...state.cronJobs];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(cronJobs);
+      return;
+    }
+
+    let focusedElementPosition = cronJobs.findIndex(cronJob => cronJob.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== cronJobs.length - 1) {
+      let nextFocusedElement = cronJobs[focusedElementPosition + 1];
+      cronJobs[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, cronJobs });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
   }
 
-  changeSorting = (sorting, order) => {
-    this.setState({
+  const handleArrowUp = () => {
+    let cronJobs = [...state.cronJobs];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(cronJobs);
+      return;
+    }
+
+    let focusedElementPosition = cronJobs.findIndex(cronJob => cronJob.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== 0) {
+      let nextFocusedElement = cronJobs[focusedElementPosition - 1];
+      cronJobs[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, cronJobs });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const handleFocusedElementShortcuts = event => {
+    let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
+
+    if (controlPanelFocusedElement && !isSearchInputFocused) {
+      switch (event.keyCode) {
+        case 8: return handleDelete();
+        case 13: return handleEdit();
+        case 83: return handleSuspend();
+        default: break;
+      }
+    }
+  }
+
+  const handleEdit = () => {
+    props.history.push(`/edit/cron?job=${controlPanelFocusedElement}`);
+  }
+
+  const handleSuspend = () => {
+    const { cronJobs } = state;
+    let currentCronJobData = cronJobs.filter(cronJob => cronJob.NAME === controlPanelFocusedElement)[0];
+    let suspendedStatus = currentCronJobData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
+
+    displayModal(currentCronJobData.suspend_conf, `/${suspendedStatus}/cron?job=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const handleDelete = () => {
+    const { cronJobs } = state;
+    let currentCronJobData = cronJobs.filter(cronJob => cronJob.NAME === controlPanelFocusedElement)[0];
+
+    displayModal(currentCronJobData.delete_conf, `/delete/cron/?job=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const fetchData = () => {
+    getCronList()
+      .then(result => {
+        setState({
+          ...state,
+          cronJobs: reformatData(result.data.data),
+          cronReports: result.data.cron_reports,
+          cronFav: result.data.cron_fav,
+          totalAmount: result.data.totalAmount,
+          loading: false
+        });
+      })
+      .catch(err => console.error(err));
+  }
+
+  const reformatData = data => {
+    let cronJobs = [];
+
+    for (let i in data) {
+      data[i]['NAME'] = i;
+      data[i]['FOCUSED'] = controlPanelFocusedElement === i;
+      cronJobs.push(data[i]);
+    }
+
+    return cronJobs;
+  }
+
+  const changeSorting = (sorting, order) => {
+    setState({
+      ...state,
       sorting,
       order
     });
   }
 
-  toggleAll = () => {
-    this.setState({ toggleAll: !this.state.toggleAll });
-  }
-
-  cronJobs = () => {
-    const { cronJobs } = this.state;
+  const cronJobs = () => {
+    const { cronJobs } = state;
     const result = [];
-    const cronFav = { ...this.state.cronFav };
+    const cronFav = { ...state.cronFav };
 
-    for (let i in cronJobs) {
-      cronJobs[i]['NAME'] = i;
+    cronJobs.forEach(cronJob => {
+      cronJob.FOCUSED = controlPanelFocusedElement === cronJob.NAME;
 
-      if (cronFav[i]) {
-        cronJobs[i]['STARRED'] = cronFav[i];
+      if (cronFav[cronJob.NAME]) {
+        cronJob.STARRED = cronFav[cronJob.NAME];
       } else {
-        cronJobs[i]['STARRED'] = 0;
+        cronJob.STARRED = 0;
       }
 
-      result.push(cronJobs[i]);
-    }
+      result.push(cronJob);
+    });
 
-    let sortedResult = this.sortArray(result);
+    let sortedResult = sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <CronJob data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
+      return <CronJob data={item} key={index} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
     });
   }
 
-  checkItem = name => {
-    const { selection, cronJobs } = this.state;
+  const checkItem = name => {
+    const { selection, cronJobs } = state;
     let duplicate = [...selection];
     let cronDuplicate = cronJobs;
     let checkedItem = duplicate.indexOf(name);
@@ -100,21 +230,21 @@ class CronJobs extends Component {
       duplicate.push(name);
     }
 
-    this.setState({ cronJobs: cronDuplicate, selection: duplicate });
+    setState({ ...state, cronJobs: cronDuplicate, selection: duplicate });
   }
 
-  sortArray = array => {
-    const { order, sorting } = this.state;
-    let sortBy = this.sortBy(sorting);
+  const sortArray = array => {
+    const { order, sorting } = state;
+    let sortingColumn = sortBy(sorting);
 
     if (order === "descending") {
-      return array.sort((a, b) => (a[sortBy] < b[sortBy]) ? 1 : ((b[sortBy] < a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] < b[sortingColumn]) ? 1 : ((b[sortingColumn] < a[sortingColumn]) ? -1 : 0));
     } else {
-      return array.sort((a, b) => (a[sortBy] > b[sortBy]) ? 1 : ((b[sortBy] > a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] > b[sortingColumn]) ? 1 : ((b[sortingColumn] > a[sortingColumn]) ? -1 : 0));
     }
   }
 
-  sortBy = sorting => {
+  const sortBy = sorting => {
     const { Date, Command, Starred } = window.GLOBAL.App.i18n;
 
     switch (sorting) {
@@ -125,8 +255,8 @@ class CronJobs extends Component {
     }
   }
 
-  toggleFav = (value, type) => {
-    const { cronFav } = this.state;
+  const toggleFav = (value, type) => {
+    const { cronFav } = state;
     let cronFavDuplicate = cronFav;
 
     if (type === 'add') {
@@ -134,7 +264,7 @@ class CronJobs extends Component {
 
       addFavorite(value, 'cron')
         .then(() => {
-          this.setState({ cronFav: cronFavDuplicate });
+          setState({ ...state, cronFav: cronFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -144,7 +274,7 @@ class CronJobs extends Component {
 
       deleteFavorite(value, 'cron')
         .then(() => {
-          this.setState({ cronFav: cronFavDuplicate });
+          setState({ ...state, cronFav: cronFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -152,116 +282,112 @@ class CronJobs extends Component {
     }
   }
 
-  toggleAll = toggled => {
-    const { cronJobs } = this.state;
-    this.setState({ toggledAll: toggled }, () => {
-      if (this.state.toggledAll) {
-        let cronJobNames = [];
+  const toggleAll = toggled => {
+    const { cronJobs } = state;
+    setState({ ...state, toggledAll: toggled });
 
-        for (let i in cronJobs) {
-          cronJobNames.push(i);
+    if (state.toggledAll) {
+      let cronJobNames = [];
 
-          cronJobs[i]['isChecked'] = true;
-        }
+      for (let i in cronJobs) {
+        cronJobNames.push(i);
 
-        this.setState({ cronJobs, selection: cronJobNames });
-      } else {
-        for (let i in cronJobs) {
-          cronJobs[i]['isChecked'] = false;
-        }
-
-        this.setState({ cronJobs, selection: [] });
+        cronJobs[i]['isChecked'] = true;
       }
-    });
-  }
 
-  bulk = action => {
-    const { selection } = this.state;
+      setState({ ...state, cronJobs, selection: cronJobNames });
+    } else {
+      for (let i in cronJobs) {
+        cronJobs[i]['isChecked'] = false;
+      }
 
-    if (selection.length && action) {
-      this.setState({ loading: true }, () => {
-        bulkAction(action, selection)
-          .then(result => {
-            if (result.status === 200) {
-              this.fetchData();
-              this.toggleAll(false);
-            }
-          })
-          .catch(err => console.error(err));
-      });
+      setState({ ...state, cronJobs, selection: [] });
     }
   }
 
-  displayModal = (text, url) => {
-    this.setState({
-      modalVisible: !this.state.modalVisible,
+  const bulk = action => {
+    const { selection } = state;
+
+    if (selection.length && action) {
+      bulkAction(action, selection)
+        .then(result => {
+          if (result.status === 200) {
+            fetchData();
+            toggleAll(false);
+          }
+        })
+        .catch(err => console.error(err));
+    }
+  }
+
+  const displayModal = (text, url) => {
+    setState({
+      ...state,
+      modalVisible: !state.modalVisible,
       modalText: text,
       modalActionUrl: url
     });
   }
 
-  modalConfirmHandler = () => {
-    handleAction(this.state.modalActionUrl)
+  const modalConfirmHandler = () => {
+    handleAction(state.modalActionUrl)
       .then(() => {
-        this.fetchData();
-        this.modalCancelHandler();
+        fetchData();
+        modalCancelHandler();
       })
       .catch(err => console.error(err));
   }
 
-  modalCancelHandler = () => {
-    this.setState({
+  const modalCancelHandler = () => {
+    setState({
+      ...state,
       modalVisible: false,
       modalText: '',
       modalActionUrl: ''
     });
   }
 
-  handleCronNotifications = () => {
+  const handleCronNotifications = () => {
     const token = localStorage.getItem("token");
 
-    if (this.state.cronReports === 'yes') {
+    if (state.cronReports === 'yes') {
       handleAction(`/delete/cron/reports/?token=${token}`)
-        .then(() => this.fetchData())
+        .then(() => fetchData())
         .catch(err => console.error(err));
     } else {
       handleAction(`/add/cron/reports/?token=${token}`)
-        .then(() => this.fetchData())
+        .then(() => fetchData())
         .catch(err => console.error(err));
     }
   }
 
-  render() {
-    const { cronReports, modalVisible, modalText, totalAmount, loading, sorting, order, toggledAll } = this.state;
-
-    return (
-      <div className="cronJobs">
-        <Toolbar mobile={false} >
-          <LeftButton name={i18n['Add Cron Job']} href="/add/cron" showLeftMenu={true} />
-          <div className="r-menu">
-            <div className="input-group input-group-sm">
-              <button onClick={this.handleCronNotifications} className="button-extra" type="submit">
-                {cronReports === 'yes' ? i18n['turn off notifications'] : i18n['turn on notifications']}
-              </button>
-              <Checkbox toggleAll={this.toggleAll} toggled={toggledAll} />
-              <Select list='cronList' bulkAction={this.bulk} />
-              <DropdownFilter changeSorting={this.changeSorting} sorting={sorting} order={order} list="cronList" />
-              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
-            </div>
+  return (
+    <div className="cronJobs">
+      <Toolbar mobile={false} >
+        <LeftButton name={i18n['Add Cron Job']} href="/add/cron" showLeftMenu={true} />
+        <div className="r-menu">
+          <div className="input-group input-group-sm">
+            <button onClick={handleCronNotifications} className="button-extra" type="submit">
+              {state.cronReports === 'yes' ? i18n['turn off notifications'] : i18n['turn on notifications']}
+            </button>
+            <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
+            <Select list='cronList' bulkAction={bulk} />
+            <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="cronList" />
+            <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
           </div>
-        </Toolbar>
-        <div className="cron-wrapper">
-          {loading ? <Spinner /> : this.cronJobs()}
         </div>
-        <div className="total">{totalAmount}</div>
-        <Modal
-          onSave={this.modalConfirmHandler}
-          onCancel={this.modalCancelHandler}
-          show={modalVisible}
-          text={modalText} />
+      </Toolbar>
+      <div className="cron-wrapper">
+        {state.loading ? <Spinner /> : cronJobs()}
       </div>
-    );
-  }
+      <div className="total">{state.totalAmount}</div>
+      <Modal
+        onSave={modalConfirmHandler}
+        onCancel={modalCancelHandler}
+        show={state.modalVisible}
+        text={state.modalText} />
+    </div>
+  );
 }
 
 export default CronJobs;

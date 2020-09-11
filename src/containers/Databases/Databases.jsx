@@ -24,7 +24,7 @@ const Databases = props => {
   const [state, setState] = useState({
     databases: [],
     dbFav: [],
-    loading: false,
+    loading: true,
     toggleAll: false,
     modalText: '',
     modalVisible: false,
@@ -73,7 +73,6 @@ const Databases = props => {
   }
 
   const initFocusedElement = databases => {
-    console.log(databases);
     databases[0]['FOCUSED'] = databases[0]['NAME'];
     setState({ ...state, databases });
     dispatch(addControlPanelContentFocusedElement(databases[0]['NAME']));
@@ -163,6 +162,7 @@ const Databases = props => {
     getDatabaseList()
       .then(result => {
         setState({
+          ...state,
           databases: reformatData(result.data.data),
           dbAdmin: result.data.db_admin,
           dbAdminLink: result.data.db_admin_link,
@@ -358,7 +358,7 @@ const Databases = props => {
         <LeftButton name="Add Database" href="/add/db" showLeftMenu={true} />
         <div className="r-menu">
           <div className="input-group input-group-sm">
-            <a href={state.dbAdminLink} className="button-extra" type="submit">{state.db_admin}</a>
+            <a href={state.dbAdminLink} className="button-extra" type="submit">{state.dbAdmin}</a>
             <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
             <Select list='dbList' bulkAction={bulk} />
             <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="dbList" />
