@@ -1,69 +1,94 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ListItem from '../ControlPanel/ListItem/ListItem';
 import Container from '../ControlPanel/Container/Container';
 import './CronJob.scss';
 
-class CronJob extends Component {
-  toggleFav = (starred) => {
+const CronJob = props => {
+  const { data } = props;
+  const { i18n } = window.GLOBAL.App;
+  const token = localStorage.getItem("token");
+
+  const toggleFav = (starred) => {
     if (starred) {
-      this.props.toggleFav(this.props.data.NAME, 'add');
+      props.toggleFav(props.data.NAME, 'add');
     } else {
-      this.props.toggleFav(this.props.data.NAME, 'delete');
+      props.toggleFav(props.data.NAME, 'delete');
     }
   }
 
-  checkItem = () => {
-    this.props.checkItem(this.props.data.NAME);
+  const checkItem = () => {
+    props.checkItem(props.data.NAME);
   }
 
-  render() {
-    const { data } = this.props;
-    const { i18n } = window.GLOBAL.App;
-    const token = localStorage.getItem("token");
+  const handleSuspend = () => {
+    let suspendedStatus = data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend' === 'yes' ? 'unsuspend' : 'suspend';
+    props.handleModal(data.suspend_conf, `/${suspendedStatus}/cron/?job=${data.NAME}&token=${token}`);
+  }
 
-    return (
-      <ListItem checked={data.isChecked} date={data.DATE} starred={data.STARRED} toggleFav={this.toggleFav} checkItem={this.checkItem} suspended={data.SUSPENDED === 'yes'}>
-        <Container className="cron-jobs-list r-col w-85">
-          <div className="name">{data.CMD}</div>
-          <div className="stats">
-            <Container className="cron-col">
-              <div>{i18n.Min} <span>{data.MIN}</span></div>
-            </Container>
-            <Container className="cron-col">
-              <div>{i18n.Hour} <span>{data.HOUR}</span></div>
-            </Container>
-            <Container className="cron-col">
-              <div>{i18n.Day} <span>{data.DAY}</span></div>
-            </Container>
-            <Container className="cron-col">
-              <div>{i18n.Month} <span>{data.MONTH}</span></div>
-            </Container>
-            <Container className="cron-col">
-              <div>{i18n['Day of week']} <span>{data.WDAY}</span></div>
-            </Container>
-          </div>
-        </Container>
-        <div className="actions">
-          <div><a className="link-edit" href={`/edit/cron/?job=${data.JOB}`}>{i18n.edit} <FontAwesomeIcon icon="pen" /></a></div>
-          <div>
-            <button
-              className="link-gray"
-              onClick={() => this.props.handleModal(data.suspend_conf, `/${data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend'}/cron?job=${data.NAME}&token=${token}`)}>
-              {data.suspend_action}
-              <FontAwesomeIcon icon={data.SUSPENDED === 'yes' ? 'unlock' : 'lock'} />
-            </button>
-          </div>
-          <div>
-            <button className="link-delete" onClick={() => this.props.handleModal(data.delete_conf, `/delete/cron?job=${data.NAME}&token=${token}`)}>
-              {i18n.Delete}
-              <FontAwesomeIcon icon="times" />
-            </button>
-          </div>
+  const handleDelete = () => {
+    props.handleModal(data.delete_conf, `/delete/cron/?job=${data.NAME}&token=${token}`);
+  }
+
+  return (
+    <ListItem
+      id={data.NAME}
+      date={data.DATE}
+      checkItem={checkItem}
+      toggleFav={toggleFav}
+      focused={data.FOCUSED}
+      starred={data.STARRED}
+      checked={data.isChecked}
+      suspended={data.SUSPENDED === 'yes'}>
+
+      <Container className="cron-jobs-list r-col w-85">
+        <div className="name">{data.CMD}</div>
+        <div className="stats">
+          <Container className="cron-col">
+            <div>{i18n.Min} <span>{data.MIN}</span></div>
+          </Container>
+          <Container className="cron-col">
+            <div>{i18n.Hour} <span>{data.HOUR}</span></div>
+          </Container>
+          <Container className="cron-col">
+            <div>{i18n.Day} <span>{data.DAY}</span></div>
+          </Container>
+          <Container className="cron-col">
+            <div>{i18n.Month} <span>{data.MONTH}</span></div>
+          </Container>
+          <Container className="cron-col">
+            <div>{i18n['Day of week']} <span>{data.WDAY}</span></div>
+          </Container>
         </div>
-      </ListItem>
-    );
-  }
+      </Container>
+      <div className="actions">
+
+        <div>
+          <a className="link-edit" href={`/edit/cron/?job=${data.NAME}`}>
+            {i18n.edit}
+            {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
+          </a>
+        </div>
+
+        <div>
+          <button
+            className="link-gray"
+            onClick={() => handleSuspend()}>
+            {i18n[data.suspend_action]}
+            {data.FOCUSED ? <span className="shortcut-button">S</span> : <FontAwesomeIcon icon={data.SUSPENDED === 'yes' ? 'unlock' : 'lock'} />}
+          </button>
+        </div>
+
+        <div>
+          <button className="link-delete" onClick={() => handleDelete()}>
+            {i18n.Delete}
+            {data.FOCUSED ? <span className="shortcut-button del">Del</span> : <FontAwesomeIcon icon="times" />}
+          </button>
+        </div>
+
+      </div>
+    </ListItem>
+  );
 }
 
 export default CronJob;
