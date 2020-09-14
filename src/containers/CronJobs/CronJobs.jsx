@@ -25,7 +25,7 @@ const CronJobs = props => {
     cronJobs: [],
     cronFav: [],
     loading: true,
-    toggleAll: false,
+    toggledAll: false,
     modalText: '',
     modalVisible: false,
     modalActionUrl: '',
@@ -177,6 +177,7 @@ const CronJobs = props => {
 
     for (let i in data) {
       data[i]['NAME'] = i;
+      data[i]['isChecked'] = false;
       data[i]['FOCUSED'] = controlPanelFocusedElement === i;
       cronJobs.push(data[i]);
     }
@@ -222,7 +223,8 @@ const CronJobs = props => {
     let cronDuplicate = cronJobs;
     let checkedItem = duplicate.indexOf(name);
 
-    cronDuplicate[name]['isChecked'] = !cronDuplicate[name]['isChecked'];
+    let incomingItem = cronDuplicate.findIndex(cronJob => cronJob.NAME === name);
+    cronDuplicate[incomingItem].isChecked = !cronDuplicate[incomingItem].isChecked;
 
     if (checkedItem !== -1) {
       duplicate.splice(checkedItem, 1);
@@ -283,25 +285,24 @@ const CronJobs = props => {
   }
 
   const toggleAll = toggled => {
-    const { cronJobs } = state;
-    setState({ ...state, toggledAll: toggled });
+    const cronJobsDuplicate = [...state.cronJobs];
 
-    if (state.toggledAll) {
+    if (toggled) {
       let cronJobNames = [];
 
-      for (let i in cronJobs) {
-        cronJobNames.push(i);
+      let cronJobs = cronJobsDuplicate.map(cronJob => {
+        cronJobNames.push(cronJob.NAME);
+        cronJob.isChecked = true;
+        return cronJob;
+      });
 
-        cronJobs[i]['isChecked'] = true;
-      }
-
-      setState({ ...state, cronJobs, selection: cronJobNames });
+      setState({ ...state, cronJobs, selection: cronJobNames, toggledAll: toggled });
     } else {
-      for (let i in cronJobs) {
-        cronJobs[i]['isChecked'] = false;
-      }
-
-      setState({ ...state, cronJobs, selection: [] });
+      let cronJobs = cronJobsDuplicate.map(cronJob => {
+        cronJob.isChecked = false;
+        return cronJob;
+      });
+      setState({ ...state, cronJobs, selection: [], toggledAll: toggled });
     }
   }
 

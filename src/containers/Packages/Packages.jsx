@@ -17,7 +17,7 @@ class Packages extends Component {
     packages: [],
     packagesFav: [],
     loading: false,
-    toggleAll: false,
+    toggledAll: false,
     modalText: '',
     modalVisible: false,
     modalActionUrl: '',
@@ -54,7 +54,7 @@ class Packages extends Component {
   }
 
   toggleAll = () => {
-    this.setState({ toggleAll: !this.state.toggleAll });
+    this.setState({ toggledAll: !this.state.toggledAll });
   }
 
   packages = () => {

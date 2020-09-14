@@ -231,7 +231,8 @@ const DomainNameSystems = props => {
     let domainNameSystemsDuplicate = domainNameSystems;
     let checkedItem = duplicate.indexOf(name);
 
-    domainNameSystemsDuplicate[name]['isChecked'] = !domainNameSystemsDuplicate[name]['isChecked'];
+    let incomingItem = domainNameSystemsDuplicate.findIndex(domainNameSystem => domainNameSystem.NAME === name);
+    domainNameSystemsDuplicate[incomingItem].isChecked = !domainNameSystemsDuplicate[incomingItem].isChecked;
 
     if (checkedItem !== -1) {
       duplicate.splice(checkedItem, 1);
@@ -295,20 +296,25 @@ const DomainNameSystems = props => {
   }
 
   const toggleAll = toggled => {
-    setState({ ...state, toggledAll: toggled });
-    if (state.toggledAll) {
+    const domainNameSystemsDuplicate = [...state.domainNameSystems];
+
+    if (toggled) {
       let domainNameSystemsNames = [];
 
-      let domainNameSystems = state.domainNameSystems.map(domainNameSystem => {
+      let domainNameSystems = domainNameSystemsDuplicate.map(domainNameSystem => {
         domainNameSystemsNames.push(domainNameSystem.NAME);
         domainNameSystem.isChecked = true;
+        return domainNameSystem;
       });
 
-      setState({ ...state, domainNameSystems, selection: domainNameSystemsNames });
+      setState({ ...state, domainNameSystems, selection: domainNameSystemsNames, toggledAll: toggled });
     } else {
-      let domainNameSystems = state.domainNameSystems.map(domainNameSystem => domainNameSystem.isChecked = false);
+      let domainNameSystems = domainNameSystemsDuplicate.map(domainNameSystem => {
+        domainNameSystem.isChecked = false;
+        return domainNameSystem;
+      });
 
-      setState({ ...state, domainNameSystems, selection: [] });
+      setState({ ...state, domainNameSystems, selection: [], toggledAll: toggled });
     }
   }
 

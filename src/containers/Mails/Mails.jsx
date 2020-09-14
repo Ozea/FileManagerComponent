@@ -26,7 +26,7 @@ const Mails = props => {
     mails: [],
     mailFav: [],
     loading: true,
-    toggleAll: false,
+    toggledAll: false,
     modalText: '',
     modalVisible: false,
     modalActionUrl: '',
@@ -172,6 +172,7 @@ const Mails = props => {
     getMailList()
       .then(result => {
         setState({
+          ...state,
           mails: reformatData(result.data.data),
           webMail: result.data.webMail,
           mailFav: result.data.mailFav,
@@ -231,7 +232,8 @@ const Mails = props => {
     let mailsDuplicate = mails;
     let checkedItem = duplicate.indexOf(name);
 
-    mailsDuplicate[name]['isChecked'] = !mailsDuplicate[name]['isChecked'];
+    let incomingItem = mailsDuplicate.findIndex(mail => mail.NAME === name);
+    mailsDuplicate[incomingItem].isChecked = !mailsDuplicate[incomingItem].isChecked;
 
     if (checkedItem !== -1) {
       duplicate.splice(checkedItem, 1);
@@ -294,25 +296,25 @@ const Mails = props => {
   }
 
   const toggleAll = toggled => {
-    const { mails } = state;
-    setState({ ...state, toggledAll: toggled });
+    const mailsDuplicate = [...state.mails];
 
-    if (state.toggledAll) {
+    if (toggled) {
       let mailNames = [];
 
-      for (let i in mails) {
-        mailNames.push(i);
+      let mails = mailsDuplicate.map(mail => {
+        mailNames.push(mail.NAME);
+        mail.isChecked = true;
+        return mail;
+      });
 
-        mails[i]['isChecked'] = true;
-      }
-
-      setState({ ...state, mails, selection: mailNames });
+      setState({ ...state, mails, selection: mailNames, toggledAll: toggled });
     } else {
-      for (let i in mails) {
-        mails[i]['isChecked'] = false;
-      }
+      let mails = mailsDuplicate.map(mail => {
+        mail.isChecked = false;
+        return mail;
+      });
 
-      setState({ ...state, mails, selection: [] });
+      setState({ ...state, mails, selection: [], toggledAll: toggled });
     }
   }
 

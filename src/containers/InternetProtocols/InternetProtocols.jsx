@@ -17,7 +17,7 @@ class InternetProtocols extends Component {
     internetProtocols: [],
     ipFav: [],
     loading: false,
-    toggleAll: false,
+    toggledAll: false,
     modalText: '',
     modalVisible: false,
     modalActionUrl: '',
@@ -54,7 +54,7 @@ class InternetProtocols extends Component {
   }
 
   toggleAll = () => {
-    this.setState({ toggleAll: !this.state.toggleAll });
+    this.setState({ toggledAll: !this.state.toggledAll });
   }
 
   dns = () => {

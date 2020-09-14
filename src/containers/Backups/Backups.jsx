@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
+import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
 import { bulkAction, getBackupList, handleAction } from '../../ControlPanelService/Backup';
+import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
@@ -10,72 +12,200 @@ import Modal from '../../components/ControlPanel/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
 import Backup from '../../components/Backup/Backup';
 import './Backups.scss';
+import { useSelector, useDispatch } from 'react-redux';
 
-class Backups extends Component {
-  state = {
+const Backups = props => {
+  const { i18n } = window.GLOBAL.App;
+  const token = localStorage.getItem("token");
+  const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
+  const { focusedElement } = useSelector(state => state.mainNavigation);
+  const dispatch = useDispatch();
+  const [state, setState] = useState({
     backups: [],
     backupFav: [],
-    loading: false,
+    loading: true,
     modalText: '',
     modalVisible: false,
     modalActionUrl: '',
-    toggleAll: false,
+    toggledAll: false,
     selection: [],
     totalAmount: ''
-  }
+  });
 
-  componentDidMount() {
-    this.fetchData();
-  }
+  useEffect(() => {
+    dispatch(removeControlPanelContentFocusedElement());
+    fetchData();
 
-  fetchData = () => {
-    this.setState({ loading: true }, () => {
-      getBackupList()
-        .then(result => {
-          this.setState({
-            backups: result.data.data,
-            backupFav: result.data.backup_fav,
-            totalAmount: result.data.totalAmount,
-            loading: false
-          });
-        })
-        .catch(err => console.error(err));
-    });
-  }
+    return () => {
+      dispatch(removeControlPanelContentFocusedElement());
+    }
+  }, []);
 
-  toggleAll = () => {
-    this.setState({ toggleAll: !this.state.toggleAll });
-  }
+  useEffect(() => {
+    window.addEventListener("keydown", handleContentSelection);
+    window.addEventListener("keydown", handleFocusedElementShortcuts);
 
-  backups = () => {
-    const { backups } = this.state;
-    const result = [];
-    const backupFav = { ...this.state.backupFav };
+    return () => {
+      window.removeEventListener("keydown", handleContentSelection);
+      window.removeEventListener("keydown", handleFocusedElementShortcuts);
+    };
+  }, [controlPanelFocusedElement, focusedElement, state.backups]);
 
-    for (let i in backups) {
-      backups[i]['NAME'] = i;
-
-      if (backupFav[i]) {
-        backups[i]['STARRED'] = backupFav[i];
-      } else {
-        backups[i]['STARRED'] = 0;
+  const handleContentSelection = event => {
+    if (event.keyCode === 38 || event.keyCode === 40) {
+      if (focusedElement) {
+        dispatch(MainNavigation.removeFocusedElement());
       }
-
-      result.push(backups[i]);
     }
 
+    if (event.keyCode === 38) {
+      event.preventDefault();
+      handleArrowUp();
+    } else if (event.keyCode === 40) {
+      event.preventDefault();
+      handleArrowDown();
+    }
+  }
+
+  const initFocusedElement = backups => {
+    backups[0]['FOCUSED'] = backups[0]['NAME'];
+    setState({ ...state, backups });
+    dispatch(addControlPanelContentFocusedElement(backups[0]['NAME']));
+  }
+
+  const handleArrowDown = () => {
+    let backups = [...state.backups];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(backups);
+      return;
+    }
+
+    let focusedElementPosition = backups.findIndex(backup => backup.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== backups.length - 1) {
+      let nextFocusedElement = backups[focusedElementPosition + 1];
+      backups[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, backups });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const handleArrowUp = () => {
+    let backups = [...state.backups];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(backups);
+      return;
+    }
+
+    let focusedElementPosition = backups.findIndex(backup => backup.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== 0) {
+      let nextFocusedElement = backups[focusedElementPosition - 1];
+      backups[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, backups });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const handleFocusedElementShortcuts = event => {
+    let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
+
+    if (controlPanelFocusedElement && !isSearchInputFocused) {
+      switch (event.keyCode) {
+        case 8: return handleDelete();
+        case 13: return configureRestoreSettings();
+        case 68: return download();
+        default: break;
+      }
+    }
+  }
+
+  const configureRestoreSettings = () => {
+    props.history.push(`/list/backup?backup=${controlPanelFocusedElement}`);
+  }
+
+  const download = () => {
+    props.history.push(`/download/backup?backup=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const handleDelete = () => {
+    const { backups } = state;
+    let currentBackupData = backups.filter(backup => backup.NAME === controlPanelFocusedElement)[0];
+
+    displayModal(currentBackupData.delete_conf, `/delete/cron/?job=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const fetchData = () => {
+    getBackupList()
+      .then(result => {
+        setState({
+          ...state,
+          backups: reformatData(result.data.data),
+          backupFav: result.data.backup_fav,
+          totalAmount: result.data.totalAmount,
+          loading: false
+        });
+      })
+      .catch(err => console.error(err));
+  }
+
+  const reformatData = data => {
+    let backups = [];
+
+    for (let i in data) {
+      data[i]['NAME'] = i;
+      data[i]['isChecked'] = false;
+      data[i]['FOCUSED'] = controlPanelFocusedElement === i;
+      backups.push(data[i]);
+    }
+
+    return backups;
+  }
+
+  const backups = () => {
+    const { backups } = state;
+    const result = [];
+    const backupFav = { ...state.backupFav };
+
+    backups.forEach(backup => {
+      backup.FOCUSED = controlPanelFocusedElement === backup.NAME;
+
+      if (backupFav[backup.NAME]) {
+        backup.STARRED = backupFav[backup.NAME];
+      } else {
+        backup.STARRED = 0;
+      }
+
+      result.push(backup);
+    });
+
     return result.map((item, index) => {
-      return <Backup data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
+      return <Backup data={item} key={index} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
     });
   }
 
-  checkItem = name => {
-    const { selection, backups } = this.state;
+  const checkItem = name => {
+    const { selection, backups } = state;
     let duplicate = [...selection];
-    let backupDuplicate = backups;
+    let backupDuplicate = [...backups];
     let checkedItem = duplicate.indexOf(name);
 
-    backupDuplicate[name]['isChecked'] = !backupDuplicate[name]['isChecked'];
+    let incomingItem = backupDuplicate.findIndex(backup => backup.NAME === name);
+    backupDuplicate[incomingItem].isChecked = !backupDuplicate[incomingItem].isChecked;
 
     if (checkedItem !== -1) {
       duplicate.splice(checkedItem, 1);
@@ -83,11 +213,11 @@ class Backups extends Component {
       duplicate.push(name);
     }
 
-    this.setState({ backups: backupDuplicate, selection: duplicate });
+    setState({ ...state, backups: backupDuplicate, selection: duplicate });
   }
 
-  toggleFav = (value, type) => {
-    const { backupFav } = this.state;
+  const toggleFav = (value, type) => {
+    const { backupFav } = state;
     let backupFavDuplicate = backupFav;
 
     if (type === 'add') {
@@ -95,7 +225,7 @@ class Backups extends Component {
 
       addFavorite(value, 'backup')
         .then(() => {
-          this.setState({ backupFav: backupFavDuplicate });
+          setState({ ...state, backupFav: backupFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -105,7 +235,7 @@ class Backups extends Component {
 
       deleteFavorite(value, 'backup')
         .then(() => {
-          this.setState({ backupFav: backupFavDuplicate });
+          setState({ ...state, backupFav: backupFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -113,97 +243,94 @@ class Backups extends Component {
     }
   }
 
-  toggleAll = toggled => {
-    const { backups } = this.state;
-    this.setState({ toggledAll: toggled }, () => {
-      if (this.state.toggledAll) {
-        let backupNames = [];
+  const toggleAll = toggled => {
+    const backupsDuplicate = [...state.backups];
 
-        for (let i in backups) {
-          backupNames.push(i);
+    if (toggled) {
+      let backupNames = [];
 
-          backups[i]['isChecked'] = true;
-        }
-
-        this.setState({ backups, selection: backupNames });
-      } else {
-        for (let i in backups) {
-          backups[i]['isChecked'] = false;
-        }
-
-        this.setState({ backups, selection: [] });
-      }
-    });
-  }
-
-  bulk = action => {
-    const { selection } = this.state;
-
-    if (selection.length && action) {
-      this.setState({ loading: true }, () => {
-        bulkAction(action, selection)
-          .then(result => {
-            if (result.status === 200) {
-              this.fetchData();
-              this.toggleAll(false);
-            }
-          })
-          .catch(err => console.error(err));
+      let backups = backupsDuplicate.map(backup => {
+        backupNames.push(backup.NAME);
+        backup.isChecked = true;
+        return backup;
       });
+
+      setState({ ...state, backups, selection: backupNames, toggledAll: toggled });
+    } else {
+      let backups = backupsDuplicate.map(backup => {
+        backup.isChecked = false;
+        return backup;
+      });
+      setState({ ...state, backups, selection: [], toggledAll: toggled });
     }
   }
 
-  displayModal = (text, url) => {
-    this.setState({
-      modalVisible: !this.state.modalVisible,
+  const bulk = action => {
+    const { selection } = state;
+
+    if (selection.length && action) {
+      bulkAction(action, selection)
+        .then(result => {
+          if (result.status === 200) {
+            fetchData();
+            toggleAll(false);
+          }
+        })
+        .catch(err => console.error(err));
+    }
+  }
+
+  const displayModal = (text, url) => {
+    setState({
+      ...state,
+      modalVisible: !state.modalVisible,
       modalText: text,
       modalActionUrl: url
     });
   }
 
-  modalConfirmHandler = () => {
-    handleAction(this.state.modalActionUrl)
+  const modalConfirmHandler = () => {
+    handleAction(state.modalActionUrl)
       .then(() => {
-        this.fetchData();
-        this.modalCancelHandler();
+        fetchData();
+        modalCancelHandler();
       })
       .catch(err => console.error(err));
   }
 
-  modalCancelHandler = () => {
-    this.setState({
+  const modalCancelHandler = () => {
+    setState({
+      ...state,
       modalVisible: false,
       modalText: '',
       modalActionUrl: ''
     });
   }
 
-  render() {
-    return (
-      <div className="backups">
-        <Toolbar mobile={false} >
-          <LeftButton name={window.GLOBAL.App.i18n["Create Backup"]} href="/schedule/backup" showLeftMenu={true} />
-          <div className="r-menu">
-            <div className="input-group input-group-sm">
-              <a href='/list/backup/exclusions/' className="button-extra" type="submit">{window.GLOBAL.App.i18n['backup exclusions']}</a>
-              <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
-              <Select list='backupList' bulkAction={this.bulk} />
-              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
-            </div>
+  return (
+    <div className="backups">
+      <Toolbar mobile={false} >
+        <LeftButton name={i18n["Create Backup"]} href="/schedule/backup" showLeftMenu={true} />
+        <div className="r-menu">
+          <div className="input-group input-group-sm">
+            <a href='/list/backup/exclusions/' className="button-extra" type="submit">{i18n['backup exclusions']}</a>
+            <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
+            <Select list='backupList' bulkAction={bulk} />
+            <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
           </div>
-        </Toolbar>
-        <div className="backups-wrapper">
-          {this.state.loading ? <Spinner /> : this.backups()}
         </div>
-        <div className="total">{this.state.totalAmount}</div>
-        <Modal
-          onSave={this.modalConfirmHandler}
-          onCancel={this.modalCancelHandler}
-          show={this.state.modalVisible}
-          text={this.state.modalText} />
+      </Toolbar>
+      <div className="backups-wrapper">
+        {state.loading ? <Spinner /> : backups()}
       </div>
-    );
-  }
+      <div className="total">{state.totalAmount}</div>
+      <Modal
+        onSave={modalConfirmHandler}
+        onCancel={modalCancelHandler}
+        show={state.modalVisible}
+        text={state.modalText} />
+    </div>
+  );
 }
 
 export default Backups;

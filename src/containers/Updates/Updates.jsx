@@ -18,7 +18,7 @@ class Updates extends Component {
     autoUpdate: '',
     token: '',
     loading: false,
-    toggleAll: false
+    toggledAll: false
   }
 
   componentDidMount() {
@@ -55,7 +55,7 @@ class Updates extends Component {
   }
 
   toggleAll = () => {
-    this.setState({ toggleAll: !this.state.toggleAll });
+    this.setState({ toggledAll: !this.state.toggledAll });
   }
 
   checkItem = name => {
