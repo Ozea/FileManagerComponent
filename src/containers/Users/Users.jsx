@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
+import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
+import { bulkAction, getUsersList, handleAction } from '../../ControlPanelService/Users';
+import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
-import { bulkAction, getUsersList, handleAction } from '../../ControlPanelService/Users';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Modal from '../../components/ControlPanel/Modal/Modal';
+import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import User from '../../components/User/User';
 import './Users.scss';
-
-import { useDispatch, useSelector } from 'react-redux';
-import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
-import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 
 const Users = props => {
   const { i18n } = window.GLOBAL.App;
@@ -44,6 +43,10 @@ const Users = props => {
       dispatch(removeControlPanelContentFocusedElement());
     }
   }, []);
+
+  useEffect(() => {
+    console.log(state.toggledAll);
+  }, [state.toggledAll]);
 
   useEffect(() => {
     window.addEventListener("keydown", handleContentSelection);
@@ -193,6 +196,7 @@ const Users = props => {
 
     for (let i in data) {
       data[i]['NAME'] = i;
+      data[i]['isChecked'] = false;
       data[i]['FOCUSED'] = controlPanelFocusedElement === i;
       users.push(data[i]);
     }
@@ -222,9 +226,13 @@ const Users = props => {
   }
 
   const checkItem = name => {
-    let duplicate = [...state.selection];
+    const { selection, users } = state;
+    let duplicate = [...selection];
+    let userDuplicate = [...users];
     let checkedItem = duplicate.indexOf(name);
-    let users = state.users.map(user => user.NAME === name ? user.isChecked = !user.isChecked : null);
+
+    let incomingItem = userDuplicate.findIndex(user => user.NAME === name);
+    userDuplicate[incomingItem].isChecked = !userDuplicate[incomingItem].isChecked;
 
     if (checkedItem !== -1) {
       duplicate.splice(checkedItem, 1);
@@ -232,7 +240,7 @@ const Users = props => {
       duplicate.push(name);
     }
 
-    setState({ ...state, users, selection: duplicate });
+    setState({ ...state, users: userDuplicate, selection: duplicate });
   }
 
   const sortArray = array => {
@@ -285,26 +293,32 @@ const Users = props => {
   }
 
   const toggleAll = toggled => {
-    setState({ ...state, toggledAll: toggled });
-    if (state.toggledAll) {
+    const usersDuplicate = [...state.users];
+
+    if (toggled) {
       let userNames = [];
 
-      let users = state.users.map(user => {
+      let users = usersDuplicate.map(user => {
         userNames.push(user.NAME);
         user.isChecked = true;
+        return user;
       });
 
-      setState({ ...state, users, selection: userNames });
+      setState({ ...state, users, selection: userNames, toggledAll: toggled });
     } else {
-      let users = state.users.map(user => user.isChecked = false);
+      let users = usersDuplicate.map(user => {
+        user.isChecked = false;
+        return user;
+      });
 
-      setState({ ...state, users, selection: [] });
+      setState({ ...state, users, selection: [], toggledAll: toggled });
     }
   }
 
   const bulk = action => {
     if (state.selection.length && action) {
       setState({ ...state, loading: true });
+
       bulkAction(action, state.selection)
         .then(result => {
           if (result.status === 200) {

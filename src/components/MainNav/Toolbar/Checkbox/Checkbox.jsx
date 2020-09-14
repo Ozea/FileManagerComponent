@@ -6,6 +6,8 @@ function toggleAll(props, e) {
 }
 
 const Checkbox = (props) => {
+  console.log(props);
+
   return (
     <div className="input-group-prepend">
       <div className="input-group-text">

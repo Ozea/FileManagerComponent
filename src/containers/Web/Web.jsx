@@ -222,7 +222,8 @@ const Web = props => {
     let webDomainsDuplicate = state.webDomains;
     let checkedItem = duplicate.indexOf(name);
 
-    webDomainsDuplicate[name]['isChecked'] = !webDomainsDuplicate[name]['isChecked'];
+    let incomingItem = webDomainsDuplicate.findIndex(webDomain => webDomain.NAME === name);
+    webDomainsDuplicate[incomingItem].isChecked = !webDomainsDuplicate[incomingItem].isChecked;
 
     if (checkedItem !== -1) {
       duplicate.splice(checkedItem, 1);
@@ -284,20 +285,25 @@ const Web = props => {
   }
 
   const toggleAll = toggled => {
-    setState({ ...state, toggledAll: toggled });
-    if (state.toggledAll) {
+    const webDomainsDuplicate = [...state.webDomains];
+
+    if (toggled) {
       let webDomainNames = [];
 
-      let webDomains = state.webDomains.map(webDomain => {
+      let webDomains = webDomainsDuplicate.map(webDomain => {
         webDomainNames.push(webDomain.NAME);
         webDomain.isChecked = true;
+        return webDomain;
       });
 
-      setState({ ...state, webDomains, selection: webDomainNames });
+      setState({ ...state, webDomains, selection: webDomainNames, toggledAll: toggled });
     } else {
-      let webDomains = state.webDomains.map(webDomain => webDomain.isChecked = false);
+      let webDomains = webDomainsDuplicate.map(webDomain => {
+        webDomain.isChecked = false;
+        return webDomain;
+      });
 
-      setState({ ...state, webDomains, selection: [] });
+      setState({ ...state, webDomains, selection: [], toggledAll: toggled });
     }
   }
 

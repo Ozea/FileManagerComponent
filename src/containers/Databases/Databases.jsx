@@ -25,7 +25,7 @@ const Databases = props => {
     databases: [],
     dbFav: [],
     loading: true,
-    toggleAll: false,
+    toggledAll: false,
     modalText: '',
     modalVisible: false,
     modalActionUrl: '',
@@ -224,7 +224,8 @@ const Databases = props => {
     let dbDuplicate = databases;
     let checkedItem = duplicate.indexOf(name);
 
-    dbDuplicate[name]['isChecked'] = !dbDuplicate[name]['isChecked'];
+    let incomingItem = dbDuplicate.findIndex(db => db.NAME === name);
+    dbDuplicate[incomingItem].isChecked = !dbDuplicate[incomingItem].isChecked;
 
     if (checkedItem !== -1) {
       duplicate.splice(checkedItem, 1);
@@ -288,25 +289,25 @@ const Databases = props => {
   }
 
   const toggleAll = toggled => {
-    const { databases } = state;
-    setState({ ...state, toggledAll: toggled });
+    const databasesDuplicate = [...state.databases];
 
-    if (state.toggledAll) {
-      let dbNames = [];
+    if (toggled) {
+      let dbNames = []
 
-      for (let i in databases) {
-        dbNames.push(i);
+      let databases = databasesDuplicate.map(database => {
+        dbNames.push(database.NAME);
+        database.isChecked = true;
+        return database;
+      });
 
-        databases[i]['isChecked'] = true;
-      }
-
-      setState({ ...state, databases, selection: dbNames });
+      setState({ ...state, databases, selection: dbNames, toggledAll: toggled });
     } else {
-      for (let i in databases) {
-        databases[i]['isChecked'] = false;
-      }
+      let databases = databasesDuplicate.map(database => {
+        database.isChecked = false;
+        return database;
+      });
 
-      setState({ ...state, databases, selection: [] });
+      setState({ ...state, databases, selection: [], toggledAll: toggled });
     }
   }
 
