@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
-import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
+import React, { useEffect, useState } from 'react';
+import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
 import { bulkAction, getPackageList, handleAction } from '../../ControlPanelService/Package';
+import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
+import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
@@ -10,84 +12,207 @@ import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Modal from '../../components/ControlPanel/Modal/Modal';
 import Package from '../../components/Package/Package';
 import Spinner from '../../components/Spinner/Spinner';
+import { useDispatch, useSelector } from 'react-redux';
 import './Packages.scss';
 
-class Packages extends Component {
-  state = {
+const Packages = props => {
+  const { i18n } = window.GLOBAL.App;
+  const token = localStorage.getItem("token");
+  const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
+  const { focusedElement } = useSelector(state => state.mainNavigation);
+  const dispatch = useDispatch();
+  const [state, setState] = useState({
     packages: [],
     packagesFav: [],
-    loading: false,
+    loading: true,
     toggledAll: false,
     modalText: '',
     modalVisible: false,
     modalActionUrl: '',
-    sorting: window.GLOBAL.App.i18n.Date,
+    sorting: i18n.Date,
     order: "descending",
     selection: [],
     totalAmount: ''
+  });
+
+  useEffect(() => {
+    dispatch(removeControlPanelContentFocusedElement());
+    fetchData();
+
+    return () => {
+      dispatch(removeControlPanelContentFocusedElement());
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleContentSelection);
+    window.addEventListener("keydown", handleFocusedElementShortcuts);
+
+    return () => {
+      window.removeEventListener("keydown", handleContentSelection);
+      window.removeEventListener("keydown", handleFocusedElementShortcuts);
+    };
+  }, [controlPanelFocusedElement, focusedElement, state.packages]);
+
+  const handleContentSelection = event => {
+    if (event.keyCode === 38 || event.keyCode === 40) {
+      if (focusedElement) {
+        dispatch(MainNavigation.removeFocusedElement());
+      }
+    }
+
+    if (event.keyCode === 38) {
+      event.preventDefault();
+      handleArrowUp();
+    } else if (event.keyCode === 40) {
+      event.preventDefault();
+      handleArrowDown();
+    }
   }
 
-  componentDidMount() {
-    this.fetchData();
+  const initFocusedElement = packages => {
+    packages[0]['FOCUSED'] = packages[0]['NAME'];
+    setState({ ...state, packages });
+    dispatch(addControlPanelContentFocusedElement(packages[0]['NAME']));
   }
 
-  fetchData = () => {
-    this.setState({ loading: true }, () => {
-      getPackageList()
-        .then(result => {
-          this.setState({
-            packages: result.data.data,
-            packagesFav: result.data.packagesFav,
-            totalAmount: result.data.totalAmount,
-            loading: false
-          });
-        })
-        .catch(err => console.error(err));
-    });
+  const handleArrowDown = () => {
+    let packages = [...state.packages];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(packages);
+      return;
+    }
+
+    let focusedElementPosition = packages.findIndex(pack => pack.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== packages.length - 1) {
+      let nextFocusedElement = packages[focusedElementPosition + 1];
+      packages[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, packages });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
   }
 
-  changeSorting = (sorting, order) => {
-    this.setState({
+  const handleArrowUp = () => {
+    let packages = [...state.packages];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(packages);
+      return;
+    }
+
+    let focusedElementPosition = packages.findIndex(pack => pack.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== 0) {
+      let nextFocusedElement = packages[focusedElementPosition - 1];
+      packages[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, packages });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const handleFocusedElementShortcuts = event => {
+    let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
+
+    if (controlPanelFocusedElement && !isSearchInputFocused) {
+      switch (event.keyCode) {
+        case 8: return handleDelete();
+        case 13: return handleEdit();
+        default: break;
+      }
+    }
+  }
+
+  const handleEdit = () => {
+    props.history.push(`/edit/package/?package=${controlPanelFocusedElement}`);
+  }
+
+  const handleDelete = () => {
+    const { packages } = state;
+    let currentPackageData = packages.filter(pack => pack.NAME === controlPanelFocusedElement)[0];
+
+    displayModal(currentPackageData.delete_conf, `/delete/package/?package=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const fetchData = () => {
+    getPackageList()
+      .then(result => {
+        setState({
+          ...state,
+          packages: reformatData(result.data.data),
+          packagesFav: result.data.packagesFav,
+          totalAmount: result.data.totalAmount,
+          loading: false
+        });
+      })
+      .catch(err => console.error(err));
+  }
+
+  const reformatData = data => {
+    let packages = [];
+
+    for (let i in data) {
+      data[i]['NAME'] = i;
+      data[i]['FOCUSED'] = controlPanelFocusedElement === i;
+      packages.push(data[i]);
+    }
+
+    return packages;
+  }
+
+  const changeSorting = (sorting, order) => {
+    setState({
+      ...state,
       sorting,
       order
     });
   }
 
-  toggleAll = () => {
-    this.setState({ toggledAll: !this.state.toggledAll });
-  }
-
-  packages = () => {
-    const { packages } = this.state;
-    const packagesFav = { ...this.state.packagesFav };
+  const packages = () => {
+    const { packages } = state;
+    const packagesFav = { ...state.packagesFav };
     const result = [];
 
-    for (let i in packages) {
-      packages[i]['NAME'] = i;
+    packages.forEach(pack => {
+      pack.FOCUSED = controlPanelFocusedElement === pack.NAME;
 
-      if (packagesFav[i]) {
-        packages[i]['STARRED'] = packagesFav[i];
+      if (packagesFav[pack.NAME]) {
+        pack.STARRED = packagesFav[pack.NAME];
       } else {
-        packages[i]['STARRED'] = 0;
+        pack.STARRED = 0;
       }
 
-      result.push(packages[i]);
-    }
+      result.push(pack);
+    });
 
-    let sortedResult = this.sortArray(result);
+    let sortedResult = sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <Package data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
+      return <Package data={item} key={index} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
     });
   }
 
-  checkItem = name => {
-    const { selection, packages } = this.state;
+  const checkItem = name => {
+    const { selection, packages } = state;
     let duplicate = [...selection];
     let packagesDuplicate = packages;
     let checkedItem = duplicate.indexOf(name);
 
-    packagesDuplicate[name]['isChecked'] = !packagesDuplicate[name]['isChecked'];
+    let incomingItem = packagesDuplicate.findIndex(pack => pack.NAME === name);
+    packagesDuplicate[incomingItem].isChecked = !packagesDuplicate[incomingItem].isChecked;
 
     if (checkedItem !== -1) {
       duplicate.splice(checkedItem, 1);
@@ -95,33 +220,33 @@ class Packages extends Component {
       duplicate.push(name);
     }
 
-    this.setState({ packages: packagesDuplicate, selection: duplicate });
+    setState({ ...state, packages: packagesDuplicate, selection: duplicate });
   }
 
-  sortArray = array => {
-    const { order, sorting } = this.state;
-    let sortBy = this.sortBy(sorting);
+  const sortArray = array => {
+    const { order, sorting } = state;
+    let sortingColumn = sortBy(sorting);
 
     if (order === "descending") {
-      return array.sort((a, b) => (a[sortBy] < b[sortBy]) ? 1 : ((b[sortBy] < a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] < b[sortingColumn]) ? 1 : ((b[sortingColumn] < a[sortingColumn]) ? -1 : 0));
     } else {
-      return array.sort((a, b) => (a[sortBy] > b[sortBy]) ? 1 : ((b[sortBy] > a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] > b[sortingColumn]) ? 1 : ((b[sortingColumn] > a[sortingColumn]) ? -1 : 0));
     }
   }
 
-  sortBy = sorting => {
-    const { Date, Starred } = window.GLOBAL.App.i18n;
+  const sortBy = sorting => {
+    const { Date, Starred } = i18n;
 
     switch (sorting) {
       case Date: return 'DATE';
-      case window.GLOBAL.App.i18n['Package Name']: return 'NAME';
+      case i18n['Package Name']: return 'NAME';
       case Starred: return 'STARRED';
       default: break;
     }
   }
 
-  toggleFav = (value, type) => {
-    const { packagesFav } = this.state;
+  const toggleFav = (value, type) => {
+    const { packagesFav } = state;
     let packagesFavDuplicate = packagesFav;
 
     if (type === 'add') {
@@ -129,7 +254,7 @@ class Packages extends Component {
 
       addFavorite(value, 'package')
         .then(() => {
-          this.setState({ packagesFav: packagesFavDuplicate });
+          setState({ ...state, packagesFav: packagesFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -139,7 +264,7 @@ class Packages extends Component {
 
       deleteFavorite(value, 'package')
         .then(() => {
-          this.setState({ packagesFav: packagesFavDuplicate });
+          setState({ ...state, packagesFav: packagesFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -147,98 +272,97 @@ class Packages extends Component {
     }
   }
 
-  toggleAll = toggled => {
-    const { packages } = this.state;
+  const toggleAll = toggled => {
+    const packagesDuplicate = [...state.packages];
 
-    this.setState({ toggledAll: toggled }, () => {
-      if (this.state.toggledAll) {
-        let packageNames = [];
+    if (toggled) {
+      let packageNames = [];
 
-        for (let i in packages) {
-          packageNames.push(i);
-
-          packages[i]['isChecked'] = true;
-        }
-
-        this.setState({ packages, selection: packageNames });
-      } else {
-        for (let i in packages) {
-          packages[i]['isChecked'] = false;
-        }
-
-        this.setState({ packages, selection: [] });
-      }
-    });
-  }
-
-  bulk = action => {
-    const { selection } = this.state;
-
-    if (selection.length && action) {
-      this.setState({ loading: true }, () => {
-        bulkAction(action, selection)
-          .then(result => {
-            if (result.status === 200) {
-              this.fetchData();
-              this.toggleAll(false);
-            }
-          })
-          .catch(err => console.error(err));
+      let packages = packagesDuplicate.map(pack => {
+        packageNames.push(pack.NAME);
+        pack.isChecked = true;
+        return pack;
       });
+
+      setState({ ...state, packages, selection: packageNames, toggledAll: toggled });
+    } else {
+      let packages = packagesDuplicate.map(pack => {
+        pack.isChecked = false;
+        return pack;
+      });
+
+      setState({ ...state, packages, selection: [], toggledAll: toggled });
     }
   }
 
-  displayModal = (text, url) => {
-    this.setState({
-      modalVisible: !this.state.modalVisible,
+  const bulk = action => {
+    const { selection } = state;
+
+    if (selection.length && action) {
+      setState({ ...state, loading: true });
+
+      bulkAction(action, selection)
+        .then(result => {
+          if (result.status === 200) {
+            fetchData();
+            toggleAll(false);
+          }
+        })
+        .catch(err => console.error(err));
+    }
+  }
+
+  const displayModal = (text, url) => {
+    setState({
+      ...state,
+      modalVisible: !state.modalVisible,
       modalText: text,
       modalActionUrl: url
     });
   }
 
-  modalConfirmHandler = () => {
-    handleAction(this.state.modalActionUrl)
+  const modalConfirmHandler = () => {
+    handleAction(state.modalActionUrl)
       .then(() => {
-        this.fetchData();
-        this.modalCancelHandler();
+        fetchData();
+        modalCancelHandler();
       })
       .catch(err => console.error(err));
   }
 
-  modalCancelHandler = () => {
-    this.setState({
+  const modalCancelHandler = () => {
+    setState({
+      ...state,
       modalVisible: false,
       modalText: '',
       modalActionUrl: ''
     });
   }
 
-  render() {
-    return (
-      <div className="packages">
-        <Toolbar mobile={false} >
-          <LeftButton name={window.GLOBAL.App.i18n['Add Package']} href="/add/package/" showLeftMenu={true} />
-          <div className="r-menu">
-            <div className="input-group input-group-sm">
-              <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
-              <Select list='packagesList' bulkAction={this.bulk} />
-              <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="packagesList" />
-              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
-            </div>
+  return (
+    <div className="packages">
+      <Toolbar mobile={false} >
+        <LeftButton name={i18n['Add Package']} href="/add/package/" showLeftMenu={true} />
+        <div className="r-menu">
+          <div className="input-group input-group-sm">
+            <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
+            <Select list='packagesList' bulkAction={bulk} />
+            <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="packagesList" />
+            <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
           </div>
-        </Toolbar>
-        <div className="packages-wrapper">
-          {this.state.loading ? <Spinner /> : this.packages()}
         </div>
-        <div className="total">{this.state.totalAmount}</div>
-        <Modal
-          onSave={this.modalConfirmHandler}
-          onCancel={this.modalCancelHandler}
-          show={this.state.modalVisible}
-          text={this.state.modalText} />
+      </Toolbar>
+      <div className="packages-wrapper">
+        {state.loading ? <Spinner /> : packages()}
       </div>
-    );
-  }
+      <div className="total">{state.totalAmount}</div>
+      <Modal
+        onSave={modalConfirmHandler}
+        onCancel={modalCancelHandler}
+        show={state.modalVisible}
+        text={state.modalText} />
+    </div>
+  );
 }
 
 export default Packages;
