@@ -13,6 +13,7 @@ import Modal from '../../components/ControlPanel/Modal/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import User from '../../components/User/User';
+import { usersMock } from '../../mocks/users';
 import './Users.scss';
 
 const Users = props => {
@@ -43,10 +44,6 @@ const Users = props => {
       dispatch(removeControlPanelContentFocusedElement());
     }
   }, []);
-
-  useEffect(() => {
-    console.log(state.toggledAll);
-  }, [state.toggledAll]);
 
   useEffect(() => {
     window.addEventListener("keydown", handleContentSelection);

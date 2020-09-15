@@ -1,5 +1,7 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
+import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
+import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import { bulkAction, getIpList, handleAction } from '../../ControlPanelService/Ip';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
@@ -10,10 +12,16 @@ import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Modal from '../../components/ControlPanel/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
+import { useDispatch, useSelector } from 'react-redux';
 import './InternetProtocols.scss';
 
-class InternetProtocols extends Component {
-  state = {
+const InternetProtocols = props => {
+  const { i18n } = window.GLOBAL.App;
+  const token = localStorage.getItem("token");
+  const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
+  const { focusedElement } = useSelector(state => state.mainNavigation);
+  const dispatch = useDispatch();
+  const [state, setState] = useState({
     internetProtocols: [],
     ipFav: [],
     loading: false,
@@ -21,68 +29,184 @@ class InternetProtocols extends Component {
     modalText: '',
     modalVisible: false,
     modalActionUrl: '',
-    sorting: window.GLOBAL.App.i18n.Date,
+    sorting: i18n.Date,
     order: "descending",
     selection: [],
     totalAmount: ''
+  });
+
+  useEffect(() => {
+    dispatch(removeControlPanelContentFocusedElement());
+    fetchData();
+
+    return () => {
+      dispatch(removeControlPanelContentFocusedElement());
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleContentSelection);
+    window.addEventListener("keydown", handleFocusedElementShortcuts);
+
+    return () => {
+      window.removeEventListener("keydown", handleContentSelection);
+      window.removeEventListener("keydown", handleFocusedElementShortcuts);
+    };
+  }, [controlPanelFocusedElement, focusedElement, state.internetProtocols]);
+
+  const handleContentSelection = event => {
+    if (event.keyCode === 38 || event.keyCode === 40) {
+      if (focusedElement) {
+        dispatch(MainNavigation.removeFocusedElement());
+      }
+    }
+
+    if (event.keyCode === 38) {
+      event.preventDefault();
+      handleArrowUp();
+    } else if (event.keyCode === 40) {
+      event.preventDefault();
+      handleArrowDown();
+    }
   }
 
-  componentDidMount() {
-    this.fetchData();
+  const initFocusedElement = internetProtocols => {
+    internetProtocols[0]['FOCUSED'] = internetProtocols[0]['NAME'];
+    setState({ ...state, internetProtocols });
+    dispatch(addControlPanelContentFocusedElement(internetProtocols[0]['NAME']));
   }
 
-  fetchData = () => {
-    this.setState({ loading: true }, () => {
-      getIpList()
-        .then(result => {
-          this.setState({
-            internetProtocols: result.data.data,
-            ipFav: result.data.ipFav,
-            totalAmount: result.data.totalAmount,
-            loading: false
-          });
-        })
-        .catch(err => console.error(err));
-    });
+  const handleArrowDown = () => {
+    let internetProtocols = [...state.internetProtocols];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(internetProtocols);
+      return;
+    }
+
+    let focusedElementPosition = internetProtocols.findIndex(pack => pack.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== internetProtocols.length - 1) {
+      let nextFocusedElement = internetProtocols[focusedElementPosition + 1];
+      internetProtocols[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, internetProtocols });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
   }
 
-  changeSorting = (sorting, order) => {
-    this.setState({
+  const handleArrowUp = () => {
+    let internetProtocols = [...state.internetProtocols];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(internetProtocols);
+      return;
+    }
+
+    let focusedElementPosition = internetProtocols.findIndex(pack => pack.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== 0) {
+      let nextFocusedElement = internetProtocols[focusedElementPosition - 1];
+      internetProtocols[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, internetProtocols });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const handleFocusedElementShortcuts = event => {
+    let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
+
+    if (controlPanelFocusedElement && !isSearchInputFocused) {
+      switch (event.keyCode) {
+        case 8: return handleDelete();
+        case 13: return handleEdit();
+        default: break;
+      }
+    }
+  }
+
+  const handleEdit = () => {
+    props.history.push(`/edit/ip/?ip=${controlPanelFocusedElement}`);
+  }
+
+  const handleDelete = () => {
+    const { internetProtocols } = state;
+    let currentInternetProtocolData = internetProtocols.filter(pack => pack.NAME === controlPanelFocusedElement)[0];
+
+    displayModal(currentInternetProtocolData.delete_conf, `/delete/ip/?ip=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const fetchData = () => {
+    getIpList()
+      .then(result => {
+        setState({
+          ...state,
+          internetProtocols: reformatData(result.data.data),
+          ipFav: result.data.ipFav,
+          totalAmount: result.data.totalAmount,
+          loading: false
+        });
+      })
+      .catch(err => console.error(err));
+  }
+
+  const reformatData = data => {
+    let internetProtocols = [];
+
+    for (let i in data) {
+      data[i]['NAME'] = i;
+      data[i]['FOCUSED'] = controlPanelFocusedElement === i;
+      internetProtocols.push(data[i]);
+    }
+
+    return internetProtocols;
+  }
+
+  const changeSorting = (sorting, order) => {
+    setState({
+      ...state,
       sorting,
       order
     });
   }
 
-  toggleAll = () => {
-    this.setState({ toggledAll: !this.state.toggledAll });
-  }
-
-  dns = () => {
-    const { internetProtocols } = this.state;
-    const ipFav = { ...this.state.ipFav };
+  const internetProtocols = () => {
+    const { internetProtocols } = state;
+    const ipFav = { ...state.ipFav };
     const result = [];
 
-    for (let i in internetProtocols) {
-      internetProtocols[i]['NAME'] = i;
+    internetProtocols.forEach(internetProtocol => {
+      internetProtocol.FOCUSED = controlPanelFocusedElement === internetProtocol.NAME;
 
-      if (ipFav[i]) {
-        internetProtocols[i]['STARRED'] = ipFav[i];
+      if (ipFav[internetProtocol.NAME]) {
+        internetProtocol.STARRED = ipFav[internetProtocol.NAME];
       } else {
-        internetProtocols[i]['STARRED'] = 0;
+        internetProtocol.STARRED = 0;
       }
 
-      result.push(internetProtocols[i]);
-    }
+      result.push(internetProtocol);
+    });
 
-    let sortedResult = this.sortArray(result);
+    let sortedResult = sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <InternetProtocol data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
+      return <InternetProtocol data={item} key={index} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
     });
   }
 
-  checkItem = name => {
-    const { selection, internetProtocols } = this.state;
+  const checkItem = name => {
+    const { selection, internetProtocols } = state;
     let duplicate = [...selection];
     let internetProtocolsDuplicate = internetProtocols;
     let checkedItem = duplicate.indexOf(name);
@@ -95,22 +219,22 @@ class InternetProtocols extends Component {
       duplicate.push(name);
     }
 
-    this.setState({ internetProtocols: internetProtocolsDuplicate, selection: duplicate });
+    setState({ ...state, internetProtocols: internetProtocolsDuplicate, selection: duplicate });
   }
 
-  sortArray = array => {
-    const { order, sorting } = this.state;
-    let sortBy = this.sortBy(sorting);
+  const sortArray = array => {
+    const { order, sorting } = state;
+    let sortingColumn = sortBy(sorting);
 
     if (order === "descending") {
-      return array.sort((a, b) => (a[sortBy] < b[sortBy]) ? 1 : ((b[sortBy] < a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] < b[sortingColumn]) ? 1 : ((b[sortingColumn] < a[sortingColumn]) ? -1 : 0));
     } else {
-      return array.sort((a, b) => (a[sortBy] > b[sortBy]) ? 1 : ((b[sortBy] > a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] > b[sortingColumn]) ? 1 : ((b[sortingColumn] > a[sortingColumn]) ? -1 : 0));
     }
   }
 
-  sortBy = sorting => {
-    const { Date, IP, Domains, Netmask, Interface, Owner, Starred } = window.GLOBAL.App.i18n;
+  const sortBy = sorting => {
+    const { Date, IP, Domains, Netmask, Interface, Owner, Starred } = i18n;
 
     switch (sorting) {
       case Date: return 'DATE';
@@ -124,8 +248,8 @@ class InternetProtocols extends Component {
     }
   }
 
-  toggleFav = (value, type) => {
-    const { ipFav } = this.state;
+  const toggleFav = (value, type) => {
+    const { ipFav } = state;
     let ipFavDuplicate = ipFav;
 
     if (type === 'add') {
@@ -133,7 +257,7 @@ class InternetProtocols extends Component {
 
       addFavorite(value, 'ip')
         .then(() => {
-          this.setState({ ipFav: ipFavDuplicate });
+          setState({ ...state, ipFav: ipFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -143,7 +267,7 @@ class InternetProtocols extends Component {
 
       deleteFavorite(value, 'ip')
         .then(() => {
-          this.setState({ ipFav: ipFavDuplicate });
+          setState({ ...state, ipFav: ipFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -151,117 +275,97 @@ class InternetProtocols extends Component {
     }
   }
 
-  toggleAll = toggled => {
-    const { internetProtocols } = this.state;
+  const toggleAll = toggled => {
+    let internetProtocolsDuplicate = [...state.internetProtocols];
 
-    this.setState({ toggledAll: toggled }, () => {
-      if (this.state.toggledAll) {
-        let ipNames = [];
+    if (toggled) {
+      let ipNames = [];
 
-        for (let i in internetProtocols) {
-          ipNames.push(i);
-
-          internetProtocols[i]['isChecked'] = true;
-        }
-
-        this.setState({ internetProtocols, selection: ipNames });
-      } else {
-        for (let i in internetProtocols) {
-          internetProtocols[i]['isChecked'] = false;
-        }
-
-        this.setState({ internetProtocols, selection: [] });
-      }
-    });
-  }
-
-  bulk = action => {
-    const { selection } = this.state;
-
-    if (selection.length && action !== 'apply to selected') {
-      this.setState({ loading: true }, () => {
-        bulkAction(action, selection)
-          .then(result => {
-            if (result.status === 200) {
-              this.showNotification(`Success`);
-              this.setState({ loading: false }, () => {
-                this.toggleAll(false);
-              });
-            }
-          })
-          .catch(err => console.error(err));
+      let internetProtocols = internetProtocolsDuplicate.map(internetProtocol => {
+        ipNames.push(internetProtocol.NAME);
+        internetProtocol.isChecked = true;
+        return internetProtocol;
       });
+
+      setState({ ...state, internetProtocols, selection: ipNames, toggledAll: toggled });
+    } else {
+      let internetProtocols = internetProtocolsDuplicate.map(internetProtocol => {
+        internetProtocol.isChecked = false;
+        return internetProtocol;
+      });
+
+      setState({ ...state, internetProtocols, selection: [], toggledAll: toggled });
     }
   }
 
-  bulk = action => {
-    const { selection } = this.state;
+  const bulk = action => {
+    const { selection } = state;
 
     if (selection.length && action) {
-      this.setState({ loading: true }, () => {
-        bulkAction(action, selection)
-          .then(result => {
-            if (result.status === 200) {
-              this.fetchData();
-              this.toggleAll(false);
-            }
-          })
-          .catch(err => console.error(err));
-      });
+      setState({ ...state, loading: true });
+
+      bulkAction(action, selection)
+        .then(result => {
+          if (result.status === 200) {
+            fetchData();
+            toggleAll(false);
+          }
+        })
+        .catch(err => console.error(err));
     }
   }
 
-  displayModal = (text, url) => {
-    this.setState({
-      modalVisible: !this.state.modalVisible,
+  const displayModal = (text, url) => {
+    setState({
+      ...state,
+      modalVisible: !state.modalVisible,
       modalText: text,
       modalActionUrl: url
     });
   }
 
-  modalConfirmHandler = () => {
-    handleAction(this.state.modalActionUrl)
+  const modalConfirmHandler = () => {
+    handleAction(state.modalActionUrl)
       .then(() => {
-        this.fetchData();
-        this.modalCancelHandler();
+        fetchData();
+        modalCancelHandler();
       })
       .catch(err => console.error(err));
   }
 
-  modalCancelHandler = () => {
-    this.setState({
+  const modalCancelHandler = () => {
+    setState({
+      ...state,
       modalVisible: false,
       modalText: '',
       modalActionUrl: ''
     });
   }
 
-  render() {
-    return (
-      <div className="internetProtocols">
-        <Toolbar mobile={false} >
-          <LeftButton name={window.GLOBAL.App.i18n['Add IP']} href="/add/ip/" showLeftMenu={true} />
-          <div className="r-menu">
-            <div className="input-group input-group-sm">
-              <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
-              <Select list='internetProtocolsList' bulkAction={this.bulk} />
-              <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="internetProtocolsList" />
-              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
-            </div>
+  return (
+    <div className="internetProtocols">
+      <Toolbar mobile={false} >
+        <LeftButton name={i18n['Add IP']} href="/add/ip/" showLeftMenu={true} />
+        <div className="r-menu">
+          <div className="input-group input-group-sm">
+            <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
+            <Select list='internetProtocolsList' bulkAction={bulk} />
+            <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="internetProtocolsList" />
+            <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
           </div>
-        </Toolbar>
-        <div className="ip-wrapper">
-          {this.state.loading ? <Spinner /> : this.dns()}
         </div>
-        <div className="total">{this.state.totalAmount}</div>
-        <Modal
-          onSave={this.modalConfirmHandler}
-          onCancel={this.modalCancelHandler}
-          show={this.state.modalVisible}
-          text={this.state.modalText} />
+      </Toolbar>
+      <div className="ip-wrapper">
+        {state.loading ? <Spinner /> : internetProtocols()}
       </div>
-    );
-  }
+      <div className="total">{state.totalAmount}</div>
+      <Modal
+        onSave={modalConfirmHandler}
+        onCancel={modalCancelHandler}
+        show={state.modalVisible}
+        text={state.modalText} />
+    </div>
+  );
 }
 
 export default InternetProtocols;
