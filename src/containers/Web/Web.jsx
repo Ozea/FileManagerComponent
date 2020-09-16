@@ -163,6 +163,8 @@ const Web = props => {
   }
 
   const fetchData = () => {
+    setState({ ...state, loading: true });
+
     getWebList()
       .then(result => {
         setState({

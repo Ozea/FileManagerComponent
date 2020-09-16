@@ -56,6 +56,8 @@ const Users = props => {
   }, [controlPanelFocusedElement, focusedElement, state.users]);
 
   const fetchData = () => {
+    setState({ ...state, loading: true });
+
     getUsersList()
       .then(result => {
         setState({
