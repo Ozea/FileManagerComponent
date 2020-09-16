@@ -1,104 +1,190 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
+import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
+import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import { getRrdList } from '../../ControlPanelService/RRD';
 import Spinner from '../../components/Spinner/Spinner';
-import RRD from '../../components/RRD/RRD';
-import './RRDs.scss';
+import { useDispatch, useSelector } from 'react-redux';
 import Timer from '../../components/RRD/Timer/Timer';
+import RRD from '../../components/RRD/RRD';
+import { rrdsMock } from '../../mocks/rrds';
+import './RRDs.scss';
 
-const { i18n } = window.GLOBAL.App;
-
-class RRDs extends Component {
-  state = {
-    rrds: [],
+const RRDs = props => {
+  const { i18n } = window.GLOBAL.App;
+  const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
+  const { focusedElement } = useSelector(state => state.mainNavigation);
+  const dispatch = useDispatch();
+  const [data, setData] = useState([]);
+  const [state, setState] = useState({
     period: 'daily',
     periodI18N: i18n.Daily,
     time: 15,
     loading: false,
     total: 0
+  });
+
+  useEffect(() => {
+    dispatch(removeControlPanelContentFocusedElement());
+    fetchData();
+
+    return () => {
+      dispatch(removeControlPanelContentFocusedElement());
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleContentSelection);
+
+    return () => {
+      window.removeEventListener("keydown", handleContentSelection);
+    };
+  }, [controlPanelFocusedElement, focusedElement, data]);
+
+  const handleContentSelection = event => {
+    if (event.keyCode === 38 || event.keyCode === 40) {
+      if (focusedElement) {
+        dispatch(MainNavigation.removeFocusedElement());
+      }
+    }
+
+    if (event.keyCode === 38) {
+      event.preventDefault();
+      handleArrowUp();
+    } else if (event.keyCode === 40) {
+      event.preventDefault();
+      handleArrowDown();
+    }
   }
 
-  componentDidMount() {
-    this.fetchData();
+  const initFocusedElement = data => {
+    data[0]['FOCUSED'] = data[0]['NAME'];
+    setData(data);
+    dispatch(addControlPanelContentFocusedElement(data[0]['NAME']));
   }
 
-  countDown = () => {
-    if (this.state.time === 0) {
-      this.setState({ time: 14, period: this.state.period });
+  const handleArrowDown = () => {
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(data);
+      return;
+    }
+
+    let focusedElementPosition = data.findIndex(pack => pack.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== data.length - 1) {
+      let nextFocusedElement = data[focusedElementPosition + 1];
+      data[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setData(data);
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const handleArrowUp = () => {
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(data);
+      return;
+    }
+
+    let focusedElementPosition = data.findIndex(pack => pack.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== 0) {
+      let nextFocusedElement = data[focusedElementPosition - 1];
+      data[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setData(data);
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const countDown = () => {
+    if (state.time === 0) {
+      fetchData();
     } else {
-      this.setState({ time: this.state.time - 1 });
+      setState({ ...state, time: state.time - 1 });
     }
   }
 
-  fetchData = () => {
-    this.setState({ loading: true }, () => {
-      getRrdList()
-        .then(result => {
-          this.setState({
-            rrds: result.data.data,
-            loading: false
-          });
-        })
-        .catch(err => console.error(err));
-    });
+  const fetchData = () => {
+    dispatch(removeControlPanelContentFocusedElement());
+
+    setState({ ...state, loading: true });
+
+    getRrdList()
+      .then(result => {
+        setData(reformatData(result.data.data));
+        setState({ ...state, time: 15, loading: false });
+      })
+      .catch(err => console.error(err));
   }
 
-  packages = () => {
-    const { rrds, period } = this.state;
-    const result = [];
+  const reformatData = data => {
+    let rrds = [];
 
-    for (let i in rrds) {
-      rrds[i]['NAME'] = i;
-
-      result.push(rrds[i]);
+    for (let i in data) {
+      data[i]['NAME'] = data[i]['TITLE'];
+      data[i]['FOCUSED'] = controlPanelFocusedElement === i;
+      rrds.push(data[i]);
     }
 
-    return result.map((item, index) => {
-      return <RRD period={period} data={item} key={index} />;
+    return rrds;
+  }
+
+  const rrds = () => {
+    return data.map((item, index) => {
+      return <RRD period={state.period} data={item} key={index} />;
     });
   }
 
-  printPeriods = () => {
+  const printPeriods = () => {
     const periods = [i18n.Daily, i18n.Weekly, i18n.Monthly, i18n.Yearly];
 
-    return periods.map(period => (<div className={this.periodClass(period)} onClick={() => this.changePeriod(period)}>{period}</div>));
+    return periods.map(period => (<div className={periodClass(period)} onClick={() => changePeriod(period)}>{period}</div>));
   }
 
-  periodClass = period => {
-    if (this.state.periodI18N === period) {
+  const periodClass = period => {
+    if (state.periodI18N === period) {
       return "period active";
     } else {
       return "period";
     }
   }
 
-  changePeriod = period => {
+  const changePeriod = period => {
     switch (period) {
-      case i18n.Daily: this.setState({ period: 'daily', periodI18N: i18n.Daily, time: 15 }); break;
-      case i18n.Weekly: this.setState({ period: 'weekly', periodI18N: i18n.Weekly, time: 15 }); break;
-      case i18n.Monthly: this.setState({ period: 'monthly', periodI18N: i18n.Monthly, time: 15 }); break;
-      case i18n.Yearly: this.setState({ period: 'yearly', periodI18N: i18n.Yearly, time: 15 }); break;
+      case i18n.Daily: setState({ ...state, period: 'daily', periodI18N: i18n.Daily, time: 15 }); break;
+      case i18n.Weekly: setState({ ...state, period: 'weekly', periodI18N: i18n.Weekly, time: 15 }); break;
+      case i18n.Monthly: setState({ ...state, period: 'monthly', periodI18N: i18n.Monthly, time: 15 }); break;
+      case i18n.Yearly: setState({ ...state, period: 'yearly', periodI18N: i18n.Yearly, time: 15 }); break;
       default: break;
     }
   }
 
-  render() {
-    return (
-      <div className="rrd-list">
-        <Toolbar mobile={false}>
-          <div className="periods-wrapper">
-            {this.printPeriods()}
-            <Timer time={this.state.time} countDown={this.countDown} />
-          </div>
-          <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
-        </Toolbar>
-        <div className="rrd-wrapper">
-          {this.state.loading ? <Spinner /> : this.packages()}
+  return (
+    <div className="rrd-list">
+      <Toolbar mobile={false}>
+        <div className="periods-wrapper">
+          {printPeriods()}
+          <Timer time={state.time} countDown={countDown} data={state.rrds} />
         </div>
+        <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
+      </Toolbar>
+      <div className="rrd-wrapper">
+        {state.loading ? <Spinner /> : rrds()}
       </div>
-    );
-  }
+    </div>
+  );
 }
 
 export default RRDs;

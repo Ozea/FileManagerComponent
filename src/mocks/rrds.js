@@ -1,4 +1,4 @@
-export const rrds = {
+export const rrdsMock = {
   "1": {
     "TYPE": "la",
     "RRD": "la",
