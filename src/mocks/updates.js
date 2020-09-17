@@ -1,4 +1,4 @@
-export const updates = {
+export const updatesMock = {
   "vesta": {
     "VERSION": "0.9.8",
     "RELEASE": "24",

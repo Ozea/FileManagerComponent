@@ -144,7 +144,13 @@ const Statistics = props => {
   }
 
   const statistics = () => {
-    return state.statistics.map((item, index) => {
+    let statistics = [...state.statistics];
+
+    statistics.forEach(statistic => {
+      statistic.FOCUSED = controlPanelFocusedElement === statistic.NAME;
+    });
+
+    return statistics.map((item, index) => {
       return <Statistic data={item} key={index} />;
     });
   }
