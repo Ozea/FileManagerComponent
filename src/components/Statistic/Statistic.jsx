@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Container from '../ControlPanel/Container/Container';
 import './Statistic.scss';
 
