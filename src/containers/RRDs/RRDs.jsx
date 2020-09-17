@@ -141,13 +141,13 @@ const RRDs = props => {
   }
 
   const rrds = () => {
-    let rrds = [...state.rrds];
+    let dataDuplicate = [...data];
 
-    rrds.forEach(rrd => {
+    dataDuplicate.forEach(rrd => {
       rrd.FOCUSED = controlPanelFocusedElement === rrd.NAME;
     });
 
-    return rrds.map((item, index) => {
+    return dataDuplicate.map((item, index) => {
       return <RRD period={state.period} data={item} key={index} />;
     });
   }
