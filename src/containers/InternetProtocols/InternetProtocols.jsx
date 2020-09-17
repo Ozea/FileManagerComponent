@@ -148,6 +148,8 @@ const InternetProtocols = props => {
   }
 
   const fetchData = () => {
+    setState({ ...state, loading: true });
+
     getIpList()
       .then(result => {
         setState({
@@ -211,7 +213,8 @@ const InternetProtocols = props => {
     let internetProtocolsDuplicate = internetProtocols;
     let checkedItem = duplicate.indexOf(name);
 
-    internetProtocolsDuplicate[name]['isChecked'] = !internetProtocolsDuplicate[name]['isChecked'];
+    let incomingItem = internetProtocolsDuplicate.findIndex(ip => ip.NAME === name);
+    internetProtocolsDuplicate[incomingItem].isChecked = !internetProtocolsDuplicate[incomingItem].isChecked;
 
     if (checkedItem !== -1) {
       duplicate.splice(checkedItem, 1);

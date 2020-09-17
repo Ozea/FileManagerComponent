@@ -135,7 +135,13 @@ const Logs = props => {
   }
 
   const logs = () => {
-    return state.logs.map((item, index) => {
+    let logs = [...state.logs];
+
+    logs.forEach(log => {
+      log.FOCUSED = controlPanelFocusedElement === log.NAME;
+    });
+
+    return logs.map((item, index) => {
       return <Log data={item} key={index} />;
     });
   }

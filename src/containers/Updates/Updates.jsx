@@ -1,70 +1,164 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
+import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
 import { bulkAction, getUpdatesList, enableAutoUpdate, disableAutoUpdate } from '../../ControlPanelService/Updates';
+import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
+import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import Update from '../../components/Update/Update';
 import './Updates.scss';
 
-const { i18n } = window.GLOBAL.App;
-
-class Updates extends Component {
-  state = {
+const Updates = props => {
+  const { i18n } = window.GLOBAL.App;
+  const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
+  const { focusedElement } = useSelector(state => state.mainNavigation);
+  const dispatch = useDispatch();
+  const [state, setState] = useState({
     updates: [],
     selection: [],
     autoUpdate: '',
     token: '',
     loading: false,
     toggledAll: false
-  }
+  });
 
-  componentDidMount() {
-    this.fetchData();
-  }
+  useEffect(() => {
+    dispatch(removeControlPanelContentFocusedElement());
+    fetchData();
 
-  fetchData = () => {
-    this.setState({ loading: true }, () => {
-      getUpdatesList()
-        .then(result => {
-          this.setState({
-            updates: result.data.data,
-            token: result.data.token,
-            autoUpdate: result.data.totalAmount,
-            loading: false
-          });
-        })
-        .catch(err => console.error(err));
-    });
-  }
+    return () => {
+      dispatch(removeControlPanelContentFocusedElement());
+    }
+  }, []);
 
-  updates = () => {
-    const { updates } = this.state;
-    const result = [];
+  useEffect(() => {
+    window.addEventListener("keydown", handleContentSelection);
 
-    for (let i in updates) {
-      updates[i]['NAME'] = i;
-      result.push(updates[i]);
+    return () => {
+      window.removeEventListener("keydown", handleContentSelection);
+    };
+  }, [controlPanelFocusedElement, focusedElement, state.updates]);
+
+  const handleContentSelection = event => {
+    if (event.keyCode === 38 || event.keyCode === 40) {
+      if (focusedElement) {
+        dispatch(MainNavigation.removeFocusedElement());
+      }
     }
 
-    return result.map((item, index) => {
-      return <Update data={item} key={index} checkItem={this.checkItem} />;
+    if (event.keyCode === 38) {
+      event.preventDefault();
+      handleArrowUp();
+    } else if (event.keyCode === 40) {
+      event.preventDefault();
+      handleArrowDown();
+    }
+  }
+
+  const initFocusedElement = updates => {
+    updates[0]['FOCUSED'] = updates[0]['NAME'];
+    setState({ ...state, updates });
+    dispatch(addControlPanelContentFocusedElement(updates[0]['NAME']));
+  }
+
+  const handleArrowDown = () => {
+    let updates = [...state.updates];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(updates);
+      return;
+    }
+
+    let focusedElementPosition = updates.findIndex(update => update.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== updates.length - 1) {
+      let nextFocusedElement = updates[focusedElementPosition + 1];
+      updates[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, updates });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const handleArrowUp = () => {
+    let updates = [...state.updates];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(updates);
+      return;
+    }
+
+    let focusedElementPosition = updates.findIndex(update => update.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== 0) {
+      let nextFocusedElement = updates[focusedElementPosition - 1];
+      updates[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, updates });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const fetchData = () => {
+    setState({ ...state, loading: true });
+
+    getUpdatesList()
+      .then(result => {
+        setState({
+          ...state,
+          updates: reformatData(result.data.data),
+          autoUpdate: result.data.totalAmount,
+          loading: false
+        });
+      })
+      .catch(err => console.error(err));
+  }
+
+  const reformatData = data => {
+    let updates = [];
+
+    for (let i in data) {
+      data[i]['NAME'] = i;
+      data[i]['FOCUSED'] = controlPanelFocusedElement === i;
+      updates.push(data[i]);
+    }
+
+    return updates;
+  }
+
+  const updates = () => {
+    let updates = [...state.updates];
+
+    updates.forEach(update => {
+      update.FOCUSED = controlPanelFocusedElement === update.NAME;
+    });
+
+    return updates.map((item, index) => {
+      return <Update data={item} key={index} checkItem={checkItem} />;
     });
   }
 
-  toggleAll = () => {
-    this.setState({ toggledAll: !this.state.toggledAll });
-  }
-
-  checkItem = name => {
-    const { selection, updates } = this.state;
-    let duplicate = [...selection];
-    let updatesDuplicate = updates;
+  const checkItem = name => {
+    let duplicate = [...state.selection];
+    let updatesDuplicate = [...state.updates];
     let checkedItem = duplicate.indexOf(name);
 
-    updatesDuplicate[name]['isChecked'] = !updatesDuplicate[name]['isChecked'];
+    let incomingItem = updatesDuplicate.findIndex(update => update.NAME === name);
+    updatesDuplicate[incomingItem].isChecked = !updatesDuplicate[incomingItem].isChecked;
 
     if (checkedItem !== -1) {
       duplicate.splice(checkedItem, 1);
@@ -72,89 +166,81 @@ class Updates extends Component {
       duplicate.push(name);
     }
 
-    this.setState({ updates: updatesDuplicate, selection: duplicate });
+    setState({ ...state, updates: updatesDuplicate, selection: duplicate });
   }
 
-  toggleAll = toggled => {
-    const { updates } = this.state;
+  const toggleAll = toggled => {
+    if (toggled) {
+      let updateNames = [];
 
-    this.setState({ toggledAll: toggled }, () => {
-      if (this.state.toggledAll) {
-        let updateNames = [];
-
-        for (let i in updates) {
-          updateNames.push(i);
-
-          updates[i]['isChecked'] = true;
-        }
-
-        this.setState({ updates, selection: updateNames });
-      } else {
-        for (let i in updates) {
-          updates[i]['isChecked'] = false;
-        }
-
-        this.setState({ updates, selection: [] });
-      }
-    });
-  }
-
-  bulk = action => {
-    const { selection } = this.state;
-
-    if (selection.length && action !== 'apply to selected') {
-      this.setState({ loading: true }, () => {
-        bulkAction(action, selection)
-          .then(result => {
-            if (result.status === 200) {
-              this.setState({ loading: false }, () => {
-                this.toggleAll(false);
-              });
-            }
-          })
-          .catch(err => console.error(err));
+      let updates = updates.map(update => {
+        updateNames.push(update.NAME);
+        update.isChecked = true;
+        return update;
       });
+
+      setState({ ...state, updates, selection: updateNames, toggledAll: toggled });
+    } else {
+      let updates = updates.map(update => {
+        update.isChecked = false;
+        return update;
+      });
+
+      setState({ ...state, updates, selection: [], toggledAll: toggled });
     }
   }
 
-  handleAutoUpdate = () => {
-    if (this.state.autoUpdate === 'Enabled') {
+  const bulk = action => {
+    const { selection } = state;
+
+    if (selection.length && action !== 'apply to selected') {
+      bulkAction(action, selection)
+        .then(result => {
+          if (result.status === 200) {
+            fetchData();
+            toggleAll(false);
+          }
+        })
+        .catch(err => console.error(err));
+    }
+  }
+
+  const handleAutoUpdate = () => {
+    if (state.autoUpdate === 'Enabled') {
       disableAutoUpdate()
-        .then(() => this.fetchData())
+        .then(() => fetchData())
         .catch(err => console.error(err));
     } else {
       enableAutoUpdate()
-        .then(() => this.fetchData())
+        .then(() => fetchData())
         .catch(err => console.error(err));
     }
   }
 
-  printAutoUpdateButtonName = () => {
-    if (this.state.autoUpdate === 'Enabled') {
+  const printAutoUpdateButtonName = () => {
+    if (state.autoUpdate === 'Enabled') {
       return i18n['disable autoupdate'];
     } else {
       return i18n['enable autoupdate'];
     }
   }
 
-  render() {
-    return (
-      <div className="statistics-list updates">
-        <Toolbar mobile={false} className="justify-right">
-          <LeftButton name="Add Cron Job" showLeftMenu={false} />
-          <div className="r-menu">
-            <div className="input-group input-group-sm">
-              <button onClick={this.handleAutoUpdate} className="button-extra">{this.printAutoUpdateButtonName()}</button>
-              <Checkbox toggleAll={this.toggleAll} />
-              <Select list='updatesList' bulkAction={this.bulk} />
-              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
-            </div>
+  return (
+    <div className="statistics-list updates">
+      <Toolbar mobile={false} className="justify-right">
+        <LeftButton name="Add Cron Job" showLeftMenu={false} />
+        <div className="r-menu">
+          <div className="input-group input-group-sm">
+            <button onClick={handleAutoUpdate} className="button-extra">{printAutoUpdateButtonName()}</button>
+            <Checkbox toggleAll={toggleAll} />
+            <Select list='updatesList' bulkAction={bulk} />
+            <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
           </div>
-        </Toolbar>
-        {this.state.loading ? <Spinner /> : this.updates()}
-      </div>
-    );
-  }
+        </div>
+      </Toolbar>
+      {state.loading ? <Spinner /> : updates()}
+    </div>
+  );
 }
 
 export default Updates;

@@ -8,7 +8,6 @@ import Spinner from '../../components/Spinner/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import Timer from '../../components/RRD/Timer/Timer';
 import RRD from '../../components/RRD/RRD';
-import { rrdsMock } from '../../mocks/rrds';
 import './RRDs.scss';
 
 const RRDs = props => {
@@ -142,7 +141,13 @@ const RRDs = props => {
   }
 
   const rrds = () => {
-    return data.map((item, index) => {
+    let rrds = [...state.rrds];
+
+    rrds.forEach(rrd => {
+      rrd.FOCUSED = controlPanelFocusedElement === rrd.NAME;
+    });
+
+    return rrds.map((item, index) => {
       return <RRD period={state.period} data={item} key={index} />;
     });
   }
