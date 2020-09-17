@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
+import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
 import { bulkAction, getFirewallList, handleAction } from '../../ControlPanelService/Firewalls';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
+import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
@@ -10,12 +12,16 @@ import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Modal from '../../components/ControlPanel/Modal/Modal';
 import Firewall from '../../components/Firewall/Firewall';
 import Spinner from '../../components/Spinner/Spinner';
+import { useDispatch, useSelector } from 'react-redux';
 import './Firewalls.scss';
 
-const { i18n } = window.GLOBAL.App;
-
-class Firewalls extends Component {
-  state = {
+const Firewalls = props => {
+  const { i18n } = window.GLOBAL.App;
+  const token = localStorage.getItem("token");
+  const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
+  const { focusedElement } = useSelector(state => state.mainNavigation);
+  const dispatch = useDispatch();
+  const [state, setState] = useState({
     firewalls: [],
     firewallFav: [],
     selection: [],
@@ -28,66 +34,195 @@ class Firewalls extends Component {
     sorting: i18n.Action,
     order: "descending",
     totalAmount: ''
+  });
+
+  useEffect(() => {
+    dispatch(removeControlPanelContentFocusedElement());
+    fetchData();
+
+    return () => {
+      dispatch(removeControlPanelContentFocusedElement());
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleContentSelection);
+    window.addEventListener("keydown", handleFocusedElementShortcuts);
+
+    return () => {
+      window.removeEventListener("keydown", handleContentSelection);
+      window.removeEventListener("keydown", handleFocusedElementShortcuts);
+    };
+  }, [controlPanelFocusedElement, focusedElement, state.firewalls]);
+
+  const handleContentSelection = event => {
+    if (event.keyCode === 38 || event.keyCode === 40) {
+      if (focusedElement) {
+        dispatch(MainNavigation.removeFocusedElement());
+      }
+    }
+
+    if (event.keyCode === 38) {
+      event.preventDefault();
+      handleArrowUp();
+    } else if (event.keyCode === 40) {
+      event.preventDefault();
+      handleArrowDown();
+    }
   }
 
-  componentDidMount() {
-    this.fetchData();
+  const initFocusedElement = firewalls => {
+    firewalls[0]['FOCUSED'] = firewalls[0]['NAME'];
+    setState({ ...state, firewalls });
+    dispatch(addControlPanelContentFocusedElement(firewalls[0]['NAME']));
   }
 
-  fetchData = () => {
-    this.setState({ loading: true }, () => {
-      getFirewallList()
-        .then(result => {
-          this.setState({
-            firewalls: result.data.data,
-            firewallFav: result.data.firewallFav,
-            firewallExtension: result.data.firewallExtension,
-            totalAmount: result.data.totalAmount,
-            loading: false
-          });
-        })
-        .catch(err => console.error(err));
-    });
+  const handleArrowDown = () => {
+    let firewalls = [...state.firewalls];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(firewalls);
+      return;
+    }
+
+    let focusedElementPosition = firewalls.findIndex(firewall => firewall.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== firewalls.length - 1) {
+      let nextFocusedElement = firewalls[focusedElementPosition + 1];
+      firewalls[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, firewalls });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
   }
 
-  changeSorting = (sorting, order) => {
-    this.setState({
+  const handleArrowUp = () => {
+    let firewalls = [...state.firewalls];
+
+    if (focusedElement) {
+      MainNavigation.removeFocusedElement();
+    }
+
+    if (controlPanelFocusedElement === '') {
+      initFocusedElement(firewalls);
+      return;
+    }
+
+    let focusedElementPosition = firewalls.findIndex(firewall => firewall.NAME === controlPanelFocusedElement);
+
+    if (focusedElementPosition !== 0) {
+      let nextFocusedElement = firewalls[focusedElementPosition - 1];
+      firewalls[focusedElementPosition]['FOCUSED'] = '';
+      nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
+      document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
+      setState({ ...state, firewalls });
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+    }
+  }
+
+  const handleFocusedElementShortcuts = event => {
+    let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
+
+    if (controlPanelFocusedElement && !isSearchInputFocused) {
+      switch (event.keyCode) {
+        case 8: return handleDelete();
+        case 13: return handleEdit();
+        case 83: return handleSuspend();
+        default: break;
+      }
+    }
+  }
+
+  const handleEdit = () => {
+    props.history.push(`/edit/firewall?rule=${controlPanelFocusedElement}`);
+  }
+
+  const handleSuspend = () => {
+    const { firewalls } = state;
+    let currentFirewallData = firewalls.filter(firewall => firewall.NAME === controlPanelFocusedElement)[0];
+    let suspendedStatus = currentFirewallData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
+
+    displayModal(currentFirewallData.suspend_conf, `/${suspendedStatus}/firewall?rule=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const handleDelete = () => {
+    const { firewalls } = state;
+    let currentFirewallData = firewalls.filter(firewall => firewall.NAME === controlPanelFocusedElement)[0];
+
+    displayModal(currentFirewallData.delete_conf, `/delete/firewall/?rule=${controlPanelFocusedElement}&token=${token}`);
+  }
+
+  const fetchData = () => {
+    setState({ ...state, loading: true });
+
+    getFirewallList()
+      .then(result => {
+        setState({
+          ...state,
+          firewalls: reformatData(result.data.data),
+          firewallFav: result.data.firewallFav,
+          firewallExtension: result.data.firewallExtension,
+          totalAmount: result.data.totalAmount,
+          loading: false
+        });
+      })
+      .catch(err => console.error(err));
+  }
+
+  const reformatData = data => {
+    let firewalls = [];
+
+    for (let i in data) {
+      data[i]['NAME'] = i;
+      data[i]['FOCUSED'] = controlPanelFocusedElement === i;
+      firewalls.push(data[i]);
+    }
+
+    return firewalls;
+  }
+
+  const changeSorting = (sorting, order) => {
+    setState({
+      ...state,
       sorting,
       order
     });
   }
 
-  firewalls = () => {
-    const { firewalls } = this.state;
-    const firewallFav = { ...this.state.firewallFav };
-    const result = [];
+  const firewalls = () => {
+    const firewallFav = { ...state.firewallFav };
+    let firewalls = [...state.firewalls];
 
-    for (let i in firewalls) {
-      firewalls[i]['NAME'] = i;
+    firewalls.forEach(firewall => {
+      firewall.FOCUSED = controlPanelFocusedElement === firewall.NAME;
 
-      if (firewallFav[i]) {
-        firewalls[i]['STARRED'] = firewallFav[i];
+      if (firewallFav[firewall.NAME]) {
+        firewall.STARRED = firewallFav[firewall.NAME];
       } else {
-        firewalls[i]['STARRED'] = 0;
+        firewall.STARRED = 0;
       }
+    });
 
-      result.push(firewalls[i]);
-    }
-
-    let sortedResult = this.sortArray(result);
+    let sortedResult = sortArray(firewalls);
 
     return sortedResult.map((item, index) => {
-      return <Firewall data={item} key={index} toggleFav={this.toggleFav} checkItem={this.checkItem} handleModal={this.displayModal} />;
+      return <Firewall data={item} key={index} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
     });
   }
 
-  checkItem = name => {
-    const { selection, firewalls } = this.state;
+  const checkItem = name => {
+    const { selection, firewalls } = state;
     let duplicate = [...selection];
     let firewallsDuplicate = firewalls;
     let checkedItem = duplicate.indexOf(name);
 
-    firewallsDuplicate[name]['isChecked'] = !firewallsDuplicate[name]['isChecked'];
+    let incomingItem = firewallsDuplicate.findIndex(db => db.NAME === name);
+    firewallsDuplicate[incomingItem].isChecked = !firewallsDuplicate[incomingItem].isChecked;
 
     if (checkedItem !== -1) {
       duplicate.splice(checkedItem, 1);
@@ -95,21 +230,21 @@ class Firewalls extends Component {
       duplicate.push(name);
     }
 
-    this.setState({ firewalls: firewallsDuplicate, selection: duplicate });
+    setState({ ...state, firewalls: firewallsDuplicate, selection: duplicate });
   }
 
-  sortArray = array => {
-    const { order, sorting } = this.state;
-    let sortBy = this.sortBy(sorting);
+  const sortArray = array => {
+    const { order, sorting } = state;
+    let sortingColumn = sortBy(sorting);
 
     if (order === "descending") {
-      return array.sort((a, b) => (a[sortBy] < b[sortBy]) ? 1 : ((b[sortBy] < a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] < b[sortingColumn]) ? 1 : ((b[sortingColumn] < a[sortingColumn]) ? -1 : 0));
     } else {
-      return array.sort((a, b) => (a[sortBy] > b[sortBy]) ? 1 : ((b[sortBy] > a[sortBy]) ? -1 : 0));
+      return array.sort((a, b) => (a[sortingColumn] > b[sortingColumn]) ? 1 : ((b[sortingColumn] > a[sortingColumn]) ? -1 : 0));
     }
   }
 
-  sortBy = sorting => {
+  const sortBy = sorting => {
     const { Action, Protocol, Port, Comment, Starred } = window.GLOBAL.App.i18n;
 
     switch (sorting) {
@@ -123,8 +258,8 @@ class Firewalls extends Component {
     }
   }
 
-  toggleFav = (value, type) => {
-    const { firewallFav } = this.state;
+  const toggleFav = (value, type) => {
+    const { firewallFav } = state;
     let firewallFavDuplicate = firewallFav;
 
     if (type === 'add') {
@@ -132,7 +267,7 @@ class Firewalls extends Component {
 
       addFavorite(value, 'firewall')
         .then(() => {
-          this.setState({ firewallFav: firewallFavDuplicate });
+          setState({ ...state, firewallFav: firewallFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -142,7 +277,7 @@ class Firewalls extends Component {
 
       deleteFavorite(value, 'firewall')
         .then(() => {
-          this.setState({ firewallFav: firewallFavDuplicate });
+          setState({ ...state, firewallFav: firewallFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -150,98 +285,94 @@ class Firewalls extends Component {
     }
   }
 
-  toggleAll = toggled => {
-    const { firewalls } = this.state;
-    this.setState({ toggledAll: toggled }, () => {
-      if (this.state.toggledAll) {
-        let firewallNames = [];
+  const toggleAll = toggled => {
+    if (toggled) {
+      let firewallNames = [];
 
-        for (let i in firewalls) {
-          firewallNames.push(i);
-
-          firewalls[i]['isChecked'] = true;
-        }
-
-        this.setState({ firewalls, selection: firewallNames });
-      } else {
-        for (let i in firewalls) {
-          firewalls[i]['isChecked'] = false;
-        }
-
-        this.setState({ firewalls, selection: [] });
-      }
-    });
-  }
-
-  bulk = action => {
-    const { selection } = this.state;
-
-    if (selection.length && action) {
-      this.setState({ loading: true }, () => {
-        bulkAction(action, selection)
-          .then(result => {
-            if (result.status === 200) {
-              this.fetchData();
-              this.toggleAll(false);
-            }
-          })
-          .catch(err => console.error(err));
+      let firewalls = state.firewalls.map(firewall => {
+        firewallNames.push(firewall.NAME);
+        firewall.isChecked = true;
+        return firewall;
       });
+
+      setState({ ...state, firewalls, selection: firewallNames, toggledAll: toggled });
+    } else {
+      let firewalls = state.firewalls.map(firewall => {
+        firewall.isChecked = false;
+        return firewall;
+      });
+
+      setState({ ...state, firewalls, selection: [], toggledAll: toggled });
     }
   }
 
-  displayModal = (text, url) => {
-    this.setState({
-      modalVisible: !this.state.modalVisible,
+  const bulk = action => {
+    const { selection } = state;
+
+    if (selection.length && action) {
+      bulkAction(action, selection)
+        .then(result => {
+          if (result.status === 200) {
+            fetchData();
+            toggleAll(false);
+          }
+        })
+        .catch(err => console.error(err));
+    }
+  }
+
+  const displayModal = (text, url) => {
+    setState({
+      ...state,
+      modalVisible: !state.modalVisible,
       modalText: text,
       modalActionUrl: url
     });
   }
 
-  modalConfirmHandler = () => {
-    handleAction(this.state.modalActionUrl)
+  const modalConfirmHandler = () => {
+    handleAction(state.modalActionUrl)
       .then(() => {
-        this.fetchData();
-        this.modalCancelHandler();
+        fetchData();
+        modalCancelHandler();
       })
       .catch(err => console.error(err));
   }
 
-  modalCancelHandler = () => {
-    this.setState({
+  const modalCancelHandler = () => {
+    setState({
+      ...state,
       modalVisible: false,
       modalText: '',
       modalActionUrl: ''
     });
   }
 
-  render() {
-    return (
-      <div className="firewalls">
-        <Toolbar mobile={false} >
-          <LeftButton href="/add/firewall/" name={i18n['Add Rule']} showLeftMenu={true} />
-          <div className="r-menu">
-            <div className="input-group input-group-sm">
-              <a href='/list/firewall/banlist/' className="button-extra" type="submit">{window.GLOBAL.App.i18n['list fail2ban']}</a>
-              <Checkbox toggleAll={this.toggleAll} toggled={this.state.toggledAll} />
-              <Select list='firewallList' bulkAction={this.bulk} />
-              <DropdownFilter changeSorting={this.changeSorting} sorting={this.state.sorting} order={this.state.order} list="firewallList" />
-              <SearchInput handleSearchTerm={term => this.props.changeSearchTerm(term)} />
-            </div>
+  return (
+    <div className="firewalls">
+      <Toolbar mobile={false} >
+        <LeftButton href="/add/firewall/" name={i18n['Add Rule']} showLeftMenu={true} />
+        <div className="r-menu">
+          <div className="input-group input-group-sm">
+            <a href='/list/firewall/banlist/' className="button-extra" type="submit">{window.GLOBAL.App.i18n['list fail2ban']}</a>
+            <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
+            <Select list='firewallList' bulkAction={bulk} />
+            <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="firewallList" />
+            <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
           </div>
-        </Toolbar>
-        <div className="firewalls-wrapper">
-          {this.state.loading ? <Spinner /> : this.firewalls()}
         </div>
-        <div className="total">{this.state.totalAmount}</div>
-        <Modal
-          onSave={this.modalConfirmHandler}
-          onCancel={this.modalCancelHandler}
-          show={this.state.modalVisible}
-          text={this.state.modalText} />
+      </Toolbar>
+      <div className="firewalls-wrapper">
+        {state.loading ? <Spinner /> : firewalls()}
       </div>
-    );
-  }
+      <div className="total">{state.totalAmount}</div>
+      <Modal
+        onSave={modalConfirmHandler}
+        onCancel={modalCancelHandler}
+        show={state.modalVisible}
+        text={state.modalText} />
+    </div>
+  );
 }
 
 export default Firewalls;
