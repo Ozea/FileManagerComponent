@@ -1,4 +1,4 @@
-export const serverSys = {
+export const sysInfoMock = {
   "sysinfo": {
     "HOSTNAME": "r5.vestacp.com",
     "OS": "CentOS",

@@ -42,7 +42,7 @@ class ListItem extends Component {
 
   className = () => {
     const { starred } = this.state;
-    const { checked, outdated, suspended, stopped, focused } = this.props;
+    const { checked, outdated, suspended, stopped, focused, sysInfo } = this.props;
     let className = 'list-item';
 
     if (checked) {
@@ -67,6 +67,10 @@ class ListItem extends Component {
 
     if (focused) {
       className += ' focused';
+    }
+
+    if (sysInfo) {
+      className += ' sys-info';
     }
 
     return className;

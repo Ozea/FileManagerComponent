@@ -1,4 +1,4 @@
-export const servers = {
+export const serversMock = {
   "httpd": {
     "SYSTEM": "web server",
     "STATE": "running",

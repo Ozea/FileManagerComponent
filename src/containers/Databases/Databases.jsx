@@ -11,9 +11,9 @@ import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Modal from '../../components/ControlPanel/Modal/Modal';
 import Database from '../../components/Database/Database';
+import { useSelector, useDispatch } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import './Databases.scss';
-import { useSelector, useDispatch } from 'react-redux';
 
 const Databases = props => {
   const { i18n } = window.GLOBAL.App;
