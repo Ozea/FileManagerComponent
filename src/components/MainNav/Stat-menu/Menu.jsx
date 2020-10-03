@@ -30,6 +30,12 @@ const Menu = props => {
   const dispatch = useDispatch();
   const history = useHistory();
 
+  useEffect(() => {
+    if (topPanel[user]['LANGUAGE']) {
+      localStorage.setItem("language", topPanel[user]['LANGUAGE']);
+    }
+  }, [topPanel]);
+
   const handleState = (tab, event) => {
     event.preventDefault();
     history.push(tab);

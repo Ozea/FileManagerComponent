@@ -3,13 +3,52 @@ import FileManager from '../FileManager/FileManager';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Preview from '../../components/Preview/Preview';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faBook, faFile, faDownload, faFileAlt, faImage, faFolderOpen, faEllipsisH, faFolder, faItalic, faUser, faCopy, faPaste, faTrash, faBoxOpen, faArrowDown, faArrowUp, faBell, faPlus, faAngleRight, faStar, faUserLock, faPen, faLock, faTimes, faSearch, faCog, faList, faWrench, faFileDownload, faPause, faPlay, faCogs, faStop, faUnlock, faLongArrowAltUp } from '@fortawesome/free-solid-svg-icons';
+import * as Icon from '@fortawesome/free-solid-svg-icons';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/js/bootstrap.min';
 import './App.scss';
 import ControlPanelContent from '../ControlPanelContent/ControlPanelContent';
 
-library.add(faBook, faDownload, faFile, faFileAlt, faFolderOpen, faImage, faEllipsisH, faFolder, faItalic, faUser, faCopy, faPaste, faTrash, faBoxOpen, faArrowDown, faArrowUp, faBell, faPlus, faAngleRight, faStar, faUserLock, faPen, faLock, faTimes, faSearch, faCog, faList, faWrench, faFileDownload, faPause, faPlay, faCogs, faStop, faUnlock, faLongArrowAltUp);
+library.add(
+  Icon.faBook,
+  Icon.faDownload,
+  Icon.faFile,
+  Icon.faFileAlt,
+  Icon.faFolderOpen,
+  Icon.faImage,
+  Icon.faEllipsisH,
+  Icon.faFolder,
+  Icon.faItalic,
+  Icon.faUser,
+  Icon.faCopy,
+  Icon.faPaste,
+  Icon.faTrash,
+  Icon.faBoxOpen,
+  Icon.faArrowDown,
+  Icon.faArrowUp,
+  Icon.faBell,
+  Icon.faPlus,
+  Icon.faAngleRight,
+  Icon.faStar,
+  Icon.faUserLock,
+  Icon.faPen,
+  Icon.faLock,
+  Icon.faTimes,
+  Icon.faSearch,
+  Icon.faCog,
+  Icon.faList,
+  Icon.faWrench,
+  Icon.faFileDownload,
+  Icon.faPause,
+  Icon.faPlay,
+  Icon.faCogs,
+  Icon.faStop,
+  Icon.faUnlock,
+  Icon.faLongArrowAltUp,
+  Icon.faEye,
+  Icon.faEyeSlash,
+  Icon.faLongArrowAltRight
+);
 
 class App extends Component {
 

@@ -21,7 +21,6 @@
 
       h3, div {
         width: 100%;
-        padding-left: 8px;
       }
 
       h3 {
@@ -63,6 +62,7 @@
       button {
         background: none;
         border: none;
+        padding: 0;
       }
 
       h3 {
@@ -72,7 +72,6 @@
       &:hover {
         cursor: pointer;
         border-bottom: 3px solid #ff6701;
-        background-color: rgba(146, 146, 146, 0.03);
       
         h3 {
           color: #ff6701;
