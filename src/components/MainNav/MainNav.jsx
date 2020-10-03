@@ -18,7 +18,7 @@ const MainNav = props => {
   const dispatch = useDispatch();
 
   const controlFocusedTabWithCallback = useCallback(event => {
-    let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
+    let isSearchInputFocused = document.querySelector('input:focus');
     let currentActiveTabPositionInArray;
 
     if (isSearchInputFocused) {

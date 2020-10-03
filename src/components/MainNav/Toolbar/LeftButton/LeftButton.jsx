@@ -1,6 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './LeftButton.scss';
+import { Link } from 'react-router-dom';
 
 function leftMenuClassName(props) {
   if (!props.showLeftMenu) {
@@ -25,10 +26,10 @@ function renderIcon(props) {
 const LeftButton = (props) => {
   return (
     <div className={leftMenuClassName(props)}>
-      <a href={props.href}>
+      <Link to={props.href}>
         {renderIcon(props)}
         <span className="add">{props.name}</span>
-      </a>
+      </Link>
     </div>
   );
 }

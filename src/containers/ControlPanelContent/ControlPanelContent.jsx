@@ -23,7 +23,7 @@ import Backups from '../Backups/Backups';
 import Search from '../Search/Search';
 import Logs from '../Logs/Logs';
 import './ControlPanelContent.scss';
-
+import AddUser from '../../components/User/Add/AddUser';
 
 const ControlPanelContent = props => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -42,7 +42,7 @@ const ControlPanelContent = props => {
   }, []);
 
   const switchPanelTab = event => {
-    let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
+    let isSearchInputFocused = document.querySelector('input:focus');
 
     if (isSearchInputFocused) {
       return;
@@ -65,7 +65,7 @@ const ControlPanelContent = props => {
   }
 
   const addNewObject = event => {
-    let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
+    let isSearchInputFocused = document.querySelector('input:focus');
 
     if (isSearchInputFocused) {
       return;
@@ -115,6 +115,7 @@ const ControlPanelContent = props => {
           <Route path="/list/firewall" component={props => <Firewalls {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/server" component={props => <Servers {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/user" component={props => <Users {...props} changeSearchTerm={handleSearchTerm} />} />
+          <Route path="/add/user" component={props => <AddUser />} />
           <Route path="/list/web" component={props => <Web {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/dns" component={props => <DomainNameSystems {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/mail" component={props => <Mails {...props} changeSearchTerm={handleSearchTerm} />} />

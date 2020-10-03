@@ -127,7 +127,7 @@ const Mails = props => {
   }
 
   const handleFocusedElementShortcuts = event => {
-    let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
+    let isSearchInputFocused = document.querySelector('input:focus');
 
     if (controlPanelFocusedElement && !isSearchInputFocused) {
       switch (event.keyCode) {

@@ -12,7 +12,7 @@ const Hotkeys = props => {
   }, [props.reference]);
 
   const toggleShortcutsLit = event => {
-    let isSearchInputFocused = document.querySelector('.toolbar .search-input-form input:focus');
+    let isSearchInputFocused = document.querySelector('input:focus');
 
     if (event.keyCode === 72 && !isSearchInputFocused) {
       props.toggleHotkeys();
