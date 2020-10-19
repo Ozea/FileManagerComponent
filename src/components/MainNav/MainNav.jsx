@@ -18,7 +18,7 @@ const MainNav = props => {
   const dispatch = useDispatch();
 
   const controlFocusedTabWithCallback = useCallback(event => {
-    let isSearchInputFocused = document.querySelector('input:focus');
+    let isSearchInputFocused = document.querySelector('input:focus') || document.querySelector('textarea:focus') || document.querySelector('textarea:focus');
     let currentActiveTabPositionInArray;
 
     if (isSearchInputFocused) {
@@ -51,14 +51,13 @@ const MainNav = props => {
     } else if (event.keyCode === 13) {
       if (!controlPanelFocusedElement && focusedElement) {
         props.history.push({ pathname: focusedElement });
+        dispatch(addActiveElement(focusedElement));
         dispatch(removeFocusedElement());
       }
     }
   }, [activeElement, focusedElement, controlPanelFocusedElement]);
 
   useEffect(() => {
-    dispatch(addActiveElement(props.history.location.pathname));
-
     window.addEventListener("resize", handleTopNav);
     window.addEventListener("keyup", controlFocusedTabWithCallback);
     window.addEventListener("scroll", hideMenu);
@@ -73,6 +72,10 @@ const MainNav = props => {
   useEffect(() => {
     dispatch(removeFocusedElement());
   }, [activeElement]);
+
+  useEffect(() => {
+    dispatch(addActiveElement(props.history.location.pathname));
+  }, []);
 
   const handleLeftArrowKey = (array, indexInArray) => {
     if (indexInArray === 0) {

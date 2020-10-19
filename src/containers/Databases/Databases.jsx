@@ -127,7 +127,7 @@ const Databases = props => {
   }
 
   const handleFocusedElementShortcuts = event => {
-    let isSearchInputFocused = document.querySelector('input:focus');
+    let isSearchInputFocused = document.querySelector('input:focus') || document.querySelector('textarea:focus');
 
     if (controlPanelFocusedElement && !isSearchInputFocused) {
       switch (event.keyCode) {

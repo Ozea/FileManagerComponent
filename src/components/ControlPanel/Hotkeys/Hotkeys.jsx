@@ -12,7 +12,7 @@ const Hotkeys = props => {
   }, [props.reference]);
 
   const toggleShortcutsLit = event => {
-    let isSearchInputFocused = document.querySelector('input:focus');
+    let isSearchInputFocused = document.querySelector('input:focus') || document.querySelector('textarea:focus');
 
     if (event.keyCode === 72 && !isSearchInputFocused) {
       props.toggleHotkeys();
