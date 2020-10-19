@@ -1,0 +1,23 @@
+token: 1e615973ca506e991fd1e819a7d1dc07
+ok: Add
+v_domain: dev.u1.vestacp.com
+v_ip: 188.226.248.202
+v_dns: on
+v_mail: on
+v_aliases: www.dev.u1.vestacp.com
+v_ssl: on
+v_letsencrypt: on
+v_ssl_home: same
+v_stats: awstats
+v_stats_auth: on
+v_stats_user: test
+v_stats_password: test
+v_ftp: on
+v_ftp_user[1][delete]: 0
+v_ftp_user[1][is_new]: 1
+v_ftp_user[1][v_ftp_user]: test1
+v_ftp_user[1][v_ftp_password]: test1
+v_ftp_pre_path: 
+v_ftp_user[1][v_ftp_path]: test
+v_ftp_user[1][v_ftp_email]: test@test.test
+ok: Add

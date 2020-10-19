@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { addActiveElement, removeFocusedElement } from "../../../actions/MainNavigation/mainNavigationActions";
 import AddItemLayout from '../../ControlPanel/AddItemLayout/AddItemLayout';
 import { getLanguages } from '../../../ControlPanelService/Languages';
 import { getPackageList } from '../../../ControlPanelService/Package';
@@ -7,16 +8,17 @@ import { addUser } from '../../../ControlPanelService/Users';
 import Spinner from '../../../components/Spinner/Spinner';
 import Toolbar from '../../MainNav/Toolbar/Toolbar';
 import { useHistory } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 import './AddUser.scss';
+import Password from '../../WebDomain/Add/Form/Password/Password';
 
 const AddUser = props => {
   const { i18n } = window.GLOBAL.App;
   const userLanguage = localStorage.getItem("language");
   const history = useHistory();
+  const dispatch = useDispatch();
   const [state, setState] = useState({
-    hidePassword: false,
-    generatedPassword: '',
     vEmail: '',
     vNotify: '',
     languages: [],
@@ -27,6 +29,9 @@ const AddUser = props => {
   });
 
   useEffect(() => {
+    dispatch(addActiveElement('/list/user/'));
+    dispatch(removeFocusedElement());
+
     setState({ ...state, loading: true });
 
     Promise.all([getAllPackages(), getAllLanguages()])
@@ -93,27 +98,6 @@ const AddUser = props => {
     ));
   }
 
-  const hidePasswordHandler = () => {
-    setState({ ...state, hidePassword: !state.hidePassword });
-  }
-
-  const generatePassword = () => {
-    let chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
-    let stringLength = 10;
-    let result = '';
-
-    for (var i = 0; i < stringLength; i++) {
-      let randomNumber = Math.floor(Math.random() * chars.length);
-      result += chars.substr(randomNumber, 1);
-    }
-
-    setState({ ...state, generatedPassword: result });
-  }
-
-  const passwordInputHandler = value => {
-    setState({ ...state, generatedPassword: value });
-  }
-
   const onChangeEmail = value => {
     setState({ ...state, vEmail: value });
   }
@@ -156,28 +140,7 @@ const AddUser = props => {
               <input type="text" className="form-control" id="username" name="v_username" />
             </div>
 
-            <div className="form-group">
-              <label for="password">
-                {i18n.Password} /
-                <button type="button" className="generate-password" onClick={() => generatePassword()}>
-                  {i18n.Generate}
-                </button>
-              </label>
-              <div className="password-wrapper">
-                <input
-                  type={state.hidePassword ? 'password' : 'text'}
-                  className="form-control"
-                  id="password"
-                  name="v_password"
-                  value={state.generatedPassword}
-                  onChange={event => passwordInputHandler(event.target.value)} />
-                <button type="button" onClick={() => hidePasswordHandler()}>
-                  {state.hidePassword ?
-                    <span className="eye-slash"><FontAwesomeIcon icon="eye-slash" /></span> :
-                    <span className="eye"><FontAwesomeIcon icon="eye" /></span>}
-                </button>
-              </div>
-            </div>
+            <Password name='v_password' />
 
             <div className="form-group">
               <label for="email">
@@ -236,8 +199,8 @@ const AddUser = props => {
             </div>
 
             <div className="buttons-wrapper">
-              <button className="add">{i18n.Add}</button>
-              <button className="back" onClick={() => history.push('/list/user/')}>{i18n.Back}</button>
+              <button type="submit" className="add">{i18n.Add}</button>
+              <button type="button" className="back" onClick={() => history.push('/list/user/')}>{i18n.Back}</button>
             </div>
 
           </form>

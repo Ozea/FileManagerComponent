@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addFocusedElement, addActiveElement, removeActiveElement, removeFocusedElement } from "../../actions/MainNavigation/mainNavigationActions";
-import * as ControlPanelContentActions from "../../actions/ControlPanelContent/controlPanelContentActions";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import DomainNameSystems from '../DomainNameSystems/DomainNameSystems';
 import InternetProtocols from '../InternetProtocols/InternetProtocols';
 import Hotkeys from '../../components/ControlPanel/Hotkeys/Hotkeys';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Databases from '../../containers/Databases/Databases';
 import Firewalls from '../../containers/Firewalls/Firewalls';
-import { Route, Switch, Redirect } from "react-router-dom";
 import CronJobs from '../../containers/CronJobs/CronJobs';
 import Packages from '../../containers/Packages/Packages';
+import AddUser from '../../components/User/Add/AddUser';
 import Updates from '../../containers/Updates/Updates';
 import Servers from '../../containers/Servers/Servers';
 import MainNav from '../../components/MainNav/MainNav';
@@ -22,10 +22,12 @@ import Web from '../../containers/Web/Web';
 import Backups from '../Backups/Backups';
 import Search from '../Search/Search';
 import Logs from '../Logs/Logs';
+
 import './ControlPanelContent.scss';
-import AddUser from '../../components/User/Add/AddUser';
+import AddWebDomain from '../../components/WebDomain/Add/AddWebDomain';
 
 const ControlPanelContent = props => {
+  const history = useHistory();
   const [searchTerm, setSearchTerm] = useState('');
   const [hotkeysList, setHotkeysList] = useState(null);
   const dispatch = useDispatch();
@@ -42,20 +44,20 @@ const ControlPanelContent = props => {
   }, []);
 
   const switchPanelTab = event => {
-    let isSearchInputFocused = document.querySelector('input:focus');
+    let isSearchInputFocused = document.querySelector('input:focus') || document.querySelector('textarea:focus');
 
     if (isSearchInputFocused) {
       return;
     }
 
     switch (event.keyCode) {
-      case 49: props.history.push({ pathname: '/list/user/' }); return dispatchActiveElement('/list/user/');
-      case 50: props.history.push({ pathname: '/list/web/' }); return dispatchActiveElement('/list/web/');
-      case 51: props.history.push({ pathname: '/list/dns/' }); return dispatchActiveElement('/list/dns/');
-      case 52: props.history.push({ pathname: '/list/mail/' }); return dispatchActiveElement('/list/mail/');
-      case 53: props.history.push({ pathname: '/list/db/' }); return dispatchActiveElement('/list/db/');
-      case 54: props.history.push({ pathname: '/list/cron/' }); return dispatchActiveElement('/list/cron/');
-      case 55: props.history.push({ pathname: '/list/backup/' }); return dispatchActiveElement('/list/backup/');
+      case 49: history.push('/list/user/'); return dispatchActiveElement('/list/user/');
+      case 50: history.push('/list/web/'); return dispatchActiveElement('/list/web/');
+      case 51: history.push('/list/dns/'); return dispatchActiveElement('/list/dns/');
+      case 52: history.push('/list/mail/'); return dispatchActiveElement('/list/mail/');
+      case 53: history.push('/list/db/'); return dispatchActiveElement('/list/db/');
+      case 54: history.push('/list/cron/'); return dispatchActiveElement('/list/cron/');
+      case 55: history.push('/list/backup/'); return dispatchActiveElement('/list/backup/');
       default: break;
     }
   }
@@ -65,24 +67,24 @@ const ControlPanelContent = props => {
   }
 
   const addNewObject = event => {
-    let isSearchInputFocused = document.querySelector('input:focus');
+    let isSearchInputFocused = document.querySelector('input:focus') || document.querySelector('textarea:focus');
 
     if (isSearchInputFocused) {
       return;
     }
 
     if (event.keyCode === 65) {
-      switch (props.history.location.pathname) {
-        case '/list/user/': return props.history.push({ pathname: '/add/user/' });
-        case '/list/web/': return props.history.push({ pathname: '/add/web/' });
-        case '/list/dns/': return props.history.push({ pathname: '/add/dns/' });
-        case '/list/mail/': return props.history.push({ pathname: '/add/mail/' });
-        case '/list/db/': return props.history.push({ pathname: '/add/db/' });
-        case '/list/cron/': return props.history.push({ pathname: '/add/cron/' });
-        case '/list/backup/': return props.history.push({ pathname: '/add/backup/' });
-        case '/list/packages/': return props.history.push({ pathname: '/add/package/' });
-        case '/list/ip/': return props.history.push({ pathname: '/add/ip/' });
-        case '/list/firewall/': return props.history.push({ pathname: '/add/firewall/' });
+      switch (history.location.pathname) {
+        case '/list/user/': return history.push('/add/user/');
+        case '/list/web/': return history.push('/add/web/');
+        case '/list/dns/': return history.push('/add/dns/');
+        case '/list/mail/': return history.push('/add/mail/');
+        case '/list/db/': return history.push('/add/db/');
+        case '/list/cron/': return history.push('/add/cron/');
+        case '/list/backup/': return history.push('/add/backup/');
+        case '/list/packages/': return history.push('/add/package/');
+        case '/list/ip/': return history.push('/add/ip/');
+        case '/list/firewall/': return history.push('/add/firewall/');
         default: break;
       }
     }
@@ -90,7 +92,7 @@ const ControlPanelContent = props => {
 
   const handleSearchTerm = searchTerm => {
     setSearchTerm(searchTerm);
-    props.history.push({
+    history.push({
       pathname: '/search/',
       search: `?q=${searchTerm}`
     });
@@ -102,7 +104,7 @@ const ControlPanelContent = props => {
 
   return (
     <div>
-      <MainNav history={props.history} />
+      <MainNav history={history} />
       <div className="content">
         <Switch>
           <Redirect from="/" exact to="/list/user" />
@@ -117,6 +119,7 @@ const ControlPanelContent = props => {
           <Route path="/list/user" component={props => <Users {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/user" component={props => <AddUser />} />
           <Route path="/list/web" component={props => <Web {...props} changeSearchTerm={handleSearchTerm} />} />
+          <Route path="/add/web" component={props => <AddWebDomain />} />
           <Route path="/list/dns" component={props => <DomainNameSystems {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/mail" component={props => <Mails {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/db" component={props => <Databases {...props} changeSearchTerm={handleSearchTerm} />} />

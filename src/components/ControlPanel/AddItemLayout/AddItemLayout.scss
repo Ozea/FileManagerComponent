@@ -7,7 +7,7 @@ $transition: all 200ms cubic-bezier(0.4, 0.1, 0.5, 0.85);
 $errorColor: #BE5ABF;
 $successColor: $addButtonBackground;
 
-.edit-template {
+.content .edit-template {
   padding-bottom: 2rem;
 
   .toolbar {
@@ -36,6 +36,7 @@ $successColor: $addButtonBackground;
         color: $errorColor;
   
         svg {
+          margin-right: 7px;
           font-size: 13px;
           color: $errorColor;
         }
@@ -57,6 +58,14 @@ $successColor: $addButtonBackground;
   }
 }
 
+.hide {
+  display: none;
+}
+
+.show {
+  display: flex;
+}
+
 .edit-item {
   display: flex;
   font-size: 15px;
@@ -64,9 +73,33 @@ $successColor: $addButtonBackground;
   margin-bottom: 1rem;
 
   form {
-    width: 400px;
+    button {
+      color:#2C9491;
+      font-weight: bold;
+    
+      &:hover {
+        color: #ff6701;
+      }
+    
+      &:active {
+        color: #F7D616;
+      }
+    }
 
-    .form-group select {
+    .form-group {
+      input[type=text],
+      input[type=password],
+      input[type=email],
+      textarea,
+      select {
+        width: 50%;
+      }
+    }
+
+    width: 100%;
+
+    .form-group select,
+    .form-group textarea {
       border-radius: 0;
 
       &:hover {
@@ -78,6 +111,12 @@ $successColor: $addButtonBackground;
         outline: none;
         border-color: #55C9C0;
         box-shadow: unset;
+      }
+    }
+
+    textarea {
+      &:focus {
+        background: #D7F9FF;;
       }
     }
 
