@@ -136,21 +136,21 @@ const AddUser = props => {
         {state.loading ? <Spinner /> :
           <form onSubmit={event => submitFormHandler(event)} id="add-user">
             <div className="form-group">
-              <label for="username">{i18n.Username}</label>
+              <label htmlFor="username">{i18n.Username}</label>
               <input type="text" className="form-control" id="username" name="v_username" />
             </div>
 
             <Password name='v_password' />
 
             <div className="form-group">
-              <label for="email">
+              <label htmlFor="email">
                 {i18n.Email} /
                 <div>
                   <input
                     type="checkbox"
                     id="send-credentials"
                     onChange={event => repeatEmailHandler(event.target.checked)} />
-                  <label htmlFor="send-credentials">{i18n['Send login credentials to email address']}</label>
+                  <label htmlhtmlFor="send-credentials">{i18n['Send login credentials to email address']}</label>
                 </div>
               </label>
               <input
@@ -164,31 +164,31 @@ const AddUser = props => {
             </div>
 
             <div class="form-group">
-              <label for="package">{i18n.Package}</label>
+              <label htmlFor="package">{i18n.Package}</label>
               <select class="form-control" id="package" name="v_package">
                 {renderPackageOptions()}
               </select>
             </div>
 
             <div class="form-group">
-              <label for="language">{i18n.Language}</label>
+              <label htmlFor="language">{i18n.Language}</label>
               <select class="form-control" id="language" name="v_language">
                 {renderLanguageOptions()}
               </select>
             </div>
 
             <div className="form-group">
-              <label for="firstName">{i18n['First Name']}</label>
+              <label htmlFor="firstName">{i18n['First Name']}</label>
               <input type="text" className="form-control" id="firstName" name="v_fname" />
             </div>
 
             <div className="form-group">
-              <label for="lastName">{i18n['Last Name']}</label>
+              <label htmlFor="lastName">{i18n['Last Name']}</label>
               <input type="text" className="form-control" id="lastName" name="v_lname" />
             </div>
 
             <div className="form-group">
-              <label for="sendLoginCredentialsToEmailAddress">{i18n['Send login credentials to email address']}</label>
+              <label htmlFor="sendLoginCredentialsToEmailAddress">{i18n['Send login credentials to email address']}</label>
               <input
                 type="email"
                 className="form-control"

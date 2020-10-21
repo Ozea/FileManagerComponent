@@ -51,7 +51,7 @@ const AdvancedOptions = props => {
   return (
     <div>
       <div class="form-group">
-        <label for="aliases">{i18n.Aliases}</label>
+        <label htmlFor="aliases">{i18n.Aliases}</label>
         <textarea
           class="form-control"
           id="aliases"
@@ -70,14 +70,14 @@ const AdvancedOptions = props => {
             id="ssl-support"
             checked={state.sslSupport}
             onChange={() => setState({ ...state, sslSupport: !state.sslSupport })} />
-          <label htmlFor="ssl-support">{i18n['SSL Support']}</label>
+          <label htmlhtmlFor="ssl-support">{i18n['SSL Support']}</label>
         </div>
       </div>
 
       {renderSslSupport()}
 
       <div class="form-group">
-        <label for="web-stats">{i18n['Web Statistics']}</label>
+        <label htmlFor="web-stats">{i18n['Web Statistics']}</label>
         <select class="form-control" id="web-stats" name="v_stats" onChange={event => onChangeWebStatsSelect(event.target.value)}>
           {renderWebStats()}
         </select>
@@ -91,13 +91,13 @@ const AdvancedOptions = props => {
             id="stats-auth"
             checked={state.statisticsAuthCheckbox}
             onChange={() => setState({ ...state, statisticsAuthCheckbox: !state.statisticsAuthCheckbox })} />
-          <label htmlFor="stats-auth">{i18n['Statistics Authorization']}</label>
+          <label htmlhtmlFor="stats-auth">{i18n['Statistics Authorization']}</label>
         </div>
       </div>
 
       <div className={state.statisticsAuthCheckbox ? 'show web-stats-wrapper' : 'hide'}>
         <div className="form-group">
-          <label for="stats-user">{i18n.Username}</label>
+          <label htmlFor="stats-user">{i18n.Username}</label>
           <input type="text" className="form-control" id="stats-user" name="v_stats_user" />
         </div>
 
@@ -112,7 +112,7 @@ const AdvancedOptions = props => {
             id="additional-ftp"
             checked={state.additionalFtp}
             onChange={() => setState({ ...state, additionalFtp: !state.additionalFtp })} />
-          <label htmlFor="additional-ftp">{i18n['Additional FTP Account']}</label>
+          <label htmlhtmlFor="additional-ftp">{i18n['Additional FTP Account']}</label>
         </div>
       </div>
 

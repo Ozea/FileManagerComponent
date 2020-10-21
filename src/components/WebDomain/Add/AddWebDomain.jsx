@@ -129,7 +129,7 @@ const AddWebDomain = props => {
             <input type="hidden" name="token" value={token} />
 
             <div className="form-group">
-              <label for="domain">{i18n.Domain}</label>
+              <label htmlFor="domain">{i18n.Domain}</label>
               <input
                 type="text"
                 className="form-control"
@@ -140,7 +140,7 @@ const AddWebDomain = props => {
             </div>
 
             <div class="form-group">
-              <label for="package">{i18n['IP Address']}</label>
+              <label htmlFor="package">{i18n['IP Address']}</label>
               <select class="form-control" id="ip" name="v_ip">
                 {renderInternetProtocolsOptions()}
               </select>
@@ -149,14 +149,14 @@ const AddWebDomain = props => {
             <div className="form-group">
               <div className="checkbox-wrapper">
                 <input type="checkbox" name="v_dns" id="dns-support" checked={state.dnsSupport} />
-                <label htmlFor="dns-support">{i18n['DNS Support']}</label>
+                <label htmlhtmlFor="dns-support">{i18n['DNS Support']}</label>
               </div>
             </div>
 
             <div className="form-group">
               <div className="checkbox-wrapper">
                 <input type="checkbox" name="v_mail" id="mail-support" checked={state.mailSupport} />
-                <label htmlFor="mail-support">{i18n['Mail Support']}</label>
+                <label htmlhtmlFor="mail-support">{i18n['Mail Support']}</label>
               </div>
             </div>
 

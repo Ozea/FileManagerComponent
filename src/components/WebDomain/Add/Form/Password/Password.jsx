@@ -31,7 +31,7 @@ const Password = props => {
 
   return (
     <div className="form-group">
-      <label for="password">
+      <label htmlFor="password">
         {i18n.Password} /
           <button type="button" className="generate-password" onClick={() => generatePassword()}>
           {i18n.Generate}
