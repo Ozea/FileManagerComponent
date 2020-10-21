@@ -90,7 +90,7 @@ const DomainNameSystem = props => {
         </div>
 
         <div>
-          <button className="link-delete" onClick={() => handleDelete()}>
+          <button type="button" className="link-delete" onClick={() => handleDelete()}>
             {i18n.Delete}
             {data.FOCUSED ? <span className="shortcut-button del">Del</span> : <FontAwesomeIcon icon="times" />}
           </button>

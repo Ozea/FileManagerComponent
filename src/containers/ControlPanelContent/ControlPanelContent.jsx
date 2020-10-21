@@ -25,6 +25,7 @@ import Logs from '../Logs/Logs';
 
 import './ControlPanelContent.scss';
 import AddWebDomain from '../../components/WebDomain/Add/AddWebDomain';
+import AddDomainNameSystem from '../../components/DomainNameSystem/Add/AddDomainNameSystem';
 
 const ControlPanelContent = props => {
   const history = useHistory();
@@ -117,10 +118,11 @@ const ControlPanelContent = props => {
           <Route path="/list/firewall" component={props => <Firewalls {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/server" component={props => <Servers {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/user" component={props => <Users {...props} changeSearchTerm={handleSearchTerm} />} />
-          <Route path="/add/user" component={props => <AddUser />} />
+          <Route path="/add/user" component={() => <AddUser />} />
           <Route path="/list/web" component={props => <Web {...props} changeSearchTerm={handleSearchTerm} />} />
-          <Route path="/add/web" component={props => <AddWebDomain />} />
+          <Route path="/add/web" component={() => <AddWebDomain />} />
           <Route path="/list/dns" component={props => <DomainNameSystems {...props} changeSearchTerm={handleSearchTerm} />} />
+          <Route path="/add/dns" component={() => <AddDomainNameSystem />} />
           <Route path="/list/mail" component={props => <Mails {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/db" component={props => <Databases {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/cron" component={props => <CronJobs {...props} changeSearchTerm={handleSearchTerm} />} />

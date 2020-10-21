@@ -1,6 +1,10 @@
 $textColor: #555;
 $addButtonBackground: #9FBF0C;
 $addButtonBackgroundHover: #C0E60F;
+$optionalButtonHover: #9FBF0C;
+$optionalButtonActive: #c0e60f;
+$deleteButtonColorHover: #FF3438;
+$deleteButtonColorActive: #FF5F5F;
 $backButtonBackground: #DFDEDD;
 $backButtonBackgroundHover: #999;
 $transition: all 200ms cubic-bezier(0.4, 0.1, 0.5, 0.85);
@@ -72,6 +76,10 @@ $successColor: $addButtonBackground;
   margin-top: 3rem;
   margin-bottom: 1rem;
 
+  .l-col {
+    margin-right: 1.75%;
+  }
+
   form {
     button {
       color:#2C9491;
@@ -83,6 +91,26 @@ $successColor: $addButtonBackground;
     
       &:active {
         color: #F7D616;
+      }
+    }
+
+    button.optional {
+      &:hover {
+        color: $optionalButtonHover;
+      }
+
+      &:active {
+        color: $optionalButtonActive;
+      }
+    }
+
+    button.delete {
+      &:hover {
+        color: $deleteButtonColorHover;
+      }
+
+      &:active {
+        color: $deleteButtonColorActive;
       }
     }
 

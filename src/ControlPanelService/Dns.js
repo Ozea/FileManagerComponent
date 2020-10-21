@@ -2,10 +2,11 @@ import axios from "axios";
 
 const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
-const webApiUri = '/list/dns/dns.php';
+const dnsApiUri = '/list/dns/dns.php';
+const addDnsApiUri = '/api/add/dns/index.php';
 
 export const getDnsList = () => {
-  return axios.get(BASE_URL + webApiUri);
+  return axios.get(BASE_URL + dnsApiUri);
 }
 
 export const bulkAction = (action, domainNameSystems) => {
@@ -24,4 +25,14 @@ export const bulkAction = (action, domainNameSystems) => {
 
 export const handleAction = uri => {
   return axios.get(BASE_URL + uri);
+}
+
+export const addDomainNameSystem = data => {
+  let formDataObject = new FormData();
+
+  for (let key in data) {
+    formDataObject.append(key, data[key]);
+  }
+
+  return axios.post(BASE_URL + addDnsApiUri, formDataObject);
 }
