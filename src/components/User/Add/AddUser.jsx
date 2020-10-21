@@ -150,7 +150,7 @@ const AddUser = props => {
                     type="checkbox"
                     id="send-credentials"
                     onChange={event => repeatEmailHandler(event.target.checked)} />
-                  <label htmlhtmlFor="send-credentials">{i18n['Send login credentials to email address']}</label>
+                  <label htmlFor="send-credentials">{i18n['Send login credentials to email address']}</label>
                 </div>
               </label>
               <input

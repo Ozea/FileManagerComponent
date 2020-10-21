@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addFocusedElement, addActiveElement, removeActiveElement, removeFocusedElement } from "../../actions/MainNavigation/mainNavigationActions";
+import AddDomainNameSystem from '../../components/DomainNameSystem/Add/AddDomainNameSystem';
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import DomainNameSystems from '../DomainNameSystems/DomainNameSystems';
 import InternetProtocols from '../InternetProtocols/InternetProtocols';
+import AddWebDomain from '../../components/WebDomain/Add/AddWebDomain';
 import Hotkeys from '../../components/ControlPanel/Hotkeys/Hotkeys';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Databases from '../../containers/Databases/Databases';
 import Firewalls from '../../containers/Firewalls/Firewalls';
 import CronJobs from '../../containers/CronJobs/CronJobs';
 import Packages from '../../containers/Packages/Packages';
+import AddMail from '../../components/Mail/Add/AddMail';
 import AddUser from '../../components/User/Add/AddUser';
 import Updates from '../../containers/Updates/Updates';
 import Servers from '../../containers/Servers/Servers';
@@ -24,8 +27,6 @@ import Search from '../Search/Search';
 import Logs from '../Logs/Logs';
 
 import './ControlPanelContent.scss';
-import AddWebDomain from '../../components/WebDomain/Add/AddWebDomain';
-import AddDomainNameSystem from '../../components/DomainNameSystem/Add/AddDomainNameSystem';
 
 const ControlPanelContent = props => {
   const history = useHistory();
@@ -124,6 +125,7 @@ const ControlPanelContent = props => {
           <Route path="/list/dns" component={props => <DomainNameSystems {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/dns" component={() => <AddDomainNameSystem />} />
           <Route path="/list/mail" component={props => <Mails {...props} changeSearchTerm={handleSearchTerm} />} />
+          <Route path="/add/mail" component={() => <AddMail />} />
           <Route path="/list/db" component={props => <Databases {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/cron" component={props => <CronJobs {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/backup" component={props => <Backups {...props} changeSearchTerm={handleSearchTerm} />} />

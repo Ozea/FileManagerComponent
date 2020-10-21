@@ -149,14 +149,14 @@ const AddWebDomain = props => {
             <div className="form-group">
               <div className="checkbox-wrapper">
                 <input type="checkbox" name="v_dns" id="dns-support" checked={state.dnsSupport} />
-                <label htmlhtmlFor="dns-support">{i18n['DNS Support']}</label>
+                <label htmlFor="dns-support">{i18n['DNS Support']}</label>
               </div>
             </div>
 
             <div className="form-group">
               <div className="checkbox-wrapper">
                 <input type="checkbox" name="v_mail" id="mail-support" checked={state.mailSupport} />
-                <label htmlhtmlFor="mail-support">{i18n['Mail Support']}</label>
+                <label htmlFor="mail-support">{i18n['Mail Support']}</label>
               </div>
             </div>
 
