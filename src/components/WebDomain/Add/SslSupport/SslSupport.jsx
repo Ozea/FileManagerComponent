@@ -16,7 +16,7 @@ const SslSupport = props => {
             id="lets-encrypt"
             checked={letsEncrypt}
             onChange={() => setLetsEncrypt(!letsEncrypt)} />
-          <label htmlhtmlFor="lets-encrypt">{i18n['Lets Encrypt Support']}</label>
+          <label htmlFor="lets-encrypt">{i18n['Lets Encrypt Support']}</label>
         </div>
         <span className="lets-encrypt-span">{letsEncrypt ? i18n['Your certificate will be automatically issued in 5 minutes'] : null}</span>
       </div>
