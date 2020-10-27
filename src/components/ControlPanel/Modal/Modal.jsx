@@ -3,7 +3,7 @@ import './Modal.scss';
 
 const { i18n } = window.GLOBAL.App;
 
-const Modal = ({ show, text, onSave, onCancel }) => (
+const Modal = ({ show, text, onSave, onCancel, showSaveButton = true }) => (
   <div>
     <div class={`modal fade ${show ? 'show' : ''}`} id="c-panel-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style={{ display: show ? 'block' : 'none' }}>
       <div class="modal-dialog" role="document">
@@ -19,7 +19,7 @@ const Modal = ({ show, text, onSave, onCancel }) => (
           </div>
           <div class="modal-footer">
             <button onClick={() => onCancel()} type="button" class="btn btn-secondary" data-dismiss="modal">{i18n.Cancel}</button>
-            <button onClick={() => onSave()} type="button" class="btn btn-primary">{i18n.OK}</button>
+            {showSaveButton ? <button onClick={() => onSave()} type="button" class="btn btn-primary">{i18n.OK}</button> : ''}
           </div>
         </div>
       </div>

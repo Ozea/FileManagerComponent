@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
-import { bulkAction, getBackupList, handleAction } from '../../ControlPanelService/Backup';
+import { bulkAction, getBackupList, handleAction, scheduleBackup } from '../../ControlPanelService/Backup';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Modal from '../../components/ControlPanel/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
+import { useSelector, useDispatch } from 'react-redux';
 import Backup from '../../components/Backup/Backup';
 import './Backups.scss';
-import { useSelector, useDispatch } from 'react-redux';
 
 const Backups = props => {
   const { i18n } = window.GLOBAL.App;
@@ -20,13 +21,15 @@ const Backups = props => {
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
+  const [modal, setModal] = useState({
+    text: '',
+    visible: false,
+    actionUrl: ''
+  });
   const [state, setState] = useState({
     backups: [],
     backupFav: [],
     loading: true,
-    modalText: '',
-    modalVisible: false,
-    modalActionUrl: '',
     toggledAll: false,
     selection: [],
     totalAmount: ''
@@ -281,16 +284,17 @@ const Backups = props => {
   }
 
   const displayModal = (text, url) => {
-    setState({
-      ...state,
-      modalVisible: !state.modalVisible,
-      modalText: text,
-      modalActionUrl: url
+    setState({ ...state, loading: false });
+    setModal({
+      ...modal,
+      visible: true,
+      text: text,
+      actionUrl: url
     });
   }
 
   const modalConfirmHandler = () => {
-    handleAction(state.modalActionUrl)
+    handleAction(modal.actionUrl)
       .then(() => {
         fetchData();
         modalCancelHandler();
@@ -299,18 +303,33 @@ const Backups = props => {
   }
 
   const modalCancelHandler = () => {
-    setState({
-      ...state,
-      modalVisible: false,
-      modalText: '',
-      modalActionUrl: ''
+    setModal({
+      ...modal,
+      visible: false,
+      text: '',
+      actionUrl: ''
     });
+  }
+
+  const scheduleBackupButton = () => {
+    setState({ ...state, loading: true });
+
+    scheduleBackup()
+      .then(result => {
+        displayModal(result.data.error_msg, '');
+      })
+      .catch(err => console.error(err));
   }
 
   return (
     <div className="backups">
       <Toolbar mobile={false} >
-        <LeftButton name={i18n["Create Backup"]} href="/schedule/backup" showLeftMenu={true} />
+        <div className="l-menu">
+          <button onClick={scheduleBackupButton}>
+            <FontAwesomeIcon icon="plus" />
+            <span className="add">{i18n["Create Backup"]}</span>
+          </button>
+        </div>
         <div className="r-menu">
           <div className="input-group input-group-sm">
             <a href='/list/backup/exclusions/' className="button-extra" type="submit">{i18n['backup exclusions']}</a>
@@ -327,8 +346,9 @@ const Backups = props => {
       <Modal
         onSave={modalConfirmHandler}
         onCancel={modalCancelHandler}
-        show={state.modalVisible}
-        text={state.modalText} />
+        showSaveButton={false}
+        show={modal.visible}
+        text={modal.text} />
     </div>
   );
 }
