@@ -22,7 +22,7 @@ const AdditionalFtp = ({ domain, index, onDeleteAdditionalFtp, prefixI18N }) => 
 
       <div className="form-transform">
         <div className="form-group username">
-          <label for={`username_${index}`}>{i18n.Username}</label>
+          <label htmlFor={`username_${index}`}>{i18n.Username}</label>
           <span className="prefix-note">{prefixI18N}</span>
           <div className="input-wrapper">
             <input
@@ -39,7 +39,7 @@ const AdditionalFtp = ({ domain, index, onDeleteAdditionalFtp, prefixI18N }) => 
         <Password name={`v_ftp_user[${index}][v_ftp_password]`} index={index} />
 
         <div className="form-group">
-          <label for={`path${index}`}>{i18n.Path}</label>
+          <label htmlFor={`path${index}`}>{i18n.Path}</label>
           <input
             type="text"
             value={state.path}
@@ -51,7 +51,7 @@ const AdditionalFtp = ({ domain, index, onDeleteAdditionalFtp, prefixI18N }) => 
         </div>
 
         <div className="form-group">
-          <label for={`sendLoginCredentialsToEmailAddress_${index}`}>{i18n['Send login credentials to email address']}</label>
+          <label htmlFor={`sendLoginCredentialsToEmailAddress_${index}`}>{i18n['Send login credentials to email address']}</label>
           <input
             type="email"
             className="form-control"
