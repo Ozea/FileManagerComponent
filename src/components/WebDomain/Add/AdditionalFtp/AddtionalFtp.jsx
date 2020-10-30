@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Password from '../Form/Password/Password';
+import Password from '../../../../components/ControlPanel/AddItemLayout/Form/Password/Password';
 
 import './AdditionalFtp.scss';
 

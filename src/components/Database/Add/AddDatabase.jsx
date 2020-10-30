@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { addActiveElement, removeFocusedElement } from "../../../actions/MainNavigation/mainNavigationActions";
 import { dbCharsets, addDatabase, getDbOptionalInfo } from '../../../ControlPanelService/Db';
 import AddItemLayout from '../../ControlPanel/AddItemLayout/AddItemLayout';
-import Password from '../../WebDomain/Add/Form/Password/Password';
+import Password from '../../ControlPanel/AddItemLayout/Form/Password/Password';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Toolbar from '../../MainNav/Toolbar/Toolbar';
 import { useHistory } from 'react-router-dom';

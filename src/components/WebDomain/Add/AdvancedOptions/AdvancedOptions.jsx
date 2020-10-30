@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import AdditionalFtp from '../AdditionalFtp/AddtionalFtp';
+import Password from '../../../../components/ControlPanel/AddItemLayout/Form/Password/Password';
 import AdditionalFtpWrapper from '../AdditionalFtpWrapper/AdditionalFtpWrapper';
-import Password from '../Form/Password/Password';
+import AdditionalFtp from '../AdditionalFtp/AddtionalFtp';
 import SslSupport from '../SslSupport/SslSupport';
 
 import './AdvancedOptions.scss';

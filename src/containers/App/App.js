@@ -49,7 +49,8 @@ library.add(
   Icon.faEyeSlash,
   Icon.faLongArrowAltRight,
   Icon.faCaretDown,
-  Icon.faCaretUp
+  Icon.faCaretUp,
+  Icon.faInfinity
 );
 
 class App extends Component {
