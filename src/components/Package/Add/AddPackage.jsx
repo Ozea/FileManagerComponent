@@ -28,21 +28,22 @@ const AddPackage = props => {
     webSystem: '',
     backendTemplates: [],
     backendSystem: '',
+    proxySystem: '',
+    proxyTemplates: [],
     dnsTemplates: [],
     dnsSystem: '',
     sshTemplates: [],
     usersNS: [],
-    webDomains: '',
-    webAliases: '',
-    dnsDomains: '',
-    dnsRecords: '',
-    mailDomains: '',
-    mailAccounts: '',
-    databases: '',
-    cronJobs: '',
-    backups: '',
-    quota: '',
-    bandwidth: '',
+    webDomains: '1',
+    webAliases: '1',
+    dnsDomains: '1',
+    dnsRecords: '1',
+    mailDomains: '1',
+    mailAccounts: '1',
+    databases: '1',
+    cronJobs: '1',
+    quota: '1000',
+    bandwidth: '1000',
   });
 
   useEffect(() => {
@@ -51,7 +52,7 @@ const AddPackage = props => {
 
     setState({ ...state, loading: true });
 
-    setTimeout(() => fetchData(), 1000);
+    fetchData();
   }, []);
 
   const fetchData = () => {
@@ -59,25 +60,15 @@ const AddPackage = props => {
       .then(result => {
         setState({
           ...state,
-          webTemplates: result.data.webTemplates,
-          webSystem: result.data.webSystem,
-          backendTemplates: result.data.backendTemplates,
-          backendSystem: result.data.backendSystem,
-          dnsTemplates: result.data.dnsTemplates,
-          dnsSystem: result.data.dnsSystem,
-          sshTemplates: result.data.sshTemplates,
-          usersNS: result.data.nameServers,
-          webDomains: '1',
-          webAliases: '1',
-          dnsDomains: '1',
-          dnsRecords: '1',
-          mailDomains: '1',
-          mailAccounts: '1',
-          databases: '1',
-          cronJobs: '1',
-          backups: '1',
-          quota: '1000',
-          bandwidth: '1000',
+          webTemplates: result.data.web_templates,
+          webSystem: result.data.web_system,
+          backendTemplates: result.data.backend_templates,
+          backendSystem: result.data.web_backend,
+          dnsTemplates: result.data.dns_templates,
+          dnsSystem: result.data.dns_system,
+          proxySystem: result.data.proxy_system,
+          proxyTemplates: result.data.proxy_templates,
+          sshTemplates: result.data.ssh_access,
           loading: false
         });
       })
@@ -134,7 +125,7 @@ const AddPackage = props => {
     <div className="edit-template add-package">
       <Toolbar mobile={false}>
         <div></div>
-        <div className="search-toolbar-name">{i18n['Adding Package'] ?? 'Adding Package'}</div>
+        <div className="search-toolbar-name">{i18n['Adding Package']}</div>
         <div className="error">
           <span className="error-message">
             {state.errorMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''}
@@ -153,102 +144,109 @@ const AddPackage = props => {
             <input type="hidden" name="ok" value="add" />
             <input type="hidden" name="token" value={token} />
 
-            <TextInput name="v_package" id="packageName" title={i18n['Package Name'] ?? 'Package Name'} />
+            <TextInput name="v_package" id="packageName" title={i18n['Package Name']} />
 
             <SelectInput
               options={state.webTemplates}
               name="v_web_template"
               id="webTemplates"
-              title={i18n['Web Template'] ?? 'Web Template'}
+              title={i18n['Web Template']}
               optionalTitle={state.webSystem} />
 
             <SelectInput
               options={state.backendTemplates}
               name="v_backend_template"
               id="backendTemplates"
-              title={i18n['Backend Template'] ?? 'Backend Template'}
+              title={i18n['Backend Template']}
               optionalTitle={state.backendSystem} />
+
+            <SelectInput
+              options={state.proxyTemplates}
+              name="v_proxy_template"
+              id="proxyTemplates"
+              title={i18n['Proxy Template']}
+              optionalTitle={state.proxySystem} />
 
             <SelectInput
               options={state.dnsTemplates}
               name="v_dns_template"
               id="dnsTemplates"
-              title={i18n['DNS Template'] ?? 'DNS Template'}
+              title={i18n['DNS Template']}
               optionalTitle={state.dnsSystem} />
 
             <SelectInput
               options={state.sshTemplates}
               name="v_shell"
               id="shells"
-              title={i18n['SSH Access'] ?? 'SSH Access'} />
+              title={i18n['SSH Access']} />
 
-            <TextInputWithExtraButton title={i18n['Web Domains'] ?? 'Web Domains'} id="webDomains" name="v_web_domains" value={state.webDomains}>
+            <TextInputWithExtraButton title={i18n['Web Domains']} id="webDomains" name="v_web_domains" value={state.webDomains}>
               <button type="button" onClick={() => toggleUnlimited('webDomains')}>
                 <FontAwesomeIcon icon="infinity" />
               </button>
             </TextInputWithExtraButton>
 
-            <TextInputWithExtraButton title={i18n['Web Aliases'] ?? 'Web Aliases'} optionalTitle={i18n['per domain'] ?? 'per domain'} id="webAliases" name="v_web_aliases" value={state.webAliases}>
+            <TextInputWithExtraButton title={i18n['Web Aliases']} optionalTitle={i18n['per domain']} id="webAliases" name="v_web_aliases" value={state.webAliases}>
               <button type="button" onClick={() => toggleUnlimited('webAliases')}>
                 <FontAwesomeIcon icon="infinity" />
               </button>
             </TextInputWithExtraButton>
 
-            <TextInputWithExtraButton title={i18n['DNS Domains'] ?? 'DNS Domains'} id="dnsDomains" name="v_dns_domains" value={state.dnsDomains}>
+            <TextInputWithExtraButton title={i18n['DNS Domains']} id="dnsDomains" name="v_dns_domains" value={state.dnsDomains}>
               <button type="button" onClick={() => toggleUnlimited('dnsDomains')}>
                 <FontAwesomeIcon icon="infinity" />
               </button>
             </TextInputWithExtraButton>
 
-            <TextInputWithExtraButton title={i18n['DNS Records'] ?? 'DNS Records'} optionalTitle={i18n['per domain'] ?? 'per domain'} id="dnsRecords" name="v_dns_records" value={state.dnsRecords}>
+            <TextInputWithExtraButton title={i18n['DNS Records']} optionalTitle={i18n['per domain']} id="dnsRecords" name="v_dns_records" value={state.dnsRecords}>
               <button type="button" onClick={() => toggleUnlimited('dnsRecords')}>
                 <FontAwesomeIcon icon="infinity" />
               </button>
             </TextInputWithExtraButton>
 
-            <TextInputWithExtraButton title={i18n['Mail Domains'] ?? 'Mail Domains'} id="mailDomains" name="v_mail_domains" value={state.dnsRecords}>
+            <TextInputWithExtraButton title={i18n['Mail Domains']} id="mailDomains" name="v_mail_domains" value={state.mailDomains}>
               <button type="button" onClick={() => toggleUnlimited('mailDomains')}>
                 <FontAwesomeIcon icon="infinity" />
               </button>
             </TextInputWithExtraButton>
 
-            <TextInputWithExtraButton title={i18n['Mail Accounts'] ?? 'Mail Accounts'} optionalTitle={i18n['per domain'] ?? 'per domain'} id="mailAccounts" name="v_mail_accounts" value={state.mailAccounts}>
+            <TextInputWithExtraButton title={i18n['Mail Accounts']} optionalTitle={i18n['per domain']} id="mailAccounts" name="v_mail_accounts" value={state.mailAccounts}>
               <button type="button" onClick={() => toggleUnlimited('mailAccounts')}>
                 <FontAwesomeIcon icon="infinity" />
               </button>
             </TextInputWithExtraButton>
 
-            <TextInputWithExtraButton title={i18n['Databases'] ?? 'Databases'} id="databases" name="v_databases" value={state.databases}>
+            <TextInputWithExtraButton title={i18n['Databases']} id="databases" name="v_databases" value={state.databases}>
               <button type="button" onClick={() => toggleUnlimited('databases')}>
                 <FontAwesomeIcon icon="infinity" />
               </button>
             </TextInputWithExtraButton>
 
-            <TextInputWithExtraButton title={i18n['Cron Jobs'] ?? 'Cron Jobs'} id="cronJobs" name="v_cron_jobs" value={state.cronJobs}>
+            <TextInputWithExtraButton title={i18n['Cron Jobs']} id="cronJobs" name="v_cron_jobs" value={state.cronJobs}>
               <button type="button" onClick={() => toggleUnlimited('cronJobs')}>
                 <FontAwesomeIcon icon="infinity" />
               </button>
             </TextInputWithExtraButton>
 
-            <TextInput name="v_backups" id="backups" defaultValue={state.backups} title={i18n['Backups'] ?? 'Backups'} />
+            <TextInput name="v_backups" id="backups" defaultValue="1" title={i18n['Backups']} />
 
-            <TextInputWithExtraButton title={i18n['Quota'] ?? 'Quota'} optionalTitle={i18n['in megabytes'] ?? 'in megabytes'} id="quota" name="v_disk_quota" value={state.quota}>
+            <TextInputWithExtraButton title={i18n['Quota']} optionalTitle={i18n['in megabytes']} id="quota" name="v_disk_quota" value={state.quota}>
               <button type="button" onClick={() => toggleUnlimited('quota')}>
                 <FontAwesomeIcon icon="infinity" />
               </button>
             </TextInputWithExtraButton>
 
-            <TextInputWithExtraButton title={i18n['Bandwidth'] ?? 'Bandwidth'} optionalTitle={i18n['in megabytes'] ?? 'in megabytes'} id="bandwidth" name="v_bandwidth" value={state.bandwidth}>
+            <TextInputWithExtraButton title={i18n['Bandwidth']} optionalTitle={i18n['in megabytes']} id="bandwidth" name="v_bandwidth" value={state.bandwidth}>
               <button type="button" onClick={() => toggleUnlimited('bandwidth')}>
                 <FontAwesomeIcon icon="infinity" />
               </button>
             </TextInputWithExtraButton>
 
-            <NameServers usersNS={state.usersNS} />
+            <NameServers usersNS={['ns1.example.ltd', 'ns2.example.ltd']} />
 
             <div className="buttons-wrapper">
-              <button type="submit" className="add">{i18n.Add ?? 'Add'}</button>
-              <button type="button" className="back" onClick={() => history.push('/list/package/')}>{i18n.Back ?? 'Back'}</button>
+              <button type="submit" className="add">{i18n.Add}</button>
+              <button type="button" className="back" onClick={() => history.push('/list/package/')}>{i18n.Back}</button>
             </div>
           </form>
         )}

@@ -8,7 +8,7 @@ const NameServers = props => {
   });
 
   useEffect(() => {
-    if (props.usersNS.length) {
+    if (props.usersNS) {
       let initNameServersAmount = props.usersNS.map((userNS, index) => index + 1);
       setState({ ...state, nameServersAmount: initNameServersAmount });
     }
