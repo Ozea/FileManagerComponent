@@ -10,6 +10,7 @@ import Hotkeys from '../../components/ControlPanel/Hotkeys/Hotkeys';
 import AddDatabase from '../../components/Database/Add/AddDatabase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AddCronJob from '../../components/CronJob/Add/AddCronJob';
+import AddPackage from '../../components/Package/Add/AddPackage';
 import Databases from '../../containers/Databases/Databases';
 import Firewalls from '../../containers/Firewalls/Firewalls';
 import CronJobs from '../../containers/CronJobs/CronJobs';
@@ -86,7 +87,7 @@ const ControlPanelContent = props => {
         case '/list/db/': return history.push('/add/db/');
         case '/list/cron/': return history.push('/add/cron/');
         case '/list/backup/': return history.push('/add/backup/');
-        case '/list/packages/': return history.push('/add/package/');
+        case '/list/package/': return history.push('/add/package/');
         case '/list/ip/': return history.push('/add/ip/');
         case '/list/firewall/': return history.push('/add/firewall/');
         default: break;
@@ -113,6 +114,7 @@ const ControlPanelContent = props => {
         <Switch>
           <Redirect from="/" exact to="/list/user" />
           <Route path="/list/package" component={props => <Packages {...props} changeSearchTerm={handleSearchTerm} />} />
+          <Route path="/add/package" component={() => <AddPackage />} />
           <Route path="/list/ip" component={props => <InternetProtocols {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/rrd" component={props => <RRDs {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/stats" component={props => <Statistics {...props} changeSearchTerm={handleSearchTerm} />} />

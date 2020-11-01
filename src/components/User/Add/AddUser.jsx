@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { addActiveElement, removeFocusedElement } from "../../../actions/MainNavigation/mainNavigationActions";
+import Password from '../../../components/ControlPanel/AddItemLayout/Form/Password/Password';
 import AddItemLayout from '../../ControlPanel/AddItemLayout/AddItemLayout';
 import { getLanguages } from '../../../ControlPanelService/Languages';
 import { getPackageList } from '../../../ControlPanelService/Package';
@@ -11,7 +12,6 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import './AddUser.scss';
-import Password from '../../WebDomain/Add/Form/Password/Password';
 
 const AddUser = props => {
   const { i18n } = window.GLOBAL.App;
