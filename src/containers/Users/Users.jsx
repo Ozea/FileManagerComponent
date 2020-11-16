@@ -340,7 +340,6 @@ const Users = props => {
   }
 
   const modalConfirmHandler = () => {
-    console.log(modal.actionUrl);
     handleAction(modal.actionUrl)
       .then(() => {
         fetchData();

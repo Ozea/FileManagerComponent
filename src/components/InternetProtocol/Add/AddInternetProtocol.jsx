@@ -64,8 +64,6 @@ const AddInternetProtocol = props => {
         })
         .catch(err => console.error(err));
     }
-
-    console.log(newIp);
   }
 
   const fetchData = () => {
