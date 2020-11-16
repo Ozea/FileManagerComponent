@@ -54,7 +54,7 @@ class User extends Component {
   }
 
   handleDelete = token => {
-    this.props.handleModal(this.props.data.delete_conf, `/delete/user?user=${this.props.data.NAME}&token=${token}`);
+    this.props.handleModal(this.props.data.delete_conf, `/delete/user/?user=${this.props.data.NAME}&token=${token}`);
   }
 
   render() {

@@ -8,12 +8,12 @@ const SelectInput = ({ options = [], id, name, title, optionalTitle = '' }) => {
   return (
     <>
       {
-        (optionalTitle.length > 0 && options) || id === 'shells'
+        options
           ? (
             <div className="form-group">
               <label className="label-wrapper" htmlFor={id}>
                 {title}
-                <span>{optionalTitle}</span>
+                <span>{optionalTitle ? `(${optionalTitle})` : ''}</span>
               </label>
               <select className="form-control" id={id} name={name}>
                 {renderOptions()}

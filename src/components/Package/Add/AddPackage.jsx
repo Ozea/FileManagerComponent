@@ -198,7 +198,7 @@ const AddPackage = props => {
               </button>
             </TextInputWithExtraButton>
 
-            <TextInputWithExtraButton title={i18n['DNS Records']} optionalTitle={i18n['per domain']} id="dnsRecords" name="v_dns_records" value={state.dnsRecords}>
+            <TextInputWithExtraButton title={i18n['DNS records']} optionalTitle={i18n['per domain']} id="dnsRecords" name="v_dns_records" value={state.dnsRecords}>
               <button type="button" onClick={() => toggleUnlimited('dnsRecords')}>
                 <FontAwesomeIcon icon="infinity" />
               </button>
