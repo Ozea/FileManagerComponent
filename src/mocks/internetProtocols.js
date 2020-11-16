@@ -24,3 +24,16 @@ export const internetProtocolsMock = {
     "DATE": "2015-07-04"
   }
 };
+
+export const interfaces = [
+  'etfc0',
+  '1231mng'
+];
+
+export const users = [
+  'admin',
+  'aoz',
+  'test',
+  'anton',
+  'alex'
+];

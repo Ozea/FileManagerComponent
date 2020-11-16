@@ -21,14 +21,16 @@ const InternetProtocols = props => {
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
+  const [modal, setModal] = useState({
+    text: '',
+    visible: false,
+    actionUrl: ''
+  });
   const [state, setState] = useState({
     internetProtocols: [],
     ipFav: [],
     loading: false,
     toggledAll: false,
-    modalText: '',
-    modalVisible: false,
-    modalActionUrl: '',
     sorting: i18n.Date,
     order: "descending",
     selection: [],
@@ -319,16 +321,17 @@ const InternetProtocols = props => {
   }
 
   const displayModal = (text, url) => {
-    setState({
-      ...state,
-      modalVisible: !state.modalVisible,
-      modalText: text,
-      modalActionUrl: url
+    setModal({
+      ...modal,
+      visible: true,
+      text: text,
+      actionUrl: url
     });
   }
 
   const modalConfirmHandler = () => {
-    handleAction(state.modalActionUrl)
+    console.log(modal.actionUrl);
+    handleAction(modal.actionUrl)
       .then(() => {
         fetchData();
         modalCancelHandler();
@@ -337,11 +340,11 @@ const InternetProtocols = props => {
   }
 
   const modalCancelHandler = () => {
-    setState({
-      ...state,
-      modalVisible: false,
-      modalText: '',
-      modalActionUrl: ''
+    setModal({
+      ...modal,
+      visible: false,
+      text: '',
+      actionUrl: ''
     });
   }
 
@@ -365,8 +368,8 @@ const InternetProtocols = props => {
       <Modal
         onSave={modalConfirmHandler}
         onCancel={modalCancelHandler}
-        show={state.modalVisible}
-        text={state.modalText} />
+        show={modal.visible}
+        text={modal.text} />
     </div>
   );
 }

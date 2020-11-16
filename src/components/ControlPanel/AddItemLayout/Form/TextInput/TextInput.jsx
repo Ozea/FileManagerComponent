@@ -5,7 +5,7 @@ const TextInput = ({ id, name, title, optionalTitle = '', defaultValue = '' }) =
     <div class="form-group">
       <label className="label-wrapper" htmlFor={id}>
         {title}
-        <span>{optionalTitle}</span>
+        <span>{optionalTitle ? `(${optionalTitle})` : ''}</span>
       </label>
       <input
         type="text"

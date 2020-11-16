@@ -22,7 +22,7 @@ const InternetProtocol = props => {
   }
 
   const handleDelete = () => {
-    props.handleModal(data.delete_conf, `/delete/ip?ip=${data.NAME}&token=${token}`);
+    props.handleModal(data.delete_conf, `/delete/ip/?ip=${data.NAME}&token=${token}`);
   }
 
   return (

@@ -22,7 +22,7 @@ class ListItem extends Component {
     if (date) {
       let newDate = new Date(date);
       let day = newDate.getDate();
-      let month = newDate.getMonth();
+      let month = newDate.getMonth() + 1;
       let year = newDate.getFullYear();
       let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addFocusedElement, addActiveElement, removeActiveElement, removeFocusedElement } from "../../actions/MainNavigation/mainNavigationActions";
 import AddDomainNameSystem from '../../components/DomainNameSystem/Add/AddDomainNameSystem';
+import AddInternetProtocol from '../../components/InternetProtocol/Add/AddInternetProtocol';
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import DomainNameSystems from '../DomainNameSystems/DomainNameSystems';
 import InternetProtocols from '../InternetProtocols/InternetProtocols';
@@ -116,6 +117,7 @@ const ControlPanelContent = props => {
           <Route path="/list/package" component={props => <Packages {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/package" component={() => <AddPackage />} />
           <Route path="/list/ip" component={props => <InternetProtocols {...props} changeSearchTerm={handleSearchTerm} />} />
+          <Route path="/add/ip" component={() => <AddInternetProtocol />} />
           <Route path="/list/rrd" component={props => <RRDs {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/stats" component={props => <Statistics {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/log" component={props => <Logs {...props} changeSearchTerm={handleSearchTerm} />} />
