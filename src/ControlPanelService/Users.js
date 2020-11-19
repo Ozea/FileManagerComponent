@@ -4,6 +4,8 @@ let token = localStorage.getItem('token');
 const BASE_URL = window.location.origin;
 const usersUri = '/list/user/user.php';
 const addUsersUri = '/api/add/user/index.php';
+const userInfoUri = '/api/edit/user/index.php';
+const updateUserUri = '/api/edit/user/index.php';
 
 export const getUsersList = () => {
   return axios.get(BASE_URL + usersUri);
@@ -38,4 +40,23 @@ export const addUser = data => {
   formDataObject.append("ok", "Add");
 
   return axios.post(BASE_URL + addUsersUri, formDataObject);
+}
+
+export const getUserInfo = username => {
+  return axios.get(BASE_URL + userInfoUri, {
+    params: {
+      user: username,
+      token
+    }
+  });
+}
+
+export const updateUser = data => {
+  let formDataObject = new FormData();
+
+  for (let key in data) {
+    formDataObject.append(key, data[key]);
+  }
+
+  return axios.post(BASE_URL + updateUserUri, formDataObject);
 }

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Container from '../ControlPanel/Container/Container';
 import ListItem from '../ControlPanel/ListItem/ListItem';
 import './User.scss';
+import { Link } from 'react-router-dom';
 
 const { i18n } = window.GLOBAL.App;
 
@@ -110,9 +111,9 @@ class User extends Component {
         <div className="actions">
           {this.printLoginActionButton(data.NAME)}
           <div>
-            <a href={`/edit/user?user=${data.NAME}`}>{i18n.edit}
+            <Link to={`/edit/user?user=${data.NAME}&token=${token}`}>{i18n.edit}
               {this.props.data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
-            </a>
+            </Link>
           </div>
           <div>
             <button
