@@ -4,15 +4,15 @@ const NameServers = props => {
   const { i18n } = window.GLOBAL.App;
   const [state, setState] = useState({
     nameServersAmount: [],
-    usersNS: props.usersNS
+    usersNS: []
   });
 
   useEffect(() => {
     if (props.usersNS) {
       let initNameServersAmount = props.usersNS.map((userNS, index) => index + 1);
-      setState({ ...state, nameServersAmount: initNameServersAmount });
+      setState({ ...state, usersNS: props.usersNS, nameServersAmount: initNameServersAmount });
     }
-  }, []);
+  }, [props.usersNS]);
 
   const renderNameServerInputs = () => {
     return state.nameServersAmount.map((nameServer, index) => {

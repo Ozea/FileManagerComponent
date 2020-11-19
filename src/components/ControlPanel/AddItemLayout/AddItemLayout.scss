@@ -239,4 +239,28 @@ $successColor: $addButtonBackground;
       }
     }
   }
+
+  .l-col {
+    padding: 20px 0 0;
+
+    .date,
+    .time {
+      margin: 10px 0 0;
+      color: #777;
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    .time {
+      margin: 6px 0 10px;
+    }
+
+    .status {
+      color: #9FBF0C;
+      font-size: 11px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+  }
 }

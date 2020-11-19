@@ -32,6 +32,7 @@ import Search from '../Search/Search';
 import Logs from '../Logs/Logs';
 
 import './ControlPanelContent.scss';
+import EditUser from '../../components/User/Edit/EditUser';
 
 const ControlPanelContent = props => {
   const history = useHistory();
@@ -128,6 +129,7 @@ const ControlPanelContent = props => {
           <Route path="/list/server" component={props => <Servers {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/user" component={props => <Users {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/user" component={() => <AddUser />} />
+          <Route path="/edit/user" component={() => <EditUser />} />
           <Route path="/list/web" component={props => <Web {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/web" component={() => <AddWebDomain />} />
           <Route path="/list/dns" component={props => <DomainNameSystems {...props} changeSearchTerm={handleSearchTerm} />} />

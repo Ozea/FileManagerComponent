@@ -1,8 +1,8 @@
 import React from 'react';
 
-const SelectInput = ({ options = [], id, name, title, optionalTitle = '' }) => {
+const SelectInput = ({ options = [], id, name, title, optionalTitle = '', selected = '' }) => {
   const renderOptions = () => {
-    return options.map((option, index) => <option key={index} value={option}>{option}</option>);
+    return options.map((option, index) => <option key={index} selected={selected === option} value={option}>{option}</option>);
   }
 
   return (
