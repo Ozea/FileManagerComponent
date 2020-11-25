@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Password from '../../../../components/ControlPanel/AddItemLayout/Form/Password/Password';
 
 import './AdditionalFtp.scss';
 
-const AdditionalFtp = ({ domain, index, onDeleteAdditionalFtp, prefixI18N }) => {
+const AdditionalFtp = ({ domain, data = {}, index, onDeleteAdditionalFtp, prefixI18N }) => {
   const { i18n } = window.GLOBAL.App;
   const [state, setState] = useState({
     path: '',
@@ -16,7 +16,7 @@ const AdditionalFtp = ({ domain, index, onDeleteAdditionalFtp, prefixI18N }) => 
         <span>{i18n.FTP} #{index}</span>
         <span>
           &nbsp;
-          <button type="button" onClick={() => onDeleteAdditionalFtp(index)}>({i18n.Delete})</button>
+          <button type="button" onClick={() => onDeleteAdditionalFtp(index)}>({i18n.Delete ?? 'Delete'})</button>
         </span>
       </div>
 

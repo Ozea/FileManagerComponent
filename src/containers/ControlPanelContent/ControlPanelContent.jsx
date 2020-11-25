@@ -13,8 +13,10 @@ import AddFirewall from '../../components/Firewall/Add/AddFirewall';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AddCronJob from '../../components/CronJob/Add/AddCronJob';
 import AddPackage from '../../components/Package/Add/AddPackage';
+import EditWeb from '../../components/WebDomain/Edit/EditWeb';
 import Databases from '../../containers/Databases/Databases';
 import Firewalls from '../../containers/Firewalls/Firewalls';
+import EditUser from '../../components/User/Edit/EditUser';
 import CronJobs from '../../containers/CronJobs/CronJobs';
 import Packages from '../../containers/Packages/Packages';
 import AddMail from '../../components/Mail/Add/AddMail';
@@ -32,7 +34,6 @@ import Search from '../Search/Search';
 import Logs from '../Logs/Logs';
 
 import './ControlPanelContent.scss';
-import EditUser from '../../components/User/Edit/EditUser';
 
 const ControlPanelContent = props => {
   const history = useHistory();
@@ -132,6 +133,7 @@ const ControlPanelContent = props => {
           <Route path="/edit/user" component={() => <EditUser />} />
           <Route path="/list/web" component={props => <Web {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/web" component={() => <AddWebDomain />} />
+          <Route path="/edit/web" component={() => <EditWeb />} />
           <Route path="/list/dns" component={props => <DomainNameSystems {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/dns" component={() => <AddDomainNameSystem />} />
           <Route path="/list/mail" component={props => <Mails {...props} changeSearchTerm={handleSearchTerm} />} />

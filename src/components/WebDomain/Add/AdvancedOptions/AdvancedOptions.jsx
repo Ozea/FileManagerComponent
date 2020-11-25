@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Password from '../../../../components/ControlPanel/AddItemLayout/Form/Password/Password';
 import AdditionalFtpWrapper from '../AdditionalFtpWrapper/AdditionalFtpWrapper';
-import AdditionalFtp from '../AdditionalFtp/AddtionalFtp';
 import SslSupport from '../SslSupport/SslSupport';
 
 import './AdvancedOptions.scss';
@@ -26,6 +25,7 @@ const AdvancedOptions = props => {
       return <SslSupport />;
     }
   }
+
   const renderAdditionalFtp = () => {
     if (state.additionalFtp) {
       return <AdditionalFtpWrapper prefixI18N={props.prefixI18N} domain={props.domain} unCheckAdditionalFtpBox={() => setState({ ...state, additionalFtp: false })} />;

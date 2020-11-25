@@ -1,22 +1,41 @@
-import React, { useState } from 'react';
-import AdditionalFtp from '../AdditionalFtp/AddtionalFtp';
+import React, { useEffect, useState } from 'react';
+
+import AdditionalFtp from '../AdditionalFtp/AdditionalFtp';
+import AdditionalFtpForEditing from '../AdditionalFtpForEditing/AdditionalFtpForEditing';
 
 const AdditionalFtpWrapper = props => {
   const { i18n } = window.GLOBAL.App;
   const [state, setState] = useState({
-    additionalFtp: [1]
+    additionalFtp: [1],
+    editIndexing: false
   });
+
+  useEffect(() => {
+    if (props.ftps) {
+      // For EditWeb.jsx. Second state is kept for indexing Additional Ftp ( starting from 0 )
+      setState({ ...state, additionalFtp: props.ftps, editIndexing: true });
+    }
+  }, [props.ftps]);
 
   const renderAdditionalFtps = () => {
     if (state.additionalFtp.length) {
       return state.additionalFtp.map((ftp, index) => {
-        return <AdditionalFtp
-          key={index}
-          prefixI18N={props.prefixI18N}
-          index={index + 1}
-          order={ftp}
-          domain={props.domain}
-          onDeleteAdditionalFtp={order => onDeleteFtp(order)} />;
+        if (state.editIndexing) {
+          return <AdditionalFtpForEditing
+            key={index}
+            prefixI18N={props.prefixI18N}
+            index={index}
+            data={ftp}
+            domain={props.domain}
+            onDeleteAdditionalFtp={index => onDeleteFtp(index)} />;
+        } else {
+          return <AdditionalFtp
+            key={index}
+            prefixI18N={props.prefixI18N}
+            index={index + 1}
+            domain={props.domain}
+            onDeleteAdditionalFtp={index => onDeleteFtp(index)} />;
+        }
       });
     } else {
       props.unCheckAdditionalFtpBox();
@@ -45,7 +64,7 @@ const AdditionalFtpWrapper = props => {
       {renderAdditionalFtps()}
 
       <button type="button" onClick={() => addAdditionalFtp()}>
-        {i18n['Add one more FTP Account']}
+        {i18n['Add one more FTP Account'] ?? 'Add'}
       </button>
     </div>
   );
