@@ -1,6 +1,17 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-const Checkbox = ({ name, id, title, defaultChecked = false, onChange }) => {
+const Checkbox = ({ name, id, title, defaultChecked = false, onChange, checked = false }) => {
+  const [checkedState, setCheckedState] = useState(false);
+
+  useEffect(() => {
+    setCheckedState(checked);
+  }, [checked]);
+
+  const changeCheckbox = event => {
+    setCheckedState(event.target.checked);
+    onChange(event.target.checked);
+  }
+
   return (
     <div className="form-group">
       <div className="checkbox-wrapper">
@@ -8,7 +19,8 @@ const Checkbox = ({ name, id, title, defaultChecked = false, onChange }) => {
           type="checkbox"
           name={name}
           id={id}
-          onChange={event => onChange(event.target.checked)}
+          checked={checkedState}
+          onChange={changeCheckbox}
           defaultChecked={defaultChecked} />
         <label htmlFor={id}>{title}</label>
       </div>

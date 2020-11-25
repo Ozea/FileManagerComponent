@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import ListItem from '../ControlPanel/ListItem/ListItem';
-import Container from '../ControlPanel/Container/Container';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Container from '../ControlPanel/Container/Container';
+import ListItem from '../ControlPanel/ListItem/ListItem';
+import { Link } from 'react-router-dom';
 import './WebDomain.scss';
 
 class WebDomain extends Component {
@@ -74,10 +75,10 @@ class WebDomain extends Component {
         </Container>
         <div className="actions">
           <div>
-            <a className="link-edit" href={`/edit/web?domain=${data.NAME}`}>
+            <Link className="link-edit" to={`/edit/web?domain=${data.NAME}`}>
               {i18n.edit}
               {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
-            </a>
+            </Link>
           </div>
           <div>
             <a className="link-gray" href={`/list/web-log?domain=${data.NAME}&type=access`}>
