@@ -3,6 +3,7 @@ import ListItem from '../ControlPanel/ListItem/ListItem';
 import Container from '../ControlPanel/Container/Container';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './DomainNameSystem.scss';
+import { Link } from 'react-router-dom';
 
 const DomainNameSystem = props => {
   const { data } = props;
@@ -74,10 +75,10 @@ const DomainNameSystem = props => {
         </div>
 
         <div>
-          <a className="link-edit" href={`/edit/dns/?domain=${data.NAME}`}>
+          <Link className="link-edit" to={`/edit/dns/?domain=${data.NAME}`}>
             {i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
-          </a>
+          </Link>
         </div>
 
         <div>

@@ -4,6 +4,8 @@ const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
 const dnsApiUri = '/list/dns/dns.php';
 const addDnsApiUri = '/api/add/dns/index.php';
+const dNSInfoUri = '/api/edit/dns/index.php';
+const updateDNSUri = '/api/edit/dns/index.php';
 
 export const getDnsList = () => {
   return axios.get(BASE_URL + dnsApiUri);
@@ -35,4 +37,23 @@ export const addDomainNameSystem = data => {
   }
 
   return axios.post(BASE_URL + addDnsApiUri, formDataObject);
+}
+
+export const getDNSInfo = domain => {
+  return axios.get(BASE_URL + dNSInfoUri, {
+    params: {
+      domain,
+      token
+    }
+  });
+}
+
+export const updateDNS = data => {
+  let formDataObject = new FormData();
+
+  for (let key in data) {
+    formDataObject.append(key, data[key]);
+  }
+
+  return axios.post(BASE_URL + updateDNSUri, formDataObject);
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addFocusedElement, addActiveElement, removeActiveElement, removeFocusedElement } from "../../actions/MainNavigation/mainNavigationActions";
+import EditDomainNameSystem from '../../components/DomainNameSystem/Edit/EditDomainNameSystem';
 import AddDomainNameSystem from '../../components/DomainNameSystem/Add/AddDomainNameSystem';
 import AddInternetProtocol from '../../components/InternetProtocol/Add/AddInternetProtocol';
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
@@ -136,6 +137,7 @@ const ControlPanelContent = props => {
           <Route path="/edit/web" component={() => <EditWeb />} />
           <Route path="/list/dns" component={props => <DomainNameSystems {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/dns" component={() => <AddDomainNameSystem />} />
+          <Route path="/edit/dns" component={() => <EditDomainNameSystem />} />
           <Route path="/list/mail" component={props => <Mails {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/mail" component={() => <AddMail />} />
           <Route path="/list/db" component={props => <Databases {...props} changeSearchTerm={handleSearchTerm} />} />
