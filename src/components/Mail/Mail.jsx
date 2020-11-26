@@ -3,6 +3,7 @@ import ListItem from '../ControlPanel/ListItem/ListItem';
 import Container from '../ControlPanel/Container/Container';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './Mail.scss';
+import { Link } from 'react-router-dom';
 
 const Mail = props => {
   const { data } = props;
@@ -80,10 +81,10 @@ const Mail = props => {
         </div>
 
         <div>
-          <a className="link-edit" href={`/edit/mail/?domain=${data.NAME}`}>
+          <Link className="link-edit" to={`/edit/mail/?domain=${data.NAME}`}>
             {i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
-          </a>
+          </Link>
         </div>
 
         <div>

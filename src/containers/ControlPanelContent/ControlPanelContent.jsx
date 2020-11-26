@@ -18,6 +18,7 @@ import EditWeb from '../../components/WebDomain/Edit/EditWeb';
 import Databases from '../../containers/Databases/Databases';
 import Firewalls from '../../containers/Firewalls/Firewalls';
 import EditUser from '../../components/User/Edit/EditUser';
+import EditMail from '../../components/Mail/Edit/EditMail';
 import CronJobs from '../../containers/CronJobs/CronJobs';
 import Packages from '../../containers/Packages/Packages';
 import AddMail from '../../components/Mail/Add/AddMail';
@@ -140,6 +141,7 @@ const ControlPanelContent = props => {
           <Route path="/edit/dns" component={() => <EditDomainNameSystem />} />
           <Route path="/list/mail" component={props => <Mails {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/mail" component={() => <AddMail />} />
+          <Route path="/edit/mail" component={() => <EditMail />} />
           <Route path="/list/db" component={props => <Databases {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/db" component={() => <AddDatabase />} />
           <Route path="/list/cron" component={props => <CronJobs {...props} changeSearchTerm={handleSearchTerm} />} />
