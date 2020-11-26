@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const Password = props => {
   const { i18n } = window.GLOBAL.App;
@@ -7,6 +7,12 @@ const Password = props => {
     hidePassword: false,
     generatedPassword: ''
   });
+
+  useEffect(() => {
+    if (props.defaultValue && !state.generatedPassword) {
+      setState({ ...state, generatedPassword: props.defaultValue });
+    }
+  }, [props.defaultValue]);
 
   const hidePasswordHandler = () => {
     setState({ ...state, hidePassword: !state.hidePassword });

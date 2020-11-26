@@ -2,6 +2,7 @@ import React from 'react';
 import ListItem from '../ControlPanel/ListItem/ListItem';
 import Container from '../ControlPanel/Container/Container';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom';
 
 const Database = props => {
   const { data } = props;
@@ -59,10 +60,10 @@ const Database = props => {
       </Container>
       <div className="actions">
         <div>
-          <a className="link-edit" href={`/edit/db/?database=${data.NAME}`}>
+          <Link className="link-edit" to={`/edit/db/?database=${data.NAME}`}>
             {i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
-          </a>
+          </Link>
         </div>
 
         <div>

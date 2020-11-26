@@ -5,6 +5,8 @@ const BASE_URL = window.location.origin;
 const webApiUri = '/list/db/db.php';
 const addDbApiUri = '/api/add/db/index.php';
 const optionalDbInfoUri = '/api/add/db/index.php';
+const dbInfoUri = '/api/edit/db/index.php';
+const updateDatabaseUri = '/api/edit/db/index.php';
 
 export const getDatabaseList = () => {
   return axios.get(BASE_URL + webApiUri);
@@ -80,3 +82,27 @@ export const dbCharsets = [
   'cp932',
   'eucjpms'
 ];
+
+export const getDatabaseInfo = database => {
+  return axios.get(BASE_URL + dbInfoUri, {
+    params: {
+      database,
+      token
+    }
+  });
+}
+
+export const updateDatabase = (data, database) => {
+  let formDataObject = new FormData();
+
+  for (let key in data) {
+    formDataObject.append(key, data[key]);
+  }
+
+  return axios.post(BASE_URL + updateDatabaseUri, formDataObject, {
+    params: {
+      database,
+      token
+    }
+  });
+}

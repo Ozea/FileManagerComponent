@@ -8,6 +8,7 @@ import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import DomainNameSystems from '../DomainNameSystems/DomainNameSystems';
 import InternetProtocols from '../InternetProtocols/InternetProtocols';
 import AddWebDomain from '../../components/WebDomain/Add/AddWebDomain';
+import EditDatabase from '../../components/Database/Edit/EditDatabase';
 import Hotkeys from '../../components/ControlPanel/Hotkeys/Hotkeys';
 import AddDatabase from '../../components/Database/Add/AddDatabase';
 import AddFirewall from '../../components/Firewall/Add/AddFirewall';
@@ -144,6 +145,7 @@ const ControlPanelContent = props => {
           <Route path="/edit/mail" component={() => <EditMail />} />
           <Route path="/list/db" component={props => <Databases {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/db" component={() => <AddDatabase />} />
+          <Route path="/edit/db" component={() => <EditDatabase />} />
           <Route path="/list/cron" component={props => <CronJobs {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/cron" component={() => <AddCronJob />} />
           <Route path="/list/backup" component={props => <Backups {...props} changeSearchTerm={handleSearchTerm} />} />
