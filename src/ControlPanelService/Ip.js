@@ -6,6 +6,8 @@ const BASE_URL = window.location.origin;
 const webApiUri = '/list/ip/ip.php';
 const addIpApiUri = '/api/add/ip/index.php';
 const additionalInfoUri = '/api/add/ip/index.php';
+const ipInfoUri = '/api/edit/ip/index.php';
+const updateIpUri = '/api/edit/ip/index.php';
 
 export const getIpList = () => {
   return axios.get(BASE_URL + webApiUri);
@@ -40,4 +42,28 @@ export const addInternetProtocol = data => {
   }
 
   return axios.post(BASE_URL + addIpApiUri, formDataObject);
+}
+
+export const getInternetProtocolInfo = ip => {
+  return axios.get(BASE_URL + ipInfoUri, {
+    params: {
+      ip,
+      token
+    }
+  });
+}
+
+export const updateInternetProtocol = (data, ip) => {
+  let formDataObject = new FormData();
+
+  for (let key in data) {
+    formDataObject.append(key, data[key]);
+  }
+
+  return axios.post(BASE_URL + updateIpUri, formDataObject, {
+    params: {
+      ip,
+      token
+    }
+  });
 }

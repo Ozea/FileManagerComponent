@@ -31,6 +31,7 @@ const EditWeb = props => {
     letsEncrypt: false,
     additionalFtp: true,
     statAuth: false,
+    loading: false,
     errorMessage: '',
     okMessage: ''
   });
@@ -75,15 +76,19 @@ const EditWeb = props => {
     updatedDomain['v_domain'] = state.domain;
 
     if (Object.keys(updatedDomain).length !== 0 && updatedDomain.constructor === Object) {
-      updateWebDomain(updatedDomain)
+      setState({ ...state, loading: true });
+
+      updateWebDomain(updatedDomain, state.domain)
         .then(result => {
           if (result.status === 200) {
             const { error_msg, ok_msg } = result.data;
 
             if (error_msg) {
-              setState({ ...state, errorMessage: error_msg, okMessage: '' });
+              setState({ ...state, errorMessage: error_msg, okMessage: '', loading: false });
             } else if (ok_msg) {
-              setState({ ...state, errorMessage: '', okMessage: ok_msg });
+              setState({ ...state, errorMessage: '', okMessage: ok_msg, loading: false });
+            } else {
+              setState({ ...state, loading: false });
             }
           }
         })

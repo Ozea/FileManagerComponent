@@ -22,6 +22,7 @@ const EditUser = props => {
   const dispatch = useDispatch();
   const [state, setState] = useState({
     data: {},
+    loading: false,
     username: '',
     errorMessage: '',
     okMessage: ''
@@ -61,15 +62,19 @@ const EditUser = props => {
     updatedUser['v_username'] = state.username;
 
     if (Object.keys(updatedUser).length !== 0 && updatedUser.constructor === Object) {
-      updateUser(updatedUser)
+      setState({ ...state, loading: true });
+
+      updateUser(updatedUser, state.username)
         .then(result => {
           if (result.status === 200) {
             const { error_msg, ok_msg } = result.data;
 
             if (error_msg) {
-              setState({ ...state, errorMessage: error_msg, okMessage: '' });
+              setState({ ...state, errorMessage: error_msg, okMessage: '', loading: false });
             } else if (ok_msg) {
-              setState({ ...state, errorMessage: '', okMessage: ok_msg });
+              setState({ ...state, errorMessage: '', okMessage: ok_msg, loading: false });
+            } else {
+              setState({ ...state, loading: false });
             }
           }
         })

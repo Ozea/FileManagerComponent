@@ -53,12 +53,17 @@ export const getDomainInfo = domain => {
   });
 }
 
-export const updateWebDomain = data => {
+export const updateWebDomain = (data, domain) => {
   let formDataObject = new FormData();
 
   for (let key in data) {
     formDataObject.append(key, data[key]);
   }
 
-  return axios.post(BASE_URL + updateDomainUri, formDataObject);
+  return axios.post(BASE_URL + updateDomainUri, formDataObject, {
+    params: {
+      domain,
+      token
+    }
+  });
 }

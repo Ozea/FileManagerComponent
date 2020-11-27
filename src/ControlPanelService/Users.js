@@ -51,12 +51,17 @@ export const getUserInfo = username => {
   });
 }
 
-export const updateUser = data => {
+export const updateUser = (data, user) => {
   let formDataObject = new FormData();
 
   for (let key in data) {
     formDataObject.append(key, data[key]);
   }
 
-  return axios.post(BASE_URL + updateUserUri, formDataObject);
+  return axios.post(BASE_URL + updateUserUri, formDataObject, {
+    params: {
+      user,
+      token
+    }
+  });
 }
