@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { addFocusedElement, addActiveElement, removeActiveElement, removeFocusedElement } from "../../actions/MainNavigation/mainNavigationActions";
+import { addActiveElement, removeFocusedElement } from "../../actions/MainNavigation/mainNavigationActions";
 import EditDomainNameSystem from '../../components/DomainNameSystem/Edit/EditDomainNameSystem';
+import EditInternetProtocol from '../../components/InternetProtocol/Edit/EditInternetProtocol';
 import AddDomainNameSystem from '../../components/DomainNameSystem/Add/AddDomainNameSystem';
 import AddInternetProtocol from '../../components/InternetProtocol/Add/AddInternetProtocol';
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
@@ -127,6 +128,7 @@ const ControlPanelContent = props => {
           <Route path="/edit/package" component={() => <EditPackage />} />
           <Route path="/list/ip" component={props => <InternetProtocols {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/ip" component={() => <AddInternetProtocol />} />
+          <Route path="/edit/ip" component={() => <EditInternetProtocol />} />
           <Route path="/list/rrd" component={props => <RRDs {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/stats" component={props => <Statistics {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/log" component={props => <Logs {...props} changeSearchTerm={handleSearchTerm} />} />

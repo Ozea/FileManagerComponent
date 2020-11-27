@@ -48,12 +48,17 @@ export const getMailInfo = domain => {
   });
 }
 
-export const updateMail = data => {
+export const updateMail = (data, domain) => {
   let formDataObject = new FormData();
 
   for (let key in data) {
     formDataObject.append(key, data[key]);
   }
 
-  return axios.post(BASE_URL + updateMailUri, formDataObject);
+  return axios.post(BASE_URL + updateMailUri, formDataObject, {
+    params: {
+      domain,
+      token
+    }
+  });
 }

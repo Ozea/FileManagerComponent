@@ -48,12 +48,17 @@ export const getDNSInfo = domain => {
   });
 }
 
-export const updateDNS = data => {
+export const updateDNS = (data, domain) => {
   let formDataObject = new FormData();
 
   for (let key in data) {
     formDataObject.append(key, data[key]);
   }
 
-  return axios.post(BASE_URL + updateDNSUri, formDataObject);
+  return axios.post(BASE_URL + updateDNSUri, formDataObject, {
+    params: {
+      domain,
+      token
+    }
+  });
 }
