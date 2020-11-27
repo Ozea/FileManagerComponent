@@ -97,7 +97,7 @@ const EditMail = props => {
             <input type="hidden" name="save" value="save" />
             <input type="hidden" name="token" value={token} />
 
-            <TextInput id="domain" name="v_domain" title={i18n['Domain']} defaultValue={state.data.domain} disabled />
+            <TextInput id="domain" name="v_domain" title={i18n['Domain']} value={state.data.domain} disabled />
 
             <Checkbox
               name="v_antispam"
@@ -117,7 +117,7 @@ const EditMail = props => {
               title={i18n['DKIM Support']}
               defaultChecked={state.data.dkim === 'yes'} />
 
-            <TextInput id="catchall" name="v_catchall" title={i18n['Catchall email']} defaultValue={state.data.catchall} />
+            <TextInput id="catchall" name="v_catchall" title={i18n['Catchall email']} value={state.data.catchall} />
 
             <div className="buttons-wrapper">
               <button type="submit" className="add">{i18n.Save}</button>

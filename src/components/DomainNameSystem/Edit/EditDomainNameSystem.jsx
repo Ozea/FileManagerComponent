@@ -97,9 +97,9 @@ const EditDomainNameSystem = props => {
             <input type="hidden" name="save" value="save" />
             <input type="hidden" name="token" value={token} />
 
-            <TextInput id="domain" name="v_domain" title={i18n['Domain']} defaultValue={state.data.domain} disabled />
+            <TextInput id="domain" name="v_domain" title={i18n['Domain']} value={state.data.domain} disabled />
 
-            <TextInput id="ip" name="v_ip" title={i18n['IP Address']} defaultValue={state.data.ip} />
+            <TextInput id="ip" name="v_ip" title={i18n['IP Address']} value={state.data.ip} />
 
             <SelectInput
               optionalTitle={state.data.dns_system}
@@ -112,13 +112,13 @@ const EditDomainNameSystem = props => {
             <TextInput
               optionalTitle={state.data['YYYY-MM-DD']}
               title={i18n['Expiration Date']}
-              defaultValue={state.data.exp}
+              value={state.data.exp}
               name="v_exp"
               id="exp" />
 
-            <TextInput id="soa" name="v_soa" title="SOA" defaultValue={state.data.soa} />
+            <TextInput id="soa" name="v_soa" title="SOA" value={state.data.soa} />
 
-            <TextInput id="ttl" name="v_ttl" title="TTL" defaultValue={state.data.ttl} />
+            <TextInput id="ttl" name="v_ttl" title="TTL" value={state.data.ttl} />
 
             <div className="buttons-wrapper">
               <button type="submit" className="add">{i18n.Save}</button>

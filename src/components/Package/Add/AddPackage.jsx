@@ -228,7 +228,7 @@ const AddPackage = props => {
               </button>
             </TextInputWithExtraButton>
 
-            <TextInput name="v_backups" id="backups" defaultValue="1" title={i18n['Backups']} />
+            <TextInput name="v_backups" id="backups" value="1" title={i18n['Backups']} />
 
             <TextInputWithExtraButton title={i18n['Quota']} optionalTitle={i18n['in megabytes']} id="quota" name="v_disk_quota" value={state.quota}>
               <button type="button" onClick={() => toggleUnlimited('quota')}>

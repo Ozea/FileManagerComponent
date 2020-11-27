@@ -5,6 +5,8 @@ const token = localStorage.getItem("token");
 const webApiUri = '/list/package/package.php';
 const additionalPackageInfoUri = '/api/add/package/index.php';
 const addPackageUri = '/api/add/package/index.php';
+const packageInfoUri = '/api/edit/package/index.php';
+const updatePackageUri = '/api/edit/package/index.php';
 
 export const getPackageList = () => {
   return axios.get(BASE_URL + webApiUri);
@@ -41,117 +43,26 @@ export const getAdditionalPackageInfo = () => {
   return axios.get(BASE_URL + additionalPackageInfoUri);
 }
 
-const webTemplates = [
-  'default',
-  'drupal',
-  'joomla',
-  'laravel',
-  'wordpress'
-];
+export const getPackageInfo = item => {
+  return axios.get(BASE_URL + packageInfoUri, {
+    params: {
+      package: item,
+      token
+    }
+  });
+}
 
-const backendTemplates = [
-  'default',
-  'no-php',
-  'socket'
-];
+export const updatePackage = (data, item) => {
+  let formDataObject = new FormData();
 
-const dnsTemplates = [
-  'default',
-  'child-ns',
-  'gmail'
-];
-
-const sshTemplates = [
-  'nologin',
-  'dash',
-  'bash',
-  'screen',
-  'sh'
-];
-
-export const packagesMock = {
-  "slategrey": {
-    "WEB_TEMPLATE": "default",
-    "PROXY_TEMPLATE": "default",
-    "DNS_TEMPLATE": "default",
-    "WEB_DOMAINS": "100",
-    "WEB_ALIASES": "100",
-    "DNS_DOMAINS": "100",
-    "DNS_RECORDS": "100",
-    "MAIL_DOMAINS": "100",
-    "MAIL_ACCOUNTS": "100",
-    "DATABASES": "100",
-    "CRON_JOBS": "100",
-    "DISK_QUOTA": "10000",
-    "BANDWIDTH": "100000",
-    "NS": "ns1.localhost.ltd,ns2.localhost.ltd",
-    "SHELL": "nologin",
-    "BACKUPS": "3",
-    "TIME": "12:39:13",
-    "DATE": "2015-06-05",
-    "delete_conf": "Are you sure you want to delete domain slategrey?"
-  },
-  "palegreen": {
-    "WEB_TEMPLATE": "hosting",
-    "PROXY_TEMPLATE": "hosting",
-    "DNS_TEMPLATE": "default",
-    "WEB_DOMAINS": "50",
-    "WEB_ALIASES": "50",
-    "DNS_DOMAINS": "50",
-    "DNS_RECORDS": "50",
-    "MAIL_DOMAINS": "50",
-    "MAIL_ACCOUNTS": "50",
-    "DATABASES": "50",
-    "CRON_JOBS": "50",
-    "DISK_QUOTA": "50000",
-    "BANDWIDTH": "50000",
-    "NS": "ns1.localhost.ltd,ns2.localhost.ltd",
-    "SHELL": "nologin",
-    "BACKUPS": "5",
-    "TIME": "07:49:47",
-    "DATE": "2015-06-05",
-    "delete_conf": "Are you sure you want to delete domain palegreen?"
-  },
-  "gainsboro": {
-    "WEB_TEMPLATE": "default",
-    "PROXY_TEMPLATE": "default",
-    "DNS_TEMPLATE": "default",
-    "WEB_DOMAINS": "10",
-    "WEB_ALIASES": "10",
-    "DNS_DOMAINS": "10",
-    "DNS_RECORDS": "10",
-    "MAIL_DOMAINS": "10",
-    "MAIL_ACCOUNTS": "10",
-    "DATABASES": "10",
-    "CRON_JOBS": "10",
-    "DISK_QUOTA": "10000",
-    "BANDWIDTH": "10000",
-    "NS": "ns1.localhost.ltd,ns2.localhost.ltd",
-    "SHELL": "nologin",
-    "BACKUPS": "1",
-    "TIME": "11:31:30",
-    "DATE": "2015-06-05",
-    "delete_conf": "Are you sure you want to delete domain gainsboro?"
-  },
-  "default": {
-    "WEB_TEMPLATE": "default",
-    "PROXY_TEMPLATE": "default",
-    "DNS_TEMPLATE": "default",
-    "WEB_DOMAINS": "100",
-    "WEB_ALIASES": "100",
-    "DNS_DOMAINS": "100",
-    "DNS_RECORDS": "100",
-    "MAIL_DOMAINS": "100",
-    "MAIL_ACCOUNTS": "100",
-    "DATABASES": "100",
-    "CRON_JOBS": "100",
-    "DISK_QUOTA": "10000",
-    "BANDWIDTH": "100000",
-    "NS": "ns1.localhost.ltd,ns2.localhost.ltd",
-    "SHELL": "nologin",
-    "BACKUPS": "3",
-    "TIME": "11:46:50",
-    "DATE": "2015-06-05",
-    "delete_conf": "Are you sure you want to delete domain default?"
+  for (let key in data) {
+    formDataObject.append(key, data[key]);
   }
-};
+
+  return axios.post(BASE_URL + updatePackageUri, formDataObject, {
+    params: {
+      package: item,
+      token
+    }
+  });
+}

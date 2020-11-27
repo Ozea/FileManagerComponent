@@ -103,11 +103,11 @@ const EditUser = props => {
             <input type="hidden" name="save" value="save" />
             <input type="hidden" name="token" value={token} />
 
-            <TextInput id="username" name="v_user" title={i18n['Username']} defaultValue={state.username} disabled />
+            <TextInput id="username" name="v_user" title={i18n['Username']} value={state.username} disabled />
 
             <Password name='v_password' />
 
-            <TextInput id="email" name="v_email" title={i18n['Email']} defaultValue={state.data.email} />
+            <TextInput id="email" name="v_email" title={i18n['Email']} value={state.data.email} />
 
             <SelectInput
               options={convertObjectOfObjectsToArrayOfObjects(state.data.packages)}
@@ -123,9 +123,9 @@ const EditUser = props => {
               id="languages"
               title={i18n['Language']} />
 
-            <TextInput id="first-name" name="v_fname" title={i18n['First Name']} defaultValue={state.data.fname} />
+            <TextInput id="first-name" name="v_fname" title={i18n['First Name']} value={state.data.fname} />
 
-            <TextInput id="last-name" name="v_lname" title={i18n['Last Name']} defaultValue={state.data.lname} />
+            <TextInput id="last-name" name="v_lname" title={i18n['Last Name']} value={state.data.lname} />
 
             <SelectInput
               options={state.data.shells}

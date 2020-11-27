@@ -109,11 +109,11 @@ const EditDatabase = props => {
 
             <Password name="v_password" defaultValue={state.data.password} />
 
-            <TextInput id="type" name="v_type" title={i18n['Type']} defaultValue={state.data.type} disabled />
+            <TextInput id="type" name="v_type" title={i18n['Type']} value={state.data.type} disabled />
 
-            <TextInput id="host" name="v_host" title={i18n['Host']} defaultValue={state.data.host} disabled />
+            <TextInput id="host" name="v_host" title={i18n['Host']} value={state.data.host} disabled />
 
-            <TextInput id="charset" name="v_charset" title={i18n['Charset']} defaultValue={state.data.charset} disabled />
+            <TextInput id="charset" name="v_charset" title={i18n['Charset']} value={state.data.charset} disabled />
 
             <div className="buttons-wrapper">
               <button type="submit" className="add">{i18n.Save}</button>
