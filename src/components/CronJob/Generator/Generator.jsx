@@ -38,14 +38,20 @@ const Generator = props => {
     props.generatedCronJob(generatedCronJob);
   }
 
+  const formatLink = tab => {
+    const { job, mode } = props;
+
+    return `/${mode}/cron/?${!!job ? `job=${job}&` : ''}activeTab=${tab}`;
+  }
+
   return (
     <div className="cron-job-generator">
       <div className="header">
-        <Link to='/add/cron?activeTab=1' className={activeClassName('1')}>{i18n.Minutes ?? 'Minutes'}</Link>
-        <Link to='/add/cron?activeTab=2' className={activeClassName('2')}>{i18n.Minutes ?? 'Hourly'}</Link>
-        <Link to='/add/cron?activeTab=3' className={activeClassName('3')}>{i18n.Minutes ?? 'Daily'}</Link>
-        <Link to='/add/cron?activeTab=4' className={activeClassName('4')}>{i18n.Minutes ?? 'Weekly'}</Link>
-        <Link to='/add/cron?activeTab=5' className={activeClassName('5')}>{i18n.Minutes ?? 'Monthly'}</Link>
+        <Link to={formatLink('1')} className={activeClassName('1')}>{i18n.Minutes}</Link>
+        <Link to={formatLink('2')} className={activeClassName('2')}>{i18n.Hourly}</Link>
+        <Link to={formatLink('3')} className={activeClassName('3')}>{i18n.Daily}</Link>
+        <Link to={formatLink('4')} className={activeClassName('4')}>{i18n.Weekly}</Link>
+        <Link to={formatLink('5')} className={activeClassName('5')}>{i18n.Monthly}</Link>
       </div>
 
       <div className="body">
@@ -56,7 +62,7 @@ const Generator = props => {
           <SelectsWrapper activeTab={state.activeTab} />
 
           <div className="form-actions">
-            <button type="button" onClick={emulateFormSubmit}>{i18n.Generate ?? 'Generate'}</button>
+            <button type="button" onClick={emulateFormSubmit}>{i18n.Generate}</button>
           </div>
         </form>
 

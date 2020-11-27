@@ -175,7 +175,7 @@ const AddCronJob = props => {
               </div>
 
               <div className="body-col-2">
-                <Generator generatedCronJob={saveGeneratedCronJob} />
+                <Generator mode="add" generatedCronJob={saveGeneratedCronJob} />
               </div>
 
             </div>

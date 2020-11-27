@@ -12,6 +12,7 @@ import EditDatabase from '../../components/Database/Edit/EditDatabase';
 import Hotkeys from '../../components/ControlPanel/Hotkeys/Hotkeys';
 import AddDatabase from '../../components/Database/Add/AddDatabase';
 import AddFirewall from '../../components/Firewall/Add/AddFirewall';
+import EditCronJob from '../../components/CronJob/Edit/EditCronJob';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AddCronJob from '../../components/CronJob/Add/AddCronJob';
 import AddPackage from '../../components/Package/Add/AddPackage';
@@ -148,6 +149,7 @@ const ControlPanelContent = props => {
           <Route path="/edit/db" component={() => <EditDatabase />} />
           <Route path="/list/cron" component={props => <CronJobs {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/cron" component={() => <AddCronJob />} />
+          <Route path="/edit/cron" component={() => <EditCronJob />} />
           <Route path="/list/backup" component={props => <Backups {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/search/" component={props => <Search {...props} changeSearchTerm={handleSearchTerm} searchTerm={searchTerm} />} />
         </Switch>
