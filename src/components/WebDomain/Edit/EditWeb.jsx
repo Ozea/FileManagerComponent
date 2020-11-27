@@ -133,7 +133,7 @@ const EditWeb = props => {
             <input type="hidden" name="save" value="save" />
             <input type="hidden" name="token" value={token} />
 
-            <TextInput id="domain" name="v_domain" title={i18n['Domain']} defaultValue={state.domain} disabled />
+            <TextInput id="domain" name="v_domain" title={i18n['Domain']} value={state.domain} disabled />
 
             <SelectInput
               options={formatData(state.data.ips)}
@@ -146,7 +146,7 @@ const EditWeb = props => {
               id="proxy-aliases"
               name="v_aliases"
               title={i18n['Aliases']}
-              defaultValue={state.data.aliases} />
+              value={state.data.aliases} />
 
             <SelectInput
               options={state.data.templates}
@@ -239,7 +239,7 @@ const EditWeb = props => {
                     state.statAuth
                     && (
                       <>
-                        <TextInput id="domain" name="v_stats_user" title={i18n['Username']} defaultValue={state.data.stats_user} />
+                        <TextInput id="domain" name="v_stats_user" title={i18n['Username']} value={state.data.stats_user} />
 
                         <Password name='v_stats_password' />
                       </>

@@ -13,6 +13,7 @@ import Hotkeys from '../../components/ControlPanel/Hotkeys/Hotkeys';
 import AddDatabase from '../../components/Database/Add/AddDatabase';
 import AddFirewall from '../../components/Firewall/Add/AddFirewall';
 import EditCronJob from '../../components/CronJob/Edit/EditCronJob';
+import EditPackage from '../../components/Package/Edit/EditPackage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AddCronJob from '../../components/CronJob/Add/AddCronJob';
 import AddPackage from '../../components/Package/Add/AddPackage';
@@ -123,6 +124,7 @@ const ControlPanelContent = props => {
           <Redirect from="/" exact to="/list/user" />
           <Route path="/list/package" component={props => <Packages {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/package" component={() => <AddPackage />} />
+          <Route path="/edit/package" component={() => <EditPackage />} />
           <Route path="/list/ip" component={props => <InternetProtocols {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/ip" component={() => <AddInternetProtocol />} />
           <Route path="/list/rrd" component={props => <RRDs {...props} changeSearchTerm={handleSearchTerm} />} />
