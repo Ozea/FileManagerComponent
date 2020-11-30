@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Container from '../ControlPanel/Container/Container';
 import ListItem from '../ControlPanel/ListItem/ListItem';
 import './Firewall.scss';
+import { Link } from 'react-router-dom';
 
 const Firewall = props => {
   const { data } = props;
@@ -62,10 +63,10 @@ const Firewall = props => {
       </Container>
       <div className="actions">
         <div>
-          <a className="link-edit" href={`/edit/firewall/?rule=${data.NAME}`}>
+          <Link className="link-edit" to={`/edit/firewall/?rule=${data.NAME}`}>
             {i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
-          </a>
+          </Link>
         </div>
 
         <div>
