@@ -10,6 +10,7 @@ import DomainNameSystems from '../DomainNameSystems/DomainNameSystems';
 import InternetProtocols from '../InternetProtocols/InternetProtocols';
 import AddWebDomain from '../../components/WebDomain/Add/AddWebDomain';
 import EditDatabase from '../../components/Database/Edit/EditDatabase';
+import EditFirewall from '../../components/Firewall/Edit/EditFirewall';
 import Hotkeys from '../../components/ControlPanel/Hotkeys/Hotkeys';
 import AddDatabase from '../../components/Database/Add/AddDatabase';
 import AddFirewall from '../../components/Firewall/Add/AddFirewall';
@@ -135,6 +136,7 @@ const ControlPanelContent = props => {
           <Route path="/list/updates" component={props => <Updates {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/firewall" component={props => <Firewalls {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/firewall" component={() => <AddFirewall />} />
+          <Route path="/edit/firewall" component={() => <EditFirewall />} />
           <Route path="/list/server" component={props => <Servers {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/user" component={props => <Users {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/user" component={() => <AddUser />} />

@@ -4,6 +4,8 @@ const BASE_URL = window.location.origin;
 const token = localStorage.getItem("token");
 const usersUri = '/list/firewall/firewall.php';
 const addFirewallUri = '/api/add/firewall/index.php';
+const firewallInfoUri = '/api/edit/firewall/index.php';
+const updateFirewallUri = '/api/edit/firewall/index.php';
 
 export const getFirewallList = () => {
   return axios.get(BASE_URL + usersUri);
@@ -35,4 +37,28 @@ export const addFirewall = data => {
   }
 
   return axios.post(BASE_URL + addFirewallUri, formDataObject);
+}
+
+export const getFirewallInfo = rule => {
+  return axios.get(BASE_URL + firewallInfoUri, {
+    params: {
+      rule,
+      token
+    }
+  });
+}
+
+export const updateFirewall = (data, rule) => {
+  let formDataObject = new FormData();
+
+  for (let key in data) {
+    formDataObject.append(key, data[key]);
+  }
+
+  return axios.post(BASE_URL + updateFirewallUri, formDataObject, {
+    params: {
+      rule,
+      token
+    }
+  });
 }
