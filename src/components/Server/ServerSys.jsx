@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Container from '../ControlPanel/Container/Container';
 import ListItem from '../ControlPanel/ListItem/ListItem';
 import './ServerSys.scss';
+import { Link } from 'react-router-dom';
 
 const Server = props => {
   const { data } = props;
@@ -44,10 +45,10 @@ const Server = props => {
       <div className="actions">
 
         <div>
-          <a className="link-list" href={`/edit/server/`}>
+          <Link className="link-list" to={`/edit/server/`}>
             {i18n.configure}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="cogs" />}
-          </a>
+          </Link>
         </div>
 
         <div>

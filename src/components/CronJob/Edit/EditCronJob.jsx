@@ -101,7 +101,6 @@ const EditMail = props => {
   }
 
   const changeInput = input => {
-    console.log(input);
     let updatedGeneratedCronJob = {
       ...state.generatedCronJob,
       [input.id]: input.value

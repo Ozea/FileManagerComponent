@@ -3,6 +3,8 @@ import axios from "axios";
 const BASE_URL = window.location.origin;
 const token = localStorage.getItem("token");
 const webApiUri = '/list/server/server.php';
+const serverAdditionalInfoUri = '/api/edit/server/index.php';
+const updateServerUri = '/api/edit/server/index.php';
 
 export const getServersList = () => {
   return axios.get(BASE_URL + webApiUri);
@@ -22,4 +24,20 @@ export const bulkAction = (action, servers) => {
 
 export const handleAction = uri => {
   return axios.get(BASE_URL + uri);
+}
+
+export const getServerAdditionalInfo = () => {
+  return axios.get(BASE_URL + serverAdditionalInfoUri, {
+    params: {
+      token
+    }
+  });
+}
+
+export const updateServer = () => {
+  return axios.get(BASE_URL + updateServerUri, {
+    params: {
+      token
+    }
+  });
 }

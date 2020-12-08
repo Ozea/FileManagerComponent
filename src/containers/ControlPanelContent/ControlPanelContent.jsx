@@ -19,6 +19,7 @@ import EditPackage from '../../components/Package/Edit/EditPackage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AddCronJob from '../../components/CronJob/Add/AddCronJob';
 import AddPackage from '../../components/Package/Add/AddPackage';
+import EditServer from '../../components/Server/Edit/EditServer';
 import EditWeb from '../../components/WebDomain/Edit/EditWeb';
 import Databases from '../../containers/Databases/Databases';
 import Firewalls from '../../containers/Firewalls/Firewalls';
@@ -138,6 +139,7 @@ const ControlPanelContent = props => {
           <Route path="/add/firewall" component={() => <AddFirewall />} />
           <Route path="/edit/firewall" component={() => <EditFirewall />} />
           <Route path="/list/server" component={props => <Servers {...props} changeSearchTerm={handleSearchTerm} />} />
+          <Route path="/edit/server" component={() => <EditServer />} />
           <Route path="/list/user" component={props => <Users {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/user" component={() => <AddUser />} />
           <Route path="/edit/user" component={() => <EditUser />} />
