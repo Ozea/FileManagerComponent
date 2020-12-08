@@ -1,8 +1,14 @@
 import React from 'react';
 
-const SelectInput = ({ options = [], id, name, title, optionalTitle = '', selected = '', onChange }) => {
+const SelectInput = ({ options = [], id, name, title, optionalTitle = '', selected = '', onChange = () => { }, disabled = false }) => {
+  const { i18n } = window.GLOBAL.App;
+
   const renderOptions = () => {
-    return options.map((option, index) => <option key={index} selected={selected === option} value={option}>{option}</option>);
+    return options.map((option, index) =>
+      <option key={index} selected={selected === option} value={option === i18n['Disable and Cancel Licence'] ? 'cancel' : option}>
+        {option}
+      </option>
+    );
   }
 
   return (
@@ -15,7 +21,7 @@ const SelectInput = ({ options = [], id, name, title, optionalTitle = '', select
                 {title}
                 <span>{optionalTitle}</span>
               </label>
-              <select className="form-control" id={id} name={name} onChange={event => onChange(event.target.value)}>
+              <select className="form-control" id={id} name={name} disabled={disabled} onChange={event => onChange(event.target.value)}>
                 {renderOptions()}
               </select>
             </div>

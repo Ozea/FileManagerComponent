@@ -11,8 +11,8 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import QS from 'qs';
 
-// import './EditFirewall.scss';
-import 'src/components/Firewall/Edit/EditFirewall.scss';
+import './EditFirewall.scss';
+
 const EditFirewall = props => {
   const token = localStorage.getItem("token");
   const { i18n } = window.GLOBAL.App;

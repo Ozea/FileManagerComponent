@@ -48,7 +48,6 @@ const EditWeb = props => {
 
       getDomainInfo(domain)
         .then(response => {
-          console.log(response.data);
           setState({
             ...state,
             domain,
