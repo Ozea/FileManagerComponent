@@ -5,6 +5,7 @@ import EditDomainNameSystem from '../../components/DomainNameSystem/Edit/EditDom
 import EditInternetProtocol from '../../components/InternetProtocol/Edit/EditInternetProtocol';
 import AddDomainNameSystem from '../../components/DomainNameSystem/Add/AddDomainNameSystem';
 import AddInternetProtocol from '../../components/InternetProtocol/Add/AddInternetProtocol';
+import EditServerNginx from 'src/components/Server/Edit/Nginx/EditServerNginx';
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import DomainNameSystems from '../DomainNameSystems/DomainNameSystems';
 import InternetProtocols from '../InternetProtocols/InternetProtocols';
@@ -139,7 +140,8 @@ const ControlPanelContent = props => {
           <Route path="/add/firewall" component={() => <AddFirewall />} />
           <Route path="/edit/firewall" component={() => <EditFirewall />} />
           <Route path="/list/server" component={props => <Servers {...props} changeSearchTerm={handleSearchTerm} />} />
-          <Route path="/edit/server" component={() => <EditServer />} />
+          <Route path="/edit/server" exact component={() => <EditServer />} />
+          <Route path="/edit/server/nginx" exact component={() => <EditServerNginx />} />
           <Route path="/list/user" component={props => <Users {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/user" component={() => <AddUser />} />
           <Route path="/edit/user" component={() => <EditUser />} />
