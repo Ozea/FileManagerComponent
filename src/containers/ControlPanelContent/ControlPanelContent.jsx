@@ -22,6 +22,7 @@ import AddCronJob from '../../components/CronJob/Add/AddCronJob';
 import AddPackage from '../../components/Package/Add/AddPackage';
 import EditServer from '../../components/Server/Edit/EditServer';
 import EditWeb from '../../components/WebDomain/Edit/EditWeb';
+import EditPhp from 'src/components/Server/Edit/PHP/EditPhp';
 import Databases from '../../containers/Databases/Databases';
 import Firewalls from '../../containers/Firewalls/Firewalls';
 import EditUser from '../../components/User/Edit/EditUser';
@@ -142,6 +143,7 @@ const ControlPanelContent = props => {
           <Route path="/list/server" component={props => <Servers {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/edit/server" exact component={() => <EditServer />} />
           <Route path="/edit/server/nginx" exact component={() => <EditServerNginx />} />
+          <Route path="/edit/server/php" exact component={() => <EditPhp />} />
           <Route path="/list/user" component={props => <Users {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/user" component={() => <AddUser />} />
           <Route path="/edit/user" component={() => <EditUser />} />
