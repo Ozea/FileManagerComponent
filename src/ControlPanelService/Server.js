@@ -5,6 +5,7 @@ const token = localStorage.getItem("token");
 const webApiUri = '/list/server/server.php';
 const serverAdditionalInfoUri = '/api/edit/server/index.php';
 const updateServerUri = '/api/edit/server/index.php';
+const nginxInfoUri = '/api/edit/server/nginx/index.php';
 
 export const getServersList = () => {
   return axios.get(BASE_URL + webApiUri);
@@ -34,10 +35,20 @@ export const getServerAdditionalInfo = () => {
   });
 }
 
-export const updateServer = () => {
-  return axios.get(BASE_URL + updateServerUri, {
+export const updateService = (data, uri = '') => {
+  let formDataObject = new FormData();
+
+  for (let key in data) {
+    formDataObject.append(key, data[key]);
+  }
+
+  return axios.post(BASE_URL + `/api/edit/server${uri}/index.php`, formDataObject, {
     params: {
       token
     }
   });
+}
+
+export const getNginxInfo = () => {
+  return axios.get(BASE_URL + nginxInfoUri);
 }

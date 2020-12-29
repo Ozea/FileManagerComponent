@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { addActiveElement, removeFocusedElement } from "../../../actions/MainNavigation/mainNavigationActions";
-import { getServerAdditionalInfo, updateServer } from '../../../ControlPanelService/Server';
+import { getServerAdditionalInfo, updateService } from '../../../ControlPanelService/Server';
 import SelectInput from '../../ControlPanel/AddItemLayout/Form/SelectInput/SelectInput';
 import TextInput from '../../ControlPanel/AddItemLayout/Form/TextInput/TextInput';
 import AddItemLayout from '../../ControlPanel/AddItemLayout/AddItemLayout';
@@ -69,7 +69,7 @@ const EditServer = props => {
     if (Object.keys(updatedServer).length !== 0 && updatedServer.constructor === Object) {
       setState({ ...state, loading: true });
 
-      updateServer(updatedServer, state.data.domain)
+      updateService(updatedServer)
         .then(result => {
           if (result.status === 200) {
             const { error_msg, ok_msg } = result.data;
