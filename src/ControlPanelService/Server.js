@@ -7,6 +7,7 @@ const serverAdditionalInfoUri = '/api/edit/server/index.php';
 const updateServerUri = '/api/edit/server/index.php';
 const nginxInfoUri = '/api/edit/server/nginx/index.php';
 const phpInfoUri = '/api/edit/server/php/index.php';
+const httpdInfoUri = '/api/edit/server/httpd/index.php';
 
 export const getServersList = () => {
   return axios.get(BASE_URL + webApiUri);
@@ -56,4 +57,8 @@ export const getNginxInfo = () => {
 
 export const getPhpInfo = () => {
   return axios.get(BASE_URL + phpInfoUri);
+}
+
+export const getHttpdInfo = () => {
+  return axios.get(BASE_URL + httpdInfoUri);
 }
