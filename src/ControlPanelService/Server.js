@@ -4,10 +4,6 @@ const BASE_URL = window.location.origin;
 const token = localStorage.getItem("token");
 const webApiUri = '/list/server/server.php';
 const serverAdditionalInfoUri = '/api/edit/server/index.php';
-const updateServerUri = '/api/edit/server/index.php';
-const nginxInfoUri = '/api/edit/server/nginx/index.php';
-const phpInfoUri = '/api/edit/server/php/index.php';
-const httpdInfoUri = '/api/edit/server/httpd/index.php';
 
 export const getServersList = () => {
   return axios.get(BASE_URL + webApiUri);
@@ -51,14 +47,6 @@ export const updateService = (data, uri = '') => {
   });
 }
 
-export const getNginxInfo = () => {
-  return axios.get(BASE_URL + nginxInfoUri);
-}
-
-export const getPhpInfo = () => {
-  return axios.get(BASE_URL + phpInfoUri);
-}
-
-export const getHttpdInfo = () => {
-  return axios.get(BASE_URL + httpdInfoUri);
+export const getServiceInfo = service => {
+  return axios.get(`${BASE_URL}/api/edit/server${service}/index.php`);
 }
