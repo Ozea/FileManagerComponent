@@ -6,6 +6,7 @@ import EditInternetProtocol from '../../components/InternetProtocol/Edit/EditInt
 import AddDomainNameSystem from '../../components/DomainNameSystem/Add/AddDomainNameSystem';
 import AddInternetProtocol from '../../components/InternetProtocol/Add/AddInternetProtocol';
 import EditServerNginx from 'src/components/Server/Edit/Nginx/EditServerNginx';
+import Postgresql from 'src/components/Server/Edit/Postgresql/Postgresql';
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import DomainNameSystems from '../DomainNameSystems/DomainNameSystems';
 import InternetProtocols from '../InternetProtocols/InternetProtocols';
@@ -152,6 +153,7 @@ const ControlPanelContent = props => {
           <Route path="/edit/server/dovecot" exact component={() => <Dovecot />} />
           <Route path="/edit/server/bind9" exact component={() => <Bind9 />} />
           <Route path="/edit/server/mysql" exact component={() => <Mysql />} />
+          <Route path="/edit/server/postgresql" exact component={() => <Postgresql />} />
           <Route path="/list/user" component={props => <Users {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/user" component={() => <AddUser />} />
           <Route path="/edit/user" component={() => <EditUser />} />
