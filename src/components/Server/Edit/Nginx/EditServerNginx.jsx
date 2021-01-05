@@ -4,7 +4,7 @@ import TextInput from '../../../ControlPanel/AddItemLayout/Form/TextInput/TextIn
 import Checkbox from '../../../ControlPanel/AddItemLayout/Form/Checkbox/Checkbox';
 import TextArea from '../../../ControlPanel/AddItemLayout/Form/TextArea/TextArea';
 import AddItemLayout from '../../../ControlPanel/AddItemLayout/AddItemLayout';
-import { getNginxInfo, updateService } from 'src/ControlPanelService/Server';
+import { getServiceInfo, updateService } from 'src/ControlPanelService/Server';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Spinner from '../../../../components/Spinner/Spinner';
 import Toolbar from '../../../MainNav/Toolbar/Toolbar';
@@ -33,7 +33,7 @@ const EditServerNginx = props => {
 
     setState({ ...state, loading: true });
 
-    getNginxInfo()
+    getServiceInfo('nginx')
       .then(response => {
         setState({
           ...state,

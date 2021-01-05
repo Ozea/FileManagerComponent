@@ -4,7 +4,7 @@ import Checkbox from '../../../ControlPanel/AddItemLayout/Form/Checkbox/Checkbox
 import TextArea from '../../../ControlPanel/AddItemLayout/Form/TextArea/TextArea';
 import AddItemLayout from '../../../ControlPanel/AddItemLayout/AddItemLayout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { updateService } from 'src/ControlPanelService/Server';
+import { getServiceInfo, updateService } from 'src/ControlPanelService/Server';
 import Spinner from '../../../../components/Spinner/Spinner';
 import Toolbar from '../../../MainNav/Toolbar/Toolbar';
 import { useHistory } from 'react-router-dom';
@@ -30,9 +30,9 @@ const Bind9 = () => {
 
     setState({ ...state, loading: true });
 
-    getBind9Info()
+    getServiceInfo('bind9')
       .then(response => {
-        if (response.config.includes('Error')) {
+        if (response.data.config.includes('Error')) {
           history.push('/list/server');
         }
 

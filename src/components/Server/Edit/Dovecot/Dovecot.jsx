@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { addActiveElement, removeFocusedElement } from "../../../../actions/MainNavigation/mainNavigationActions";
 import Checkbox from '../../../ControlPanel/AddItemLayout/Form/Checkbox/Checkbox';
 import TextArea from '../../../ControlPanel/AddItemLayout/Form/TextArea/TextArea';
-import AddItemLayout from '../../../ControlPanel/AddItemLayout/AddItemLayout';
 import { getServiceInfo, updateService } from 'src/ControlPanelService/Server';
+import AddItemLayout from '../../../ControlPanel/AddItemLayout/AddItemLayout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Spinner from '../../../../components/Spinner/Spinner';
 import Toolbar from '../../../MainNav/Toolbar/Toolbar';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import './EditHttpd.scss';
+import './Bind9.scss';
 
-const EditHttpd = props => {
+const Dovecot = () => {
   const token = localStorage.getItem("token");
   const { i18n } = window.GLOBAL.App;
   const history = useHistory();
@@ -30,8 +30,12 @@ const EditHttpd = props => {
 
     setState({ ...state, loading: true });
 
-    getServiceInfo('httpd')
+    getServiceInfo('dovecot')
       .then(response => {
+        if (!response.data.config) {
+          history.push('/list/server');
+        }
+
         setState({
           ...state,
           data: response.data,
@@ -54,7 +58,7 @@ const EditHttpd = props => {
     if (Object.keys(updatedService).length !== 0 && updatedService.constructor === Object) {
       setState({ ...state, loading: true });
 
-      updateService(updatedService, '/httpd')
+      updateService(updatedService, '/bind9')
         .then(result => {
           if (result.status === 200) {
             const { error_msg, ok_msg } = result.data;
@@ -73,11 +77,12 @@ const EditHttpd = props => {
   }
 
   return (
-    <div className="edit-template edit-httpd">
+    <div className="edit-template edit-dovecot">
       <Toolbar mobile={false}>
         <div></div>
-        <div className="search-toolbar-name"><Link to={`/edit/server/${state.data.service_name}`}>{i18n['Configuring Server']} / {state.data.service_name}</Link></div>
-        <div className="link"><Link to="/edit/server/php">{i18n['Configure']} php.ini</Link></div>
+        <div className="search-toolbar-name">
+          {i18n['Configuring Server']} / {state.data.service_name}
+        </div>
         <div className="error">
           <span className="error-message">
             {state.data.errorMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} {state.errorMessage}
@@ -91,7 +96,7 @@ const EditHttpd = props => {
       </Toolbar>
       <AddItemLayout>
         {state.loading ? <Spinner /> :
-          <form onSubmit={event => submitFormHandler(event)} id="edit-httpd">
+          <form onSubmit={event => submitFormHandler(event)} id="edit-dovecot">
             <input type="hidden" name="save" value="save" />
             <input type="hidden" name="token" value={token} />
 
@@ -100,7 +105,79 @@ const EditHttpd = props => {
               title={state.data.config_path}
               name="v_config"
               id="v_config"
-              rows="25" />
+              rows="10" />
+
+            <br />
+
+            <TextArea
+              defaultValue={state.data.config1}
+              title={state.data.config_path1}
+              name="v_config1"
+              id="v_config1"
+              rows="10" />
+
+            <br />
+
+            <TextArea
+              defaultValue={state.data.config2}
+              title={state.data.config_path2}
+              name="v_config2"
+              id="v_config2"
+              rows="10" />
+
+            <br />
+
+            <TextArea
+              defaultValue={state.data.config3}
+              title={state.data.config_path3}
+              name="v_config3"
+              id="v_config3"
+              rows="10" />
+
+            <br />
+
+            <TextArea
+              defaultValue={state.data.config4}
+              title={state.data.config_path4}
+              name="v_config4"
+              id="v_config4"
+              rows="10" />
+
+            <br />
+
+            <TextArea
+              defaultValue={state.data.config5}
+              title={state.data.config_path5}
+              name="v_config5"
+              id="v_config5"
+              rows="10" />
+
+            <br />
+
+            <TextArea
+              defaultValue={state.data.config6}
+              title={state.data.config_path6}
+              name="v_config6"
+              id="v_config6"
+              rows="10" />
+
+            <br />
+
+            <TextArea
+              defaultValue={state.data.config7}
+              title={state.data.config_path7}
+              name="v_config7"
+              id="v_config7"
+              rows="10" />
+
+            <br />
+
+            <TextArea
+              defaultValue={state.data.config8}
+              title={state.data.config_path8}
+              name="v_config8"
+              id="v_config8"
+              rows="10" />
 
             <br />
 
@@ -118,8 +195,8 @@ const EditHttpd = props => {
           </form>
         }
       </AddItemLayout>
-    </div>
+    </div >
   );
 }
 
-export default EditHttpd;
+export default Dovecot;

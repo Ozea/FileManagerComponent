@@ -3,8 +3,8 @@ import { addActiveElement, removeFocusedElement } from "../../../../actions/Main
 import TextInput from '../../../ControlPanel/AddItemLayout/Form/TextInput/TextInput';
 import Checkbox from '../../../ControlPanel/AddItemLayout/Form/Checkbox/Checkbox';
 import TextArea from '../../../ControlPanel/AddItemLayout/Form/TextArea/TextArea';
+import { getServiceInfo, updateService } from 'src/ControlPanelService/Server';
 import AddItemLayout from '../../../ControlPanel/AddItemLayout/AddItemLayout';
-import { getPhpInfo, updateService } from 'src/ControlPanelService/Server';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Spinner from '../../../../components/Spinner/Spinner';
 import Toolbar from '../../../MainNav/Toolbar/Toolbar';
@@ -33,7 +33,7 @@ const EditPhp = props => {
 
     setState({ ...state, loading: true });
 
-    getPhpInfo()
+    getServiceInfo('php')
       .then(response => {
         setState({
           ...state,
