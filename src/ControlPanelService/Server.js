@@ -48,5 +48,5 @@ export const updateService = (data, uri = '') => {
 }
 
 export const getServiceInfo = service => {
-  return axios.get(`${BASE_URL}/api/edit/server${service}/index.php`);
+  return axios.get(`${BASE_URL}/api/edit/server/${service}/index.php`);
 }

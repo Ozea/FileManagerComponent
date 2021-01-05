@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { addActiveElement, removeFocusedElement } from "../../../../actions/MainNavigation/mainNavigationActions";
+import TextInput from '../../../ControlPanel/AddItemLayout/Form/TextInput/TextInput';
 import Checkbox from '../../../ControlPanel/AddItemLayout/Form/Checkbox/Checkbox';
 import TextArea from '../../../ControlPanel/AddItemLayout/Form/TextArea/TextArea';
 import { getServiceInfo, updateService } from 'src/ControlPanelService/Server';
@@ -10,9 +11,9 @@ import Toolbar from '../../../MainNav/Toolbar/Toolbar';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import './Dovecot.scss';
+import './Mysql.scss';
 
-const Dovecot = () => {
+const Mysql = () => {
   const token = localStorage.getItem("token");
   const { i18n } = window.GLOBAL.App;
   const history = useHistory();
@@ -20,6 +21,8 @@ const Dovecot = () => {
   const [state, setState] = useState({
     data: {},
     loading: false,
+    basicOptions: true,
+    advancedOptions: false,
     errorMessage: '',
     okMessage: ''
   });
@@ -30,9 +33,9 @@ const Dovecot = () => {
 
     setState({ ...state, loading: true });
 
-    getServiceInfo('dovecot')
+    getServiceInfo('mysql')
       .then(response => {
-        if (!response.data.config) {
+        if (response.data.config.includes('Error')) {
           history.push('/list/server');
         }
 
@@ -58,7 +61,7 @@ const Dovecot = () => {
     if (Object.keys(updatedService).length !== 0 && updatedService.constructor === Object) {
       setState({ ...state, loading: true });
 
-      updateService(updatedService, '/dovecot')
+      updateService(updatedService, '/mysql')
         .then(result => {
           if (result.status === 200) {
             const { error_msg, ok_msg } = result.data;
@@ -76,13 +79,19 @@ const Dovecot = () => {
     }
   }
 
+  const toggleOptions = () => {
+    setState({
+      ...state,
+      advancedOptions: !state.advancedOptions,
+      basicOptions: !state.basicOptions
+    });
+  }
+
   return (
-    <div className="edit-template edit-dovecot">
+    <div className="edit-template edit-mysql">
       <Toolbar mobile={false}>
         <div></div>
-        <div className="search-toolbar-name">
-          {i18n['Configuring Server']} / {state.data.service_name}
-        </div>
+        <div className="search-toolbar-name">{i18n['Configuring Server']} / {state.data.service_name}</div>
         <div className="error">
           <span className="error-message">
             {state.data.errorMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} {state.errorMessage}
@@ -96,96 +105,87 @@ const Dovecot = () => {
       </Toolbar>
       <AddItemLayout>
         {state.loading ? <Spinner /> :
-          <form onSubmit={event => submitFormHandler(event)} id="edit-dovecot">
+          <form onSubmit={event => submitFormHandler(event)} id="edit-mysql">
             <input type="hidden" name="save" value="save" />
             <input type="hidden" name="token" value={token} />
 
-            <TextArea
-              defaultValue={state.data.config}
-              title={state.data.config_path}
-              name="v_config"
-              id="v_config"
-              rows="10" />
+            {
+              !state.basicOptions && (
+                <button type="button" onClick={() => toggleOptions()}>
+                  {i18n['Basic options']}
+                  {state.basicOptions ? <FontAwesomeIcon icon="caret-up" /> : <FontAwesomeIcon icon="caret-down" />}
+                </button>
+              )
+            }
+
+            {
+              state.basicOptions && (
+                <>
+                  <TextInput
+                    id="max_connections"
+                    title="max_connections"
+                    name="v_max_connections"
+                    value={state.data.max_connections} />
+
+                  <TextInput
+                    id="v_max_user_connections"
+                    title="v_max_user_connections"
+                    name="v_max_user_connections"
+                    value={state.data.max_user_connections} />
+
+                  <TextInput
+                    id="v_wait_timeout"
+                    title="v_wait_timeout"
+                    name="v_wait_timeout"
+                    value={state.data.wait_timeout} />
+
+                  <TextInput
+                    id="v_interactive_timeout"
+                    title="v_interactive_timeout"
+                    name="v_interactive_timeout"
+                    value={state.data.interactive_timeout} />
+
+                  <TextInput
+                    id="v_display_errors"
+                    title="v_display_errors"
+                    name="v_display_errors"
+                    value={state.data.max_allowed_packet} />
+                </>
+              )
+            }
+
+            {
+              !state.advancedOptions && (
+                <button type="button" onClick={() => toggleOptions()}>
+                  {i18n['Advanced options']}
+                  {state.advancedOptions ? <FontAwesomeIcon icon="caret-up" /> : <FontAwesomeIcon icon="caret-down" />}
+                </button>
+              )
+            }
 
             <br />
-
-            <TextArea
-              defaultValue={state.data.config1}
-              title={state.data.config_path1}
-              name="v_config1"
-              id="v_config1"
-              rows="10" />
-
             <br />
 
-            <TextArea
-              defaultValue={state.data.config2}
-              title={state.data.config_path2}
-              name="v_config2"
-              id="v_config2"
-              rows="10" />
+            {
+              state.advancedOptions && (
+                <>
+                  <TextArea
+                    defaultValue={state.data.config}
+                    title={state.data.config_path}
+                    name="v_config"
+                    id="v_config"
+                    rows="25" />
 
-            <br />
+                  <br />
 
-            <TextArea
-              defaultValue={state.data.config3}
-              title={state.data.config_path3}
-              name="v_config3"
-              id="v_config3"
-              rows="10" />
-
-            <br />
-
-            <TextArea
-              defaultValue={state.data.config4}
-              title={state.data.config_path4}
-              name="v_config4"
-              id="v_config4"
-              rows="10" />
-
-            <br />
-
-            <TextArea
-              defaultValue={state.data.config5}
-              title={state.data.config_path5}
-              name="v_config5"
-              id="v_config5"
-              rows="10" />
-
-            <br />
-
-            <TextArea
-              defaultValue={state.data.config6}
-              title={state.data.config_path6}
-              name="v_config6"
-              id="v_config6"
-              rows="10" />
-
-            <br />
-
-            <TextArea
-              defaultValue={state.data.config7}
-              title={state.data.config_path7}
-              name="v_config7"
-              id="v_config7"
-              rows="10" />
-
-            <br />
-
-            <TextArea
-              defaultValue={state.data.config8}
-              title={state.data.config_path8}
-              name="v_config8"
-              id="v_config8"
-              rows="10" />
-
-            <br />
-
-            <Checkbox
-              title={i18n['restart']}
-              defaultChecked={true}
-              name="v_restart"
-              id="restart" />
+                  <Checkbox
+                    title={i18n['restart']}
+                    defaultChecked={true}
+                    name="v_restart"
+                    id="restart" />
+                </>
+              )
+            }
 
             <div className="buttons-wrapper">
               <button type="submit" className="add">{i18n.Save}</button>
@@ -195,8 +195,8 @@ const Dovecot = () => {
           </form>
         }
       </AddItemLayout>
-    </div >
+    </div>
   );
 }
 
-export default Dovecot;
+export default Mysql;

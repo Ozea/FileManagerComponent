@@ -22,7 +22,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import AddCronJob from '../../components/CronJob/Add/AddCronJob';
 import AddPackage from '../../components/Package/Add/AddPackage';
 import EditServer from '../../components/Server/Edit/EditServer';
-import Bind9 from 'src/components/Server/Edit/Dovecot/Dovecot';
+import Dovecot from 'src/components/Server/Edit/Dovecot/Dovecot';
 import EditWeb from '../../components/WebDomain/Edit/EditWeb';
 import EditPhp from 'src/components/Server/Edit/PHP/EditPhp';
 import Databases from '../../containers/Databases/Databases';
@@ -30,6 +30,7 @@ import Firewalls from '../../containers/Firewalls/Firewalls';
 import EditUser from '../../components/User/Edit/EditUser';
 import EditMail from '../../components/Mail/Edit/EditMail';
 import Bind9 from 'src/components/Server/Edit/Bind9/Bind9';
+import Mysql from 'src/components/Server/Edit/Mysql/Mysql';
 import CronJobs from '../../containers/CronJobs/CronJobs';
 import Packages from '../../containers/Packages/Packages';
 import AddMail from '../../components/Mail/Add/AddMail';
@@ -150,6 +151,7 @@ const ControlPanelContent = props => {
           <Route path="/edit/server/httpd" exact component={() => <EditHttpd />} />
           <Route path="/edit/server/dovecot" exact component={() => <Dovecot />} />
           <Route path="/edit/server/bind9" exact component={() => <Bind9 />} />
+          <Route path="/edit/server/mysql" exact component={() => <Mysql />} />
           <Route path="/list/user" component={props => <Users {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/user" component={() => <AddUser />} />
           <Route path="/edit/user" component={() => <EditUser />} />
