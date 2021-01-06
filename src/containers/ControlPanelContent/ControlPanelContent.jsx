@@ -24,6 +24,7 @@ import AddCronJob from '../../components/CronJob/Add/AddCronJob';
 import AddPackage from '../../components/Package/Add/AddPackage';
 import EditServer from '../../components/Server/Edit/EditServer';
 import Dovecot from 'src/components/Server/Edit/Dovecot/Dovecot';
+import Service from 'src/components/Server/Edit/Service/Service';
 import EditWeb from '../../components/WebDomain/Edit/EditWeb';
 import EditPhp from 'src/components/Server/Edit/PHP/EditPhp';
 import Databases from '../../containers/Databases/Databases';
@@ -34,6 +35,7 @@ import Bind9 from 'src/components/Server/Edit/Bind9/Bind9';
 import Mysql from 'src/components/Server/Edit/Mysql/Mysql';
 import CronJobs from '../../containers/CronJobs/CronJobs';
 import Packages from '../../containers/Packages/Packages';
+import { services } from 'src/ControlPanelService/Server';
 import AddMail from '../../components/Mail/Add/AddMail';
 import AddUser from '../../components/User/Add/AddUser';
 import Updates from '../../containers/Updates/Updates';
@@ -148,12 +150,27 @@ const ControlPanelContent = props => {
           <Route path="/list/server" component={props => <Servers {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/edit/server" exact component={() => <EditServer />} />
           <Route path="/edit/server/nginx" exact component={() => <EditServerNginx />} />
-          <Route path="/edit/server/php" exact component={() => <EditPhp />} />
+          <Route path="/edit/server/php" exact component={() => <EditPhp serviceName="php" />} />
+          <Route path="/edit/server/php-fpm" exact component={() => <EditPhp serviceName="php-fpm" />} />
+          <Route path="/edit/server/php5-fpm" exact component={() => <EditPhp serviceName="php5-fpm" />} />
           <Route path="/edit/server/httpd" exact component={() => <EditHttpd />} />
           <Route path="/edit/server/dovecot" exact component={() => <Dovecot />} />
           <Route path="/edit/server/bind9" exact component={() => <Bind9 />} />
-          <Route path="/edit/server/mysql" exact component={() => <Mysql />} />
           <Route path="/edit/server/postgresql" exact component={() => <Postgresql />} />
+          <Route path="/edit/server/mysql" exact component={() => <Mysql serviceName="mysql" />} />
+          <Route path="/edit/server/mariadb" exact component={() => <Mysql serviceName="mariadb" />} />
+          <Route path="/edit/server/mysqld" exact component={() => <Mysql serviceName="mysqld" />} />
+
+          {
+            !!services.length && services.map(service => {
+              if (service === 'iptables') {
+                return <Redirect from="/edit/server/iptables" exact to="/list/firewall" />
+              } else {
+                return <Route path={`/edit/server/${service}`} exact component={() => <Service serviceName={service} />} />
+              }
+            })
+          }
+
           <Route path="/list/user" component={props => <Users {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/user" component={() => <AddUser />} />
           <Route path="/edit/user" component={() => <EditUser />} />
