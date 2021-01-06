@@ -13,7 +13,7 @@ import { useDispatch } from 'react-redux';
 
 import './EditPhp.scss';
 
-const EditPhp = props => {
+const EditPhp = ({ serviceName = '' }) => {
   const token = localStorage.getItem("token");
   const { i18n } = window.GLOBAL.App;
   const history = useHistory();
@@ -31,9 +31,13 @@ const EditPhp = props => {
     dispatch(addActiveElement('/list/server/'));
     dispatch(removeFocusedElement());
 
+    if (!serviceName) {
+      history.push('/list/server');
+    }
+
     setState({ ...state, loading: true });
 
-    getServiceInfo('php')
+    getServiceInfo(serviceName)
       .then(response => {
         setState({
           ...state,
@@ -57,7 +61,7 @@ const EditPhp = props => {
     if (Object.keys(updatedService).length !== 0 && updatedService.constructor === Object) {
       setState({ ...state, loading: true });
 
-      updateService(updatedService, '/php')
+      updateService(updatedService, `/${serviceName}`)
         .then(result => {
           if (result.status === 200) {
             const { error_msg, ok_msg } = result.data;

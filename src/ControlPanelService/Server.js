@@ -50,3 +50,23 @@ export const updateService = (data, uri = '') => {
 export const getServiceInfo = service => {
   return axios.get(`${BASE_URL}/api/edit/server/${service}/index.php`);
 }
+
+export const services = [
+  'apache2',
+  'clamd',
+  'cron',
+  'crond',
+  'exim',
+  'exim4',
+  'fail2ban',
+  'iptables',
+  'mariadb',
+  'mysqld',
+  'named',
+  'php-fpm',
+  'php5-fpm',
+  'proftpd',
+  'spamassassin',
+  'spamd',
+  'vsftpd',
+];
