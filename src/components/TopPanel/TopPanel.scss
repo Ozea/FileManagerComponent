@@ -1,0 +1,40 @@
+.web-logs {
+  .panel-wrapper {
+    .nav-link {
+      padding: 0;
+    }
+
+    .left-menu {
+      a, button {
+        padding: 0.5rem 1rem !important;
+        outline: none;
+      }
+      
+      > div.nav-link {
+        width: fit-content;
+      }
+    }
+
+    .profile-menu {
+      > div:nth-child(1) a {
+        &:hover {
+          color: #ffd62e;
+        }
+
+        &:active {
+          color: #f79b44;
+        }
+      }
+
+      > div:nth-child(2) a {
+        &:hover {
+          color: #C0E60E;
+        }
+
+        &:active {
+          color: #ffd62e;
+        }
+      }
+    }
+  }
+}
