@@ -89,7 +89,7 @@ class WebDomain extends Component {
           {
             data.STATS && (
               <div>
-                <a className="link-gray" href={`http://${NAME}/vstats/`}>
+                <a className="link-gray" href={`http://${data.NAME}/vstats/`}>
                   {i18n['open webstats']}
                   {data.FOCUSED ? <span className="shortcut-button">L</span> : <FontAwesomeIcon icon="list" />}
                 </a>

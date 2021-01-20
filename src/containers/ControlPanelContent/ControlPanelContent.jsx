@@ -41,6 +41,7 @@ import AddUser from '../../components/User/Add/AddUser';
 import Updates from '../../containers/Updates/Updates';
 import Servers from '../../containers/Servers/Servers';
 import MainNav from '../../components/MainNav/MainNav';
+import DNSWrapper from '../DNSWrapper/DNSWrapper';
 import Statistics from '../Statistics/Statistics';
 import Users from '../../containers/Users/Users';
 import Mails from '../../containers/Mails/Mails';
@@ -177,7 +178,7 @@ const ControlPanelContent = props => {
           <Route path="/list/web" component={props => <Web {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/web" component={() => <AddWebDomain />} />
           <Route path="/edit/web" component={() => <EditWeb />} />
-          <Route path="/list/dns" component={props => <DomainNameSystems {...props} changeSearchTerm={handleSearchTerm} />} />
+          <Route path="/list/dns" component={props => <DNSWrapper {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/dns" component={() => <AddDomainNameSystem />} />
           <Route path="/edit/dns" component={() => <EditDomainNameSystem />} />
           <Route path="/list/mail" component={props => <Mails {...props} changeSearchTerm={handleSearchTerm} />} />
