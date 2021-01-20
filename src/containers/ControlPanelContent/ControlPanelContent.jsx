@@ -33,6 +33,7 @@ import EditUser from '../../components/User/Edit/EditUser';
 import EditMail from '../../components/Mail/Edit/EditMail';
 import Bind9 from 'src/components/Server/Edit/Bind9/Bind9';
 import Mysql from 'src/components/Server/Edit/Mysql/Mysql';
+import AddDNSWrapper from '../AddDNSWrapper/AddDNSWrapper';
 import CronJobs from '../../containers/CronJobs/CronJobs';
 import Packages from '../../containers/Packages/Packages';
 import { services } from 'src/ControlPanelService/Server';
@@ -179,7 +180,7 @@ const ControlPanelContent = props => {
           <Route path="/add/web" component={() => <AddWebDomain />} />
           <Route path="/edit/web" component={() => <EditWeb />} />
           <Route path="/list/dns" component={props => <DNSWrapper {...props} changeSearchTerm={handleSearchTerm} />} />
-          <Route path="/add/dns" component={() => <AddDomainNameSystem />} />
+          <Route path="/add/dns" component={() => <AddDNSWrapper />} />
           <Route path="/edit/dns" component={() => <EditDomainNameSystem />} />
           <Route path="/list/mail" component={props => <Mails {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/mail" component={() => <AddMail />} />
