@@ -1,14 +1,18 @@
 import axios from "axios";
 
+const updateDNSUri = '/api/edit/dns/index.php';
+const addDnsApiUri = '/api/add/dns/index.php';
+const dNSInfoUri = '/api/edit/dns/index.php';
 const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
 const dnsApiUri = '/list/dns/dns.php';
-const addDnsApiUri = '/api/add/dns/index.php';
-const dNSInfoUri = '/api/edit/dns/index.php';
-const updateDNSUri = '/api/edit/dns/index.php';
 
 export const getDnsList = () => {
   return axios.get(BASE_URL + dnsApiUri);
+}
+
+export const getDNSRecordsList = domain => {
+  return axios.get(`${BASE_URL}${dnsApiUri}?domain=${domain}`);
 }
 
 export const bulkAction = (action, domainNameSystems) => {

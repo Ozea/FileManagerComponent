@@ -61,17 +61,17 @@ const DomainNameSystem = props => {
       </Container>
       <div className="actions">
         <div>
-          <a className="link-gray" href={`/list/dns/?domain=${data.NAME}`}>
+          <Link className="link-gray" to={`/list/dns/?domain=${data.NAME}`}>
             {data.RECORDS_I18N}
             {data.FOCUSED ? <span className="shortcut-button">L</span> : <FontAwesomeIcon icon="list" />}
-          </a>
+          </Link>
         </div>
 
         <div>
-          <a className="link-edit" href={`/add/dns/?domain=${data.NAME}`}>
+          <Link className="link-edit" to={`/add/dns/?domain=${data.NAME}`}>
             {i18n['add record']}
             {data.FOCUSED ? <span className="shortcut-button">N</span> : <FontAwesomeIcon icon="add" />}
-          </a>
+          </Link>
         </div>
 
         <div>
