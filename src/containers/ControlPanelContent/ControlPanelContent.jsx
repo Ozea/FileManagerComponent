@@ -25,6 +25,7 @@ import AddPackage from '../../components/Package/Add/AddPackage';
 import EditServer from '../../components/Server/Edit/EditServer';
 import Dovecot from 'src/components/Server/Edit/Dovecot/Dovecot';
 import Service from 'src/components/Server/Edit/Service/Service';
+import EditDNSWrapper from '../EditDNSWrapper/EditDNSWrapper';
 import EditWeb from '../../components/WebDomain/Edit/EditWeb';
 import EditPhp from 'src/components/Server/Edit/PHP/EditPhp';
 import Databases from '../../containers/Databases/Databases';
@@ -181,7 +182,7 @@ const ControlPanelContent = props => {
           <Route path="/edit/web" component={() => <EditWeb />} />
           <Route path="/list/dns" component={props => <DNSWrapper {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/dns" component={() => <AddDNSWrapper />} />
-          <Route path="/edit/dns" component={() => <EditDomainNameSystem />} />
+          <Route path="/edit/dns" component={() => <EditDNSWrapper />} />
           <Route path="/list/mail" component={props => <Mails {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/mail" component={() => <AddMail />} />
           <Route path="/edit/mail" component={() => <EditMail />} />

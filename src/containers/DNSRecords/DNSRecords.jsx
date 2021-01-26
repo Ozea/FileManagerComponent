@@ -200,7 +200,7 @@ export default function DnsRecords(props) {
     });
 
     return result.map((item, index) => {
-      return <DnsRecord data={item} key={index} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
+      return <DnsRecord data={item} key={index} domain={state.domain} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
     });
   }
 

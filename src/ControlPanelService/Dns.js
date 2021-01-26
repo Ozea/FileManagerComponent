@@ -15,6 +15,10 @@ export const getDNSRecordsList = domain => {
   return axios.get(`${BASE_URL}${dnsApiUri}?domain=${domain}`);
 }
 
+export const getDNSRecordInfo = (domain, recordId) => {
+  return axios.get(`${BASE_URL}${updateDNSUri}?domain=${domain}&record_id=${recordId}`);
+}
+
 export const bulkAction = (action, domainNameSystems) => {
   const formData = new FormData();
   formData.append("action", action);

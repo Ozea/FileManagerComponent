@@ -56,7 +56,7 @@ export default function DnsRecord(props) {
       </Container>
       <div className="actions">
         <div>
-          <Link className="link-edit" to={`/edit/dns/?domain=${data.NAME}&record_id=${data.ID}`}>
+          <Link className="link-edit" to={`/edit/dns/?domain=${props.domain}&record_id=${data.ID}`}>
             {i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
           </Link>
