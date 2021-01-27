@@ -42,7 +42,7 @@ export default function AddDNSRecord(props) {
   });
 
   useEffect(() => {
-    dispatch(addActiveElement(`/list/dns`));
+    dispatch(addActiveElement(`/list/dns/`));
     dispatch(removeFocusedElement());
   }, []);
 
