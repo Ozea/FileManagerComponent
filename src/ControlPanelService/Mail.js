@@ -11,6 +11,10 @@ export const getMailList = () => {
   return axios.get(BASE_URL + webApiUri);
 }
 
+export const getMailAccountList = domain => {
+  return axios.get(`${BASE_URL}${webApiUri}?domain=${domain}`)
+}
+
 export const bulkAction = (action, domainNameSystems) => {
   const formData = new FormData();
   formData.append("action", action);

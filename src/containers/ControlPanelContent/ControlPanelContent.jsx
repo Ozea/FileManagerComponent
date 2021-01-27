@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { addActiveElement, removeFocusedElement } from "../../actions/MainNavigation/mainNavigationActions";
-import EditDomainNameSystem from '../../components/DomainNameSystem/Edit/EditDomainNameSystem';
 import EditInternetProtocol from '../../components/InternetProtocol/Edit/EditInternetProtocol';
-import AddDomainNameSystem from '../../components/DomainNameSystem/Add/AddDomainNameSystem';
 import AddInternetProtocol from '../../components/InternetProtocol/Add/AddInternetProtocol';
 import EditServerNginx from 'src/components/Server/Edit/Nginx/EditServerNginx';
 import Postgresql from 'src/components/Server/Edit/Postgresql/Postgresql';
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
-import DomainNameSystems from '../DomainNameSystems/DomainNameSystems';
 import InternetProtocols from '../InternetProtocols/InternetProtocols';
 import AddWebDomain from '../../components/WebDomain/Add/AddWebDomain';
 import EditDatabase from '../../components/Database/Edit/EditDatabase';
@@ -43,10 +40,10 @@ import AddUser from '../../components/User/Add/AddUser';
 import Updates from '../../containers/Updates/Updates';
 import Servers from '../../containers/Servers/Servers';
 import MainNav from '../../components/MainNav/MainNav';
+import MailWrapper from '../MailWrapper/MailWrapper';
 import DNSWrapper from '../DNSWrapper/DNSWrapper';
 import Statistics from '../Statistics/Statistics';
 import Users from '../../containers/Users/Users';
-import Mails from '../../containers/Mails/Mails';
 import RRDs from '../../containers/RRDs/RRDs';
 import Web from '../../containers/Web/Web';
 import Backups from '../Backups/Backups';
@@ -183,7 +180,7 @@ const ControlPanelContent = props => {
           <Route path="/list/dns" component={props => <DNSWrapper {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/dns" component={() => <AddDNSWrapper />} />
           <Route path="/edit/dns" component={() => <EditDNSWrapper />} />
-          <Route path="/list/mail" component={props => <Mails {...props} changeSearchTerm={handleSearchTerm} />} />
+          <Route path="/list/mail" component={props => <MailWrapper {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/mail" component={() => <AddMail />} />
           <Route path="/edit/mail" component={() => <EditMail />} />
           <Route path="/list/db" component={props => <Databases {...props} changeSearchTerm={handleSearchTerm} />} />

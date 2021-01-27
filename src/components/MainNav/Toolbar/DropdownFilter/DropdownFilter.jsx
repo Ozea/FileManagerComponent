@@ -8,6 +8,7 @@ class DropdownFilter extends Component {
     webList: [i18n.Date, i18n.Domain, i18n['IP Addresses'], i18n.Disk, i18n.Bandwidth, i18n.Starred],
     dnsList: [i18n.Date, i18n.Expire, i18n.Domain, i18n['IP Addresses'], i18n.Records, i18n.Starred],
     mailList: [i18n.Date, i18n.Domain, i18n.Accounts, i18n.Disk, i18n.Starred],
+    mailAccountList: [i18n.Date, i18n.Accounts, i18n.Disk, i18n.Starred],
     dbList: [i18n.Date, i18n.Database, i18n.Disk, i18n.User, i18n.Host, i18n.Starred],
     cronList: [i18n.Date, i18n.Command, i18n.Starred],
     packagesList: [i18n.Date, i18n['Package Name'], i18n.Starred],

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
-import { bulkAction, getDNSRecordsList, handleAction } from '../../ControlPanelService/Dns';
+import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
+import { bulkAction, getMailAccountList, handleAction } from '../../ControlPanelService/Mail';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
@@ -8,32 +9,28 @@ import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
-import Modal from 'src/components/ControlPanel/Modal/Modal';
-import DnsRecord from 'src/components/DNSRecord/DNSRecord';
+import Modal from '../../components/ControlPanel/Modal/Modal';
 import { useSelector, useDispatch } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
-import { Link, useHistory } from 'react-router-dom';
-import QueryString from 'qs';
+import Mail from '../../components/Mail/Mail';
 
-import './DNSRecords.scss';
+import './MailAccounts.scss';
 
-export default function DnsRecords(props) {
+export default function MailAccounts(props) {
   const { i18n } = window.GLOBAL.App;
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
-  const history = useHistory();
   const [modal, setModal] = useState({
     text: '',
     visible: false,
     actionUrl: '',
   });
   const [state, setState] = useState({
-    dnsRecords: [],
-    dnsRecordFav: [],
-    domain: '',
-    loading: true,
+    mailAccounts: [],
+    mailAccountsFav: [],
+    loading: false,
     toggledAll: false,
     sorting: i18n.Date,
     order: "descending",
@@ -58,7 +55,7 @@ export default function DnsRecords(props) {
       window.removeEventListener("keydown", handleContentSelection);
       window.removeEventListener("keydown", handleFocusedElementShortcuts);
     };
-  }, [controlPanelFocusedElement, focusedElement, state.dnsRecords]);
+  }, [controlPanelFocusedElement, focusedElement, state.mailAccounts]);
 
   const handleContentSelection = event => {
     if (event.keyCode === 38 || event.keyCode === 40) {
@@ -76,56 +73,56 @@ export default function DnsRecords(props) {
     }
   }
 
-  const initFocusedElement = dnsRecords => {
-    dnsRecords[0]['FOCUSED'] = dnsRecords[0]['NAME'];
-    setState({ ...state, dnsRecords });
-    dispatch(addControlPanelContentFocusedElement(dnsRecords[0]['NAME']));
+  const initFocusedElement = mailAccounts => {
+    mailAccounts[0]['FOCUSED'] = mailAccounts[0]['NAME'];
+    setState({ ...state, mailAccounts });
+    dispatch(addControlPanelContentFocusedElement(mailAccounts[0]['NAME']));
   }
 
   const handleArrowDown = () => {
-    let dnsRecords = [...state.dnsRecords];
+    let mailAccounts = [...state.mailAccounts];
 
     if (focusedElement) {
       MainNavigation.removeFocusedElement();
     }
 
     if (controlPanelFocusedElement === '') {
-      initFocusedElement(dnsRecords);
+      initFocusedElement(mailAccounts);
       return;
     }
 
-    let focusedElementPosition = dnsRecords.findIndex(dnsRecord => dnsRecord.NAME === controlPanelFocusedElement);
+    let focusedElementPosition = mailAccounts.findIndex(mailAccount => mailAccount.NAME === controlPanelFocusedElement);
 
-    if (focusedElementPosition !== dnsRecords.length - 1) {
-      let nextFocusedElement = dnsRecords[focusedElementPosition + 1];
-      dnsRecords[focusedElementPosition]['FOCUSED'] = '';
+    if (focusedElementPosition !== mailAccounts.length - 1) {
+      let nextFocusedElement = mailAccounts[focusedElementPosition + 1];
+      mailAccounts[focusedElementPosition]['FOCUSED'] = '';
       nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
       document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
-      setState({ ...state, dnsRecords });
+      setState({ ...state, mailAccounts });
       dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
     }
   }
 
   const handleArrowUp = () => {
-    let dnsRecords = [...state.dnsRecords];
+    let mailAccounts = [...state.mailAccounts];
 
     if (focusedElement) {
       MainNavigation.removeFocusedElement();
     }
 
     if (controlPanelFocusedElement === '') {
-      initFocusedElement(dnsRecords);
+      initFocusedElement(mailAccounts);
       return;
     }
 
-    let focusedElementPosition = dnsRecords.findIndex(dnsRecord => dnsRecord.NAME === controlPanelFocusedElement);
+    let focusedElementPosition = mailAccounts.findIndex(mailAccount => mailAccount.NAME === controlPanelFocusedElement);
 
     if (focusedElementPosition !== 0) {
-      let nextFocusedElement = dnsRecords[focusedElementPosition - 1];
-      dnsRecords[focusedElementPosition]['FOCUSED'] = '';
+      let nextFocusedElement = mailAccounts[focusedElementPosition - 1];
+      mailAccounts[focusedElementPosition]['FOCUSED'] = '';
       nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
       document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
-      setState({ ...state, dnsRecords });
+      setState({ ...state, mailAccounts });
       dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
     }
   }
@@ -134,38 +131,45 @@ export default function DnsRecords(props) {
     let isSearchInputFocused = document.querySelector('input:focus') || document.querySelector('textarea:focus');
 
     if (controlPanelFocusedElement && !isSearchInputFocused) {
-      if (event.keyCode === 13) {
-        return handleEdit();
-      } else if (event.keyCode === 8) {
-        return handleDelete();
+      switch (event.keyCode) {
+        case 8: return handleDelete();
+        case 13: return handleEdit();
+        case 83: return handleSuspend();
+        default: break;
       }
     }
   }
 
   const handleEdit = () => {
-    props.history.push(`/edit/dns/?domain=${controlPanelFocusedElement}`);
+    props.history.push(`/edit/mail?domain=${controlPanelFocusedElement}`);
+  }
+
+  const handleSuspend = () => {
+    const { mailAccounts } = state;
+    let currentMailData = mailAccounts.filter(mail => mail.NAME === controlPanelFocusedElement)[0];
+    let suspendedStatus = currentMailData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
+
+    displayModal(currentMailData.suspend_conf, `/${suspendedStatus}/mail?domain=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const handleDelete = () => {
-    const { databases } = state;
-    let currentDatabaseData = databases.filter(database => database.NAME === controlPanelFocusedElement)[0];
+    const { mailAccounts } = state;
+    let currentMailData = mailAccounts.filter(mail => mail.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentDatabaseData.delete_conf, `/delete/database/?domain=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentMailData.delete_conf, `/delete/mail/?domain=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const fetchData = () => {
-    let parsedQueryString = QueryString.parse(history.location.search, { ignoreQueryPrefix: true });
-
     setState({ ...state, loading: true });
 
-    getDNSRecordsList(parsedQueryString.domain || '')
+    getMailAccountList(props.domain)
       .then(result => {
         setState({
           ...state,
-          dnsRecords: reformatData(result.data.data),
-          dnsRecordFav: result.data.dnsRecordsFav,
+          mailAccounts: reformatData(result.data.data),
+          webMail: result.data.webMail,
+          mailAccountsFav: result.data.mailAccountsFav,
           totalAmount: result.data.totalAmount,
-          domain: parsedQueryString.domain,
           loading: false
         });
       })
@@ -173,47 +177,56 @@ export default function DnsRecords(props) {
   }
 
   const reformatData = data => {
-    let dnsRecords = [];
+    let mailAccounts = [];
 
     for (let i in data) {
       data[i]['NAME'] = i;
       data[i]['FOCUSED'] = controlPanelFocusedElement === i;
-      dnsRecords.push(data[i]);
+      mailAccounts.push(data[i]);
     }
 
-    return dnsRecords;
+    return mailAccounts;
   }
 
-  const dnsRecords = () => {
-    const { dnsRecords } = state;
+  const changeSorting = (sorting, order) => {
+    setState({
+      ...state,
+      sorting,
+      order
+    });
+  }
+
+  const mailAccounts = () => {
+    const { mailAccounts } = state;
+    const mailAccountsFav = { ...state.mailAccountsFav };
     const result = [];
-    const dnsRecordFav = { ...state.dnsRecordFav };
 
-    dnsRecords.forEach(dnsRecord => {
-      dnsRecord.FOCUSED = controlPanelFocusedElement === dnsRecord.NAME;
+    mailAccounts.forEach(mailAccount => {
+      mailAccount.FOCUSED = controlPanelFocusedElement === mailAccount.NAME;
 
-      if (dnsRecordFav[dnsRecord.NAME]) {
-        dnsRecord.STARRED = dnsRecordFav[dnsRecord.NAME];
+      if (mailAccountsFav[mailAccount.NAME]) {
+        mailAccount.STARRED = mailAccountsFav[mailAccount.NAME];
       } else {
-        dnsRecord.STARRED = 0;
+        mailAccount.STARRED = 0;
       }
 
-      result.push(dnsRecord);
+      result.push(mailAccount);
     });
+    let sortedResult = sortArray(result);
 
-    return result.map((item, index) => {
-      return <DnsRecord data={item} key={index} domain={state.domain} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
+    return sortedResult.map((item, index) => {
+      return <Mail data={item} key={index} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
     });
   }
 
   const checkItem = name => {
-    const { selection, dnsRecords } = state;
+    const { selection, mailAccounts } = state;
     let duplicate = [...selection];
-    let dnsDuplicate = dnsRecords;
+    let mailAccountsDuplicate = mailAccounts;
     let checkedItem = duplicate.indexOf(name);
 
-    let incomingItem = dnsDuplicate.findIndex(dns => dns.NAME === name);
-    dnsDuplicate[incomingItem].isChecked = !dnsDuplicate[incomingItem].isChecked;
+    let incomingItem = mailAccountsDuplicate.findIndex(mailAccount => mailAccount.NAME === name);
+    mailAccountsDuplicate[incomingItem].isChecked = !mailAccountsDuplicate[incomingItem].isChecked;
 
     if (checkedItem !== -1) {
       duplicate.splice(checkedItem, 1);
@@ -221,29 +234,52 @@ export default function DnsRecords(props) {
       duplicate.push(name);
     }
 
-    setState({ ...state, dnsRecords: dnsDuplicate, selection: duplicate });
+    setState({ ...state, mailAccounts: mailAccountsDuplicate, selection: duplicate });
+  }
+
+  const sortArray = array => {
+    const { order, sorting } = state;
+    let sortingColumn = sortBy(sorting);
+
+    if (order === "descending") {
+      return array.sort((a, b) => (a[sortingColumn] < b[sortingColumn]) ? 1 : ((b[sortingColumn] < a[sortingColumn]) ? -1 : 0));
+    } else {
+      return array.sort((a, b) => (a[sortingColumn] > b[sortingColumn]) ? 1 : ((b[sortingColumn] > a[sortingColumn]) ? -1 : 0));
+    }
+  }
+
+  const sortBy = sorting => {
+    const { Date, Domains, Accounts, Disk, Starred } = window.GLOBAL.App.i18n;
+
+    switch (sorting) {
+      case Date: return 'DATE';
+      case Accounts: return 'ACCOUNTS';
+      case Disk: return 'U_DISK';
+      case Starred: return 'STARRED';
+      default: break;
+    }
   }
 
   const toggleFav = (value, type) => {
-    const { dnsRecordFav } = state;
-    let dnsRecFavDuplicate = dnsRecordFav;
+    const { mailAccountsFav } = state;
+    let mailAccountsFavDuplicate = mailAccountsFav;
 
     if (type === 'add') {
-      dnsRecFavDuplicate[value] = 1;
+      mailAccountsFavDuplicate[value] = 1;
 
-      addFavorite(value, 'dns_rec')
+      addFavorite(value, 'mail_acc')
         .then(() => {
-          setState({ ...state, dnsRecordFav: dnsRecFavDuplicate });
+          setState({ ...state, mailAccountsFav: mailAccountsFavDuplicate });
         })
         .catch(err => {
           console.error(err);
         });
     } else {
-      dnsRecFavDuplicate[value] = undefined;
+      mailAccountsFavDuplicate[value] = undefined;
 
-      deleteFavorite(value, 'dns_rec')
+      deleteFavorite(value, 'mail_acc')
         .then(() => {
-          setState({ ...state, dnsRecordFav: dnsRecFavDuplicate });
+          setState({ ...state, mailAccountsFav: mailAccountsFavDuplicate });
         })
         .catch(err => {
           console.error(err);
@@ -252,25 +288,25 @@ export default function DnsRecords(props) {
   }
 
   const toggleAll = toggled => {
-    const dnsRecordsDuplicate = [...state.dnsRecords];
+    const mailAccountsDuplicate = [...state.mailAccounts];
 
     if (toggled) {
-      let dnsRecordNames = []
+      let mailAccountNames = [];
 
-      let dnsRecords = dnsRecordsDuplicate.map(dnsRecord => {
-        dnsRecordNames.push(dnsRecord.NAME);
-        dnsRecord.isChecked = true;
-        return dnsRecord;
+      let mailAccounts = mailAccountsDuplicate.map(mailAccount => {
+        mailAccountNames.push(mail.NAME);
+        mailAccount.isChecked = true;
+        return mailAccount;
       });
 
-      setState({ ...state, dnsRecords, selection: dnsRecordNames, toggledAll: toggled });
+      setState({ ...state, mailAccounts, selection: mailAccountNames, toggledAll: toggled });
     } else {
-      let dnsRecords = dnsRecordsDuplicate.map(dnsRecord => {
-        dnsRecord.isChecked = false;
-        return dnsRecord;
+      let mailAccounts = mailAccountsDuplicate.map(mailAccount => {
+        mailAccount.isChecked = false;
+        return mailAccount;
       });
 
-      setState({ ...state, dnsRecords, selection: [], toggledAll: toggled });
+      setState({ ...state, mailAccounts, selection: [], toggledAll: toggled });
     }
   }
 
@@ -317,13 +353,15 @@ export default function DnsRecords(props) {
   }
 
   return (
-    <div className="dns-records">
+    <div className="mail-accounts">
       <Toolbar mobile={false} >
-        <LeftButton name={i18n['Add DNS Record']} href={`/add/dns/?domain=${state.domain}`} showLeftMenu={true} />
+        <LeftButton name={i18n['Add Mail Account']} href={`/add/mail/?domain=${props.domain}`} showLeftMenu={true} />
         <div className="r-menu">
           <div className="input-group input-group-sm">
+            <a href={state.webMail} className="button-extra" type="submit">{window.GLOBAL.App.i18n['open webmail']}</a>
             <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
-            <Select list='dnsList' bulkAction={bulk} />
+            <Select list='mailList' bulkAction={bulk} />
+            <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="mailAccountList" />
             <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
           </div>
         </div>
@@ -332,16 +370,16 @@ export default function DnsRecords(props) {
         ? <Spinner />
         : (
           <>
-            <div className="dns-records-wrapper">
+            <div className="mail-accounts-wrapper">
               <div className="subtitle">
                 <span>{`${i18n['Listing']}  ${state.domain}`}</span>
               </div>
-              {dnsRecords()}
+              {mailAccounts()}
             </div>
             <div className="footer-actions-wrapper">
               <div className="total">{state.totalAmount}</div>
               <div className="back">
-                <Link to="/list/dns/">{i18n['Back']}</Link>
+                <Link to="/list/mail/">{i18n['Back']}</Link>
               </div>
             </div>
           </>

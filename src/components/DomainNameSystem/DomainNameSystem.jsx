@@ -70,7 +70,7 @@ const DomainNameSystem = props => {
         <div>
           <Link className="link-edit" to={`/add/dns/?domain=${data.NAME}`}>
             {i18n['add record']}
-            {data.FOCUSED ? <span className="shortcut-button">N</span> : <FontAwesomeIcon icon="add" />}
+            {data.FOCUSED ? <span className="shortcut-button">N</span> : <FontAwesomeIcon icon="plus" />}
           </Link>
         </div>
 
