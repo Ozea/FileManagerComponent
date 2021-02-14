@@ -51,6 +51,7 @@ import Search from '../Search/Search';
 import Logs from '../Logs/Logs';
 
 import './ControlPanelContent.scss';
+import AddMailWrapper from '../AddMailWrapper/AddMailWrapper';
 
 const ControlPanelContent = props => {
   const history = useHistory();
@@ -181,7 +182,7 @@ const ControlPanelContent = props => {
           <Route path="/add/dns" component={() => <AddDNSWrapper />} />
           <Route path="/edit/dns" component={() => <EditDNSWrapper />} />
           <Route path="/list/mail" component={props => <MailWrapper {...props} changeSearchTerm={handleSearchTerm} />} />
-          <Route path="/add/mail" component={() => <AddMail />} />
+          <Route path="/add/mail" component={() => <AddMailWrapper />} />
           <Route path="/edit/mail" component={() => <EditMail />} />
           <Route path="/list/db" component={props => <Databases {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/db" component={() => <AddDatabase />} />

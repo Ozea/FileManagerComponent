@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const token = localStorage.getItem("token");
+const { i18n } = window.GLOBAL.App;
 const BASE_URL = window.location.origin;
 const webApiUri = '/list/mail/mail.php';
 const addMailApiUri = '/api/add/mail/index.php';
@@ -43,6 +44,16 @@ export const addMail = data => {
   return axios.post(BASE_URL + addMailApiUri, formDataObject);
 }
 
+export const addMailAccount = (data, domain) => {
+  let formDataObject = new FormData();
+
+  for (let key in data) {
+    formDataObject.append(key, data[key]);
+  }
+
+  return axios.post(`${BASE_URL}${addMailApiUri}?domain=${domain}`, formDataObject);
+}
+
 export const getMailInfo = domain => {
   return axios.get(BASE_URL + mailInfoUri, {
     params: {
@@ -66,3 +77,26 @@ export const updateMail = (data, domain) => {
     }
   });
 }
+
+export const mailInfoBlockSelectOptions = [
+  {
+    value: i18n['Use server hostname'],
+    type: 'hostname',
+  },
+  {
+    value: i18n['Use domain hostname'],
+    type: 'domain',
+  },
+  {
+    value: i18n['Use STARTTLS'],
+    type: 'starttls',
+  },
+  {
+    value: i18n['Use SSL / TLS'],
+    type: 'ssl',
+  },
+  {
+    value: i18n['No encryption'],
+    type: 'no_encryption',
+  }
+];
