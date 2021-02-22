@@ -40,8 +40,7 @@ export default function EditDNSRecord(props) {
   });
 
   useEffect(() => {
-    let queryParams = QS.parse(history.location.search, { ignoreQueryPrefix: true });
-    const { domain, record_id } = queryParams;
+    const { domain, record_id } = props;
 
     dispatch(addActiveElement('/list/dns/'));
     dispatch(removeFocusedElement());

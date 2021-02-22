@@ -10,7 +10,7 @@ export default function EditDNSWrapper() {
   const [isDnsRecord, setIsDnsRecord] = useState(false);
 
   useEffect(() => {
-    if (parsedQueryString.domain) {
+    if (parsedQueryString.domain && parsedQueryString.record_id) {
       setIsDnsRecord(true);
     } else {
       setIsDnsRecord(false);
@@ -21,7 +21,7 @@ export default function EditDNSWrapper() {
     <>
       {
         isDnsRecord
-          ? <EditDNSRecord domain={parsedQueryString.domain} />
+          ? <EditDNSRecord domain={parsedQueryString.domain} record_id={parsedQueryString.record_id} />
           : <EditDomainNameSystem />
       }
     </>
