@@ -7,48 +7,15 @@
     font-weight: bold;
   }
 
-  .dns-records-wrapper {
+  .mail-accounts-wrapper {
     > div:nth-child(2) {
       border-top: 1px solid #ddd;
     }
 
     div.list-item {
       .r-col {
-        .stats {
-          > div {
-            flex: unset;
-          }
-
-          .c-1 {
-            width: 14.3%;
-          }
-
-          .c-2 {
-            margin-left: 10px;
-            width: 14.3%;
-          }
-
-          .c-3 {
-            margin-left: 0;
-            width: 14.3%;
-
-            span {
-              color: #888;
-              font-weight: normal;
-            }
-          }
-
-          .c-4 {
-            width: 550px;
-
-            .stat {
-              display: block;
-              white-space: normal;
-              overflow: hidden;
-              width: 100%;
-              text-overflow: ellipsis;
-            }
-          }
+        .stat.email {
+            text-transform: none;
         }
       }
     }
