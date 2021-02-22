@@ -21,7 +21,9 @@ import AddCronJob from '../../components/CronJob/Add/AddCronJob';
 import AddPackage from '../../components/Package/Add/AddPackage';
 import EditServer from '../../components/Server/Edit/EditServer';
 import Dovecot from 'src/components/Server/Edit/Dovecot/Dovecot';
+import EditMailWrapper from '../EditMailWrapper/EditMailWrapper';
 import Service from 'src/components/Server/Edit/Service/Service';
+import AddMailWrapper from '../AddMailWrapper/AddMailWrapper';
 import EditDNSWrapper from '../EditDNSWrapper/EditDNSWrapper';
 import EditWeb from '../../components/WebDomain/Edit/EditWeb';
 import EditPhp from 'src/components/Server/Edit/PHP/EditPhp';
@@ -51,7 +53,6 @@ import Search from '../Search/Search';
 import Logs from '../Logs/Logs';
 
 import './ControlPanelContent.scss';
-import AddMailWrapper from '../AddMailWrapper/AddMailWrapper';
 
 const ControlPanelContent = props => {
   const history = useHistory();
@@ -183,7 +184,7 @@ const ControlPanelContent = props => {
           <Route path="/edit/dns" component={() => <EditDNSWrapper />} />
           <Route path="/list/mail" component={props => <MailWrapper {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/mail" component={() => <AddMailWrapper />} />
-          <Route path="/edit/mail" component={() => <EditMail />} />
+          <Route path="/edit/mail" component={() => <EditMailWrapper />} />
           <Route path="/list/db" component={props => <Databases {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/db" component={() => <AddDatabase />} />
           <Route path="/edit/db" component={() => <EditDatabase />} />

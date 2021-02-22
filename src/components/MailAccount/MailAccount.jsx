@@ -66,7 +66,7 @@ export default function MailAccount(props) {
       <div className="actions">
 
         <div>
-          <Link className="link-edit" to={`/edit/mail/?domain=${data.NAME}`}>
+          <Link className="link-edit" to={`/edit/mail/?domain=${domain}&account=${data.NAME}`}>
             {i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
           </Link>

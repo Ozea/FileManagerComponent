@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import ListItem from '../ControlPanel/ListItem/ListItem';
-import Container from '../ControlPanel/Container/Container';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './Mail.scss';
+import Container from '../ControlPanel/Container/Container';
+import ListItem from '../ControlPanel/ListItem/ListItem';
 import { Link } from 'react-router-dom';
+import './Mail.scss';
 
 const Mail = props => {
   const { data } = props;
