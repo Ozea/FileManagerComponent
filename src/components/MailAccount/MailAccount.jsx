@@ -5,7 +5,7 @@ import ListItem from '../ControlPanel/ListItem/ListItem';
 import { Link } from 'react-router-dom';
 
 export default function MailAccount(props) {
-  const { data } = props;
+  const { data, domain } = props;
   const { i18n } = window.GLOBAL.App;
   const token = localStorage.getItem("token");
   const printStat = (stat, text) => {
@@ -30,11 +30,11 @@ export default function MailAccount(props) {
 
   const handleSuspend = () => {
     let suspendedStatus = data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend' === 'yes' ? 'unsuspend' : 'suspend';
-    props.handleModal(data.suspend_conf, `/${suspendedStatus}/mail?domain=${data.NAME}&token=${token}`);
+    props.handleModal(data.suspend_conf, `/${suspendedStatus}/mail?domain=${domain}&account=${data.NAME}&token=${token}`);
   }
 
   const handleDelete = () => {
-    props.handleModal(data.delete_conf, `/delete/mail?domain=${data.NAME}&token=${token}`);
+    props.handleModal(data.delete_conf, `/delete/mail?domain=${domain}&account=${data.NAME}&token=${token}`);
   }
 
   return (
@@ -49,17 +49,17 @@ export default function MailAccount(props) {
       suspended={data.SUSPENDED === 'yes'}>
 
       <Container className="r-col w-85">
-        <div className="name">{data.NAME}</div>
+        <div className="name">{`${data.NAME}@${domain}`}</div>
         <div className="stats">
           <Container className="c-1">
-            <div className="bandwidth">{i18n.Disk} <span><span className="stat">{data.U_DISK}</span>{i18n.mb}</span></div>
+            <div className="bandwidth">{i18n.Disk} <span><span className="stat">{data.U_DISK}</span>&nbsp;{i18n.mb}</span></div>
           </Container>
           <Container className="c-2">
-            <div>{i18n['Quota']}: <span><span className="stat">{data.quota}</span>{i18n.mb}</span></div>
-            <div>{i18n['Forward to']}: <span className="stat">{data.forward}</span></div>
+            <div>{i18n['Quota']}: <span><span className="stat">{data.QUOTA}</span>&nbsp; {i18n.mb}</span></div>
+            <div>{i18n['Forward to']}: <span className="stat email">{data.FWD}</span></div>
           </Container>
           <Container className="c-3">
-            {printStat(i18n['Autoreply'], data.autoreply)}
+            {printStat(i18n['Autoreply'], data.AUTOREPLY)}
           </Container>
         </div>
       </Container>

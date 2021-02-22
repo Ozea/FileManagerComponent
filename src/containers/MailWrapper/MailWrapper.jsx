@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import MailAccount from 'src/components/MailAccount/MailAccount';
+import MailAccounts from '../MailAccounts/MailAccounts';
 import { useHistory } from 'react-router-dom';
 import Mails from '../Mails/Mails';
 import QueryString from 'qs';
@@ -22,7 +22,7 @@ export default function MailWrapper(props) {
     <>
       {
         mailDomain
-          ? <MailAccount {...props} domain={mailDomain} changeSearchTerm={props.handleSearchTerm} />
+          ? <MailAccounts {...props} domain={mailDomain} changeSearchTerm={props.handleSearchTerm} />
           : <Mails {...props} changeSearchTerm={props.handleSearchTerm} />
       }
     </>

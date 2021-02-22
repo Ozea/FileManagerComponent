@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
-import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import { bulkAction, getMailAccountList, handleAction } from '../../ControlPanelService/Mail';
+import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
+import MailAccount from 'src/components/MailAccount/MailAccount';
 import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Modal from '../../components/ControlPanel/Modal/Modal';
 import { useSelector, useDispatch } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
-import Mail from '../../components/Mail/Mail';
+import { Link } from 'react-router-dom';
 
 import './MailAccounts.scss';
 
@@ -31,6 +32,7 @@ export default function MailAccounts(props) {
     mailAccounts: [],
     mailAccountsFav: [],
     loading: false,
+    domain: props.domain,
     toggledAll: false,
     sorting: i18n.Date,
     order: "descending",
@@ -128,6 +130,7 @@ export default function MailAccounts(props) {
   }
 
   const handleFocusedElementShortcuts = event => {
+    event.preventDefault();
     let isSearchInputFocused = document.querySelector('input:focus') || document.querySelector('textarea:focus');
 
     if (controlPanelFocusedElement && !isSearchInputFocused) {
@@ -215,7 +218,7 @@ export default function MailAccounts(props) {
     let sortedResult = sortArray(result);
 
     return sortedResult.map((item, index) => {
-      return <Mail data={item} key={index} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
+      return <MailAccount data={item} key={index} domain={state.domain} toggleFav={toggleFav} checkItem={checkItem} handleModal={displayModal} />;
     });
   }
 
@@ -294,7 +297,7 @@ export default function MailAccounts(props) {
       let mailAccountNames = [];
 
       let mailAccounts = mailAccountsDuplicate.map(mailAccount => {
-        mailAccountNames.push(mail.NAME);
+        mailAccountNames.push(mailAccount.NAME);
         mailAccount.isChecked = true;
         return mailAccount;
       });
