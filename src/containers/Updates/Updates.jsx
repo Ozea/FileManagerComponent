@@ -170,10 +170,12 @@ const Updates = props => {
   }
 
   const toggleAll = toggled => {
+    const updatesDuplicate = [...state.updates];
+
     if (toggled) {
       let updateNames = [];
 
-      let updates = updates.map(update => {
+      let updates = updatesDuplicate.map(update => {
         updateNames.push(update.NAME);
         update.isChecked = true;
         return update;
@@ -181,7 +183,7 @@ const Updates = props => {
 
       setState({ ...state, updates, selection: updateNames, toggledAll: toggled });
     } else {
-      let updates = updates.map(update => {
+      let updates = updatesDuplicate.map(update => {
         update.isChecked = false;
         return update;
       });

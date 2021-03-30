@@ -4,6 +4,7 @@ const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
 const webApiUri = '/list/backup/backup.php';
 const scheduleBackupUri = '/schedule/backup/';
+const backupDetailsUri = '/list/backup/backup.php';
 
 export const getBackupList = () => {
   return axios.get(BASE_URL + webApiUri);
@@ -28,4 +29,8 @@ export const handleAction = uri => {
 
 export const scheduleBackup = () => {
   return axios.get(BASE_URL + scheduleBackupUri);
+}
+
+export const getBackupDetails = backup => {
+  return axios.get(BASE_URL + `${backupDetailsUri}?backup=${backup}`);
 }

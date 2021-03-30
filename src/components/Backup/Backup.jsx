@@ -4,6 +4,7 @@ import ListItem from '../ControlPanel/ListItem/ListItem';
 import Container from '../ControlPanel/Container/Container';
 import { faFileDownload } from '@fortawesome/free-solid-svg-icons'
 import './Backup.scss';
+import { Link } from 'react-router-dom';
 
 const Backup = props => {
   const { data } = props;
@@ -62,10 +63,10 @@ const Backup = props => {
         </div>
 
         <div>
-          <a className="link-download" href={`/list/backup?backup=${data.NAME}`}>
+          <Link className="link-download" to={`/list/backup?backup=${data.NAME}`}>
             {i18n['configure restore settings']}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="list" />}
-          </a>
+          </Link>
         </div>
 
         <div>

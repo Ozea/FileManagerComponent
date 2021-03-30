@@ -34,6 +34,7 @@ import EditMail from '../../components/Mail/Edit/EditMail';
 import Bind9 from 'src/components/Server/Edit/Bind9/Bind9';
 import Mysql from 'src/components/Server/Edit/Mysql/Mysql';
 import AddDNSWrapper from '../AddDNSWrapper/AddDNSWrapper';
+import BackupWrapper from '../BackupWrapper/BackupWrapper';
 import CronJobs from '../../containers/CronJobs/CronJobs';
 import Packages from '../../containers/Packages/Packages';
 import { services } from 'src/ControlPanelService/Server';
@@ -191,7 +192,7 @@ const ControlPanelContent = props => {
           <Route path="/list/cron" component={props => <CronJobs {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/cron" component={() => <AddCronJob />} />
           <Route path="/edit/cron" component={() => <EditCronJob />} />
-          <Route path="/list/backup" component={props => <Backups {...props} changeSearchTerm={handleSearchTerm} />} />
+          <Route path="/list/backup" component={props => <BackupWrapper {...props} changeSearchTerm={handleSearchTerm} /> } />
           <Route path="/search/" component={props => <Search {...props} changeSearchTerm={handleSearchTerm} searchTerm={searchTerm} />} />
         </Switch>
       </div>

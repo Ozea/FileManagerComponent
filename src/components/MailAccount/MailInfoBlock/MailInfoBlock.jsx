@@ -4,7 +4,6 @@ import { mailInfoBlockSelectOptions } from 'src/ControlPanelService/Mail';
 import './MailInfoBlock.scss';
 
 export default function MailInfoBlock({ webMail, hostName, domain }) {
-  console.log(hostName);
   const { i18n } = window.GLOBAL.App;
   const [selectedOption, setSelectedOption] = useState('');
   const [state, setState] = useState({

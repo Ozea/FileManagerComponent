@@ -47,8 +47,16 @@
   display: none;
 }
 
-.servers-list .l-menu.server-icon {
-  a, span.add {
-    background: #55c9c0;
+.servers-list {
+  .l-menu {
+    &.server-icon {
+      a, span.add {
+        background: #55c9c0;
+      }
+    }
+
+    &.backup-details-icon {
+      transform: translateX(2px);
+    }
   }
 }

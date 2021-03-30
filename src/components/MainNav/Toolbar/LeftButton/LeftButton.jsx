@@ -10,6 +10,8 @@ function leftMenuClassName(props) {
 
   if (props.list === 'server') {
     return "l-menu server-icon";
+  } else if (props.list === 'backup-details') {
+    return "l-menu backup-details-icon";
   }
 
   return "l-menu";
@@ -18,6 +20,8 @@ function leftMenuClassName(props) {
 function renderIcon(props) {
   if (props.list === 'server') {
     return <FontAwesomeIcon icon="cog" />
+  } else if (props.list === 'backup-details') {
+    return <FontAwesomeIcon icon="play" />
   }
 
   return <FontAwesomeIcon icon="plus" />
