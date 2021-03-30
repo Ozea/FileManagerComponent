@@ -21,6 +21,7 @@ class Select extends Component {
     updatesList: listValues.updatesList,
     firewallList: listValues.firewallList,
     serverList: listValues.serverList,
+    backupDetailList: listValues.backupDetailList,
     selected: '',
   };
 

@@ -96,7 +96,7 @@ const Panel = props => {
         </div>
         <div className="container profile-menu">
           <Notifications />
-          <div><a href={`/edit/user?user=${user}`}>{user}</a></div>
+          <div><Link to={`/edit/user?user=${user}`}>{user}</Link></div>
           <div><a href="/logout">{i18n['Log out']}</a></div>
         </div>
       </div>
@@ -114,7 +114,7 @@ const Panel = props => {
           <div className="bell">
             <FontAwesomeIcon icon="bell" />
           </div>
-          <div><a href={`/edit/user?user=${user}`}>{user}</a></div>
+          <div><Link to={`/edit/user?user=${user}`}>{user}</Link></div>
           <div><a href="/logout">{i18n['Log out']}</a></div>
         </div>
       </div>

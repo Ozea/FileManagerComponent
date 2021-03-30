@@ -51,7 +51,8 @@ library.add(
   Icon.faLongArrowAltRight,
   Icon.faCaretDown,
   Icon.faCaretUp,
-  Icon.faInfinity
+  Icon.faInfinity,
+  Icon.faPlay
 );
 
 class App extends Component {

@@ -60,6 +60,9 @@ export const values = (select = {}) => {
       { value: 'stop', name: select.stop },
       { value: 'start', name: select.start },
       { value: 'restart', name: select.restart }
+    ],
+    backupDetailList: [
+      { value: 'restore', name: select.restore }
     ]
   }
 };
