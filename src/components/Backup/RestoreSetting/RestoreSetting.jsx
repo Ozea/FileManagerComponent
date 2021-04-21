@@ -21,7 +21,6 @@ export default function RestoreSetting({ data, checkItemFunc = () => { } }) {
   }
 
   const checkItem = () => {
-    console.log(data);
     checkItemFunc(data.NAME);
   }
 

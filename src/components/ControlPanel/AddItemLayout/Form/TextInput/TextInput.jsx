@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const TextInput = ({ id, name, title, optionalTitle = '', onChange = () => { }, value = '', disabled = false }) => {
+const TextInput = ({ id, name, title, optionalTitle = '', type = 'text', onChange = () => { }, value = '', disabled = false }) => {
   const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
@@ -21,7 +21,7 @@ const TextInput = ({ id, name, title, optionalTitle = '', onChange = () => { }, 
         <span>{optionalTitle}</span>
       </label>
       <input
-        type="text"
+        type={type}
         name={name}
         id={id}
         onChange={changeCheckbox}
