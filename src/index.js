@@ -5,10 +5,13 @@ import configureStore from './store';
 import './index.css';
 import App from './containers/App/App';
 import * as serviceWorker from './containers/App/serviceWorker';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 ReactDOM.render(
   <Provider store={configureStore()}>
-    <App />
+    <Router>
+      <App />
+    </Router>
   </Provider>,
   document.getElementById('root')
 );

@@ -17,7 +17,7 @@ import './Users.scss';
 
 const Users = props => {
   const { i18n } = window.GLOBAL.App;
-  const token = localStorage.getItem("token");
+  const { token } = useSelector(state => state.session);
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();

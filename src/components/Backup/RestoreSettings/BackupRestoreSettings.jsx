@@ -221,8 +221,6 @@ export default function BackupRestoreSettings(props) {
   const bulk = action => {
     const { selection } = state;
 
-    console.log(selection);
-
     if (selection.length && action) {
       bulkAction(action, selection)
         .then(result => {

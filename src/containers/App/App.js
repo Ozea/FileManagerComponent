@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import FileManager from '../FileManager/FileManager';
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Route, Switch, useHistory } from "react-router-dom";
 import Preview from '../../components/Preview/Preview';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import * as Icon from '@fortawesome/free-solid-svg-icons';
@@ -9,6 +9,10 @@ import 'bootstrap/dist/js/bootstrap.min';
 import './App.scss';
 import ControlPanelContent from '../ControlPanelContent/ControlPanelContent';
 import WebLogs from '../WebLogs/WebLogs';
+import LoginForm from 'src/components/Login/LoginForm';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAuthToken } from 'src/utils/token';
+import { setToken } from 'src/actions/Session/sessionActions';
 
 library.add(
   Icon.faBook,
@@ -55,30 +59,35 @@ library.add(
   Icon.faPlay
 );
 
-class App extends Component {
+const App = props => {
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const session = useSelector(state => state.session);
 
-  onClose = (history) => {
-    let lastOpenedDirectory = history.location.search.substring(6, history.location.search.lastIndexOf('/'));
-    history.push({
-      pathname: '/list/directory',
-      search: `?path=${lastOpenedDirectory}`
-    })
-  }
+  useEffect(() => {
+    const windowSessionToken = getAuthToken();
 
-  render() {
-    return (
-      <div className="App">
-        <Router>
-          <Switch>
-            <Route path="/list/directory/preview" component={(props) => <Preview onClose={() => this.onClose(props.history)} />} />
-            <Route path="/list/directory/" exact component={FileManager} />
-            <Route path="/list/web-log/" exact component={WebLogs} />
-            <Route path="/" component={ControlPanelContent} />
-          </Switch>
-        </Router>
-      </div>
-    );
-  }
+    if (!session.token && !windowSessionToken) {
+      history.push('/login');
+    } else if (!session.token && windowSessionToken) {
+      dispatch(setToken(windowSessionToken));
+      history.push('/list/user/');
+    } else {
+      history.push('/list/user/');
+    }
+  }, [session.token]);
+
+  return (
+    <div className="App">
+      <Switch>
+        <Route path="/list/directory/preview" component={Preview} />
+        <Route path="/list/directory/" exact component={FileManager} />
+        <Route path="/list/web-log/" exact component={WebLogs} />
+        <Route path="/login" exact component={LoginForm} />
+        <Route path="/" component={ControlPanelContent} />
+      </Switch>
+    </div>
+  );
 }
 
 export default App;

@@ -20,8 +20,16 @@ class Preview extends Component {
     }
   }
 
+  onClose = (history) => {
+    let lastOpenedDirectory = history.location.search.substring(6, history.location.search.lastIndexOf('/'));
+    history.push({
+      pathname: '/list/directory',
+      search: `?path=${lastOpenedDirectory}`
+    })
+  }
+
   content = () => {
-    const { location, onClose } = this.props;
+    const { location } = this.props;
     let split = location.search.split('/');
     let name = split[split.length - 1];
 
@@ -30,11 +38,11 @@ class Preview extends Component {
     }
 
     if (name.match('.mp4')) {
-      return <Video closeModal={onClose} />;
+      return <Video closeModal={this.onClose} />;
     } else if (name.match(/png|jpg|jpeg|gif/g)) {
-      return <Photo closeModal={onClose} close={onClose} path={location.search} activeImage={name} />;
+      return <Photo closeModal={this.onClose} close={this.onClose} path={location.search} activeImage={name} />;
     } else {
-      return <Editor close={onClose} name={name} />;
+      return <Editor close={this.onClose} name={name} />;
     }
   }
 
