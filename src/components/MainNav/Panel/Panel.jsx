@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { addActiveElement, removeFocusedElement } from '../../../actions/MainNavigation/mainNavigationActions';
-import { getUsersList } from '../../../ControlPanelService/Users';
+import React, { useState } from 'react';
+import { addActiveElement } from '../../../actions/MainNavigation/mainNavigationActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { logout } from 'src/actions/Session/sessionActions';
 import Notifications from './Notifications/Notifications';
 import { useSelector, useDispatch } from "react-redux";
+import Spinner from 'src/components/Spinner/Spinner';
 import { Link, useHistory } from "react-router-dom";
 import './Panel.scss';
 
@@ -12,19 +13,10 @@ const Panel = props => {
   const { activeElement, focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
   const history = useHistory();
+  const [loading, setLoading] = useState(false);
   const [state, setState] = useState({
     smallNavigationClass: 'small-navigation hidden'
   });
-
-  useEffect(event => {
-    getToken();
-  }, []);
-
-  const getToken = event => {
-    getUsersList()
-      .then(res => localStorage.setItem("token", res.data.token))
-      .catch()
-  }
 
   const toggleNavigation = event => {
     props.showTopNav();
@@ -56,12 +48,27 @@ const Panel = props => {
     dispatch(addActiveElement(tab));
   }
 
+  const signOut = () => {
+    setLoading(true);
+
+    dispatch(logout())
+      .then(() => {
+        setLoading(false);
+      },
+        error => {
+          setLoading(false);
+          console.error(error);
+        });
+  }
+
   return (
     <div className="panel-wrapper">
+      {loading && <Spinner />}
+
       <div className="top-panel">
         <div className="container left-menu">
           <div className="logo">
-            <Link to="/list/user/" onClick={() =>     dispatch(addActiveElement('/list/user/'))}>
+            <Link to="/list/user/" onClick={() => dispatch(addActiveElement('/list/user/'))}>
               <img src="/images/logo.png" alt="LOGO" />
             </Link>
           </div>
@@ -97,7 +104,7 @@ const Panel = props => {
         <div className="container profile-menu">
           <Notifications />
           <div><Link to={`/edit/user?user=${user}`}>{user}</Link></div>
-          <div><a href="/logout">{i18n['Log out']}</a></div>
+          <div><button onClick={signOut}>{i18n['Log out']}</button></div>
         </div>
       </div>
 
@@ -115,7 +122,7 @@ const Panel = props => {
             <FontAwesomeIcon icon="bell" />
           </div>
           <div><Link to={`/edit/user?user=${user}`}>{user}</Link></div>
-          <div><a href="/logout">{i18n['Log out']}</a></div>
+          <div><button onClick={signOut}>{i18n['Log out']}</button></div>
         </div>
       </div>
     </div>

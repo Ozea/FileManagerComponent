@@ -1,10 +1,12 @@
-import { signIn } from 'src/services/session';
+import { signIn, signOut } from 'src/services/session';
+import { resetAuthToken } from 'src/utils/token';
 import { LOGIN, LOGOUT } from './sessionTypes';
 
 export const login = (user, password) => dispatch => {
   return new Promise((resolve, reject) => {
     signIn(user, password).then((response) => {
-      const { error, token } = response.data;
+      const { error, token, panel } = response.data;
+      window.GLOBAL.App.topPanel = panel;
       resolve();
       return dispatch({
         type: LOGIN,
@@ -20,24 +22,37 @@ export const login = (user, password) => dispatch => {
   });
 }
 
-export const logout = () => {
-  return {
-    type: LOGOUT,
-    value: {
-      token: '',
-      error: ''
-    }
-  }
+export const logout = () => dispatch => {
+  return new Promise((resolve, reject) => {
+    signOut().then((response) => {
+      const { logout_response } = response.data;
+
+      if (logout_response) {
+        resetAuthToken();
+        resolve();
+        return dispatch({
+          type: LOGOUT,
+          value: {
+            token: '',
+            error: ''
+          },
+        });
+      } else {
+        console.error(`Error while signing out: ${logout_response}`);
+      }
+    }, (error) => {
+      console.error(error);
+      reject();
+    });
+  });
 }
 
 export const setToken = token => {
-  if (token) {
-    return {
-      type: LOGIN,
-      value: {
-        token,
-        error: ''
-      }
+  return {
+    type: LOGIN,
+    value: {
+      token,
+      error: ''
     }
   }
 }

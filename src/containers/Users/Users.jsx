@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
+import { addActiveElement, removeFocusedElement } from "../../actions/MainNavigation/mainNavigationActions";
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import { bulkAction, getUsersList, handleAction } from '../../ControlPanelService/Users';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
@@ -38,6 +39,8 @@ const Users = props => {
   });
 
   useEffect(() => {
+    dispatch(addActiveElement('/list/user/'));
+    dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
     fetchData();
 

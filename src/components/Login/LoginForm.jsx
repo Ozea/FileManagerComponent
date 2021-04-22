@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Spinner from '../Spinner/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../actions/Session/sessionActions';
@@ -12,6 +12,7 @@ import './Login.scss';
 export default function LoginForm() {
   const { i18n } = window.GLOBAL.App;
   const dispatch = useDispatch();
+  const history = useHistory();
   const [loading, setLoading] = useState(false);
   const [formValues, setFormValues] = useState({});
   const session = useSelector(state => state.session);
@@ -20,6 +21,10 @@ export default function LoginForm() {
   useEffect(() => {
     if (session.error) {
       setErrorMessage(session.error);
+    }
+
+    if (session.token) {
+      history.push('/list/user/');
     }
   }, [session]);
 
@@ -33,7 +38,7 @@ export default function LoginForm() {
     dispatch(login(user, password))
       .then(() => {
         setLoading(false);
-
+        history.push('/list/user')
       },
         error => {
           setLoading(false);
