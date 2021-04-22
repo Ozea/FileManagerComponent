@@ -8,3 +8,7 @@ export const signIn = (user, password) => {
     password,
   });
 };
+
+export const signOut = () => {
+  return axios.get(`${BASE_URL}/api/logout/index.php`);
+};

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
+import { addActiveElement, removeFocusedElement } from '../../actions/MainNavigation/mainNavigationActions';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
@@ -22,6 +23,8 @@ const Logs = props => {
   });
 
   useEffect(() => {
+    dispatch(addActiveElement('/list/log/'));
+    dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
     fetchData();
 

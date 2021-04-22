@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
+import { addActiveElement, removeFocusedElement } from '../../actions/MainNavigation/mainNavigationActions';
 import { bulkAction, getBackupList, handleAction, scheduleBackup } from '../../ControlPanelService/Backup';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
@@ -36,6 +37,8 @@ const Backups = props => {
   });
 
   useEffect(() => {
+    dispatch(addActiveElement('/list/backup/'));
+    dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
     fetchData();
 

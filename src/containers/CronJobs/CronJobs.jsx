@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
+import { addActiveElement, removeFocusedElement } from '../../actions/MainNavigation/mainNavigationActions';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import { bulkAction, getCronList, handleAction } from '../../ControlPanelService/Cron';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
@@ -39,6 +40,8 @@ const CronJobs = props => {
   });
 
   useEffect(() => {
+    dispatch(addActiveElement('/list/cron/'));
+    dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
     fetchData();
 

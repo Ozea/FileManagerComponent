@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
+import { addActiveElement, removeFocusedElement } from '../../actions/MainNavigation/mainNavigationActions';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import { bulkAction, getIpList, handleAction } from '../../ControlPanelService/Ip';
@@ -38,6 +39,8 @@ const InternetProtocols = props => {
   });
 
   useEffect(() => {
+    dispatch(addActiveElement('/list/ip/'));
+    dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
     fetchData();
 

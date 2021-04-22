@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
+import { addActiveElement, removeFocusedElement } from '../../actions/MainNavigation/mainNavigationActions';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { getStatisticsList } from '../../ControlPanelService/Statistics';
@@ -24,6 +25,8 @@ const Statistics = props => {
   });
 
   useEffect(() => {
+    dispatch(addActiveElement('/list/stats/'));
+    dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
     fetchData();
 

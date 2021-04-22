@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
+import { addActiveElement, removeFocusedElement } from '../../actions/MainNavigation/mainNavigationActions';
 import { bulkAction, getFirewallList, handleAction } from '../../ControlPanelService/Firewalls';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
@@ -37,6 +38,8 @@ const Firewalls = props => {
   });
 
   useEffect(() => {
+    dispatch(addActiveElement('/list/firewall/'));
+    dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
     fetchData();
 

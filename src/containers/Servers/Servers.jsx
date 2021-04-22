@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
+import { addActiveElement, removeFocusedElement } from '../../actions/MainNavigation/mainNavigationActions';
 import { bulkAction, getServersList, handleAction } from '../../ControlPanelService/Server';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
@@ -33,6 +34,8 @@ const Servers = props => {
   });
 
   useEffect(() => {
+    dispatch(addActiveElement('/list/server/'));
+    dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
     fetchData();
 

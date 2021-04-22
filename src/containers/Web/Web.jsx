@@ -1,5 +1,6 @@
 import React, { Component, useState, useEffect } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
+import { addActiveElement, removeFocusedElement } from '../../actions/MainNavigation/mainNavigationActions';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import { bulkAction, getWebList, handleAction } from '../../ControlPanelService/Web';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
@@ -37,6 +38,8 @@ const Web = props => {
   });
 
   useEffect(() => {
+    dispatch(addActiveElement('/list/web/'));
+    dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
     fetchData();
 

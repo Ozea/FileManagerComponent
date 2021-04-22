@@ -11,7 +11,7 @@ import ControlPanelContent from '../ControlPanelContent/ControlPanelContent';
 import WebLogs from '../WebLogs/WebLogs';
 import LoginForm from 'src/components/Login/LoginForm';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAuthToken } from 'src/utils/token';
+import { getAuthToken, setAuthToken } from 'src/utils/token';
 import { setToken } from 'src/actions/Session/sessionActions';
 
 library.add(
@@ -71,16 +71,15 @@ const App = props => {
       history.push('/login');
     } else if (!session.token && windowSessionToken) {
       dispatch(setToken(windowSessionToken));
-      history.push('/list/user/');
-    } else {
-      history.push('/list/user/');
+    } else if (session.token && !windowSessionToken) {
+      setAuthToken(session.token);
     }
-  }, [session.token]);
+  }, [session]);
 
   return (
     <div className="App">
       <Switch>
-        <Route path="/list/directory/preview" component={Preview} />
+        <Route path="/list/directory/preview" exact component={Preview} />
         <Route path="/list/directory/" exact component={FileManager} />
         <Route path="/list/web-log/" exact component={WebLogs} />
         <Route path="/login" exact component={LoginForm} />

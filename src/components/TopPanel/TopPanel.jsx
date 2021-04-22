@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { addActiveElement } from 'src/actions/MainNavigation/mainNavigationActions';
+import { logout } from 'src/actions/Session/sessionActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
+import Spinner from '../Spinner/Spinner';
 
 import './TopPanel.scss';
 
 export default function TopPanel({ domain = '' }) {
-  const { i18n } = window.GLOBAL.App;
-  const [menuItems, setMenuItems] = useState([]);
-  const dispatch = useDispatch();
   const mainNavigation = useSelector(state => state.mainNavigation);
+  const [menuItems, setMenuItems] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const { i18n } = window.GLOBAL.App;
+  const dispatch = useDispatch();
   const history = useHistory();
   const user = 'admin';
 
@@ -54,8 +57,23 @@ export default function TopPanel({ domain = '' }) {
     dispatch(addActiveElement(route));
   }
 
+  const signOut = () => {
+    setLoading(true);
+
+    dispatch(logout())
+      .then(() => {
+        setLoading(false);
+      },
+        error => {
+          setLoading(false);
+          console.error(error);
+        });
+  }
+
   return (
     <div className="panel-wrapper">
+      {loading && <Spinner />}
+
       <div className="top-panel">
         <div className="container left-menu">
           <div className="logo">
@@ -69,17 +87,17 @@ export default function TopPanel({ domain = '' }) {
           }
 
           <div className="nav-link">
-            <a href={`/download/web-log/?domain=${domain ?? ''}&type=access`} target="_blank">{i18n['Download AccessLog']}</a>
+            <Link to={`/download/web-log/?domain=${domain ?? ''}&type=access`} target="_blank">{i18n['Download AccessLog']}</Link>
           </div>
 
           <div className="nav-link">
-            <a href={`/download/web-log/?domain=${domain ?? ''}&type=error`} target="_blank">{i18n['Download ErrorLog']}</a>
+            <Link to={`/download/web-log/?domain=${domain ?? ''}&type=error`} target="_blank">{i18n['Download ErrorLog']}</Link>
           </div>
         </div>
 
         <div className="container profile-menu">
-          <div><a href={`/edit/user?user=${user}`}>{user}</a></div>
-          <div><a href="/logout">{i18n['Log out']}</a></div>
+          <div><Link to={`/edit/user?user=${user}`}>{user}</Link></div>
+          <div><button onClick={signOut}>{i18n['Log out']}</button></div>
         </div>
       </div>
     </div>

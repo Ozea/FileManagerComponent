@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
+import { addActiveElement, removeFocusedElement } from '../../actions/MainNavigation/mainNavigationActions';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import { bulkAction, getMailList, handleAction } from '../../ControlPanelService/Mail';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
@@ -40,6 +41,8 @@ const Mails = props => {
   });
 
   useEffect(() => {
+    dispatch(addActiveElement('/list/mail/'));
+    dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
     fetchData();
 

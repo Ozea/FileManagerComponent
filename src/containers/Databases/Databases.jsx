@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
+import { addActiveElement, removeFocusedElement } from '../../actions/MainNavigation/mainNavigationActions';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import { bulkAction, getDatabaseList, handleAction } from '../../ControlPanelService/Db';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
@@ -40,6 +41,8 @@ const Databases = props => {
   });
 
   useEffect(() => {
+    dispatch(addActiveElement('/list/db/'));
+    dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
     fetchData();
 
