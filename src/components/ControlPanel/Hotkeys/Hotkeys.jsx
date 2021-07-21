@@ -22,7 +22,7 @@ const Hotkeys = props => {
   return (
     <div className="hotkeys-list hide" ref={props.reference}>
       <div className="head">
-        <div className="name">{window.GLOBAL.App.i18n.Shortcuts}</div>
+        <div className="name">{i18n.Shortcuts}</div>
         <div className="close" onClick={() => props.toggleHotkeys()}><FontAwesomeIcon icon="times" /></div>
       </div>
       <div className="body">

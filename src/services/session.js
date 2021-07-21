@@ -9,6 +9,18 @@ export const signIn = (user, password) => {
   });
 };
 
+export const signInAs = (username) => {
+  return axios.get(`${BASE_URL}/api/login/index.php`, {
+    params: {
+      loginas: username
+    }
+  });
+};
+
 export const signOut = () => {
   return axios.get(`${BASE_URL}/api/logout/index.php`);
+};
+
+export const checkAuth = token => {
+  return axios.get(`${BASE_URL}/api/login/session.php?token=${token}`);
 };

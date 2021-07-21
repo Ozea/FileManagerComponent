@@ -14,13 +14,17 @@ export default function LoginForm() {
   const dispatch = useDispatch();
   const history = useHistory();
   const [loading, setLoading] = useState(false);
-  const [formValues, setFormValues] = useState({});
+  const [formValues, setFormValues] = useState({
+    user: '',
+    password: ''
+  });
   const session = useSelector(state => state.session);
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (session.error) {
       setErrorMessage(session.error);
+      return;
     }
 
     if (session.token) {
@@ -30,20 +34,15 @@ export default function LoginForm() {
 
   const submitHandler = event => {
     event.preventDefault();
-
     const { user, password } = formValues;
 
     setLoading(true);
 
     dispatch(login(user, password))
-      .then(() => {
+      .then((res) => {
         setLoading(false);
         history.push('/list/user')
-      },
-        error => {
-          setLoading(false);
-          console.error(error);
-        });
+      });
   }
 
   const changeInputHandler = event => {
@@ -70,12 +69,14 @@ export default function LoginForm() {
               <TextInput
                 onChange={changeInputHandler}
                 title={i18n['Username']}
+                value={formValues.user}
                 name="user"
                 id="user" />
 
               <TextInput
                 onChange={changeInputHandler}
                 title={i18n['Password']}
+                value={formValues.password}
                 optionalTitle={(
                   <button className="forgot-password">
                     {i18n['forgot password']}
@@ -85,7 +86,7 @@ export default function LoginForm() {
                 type="password"
                 id="password" />
 
-              <button type="submit" disabled={loading} className={loading && 'disabled'}>
+              <button type="submit" disabled={loading} className={loading ? 'disabled' : ''}>
                 {i18n['Log in']}
               </button>
 

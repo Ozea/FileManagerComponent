@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
+import { addActiveElement } from '../../../actions/MainNavigation/mainNavigationActions';
 import { useSelector, useDispatch } from "react-redux";
-import { addActiveElement, removeFocusedElement } from '../../../actions/MainNavigation/mainNavigationActions';
-import { button, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+
 import './Menu.scss';
 
 const className = height => {
@@ -26,15 +27,16 @@ const style = ({ menuHeight, mobile }) => {
 
 const Menu = props => {
   const { activeElement, focusedElement } = useSelector(state => state.mainNavigation);
-  const { user, topPanel, i18n } = window.GLOBAL.App;
+  const { user } = useSelector(state => state.session);
+  const { i18n } = window.GLOBAL.App;
   const dispatch = useDispatch();
   const history = useHistory();
 
   useEffect(() => {
-    if (topPanel[user]['LANGUAGE']) {
-      localStorage.setItem("language", topPanel[user]['LANGUAGE']);
+    if (user.LANGUAGE) {
+      localStorage.setItem("language", user.LANGUAGE);
     }
-  }, [topPanel]);
+  }, [user]);
 
   const handleState = (tab, event) => {
     event.preventDefault();
@@ -43,17 +45,7 @@ const Menu = props => {
   }
 
   const statClassName = activeName => {
-    let className = 'stat';
-
-    if (activeName === activeElement) {
-      className += ' l-active';
-    }
-
-    if (activeName === focusedElement) {
-      className += ' focus'
-    }
-
-    return className;
+    return `stat ${activeName === activeElement && 'l-active'} ${activeName === focusedElement && 'focus'}`;
   }
 
   return (
@@ -63,8 +55,8 @@ const Menu = props => {
           <button onClick={event => handleState("/list/user/", event)} onKeyPress={event => event.preventDefault()}>
             <h3>{i18n.USER}</h3>
             <div className="stats">
-              <div><span>{i18n.users}:</span> <span>{topPanel[user].U_USERS}</span></div>
-              <div><span>{i18n.spnd}:</span> <span>{topPanel[user].SUSPENDED_USERS}</span></div>
+              <div><span>{i18n.users}:</span> <span>{user.U_USERS}</span></div>
+              <div><span>{i18n.spnd}:</span> <span>{user.SUSPENDED_USERS}</span></div>
             </div>
           </button>
         </div>
@@ -72,9 +64,9 @@ const Menu = props => {
           <button onClick={event => handleState("/list/web/", event)} onKeyPress={event => event.preventDefault()}>
             <h3>{i18n.WEB}</h3>
             <div className="stats">
-              <div><span>{i18n.domains}:</span> <span>{topPanel[user].U_WEB_DOMAINS}</span></div>
-              <div><span>{i18n.aliases}:</span> <span>{topPanel[user].U_WEB_ALIASES}</span></div>
-              <div><span>{i18n.spnd}:</span> <span>{topPanel[user].SUSPENDED_WEB}</span></div>
+              <div><span>{i18n.domains}:</span> <span>{user.U_WEB_DOMAINS}</span></div>
+              <div><span>{i18n.aliases}:</span> <span>{user.U_WEB_ALIASES}</span></div>
+              <div><span>{i18n.spnd}:</span> <span>{user.SUSPENDED_WEB}</span></div>
             </div>
           </button>
         </div>
@@ -82,9 +74,9 @@ const Menu = props => {
           <button onClick={event => handleState("/list/dns/", event)} onKeyPress={event => event.preventDefault()}>
             <h3>{i18n.DNS}</h3>
             <div className="stats">
-              <div><span>{i18n.domains}:</span> <span>{topPanel[user].U_DNS_DOMAINS}</span></div>
-              <div><span>{i18n.records}:</span> <span>{topPanel[user].U_DNS_RECORDS}</span></div>
-              <div><span>{i18n.spnd}:</span> <span>{topPanel[user].SUSPENDED_DNS}</span></div>
+              <div><span>{i18n.domains}:</span> <span>{user.U_DNS_DOMAINS}</span></div>
+              <div><span>{i18n.records}:</span> <span>{user.U_DNS_RECORDS}</span></div>
+              <div><span>{i18n.spnd}:</span> <span>{user.SUSPENDED_DNS}</span></div>
             </div>
           </button>
         </div>
@@ -92,9 +84,9 @@ const Menu = props => {
           <button onClick={event => handleState("/list/mail/", event)} onKeyPress={event => event.preventDefault()}>
             <h3>{i18n.MAIL}</h3>
             <div className="stats">
-              <div><span>{i18n.domains}:</span> <span>{topPanel[user].U_MAIL_DOMAINS}</span></div>
-              <div><span>{i18n.accounts}:</span> <span>{topPanel[user].U_MAIL_ACCOUNTS}</span></div>
-              <div><span>{i18n.spnd}:</span> <span>{topPanel[user].SUSPENDED_MAIL}</span></div>
+              <div><span>{i18n.domains}:</span> <span>{user.U_MAIL_DOMAINS}</span></div>
+              <div><span>{i18n.accounts}:</span> <span>{user.U_MAIL_ACCOUNTS}</span></div>
+              <div><span>{i18n.spnd}:</span> <span>{user.SUSPENDED_MAIL}</span></div>
             </div>
           </button>
         </div>
@@ -102,8 +94,8 @@ const Menu = props => {
           <button onClick={event => handleState("/list/db/", event)} onKeyPress={event => event.preventDefault()}>
             <h3>{i18n.DB}</h3>
             <div className="stats">
-              <div><span>{i18n.databases}:</span> <span>{topPanel[user].U_DATABASES}</span></div>
-              <div><span>{i18n.spnd}:</span> <span>{topPanel[user].SUSPENDED_DB}</span></div>
+              <div><span>{i18n.databases}:</span> <span>{user.U_DATABASES}</span></div>
+              <div><span>{i18n.spnd}:</span> <span>{user.SUSPENDED_DB}</span></div>
             </div>
           </button>
         </div>
@@ -111,8 +103,8 @@ const Menu = props => {
           <button onClick={event => handleState("/list/cron/", event)} onKeyPress={event => event.preventDefault()}>
             <h3>{i18n.CRON}</h3>
             <div className="stats">
-              <div><span>{i18n.jobs}:</span> <span>{topPanel[user].U_CRON_JOBS}</span></div>
-              <div><span>{i18n.spnd}:</span> <span>{topPanel[user].SUSPENDED_CRON}</span></div>
+              <div><span>{i18n.jobs}:</span> <span>{user.U_CRON_JOBS}</span></div>
+              <div><span>{i18n.spnd}:</span> <span>{user.SUSPENDED_CRON}</span></div>
             </div>
           </button>
         </div>
@@ -120,7 +112,7 @@ const Menu = props => {
           <button onClick={event => handleState("/list/backup/", event)} onKeyPress={event => event.preventDefault()}>
             <h3>{i18n.BACKUP}</h3>
             <div className="stats">
-              <div><span>{i18n.backups}:</span> <span>{topPanel[user].U_BACKUPS}</span></div>
+              <div><span>{i18n.backups}:</span> <span>{user.U_BACKUPS}</span></div>
             </div>
           </button>
         </div>

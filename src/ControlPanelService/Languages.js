@@ -1,6 +1,5 @@
 import axios from "axios";
 
-const token = localStorage.getItem("token");
 const webApiUri = '/api/languages.php';
 const BASE_URL = window.location.origin;
 

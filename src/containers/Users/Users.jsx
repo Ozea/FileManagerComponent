@@ -18,7 +18,7 @@ import './Users.scss';
 
 const Users = props => {
   const { i18n } = window.GLOBAL.App;
-  const { token } = useSelector(state => state.session);
+  const { token, userName } = useSelector(state => state.session);
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
@@ -48,6 +48,10 @@ const Users = props => {
       dispatch(removeControlPanelContentFocusedElement());
     }
   }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [userName]);
 
   useEffect(() => {
     window.addEventListener("keydown", handleContentSelection);
@@ -90,7 +94,7 @@ const Users = props => {
   }
 
   const handleLogin = () => {
-    if (window.GLOBAL.App.user === controlPanelFocusedElement) {
+    if (userName === controlPanelFocusedElement) {
       props.history.push('/logout');
     } else {
       props.history.push(`/login/?loginas=${controlPanelFocusedElement}`);
@@ -257,10 +261,10 @@ const Users = props => {
   }
 
   const sortBy = sorting => {
-    const { Date, Username, Disk, Bandwidth, Starred } = window.GLOBAL.App.i18n;
+    const { Date: date, Username, Disk, Bandwidth, Starred } = i18n;
 
     switch (sorting) {
-      case Date: return 'DATE';
+      case date: return 'DATE';
       case Username: return 'NAME';
       case Disk: return 'U_DISK';
       case Bandwidth: return 'U_BANDWIDTH';

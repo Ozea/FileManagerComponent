@@ -28,7 +28,7 @@ const Updates = props => {
   });
 
   useEffect(() => {
-    dispatch(addActiveElement('/list/update/'));
+    dispatch(addActiveElement('/list/updates/'));
     dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
     fetchData();

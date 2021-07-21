@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { loginAs, logout } from 'src/actions/Session/sessionActions';
 import Container from '../ControlPanel/Container/Container';
 import ListItem from '../ControlPanel/ListItem/ListItem';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import './User.scss';
@@ -9,7 +11,10 @@ import './User.scss';
 const { i18n } = window.GLOBAL.App;
 
 const User = ({ data, toggleFav, handleModal, checkItem }) => {
+  const [loading, setLoading] = useState(false);
+  const session = useSelector(state => state.session);
   const token = localStorage.getItem("token");
+  const dispatch = useDispatch();
 
   const printNameServers = servers => {
     let serversArray = servers.split(',');
@@ -19,28 +24,46 @@ const User = ({ data, toggleFav, handleModal, checkItem }) => {
     );
   }
 
+  const signInAs = username => {
+    setLoading(true);
+
+    dispatch(loginAs(username))
+      .then(() => {
+        setLoading(false);
+      });
+  }
+
+  const signOut = () => {
+    setLoading(true);
+
+    dispatch(logout())
+      .then(() => {
+        setLoading(false);
+      });
+  }
+
   const printLoginActionButton = user => {
-    let currentUser = window.GLOBAL.App.user;
+    let currentUser = session.userName;
     if (currentUser === user) {
       return (
         <div>
-          <a href="/logout">{i18n['Log out']}
+          <button onClick={signOut}>{i18n['Log out']}
             {data.FOCUSED ? <span className="shortcut-button">L</span> : <FontAwesomeIcon icon="user-lock" />}
-          </a>
+          </button>
         </div>
       );
     } else {
       return (
         <div>
-          <a href={`/login/?loginas=${user}`}>{i18n['login as']} {user}
+          <button onClick={() => signInAs(user)}>{i18n['login as']} {user}
             {data.FOCUSED ? <span className="shortcut-button">L</span> : <FontAwesomeIcon icon="user-lock" />}
-          </a>
+          </button>
         </div>
       );
     }
   }
 
-  const toggleFav = (starred) => {
+  const toggleFavorite = (starred) => {
     if (starred) {
       toggleFav(data.NAME, 'add');
     } else {
@@ -48,7 +71,7 @@ const User = ({ data, toggleFav, handleModal, checkItem }) => {
     }
   }
 
-  const checkItem = () => {
+  const checkItemName = () => {
     checkItem(data.NAME);
   }
 
@@ -67,8 +90,8 @@ const User = ({ data, toggleFav, handleModal, checkItem }) => {
       date={data.DATE}
       checked={data.isChecked}
       starred={data.STARRED}
-      toggleFav={toggleFav}
-      checkItem={checkItem}
+      toggleFav={toggleFavorite}
+      checkItem={checkItemName}
       focused={data.FOCUSED}
       suspended={data.SUSPENDED === 'yes'}>
 
