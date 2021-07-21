@@ -262,7 +262,7 @@ const DomainNameSystems = props => {
   }
 
   const sortBy = sorting => {
-    const { Date, Expire, Domain, IP, Records, Starred } = window.GLOBAL.App.i18n;
+    const { Date, Expire, Domain, IP, Records, Starred } = i18n;
 
     switch (sorting) {
       case Date: return 'DATE';

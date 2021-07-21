@@ -252,7 +252,7 @@ const CronJobs = props => {
   }
 
   const sortBy = sorting => {
-    const { Date, Command, Starred } = window.GLOBAL.App.i18n;
+    const { Date, Command, Starred } = i18n;
 
     switch (sorting) {
       case Date: return 'DATE';

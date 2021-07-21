@@ -248,7 +248,7 @@ const Firewalls = props => {
   }
 
   const sortBy = sorting => {
-    const { Action, Protocol, Port, Comment, Starred } = window.GLOBAL.App.i18n;
+    const { Action, Protocol, Port, Comment, Starred } = i18n;
 
     switch (sorting) {
       case Action: return 'ACTION';
@@ -357,7 +357,7 @@ const Firewalls = props => {
         <LeftButton href="/add/firewall/" name={i18n['Add Rule']} showLeftMenu={true} />
         <div className="r-menu">
           <div className="input-group input-group-sm">
-            <a href='/list/firewall/banlist/' className="button-extra" type="submit">{window.GLOBAL.App.i18n['list fail2ban']}</a>
+            <a href='/list/firewall/banlist/' className="button-extra" type="submit">{i18n['list fail2ban']}</a>
             <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
             <Select list='firewallList' bulkAction={bulk} />
             <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="firewallList" />

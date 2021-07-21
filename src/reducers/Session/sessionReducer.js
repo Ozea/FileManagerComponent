@@ -1,8 +1,12 @@
-import { LOGIN, LOGOUT } from '../../actions/Session/sessionTypes';
+import { LOGGED_OUT_AS, LOGIN, LOGOUT } from '../../actions/Session/sessionTypes';
 
 const INITIAL_STATE = {
   token: '',
-  error: ''
+  user: {},
+  error: '',
+  session: {},
+  userName: '',
+  panel: {}
 };
 
 const sessionReducer = (state = INITIAL_STATE, action) => {
@@ -11,6 +15,10 @@ const sessionReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         token: action.value.token,
+        user: action.value.user,
+        session: action.value.session,
+        userName: action.value.userName,
+        panel: action.value.panel,
         error: action.value.error
       };
 
@@ -18,6 +26,21 @@ const sessionReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         token: action.value.token,
+        user: action.value.user,
+        session: action.value.session,
+        userName: action.value.userName,
+        panel: action.value.panel,
+        error: action.value.error
+      };
+
+    case LOGGED_OUT_AS:
+      return {
+        ...state,
+        token: action.value.token,
+        user: action.value.user,
+        session: action.value.session,
+        userName: action.value.userName,
+        panel: action.value.panel,
         error: action.value.error
       };
 

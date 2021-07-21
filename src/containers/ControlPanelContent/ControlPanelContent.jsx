@@ -165,11 +165,11 @@ const ControlPanelContent = props => {
           <Route path="/edit/server/mysqld" exact component={() => <Mysql serviceName="mysqld" />} />
 
           {
-            !!services.length && services.map(service => {
+            !!services.length && services.map((service, index) => {
               if (service === 'iptables') {
-                return <Redirect from="/edit/server/iptables" exact to="/list/firewall" />
+                return <Redirect key={index} from="/edit/server/iptables" exact to="/list/firewall" />
               } else {
-                return <Route path={`/edit/server/${service}`} exact component={() => <Service serviceName={service} />} />
+                return <Route key={index} path={`/edit/server/${service}`} exact component={() => <Service serviceName={service} />} />
               }
             })
           }

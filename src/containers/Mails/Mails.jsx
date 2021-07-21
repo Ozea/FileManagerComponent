@@ -263,7 +263,7 @@ const Mails = props => {
   }
 
   const sortBy = sorting => {
-    const { Date, Domains, Accounts, Disk, Starred } = window.GLOBAL.App.i18n;
+    const { Date, Domains, Accounts, Disk, Starred } = i18n;
 
     switch (sorting) {
       case Date: return 'DATE';
@@ -373,7 +373,7 @@ const Mails = props => {
         <LeftButton name="Add Mail Domain" href="/add/mail" showLeftMenu={true} />
         <div className="r-menu">
           <div className="input-group input-group-sm">
-            <a href={state.webMail} className="button-extra" type="submit">{window.GLOBAL.App.i18n['open webMail']}</a>
+            <a href={state.webMail} className="button-extra" type="submit">{i18n['open webMail']}</a>
             <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
             <Select list='mailList' bulkAction={bulk} />
             <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="mailList" />

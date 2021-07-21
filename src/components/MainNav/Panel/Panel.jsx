@@ -9,7 +9,8 @@ import { Link, useHistory } from "react-router-dom";
 import './Panel.scss';
 
 const Panel = props => {
-  const { i18n, user, fileManagerKey, softaculous, firewallSystem } = window.GLOBAL.App;
+  const { i18n } = window.GLOBAL.App;
+  const session = useSelector(state => state.session);
   const { activeElement, focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -90,20 +91,20 @@ const Panel = props => {
           <div className={className("/list/updates/")}>
             <button onClick={event => handleState("/list/updates/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Updates}</button>
           </div>
-          {firewallSystem && <div className={className("/list/firewall/")}>
+          {session.session.FIREWALL_SYSTEM && <div className={className("/list/firewall/")}>
             <button onClick={event => handleState("/list/firewall/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Firewall}</button>
           </div>}
-          {fileManagerKey && <div className="fm">
+          {session.session.FILEMANAGER_KEY && <div className="fm">
             <a href="/list/directory/">{i18n['File Manager']}</a>
           </div>}
-          {softaculous === "yes" && <div><a href="/list/softaculous/">{i18n.Apps}</a>
+          {session.session.SOFTACULOUS === "yes" && <div><a href="/list/softaculous/">{i18n.Apps}</a>
           </div>}
           <div className={className("/list/server/")}>
             <button onClick={event => handleState("/list/server/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Server}</button></div>
         </div>
         <div className="container profile-menu">
           <Notifications />
-          <div><Link to={`/edit/user?user=${user}`}>{user}</Link></div>
+          <div><Link to={`/edit/user?user=${session.userName}`}>{session.userName}</Link></div>
           <div><button onClick={signOut}>{i18n['Log out']}</button></div>
         </div>
       </div>
@@ -121,7 +122,7 @@ const Panel = props => {
           <div className="bell">
             <FontAwesomeIcon icon="bell" />
           </div>
-          <div><Link to={`/edit/user?user=${user}`}>{user}</Link></div>
+          <div><Link to={`/edit/user?user=${session.userName}`}>{session.userName}</Link></div>
           <div><button onClick={signOut}>{i18n['Log out']}</button></div>
         </div>
       </div>

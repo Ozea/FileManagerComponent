@@ -125,7 +125,7 @@ const Statistics = props => {
         setState({
           ...state,
           statistics: reformatData(result.data.data),
-          users: result.data.users,
+          users: result.data.users || [],
           totalAmount: result.data.totalAmount,
           loading: false
         });

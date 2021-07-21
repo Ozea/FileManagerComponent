@@ -1,4 +1,4 @@
-import React, { Component, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import FileManager from '../FileManager/FileManager';
 import { Route, Switch, useHistory } from "react-router-dom";
 import Preview from '../../components/Preview/Preview';
@@ -11,8 +11,8 @@ import ControlPanelContent from '../ControlPanelContent/ControlPanelContent';
 import WebLogs from '../WebLogs/WebLogs';
 import LoginForm from 'src/components/Login/LoginForm';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAuthToken, setAuthToken } from 'src/utils/token';
-import { setToken } from 'src/actions/Session/sessionActions';
+import { getAuthToken } from 'src/utils/token';
+import { logout, setToken } from 'src/actions/Session/sessionActions';
 
 library.add(
   Icon.faBook,
@@ -72,9 +72,9 @@ const App = props => {
     } else if (!session.token && windowSessionToken) {
       dispatch(setToken(windowSessionToken));
     } else if (session.token && !windowSessionToken) {
-      setAuthToken(session.token);
+      dispatch(logout());
     }
-  }, [session]);
+  }, [dispatch, history, session]);
 
   return (
     <div className="App">

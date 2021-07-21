@@ -15,7 +15,7 @@ const TextInput = ({ id, name, title, optionalTitle = '', type = 'text', onChang
   }
 
   return (
-    <div class="form-group">
+    <div className="form-group">
       <label className="label-wrapper" htmlFor={id}>
         {title}
         <span>{optionalTitle}</span>

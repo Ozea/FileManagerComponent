@@ -31,7 +31,7 @@ const Web = props => {
     modalText: '',
     modalVisible: false,
     modalActionUrl: '',
-    sorting: window.GLOBAL.App.i18n.Date,
+    sorting: i18n.Date,
     order: "descending",
     selection: [],
     totalAmount: ''
@@ -250,12 +250,12 @@ const Web = props => {
   }
 
   const sortBy = sorting => {
-    const { Date, Domain, Disk, Bandwidth, Starred } = i18n;
+    const { Date: date, Domain, Disk, Bandwidth, Starred } = i18n;
 
     switch (sorting) {
-      case Date: return 'DATE';
+      case date: return 'DATE';
       case Domain: return 'ALIAS';
-      case window.GLOBAL.App.i18n['IP Addresses']: return 'IP';
+      case i18n['IP Addresses']: return 'IP';
       case Disk: return 'U_DISK';
       case Bandwidth: return 'U_BANDWIDTH';
       case Starred: return 'STARRED';

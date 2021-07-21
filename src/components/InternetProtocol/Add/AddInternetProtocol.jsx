@@ -10,13 +10,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Toolbar from '../../MainNav/Toolbar/Toolbar';
 import { useHistory } from 'react-router-dom';
 import Spinner from '../../Spinner/Spinner';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import './AddInternetProtocol.scss';
 
 const AddInternetProtocol = props => {
   const token = localStorage.getItem("token");
   const { i18n } = window.GLOBAL.App;
+  const session = useSelector(state => state.session);
   const dispatch = useDispatch();
   const history = useHistory();
   const [state, setState] = useState({
@@ -99,7 +100,7 @@ const AddInternetProtocol = props => {
         {state.loading ? <Spinner /> : (
           <form onSubmit={event => submitFormHandler(event)}>
             <input type="hidden" name="ok" value="add" />
-            <input type="hidden" name="v_owner" value={window.GLOBAL.App.user} />
+            <input type="hidden" name="v_owner" value={session.userName} />
             <input type="hidden" name="token" value={token} />
 
             <TextInput name="v_ip" id="ipAddress" title={i18n['IP address']} />

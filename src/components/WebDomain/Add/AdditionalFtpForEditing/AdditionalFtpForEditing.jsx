@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import Password from '../../../../components/ControlPanel/AddItemLayout/Form/Password/Password';
 
@@ -6,6 +7,7 @@ import './AdditionalFtpForEditing.scss';
 
 const AdditionalFtpForEditing = ({ domain, data = {}, index, onDeleteAdditionalFtp, prefixI18N }) => {
   const { i18n } = window.GLOBAL.App;
+  const { user } = useSelector(state => state.session);
   const [state, setState] = useState({
     username: '',
     path: ''
@@ -36,7 +38,7 @@ const AdditionalFtpForEditing = ({ domain, data = {}, index, onDeleteAdditionalF
               className="form-control"
               id={`ftp_user_${index}`}
               name={`v_ftp_user[${index}][v_ftp_user]`} />
-            <span>{window.GLOBAL.App.user + '_'}{state.username}</span>
+            <span>{user + '_'}{state.username}</span>
           </div>
         </div>
 
