@@ -1,6 +1,6 @@
 import { checkAuth, signIn, signInAs, signOut } from 'src/services/session';
 import { resetAuthToken, setAuthToken } from 'src/utils/token';
-import { LOGIN, LOGIN_AS, LOGOUT, LOGGED_OUT_AS } from './sessionTypes';
+import { LOGIN, LOGOUT, LOGGED_OUT_AS } from './sessionTypes';
 
 const LOGOUT_RESPONSE = 'logged_out';
 const LOGOUT_AS_RESPONSE = 'logged_out_as';
@@ -14,7 +14,7 @@ export const login = (user, password) => dispatch => {
       dispatch({
         type: LOGIN,
         value: {
-          token,
+          token: data ? token : null,
           panel,
           session,
           userName: user,
@@ -56,13 +56,13 @@ export const loginAs = username => dispatch => {
 }
 
 export const logout = () => (dispatch, getState) => {
+  resetAuthToken();
+
   return new Promise((resolve, reject) => {
     signOut().then((response) => {
       const { logout_response, panel, session, user, data, token } = response.data;
 
       if (logout_response === LOGOUT_RESPONSE) {
-        resetAuthToken();
-
         dispatch({
           type: LOGOUT,
           value: {
