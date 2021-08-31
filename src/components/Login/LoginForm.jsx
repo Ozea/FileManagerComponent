@@ -94,7 +94,7 @@ export default function LoginForm() {
           </form>
 
           <span>
-            <Link to="http://vestacp.com">vestacp.com</Link>
+            <a href="http://vestacp.com/">vestacp.com</a>
           </span>
         </LoginLayout>
       </div>
