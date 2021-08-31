@@ -49,8 +49,6 @@ const Menu = props => {
     return `stat ${activeName === activeElement && 'l-active'} ${activeName === focusedElement && 'focus'}`;
   }
 
-  console.log(session);
-
   return (
     <div className="menu-wrapper">
       <div className={className(props.menuHeight)} style={{ height: style(props) }}>
