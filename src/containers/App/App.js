@@ -67,7 +67,14 @@ const App = props => {
   useEffect(() => {
     const windowSessionToken = getAuthToken();
 
+    if (!session.session && !session.user) {
+      dispatch(logout());
+      history.push('/login');
+      return;
+    }
+
     if (!session.token && !windowSessionToken) {
+      dispatch(logout());
       history.push('/login');
     } else if (!session.token && windowSessionToken) {
       dispatch(setToken(windowSessionToken));

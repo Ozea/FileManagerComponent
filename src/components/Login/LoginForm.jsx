@@ -41,7 +41,6 @@ export default function LoginForm() {
     dispatch(login(user, password))
       .then((res) => {
         setLoading(false);
-        history.push('/list/user')
       });
   }
 

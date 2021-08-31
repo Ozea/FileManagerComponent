@@ -26,6 +26,7 @@ const style = ({ menuHeight, mobile }) => {
 }
 
 const Menu = props => {
+  const session = useSelector(state => state.session);
   const { activeElement, focusedElement } = useSelector(state => state.mainNavigation);
   const { user } = useSelector(state => state.session);
   const { i18n } = window.GLOBAL.App;
@@ -47,6 +48,8 @@ const Menu = props => {
   const statClassName = activeName => {
     return `stat ${activeName === activeElement && 'l-active'} ${activeName === focusedElement && 'focus'}`;
   }
+
+  console.log(session);
 
   return (
     <div className="menu-wrapper">
