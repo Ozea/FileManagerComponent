@@ -22,6 +22,19 @@
     width: 80%;
     height: 100%;
 
+    .logo .logo-img {
+      background-image: url("/images/sprite.png?1446554103");
+      background-position: -117px -57px;
+      background-repeat: no-repeat;
+      height: 22px;
+      width: 70px;
+      margin-left: -2px;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+
     div {
       display: flex;
       justify-content: center;
