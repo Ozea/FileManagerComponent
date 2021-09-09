@@ -18,6 +18,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import './EditServer.scss';
+import { Helmet } from 'react-helmet';
 
 const EditServer = props => {
   const token = localStorage.getItem("token");
@@ -96,6 +97,9 @@ const EditServer = props => {
 
   return (
     <div className="edit-template edit-server">
+      <Helmet>
+        <title>{`Vesta - ${i18n.SERVER}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Configuring Server']}</div>

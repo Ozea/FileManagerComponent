@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import QS from 'qs';
 
 import './EditFirewall.scss';
+import { Helmet } from 'react-helmet';
 
 const EditFirewall = props => {
   const token = localStorage.getItem("token");
@@ -80,6 +81,9 @@ const EditFirewall = props => {
 
   return (
     <div className="edit-template edit-firewall">
+      <Helmet>
+        <title>{`Vesta - ${i18n.FIREWALL}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Editing Firewall Rule']}</div>

@@ -3,8 +3,10 @@ import AddMailAccount from 'src/components/MailAccount/Add/AddMailAccount';
 import AddMail from 'src/components/Mail/Add/AddMail';
 import { useHistory } from 'react-router-dom';
 import QueryString from 'qs';
+import { Helmet } from 'react-helmet';
 
 export default function AddMailWrapper() {
+  const { i18n } = window.GLOBAL.App;
   const history = useHistory();
   const [domain, setDomain] = useState(false);
 
@@ -20,6 +22,9 @@ export default function AddMailWrapper() {
 
   return (
     <>
+      <Helmet>
+        <title>{`Vesta - ${i18n.MAIL}`}</title>
+      </Helmet>
       {
         domain
           ? <AddMailAccount domain={domain} />

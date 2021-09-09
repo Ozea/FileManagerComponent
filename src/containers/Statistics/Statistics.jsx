@@ -11,6 +11,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import './Statistics.scss';
+import { Helmet } from 'react-helmet';
 
 const Statistics = props => {
   const { i18n } = window.GLOBAL.App;
@@ -166,6 +167,9 @@ const Statistics = props => {
 
   return (
     <div className="statistics-list">
+      <Helmet>
+        <title>{`Vesta - ${i18n.STATS}`}</title>
+      </Helmet>
       <Toolbar mobile={false} className="justify-right">
         <div className="r-menu">
           <div className="input-group input-group-sm">

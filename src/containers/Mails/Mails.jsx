@@ -16,6 +16,7 @@ import Mail from '../../components/Mail/Mail';
 import './Mails.scss';
 
 import { useSelector, useDispatch } from 'react-redux';
+import { Helmet } from 'react-helmet';
 
 const Mails = props => {
   const { i18n } = window.GLOBAL.App;
@@ -369,6 +370,9 @@ const Mails = props => {
 
   return (
     <div className="mails">
+      <Helmet>
+        <title>{`Vesta - ${i18n.MAIL}`}</title>
+      </Helmet>
       <Toolbar mobile={false} >
         <LeftButton name="Add Mail Domain" href="/add/mail" showLeftMenu={true} />
         <div className="r-menu">

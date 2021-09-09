@@ -14,6 +14,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import Server from '../../components/Server/Server';
 import './Servers.scss';
+import { Helmet } from 'react-helmet';
 
 const Servers = props => {
   const { i18n } = window.GLOBAL.App;
@@ -292,6 +293,9 @@ const Servers = props => {
 
   return (
     <div className="servers-list">
+      <Helmet>
+        <title>{`Vesta - ${i18n.SERVER}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <LeftButton href="/edit/server/" list="server" name={i18n.configure} showLeftMenu={true} />
         <div className="r-menu">

@@ -14,6 +14,7 @@ import Toolbar from '../../MainNav/Toolbar/Toolbar';
 import { useHistory } from 'react-router-dom';
 import Spinner from '../../Spinner/Spinner';
 import { useDispatch } from 'react-redux';
+import { Helmet } from 'react-helmet';
 
 export default function EditMailAccount(props) {
   const [autoreplyChecked, setAutoreplyChecked] = useState(false);
@@ -93,6 +94,9 @@ export default function EditMailAccount(props) {
 
   return (
     <div className="edit-template add-mail-account">
+      <Helmet>
+        <title>{`Vesta - ${i18n.MAIL}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Editing Mail Account']}</div>

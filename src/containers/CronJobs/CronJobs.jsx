@@ -15,6 +15,7 @@ import CronJob from '../../components/CronJob/CronJob';
 import Spinner from '../../components/Spinner/Spinner';
 import { useSelector, useDispatch } from 'react-redux';
 import './CronJobs.scss';
+import { Helmet } from 'react-helmet';
 
 const CronJobs = props => {
   const { i18n } = window.GLOBAL.App;
@@ -369,6 +370,9 @@ const CronJobs = props => {
 
   return (
     <div className="cronJobs">
+      <Helmet>
+        <title>{`Vesta - ${i18n.CRON}`}</title>
+      </Helmet>
       <Toolbar mobile={false} >
         <LeftButton name={i18n['Add Cron Job']} href="/add/cron" showLeftMenu={true} />
         <div className="r-menu">

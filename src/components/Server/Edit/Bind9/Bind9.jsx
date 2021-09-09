@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import './Bind9.scss';
+import { Helmet } from 'react-helmet';
 
 const Bind9 = () => {
   const token = localStorage.getItem("token");
@@ -78,6 +79,9 @@ const Bind9 = () => {
 
   return (
     <div className="edit-template edit-bind9">
+      <Helmet>
+        <title>{`Vesta - ${i18n.SERVER}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">

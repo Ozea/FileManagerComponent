@@ -15,6 +15,7 @@ import Firewall from '../../components/Firewall/Firewall';
 import Spinner from '../../components/Spinner/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import './Firewalls.scss';
+import { Helmet } from 'react-helmet';
 
 const Firewalls = props => {
   const { i18n } = window.GLOBAL.App;
@@ -353,6 +354,9 @@ const Firewalls = props => {
 
   return (
     <div className="firewalls">
+      <Helmet>
+        <title>{`Vesta - ${i18n.FIREWALL}`}</title>
+      </Helmet>
       <Toolbar mobile={false} >
         <LeftButton href="/add/firewall/" name={i18n['Add Rule']} showLeftMenu={true} />
         <div className="r-menu">

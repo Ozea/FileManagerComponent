@@ -12,6 +12,7 @@ import Spinner from '../../Spinner/Spinner';
 import { useDispatch } from 'react-redux';
 
 import './AddWebDomain.scss';
+import { Helmet } from 'react-helmet';
 
 const AddWebDomain = props => {
   const { i18n } = window.GLOBAL.App;
@@ -107,6 +108,9 @@ const AddWebDomain = props => {
 
   return (
     <div className="edit-template add-web">
+      <Helmet>
+        <title>{`Vesta - ${i18n.WEB}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Adding Domain']}</div>

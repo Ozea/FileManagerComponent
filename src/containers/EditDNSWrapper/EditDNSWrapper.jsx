@@ -3,8 +3,10 @@ import EditDomainNameSystem from 'src/components/DomainNameSystem/Edit/EditDomai
 import EditDNSRecord from 'src/components/DNSRecord/Edit/EditDNSRecord';
 import { useHistory } from 'react-router-dom';
 import QueryString from 'qs';
+import { Helmet } from 'react-helmet';
 
 export default function EditDNSWrapper() {
+  const { i18n } = window.GLOBAL.App;
   const history = useHistory();
   const parsedQueryString = QueryString.parse(history.location.search, { ignoreQueryPrefix: true });
   const [isDnsRecord, setIsDnsRecord] = useState(false);
@@ -19,6 +21,9 @@ export default function EditDNSWrapper() {
 
   return (
     <>
+      <Helmet>
+        <title>{`Vesta - ${i18n.DNS}`}</title>
+      </Helmet>
       {
         isDnsRecord
           ? <EditDNSRecord domain={parsedQueryString.domain} record_id={parsedQueryString.record_id} />

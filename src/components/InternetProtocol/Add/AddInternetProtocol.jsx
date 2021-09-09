@@ -13,6 +13,7 @@ import Spinner from '../../Spinner/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 
 import './AddInternetProtocol.scss';
+import { Helmet } from 'react-helmet';
 
 const AddInternetProtocol = props => {
   const token = localStorage.getItem("token");
@@ -81,6 +82,9 @@ const AddInternetProtocol = props => {
 
   return (
     <div className="edit-template add-ip">
+      <Helmet>
+        <title>{`Vesta - ${i18n.IP}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Adding Package']}</div>

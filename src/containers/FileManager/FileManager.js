@@ -11,8 +11,10 @@ import Menu from '../../components/Menu/Menu';
 import * as FM from '../../FileManagerHelper';
 import '../App/App.scss';
 import axios from 'axios';
+import { Helmet } from 'react-helmet';
 
 const server = window.location.origin + "/file_manager/fm_api.php?";
+const { i18n } = window.GLOBAL.App;
 
 class FileManager extends Component {
   constructor(props) {
@@ -81,7 +83,7 @@ class FileManager extends Component {
       let listing = result.data.listing;
       await this.setStateAsync({ [side]: { files: { listing }, path } });
     });
-    
+
     await this.setStateAsync({ loading: false });
   }
 
@@ -441,6 +443,9 @@ class FileManager extends Component {
     )
     return (
       <div className="window">
+        <Helmet>
+          <title>{i18n['File Manager']}</title>
+        </Helmet>
         {uploadPercent !== "0" ? <ProgressBar progress={uploadPercent} /> : null}
         <ToastContainer />
         <Menu

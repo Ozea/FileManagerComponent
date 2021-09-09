@@ -9,8 +9,10 @@ import QueryString from 'qs';
 import './WebLogs.scss';
 import { getWebLogs } from 'src/ControlPanelService/WebLogs';
 import Spinner from 'src/components/Spinner/Spinner';
+import { Helmet } from 'react-helmet';
 
 export default function WebLogs() {
+  const { i18n } = window.GLOBAL.App;
   const history = useHistory();
   const dispatch = useDispatch();
   const mainNavigation = useSelector(state => state.mainNavigation);
@@ -56,6 +58,9 @@ export default function WebLogs() {
 
   return (
     <div className="web-logs">
+      <Helmet>
+        <title>{`Vesta - ${i18n.WEB}`}</title>
+      </Helmet>
       <TopPanel domain={domain} />
       <div className="content">
         {

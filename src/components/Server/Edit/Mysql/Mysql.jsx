@@ -12,6 +12,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import './Mysql.scss';
+import { Helmet } from 'react-helmet';
 
 const Mysql = ({ serviceName = '' }) => {
   const token = localStorage.getItem("token");
@@ -93,6 +94,9 @@ const Mysql = ({ serviceName = '' }) => {
 
   return (
     <div className="edit-template edit-mysql">
+      <Helmet>
+        <title>{`Vesta - ${i18n.SERVER}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Configuring Server']} / {state.data.service_name}</div>

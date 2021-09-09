@@ -12,6 +12,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import './AddUser.scss';
+import { Helmet } from 'react-helmet';
 
 const AddUser = props => {
   const { i18n } = window.GLOBAL.App;
@@ -124,6 +125,9 @@ const AddUser = props => {
 
   return (
     <div className="edit-template add-user">
+      <Helmet>
+        <title>{`Vesta - ${i18n.USER}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Adding User']}</div>

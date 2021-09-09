@@ -3,8 +3,10 @@ import BackupRestoreSettings from '../../components/Backup/RestoreSettings/Backu
 import { useHistory } from 'react-router-dom';
 import Backups from '../Backups/Backups';
 import QueryString from 'qs';
+import { Helmet } from 'react-helmet';
 
 export default function BackupWrapper(props) {
+  const { i18n } = window.GLOBAL.App;
   const history = useHistory();
   const parsedQueryString = QueryString.parse(history.location.search, { ignoreQueryPrefix: true });
   const [isBackupSettings, setIsBackupSettings] = useState(false);
@@ -19,6 +21,9 @@ export default function BackupWrapper(props) {
 
   return (
     <>
+      <Helmet>
+        <title>{`Vesta - ${i18n.DNS}`}</title>
+      </Helmet>
       {
         isBackupSettings
           ? <BackupRestoreSettings backup={parsedQueryString.backup} />

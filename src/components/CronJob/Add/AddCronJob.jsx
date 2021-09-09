@@ -11,6 +11,7 @@ import Spinner from '../../Spinner/Spinner';
 import { useDispatch } from 'react-redux';
 
 import './AddCronJob.scss';
+import { Helmet } from 'react-helmet';
 
 const AddCronJob = props => {
   const { i18n } = window.GLOBAL.App;
@@ -85,6 +86,9 @@ const AddCronJob = props => {
 
   return (
     <div className="edit-template add-cron">
+      <Helmet>
+        <title>{`Vesta - ${i18n.CRON}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Adding Cron Job']}</div>

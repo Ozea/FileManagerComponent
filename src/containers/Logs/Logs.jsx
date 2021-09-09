@@ -10,8 +10,10 @@ import Spinner from '../../components/Spinner/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import Log from '../../components/Log/Log';
 import './Logs.scss';
+import { Helmet } from 'react-helmet';
 
 const Logs = props => {
+  const { i18n } = window.GLOBAL.App;
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
@@ -151,6 +153,9 @@ const Logs = props => {
 
   return (
     <div className="logs-list">
+      <Helmet>
+        <title>{`Vesta - ${i18n.LOG}`}</title>
+      </Helmet>
       <Toolbar mobile={false} className="justify-right">
         <LeftButton name="Add Cron Job" showLeftMenu={false} />
         <div className="r-menu">

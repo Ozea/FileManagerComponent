@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import Update from '../../components/Update/Update';
 import './Updates.scss';
+import { Helmet } from 'react-helmet';
 
 const Updates = props => {
   const { i18n } = window.GLOBAL.App;
@@ -232,6 +233,9 @@ const Updates = props => {
 
   return (
     <div className="statistics-list updates">
+      <Helmet>
+        <title>{`Vesta - ${i18n.UPDATES}`}</title>
+      </Helmet>
       <Toolbar mobile={false} className="justify-right">
         <LeftButton name="Add Cron Job" showLeftMenu={false} />
         <div className="r-menu">

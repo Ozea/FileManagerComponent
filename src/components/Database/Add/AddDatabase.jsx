@@ -11,6 +11,7 @@ import Spinner from '../../Spinner/Spinner';
 import { useDispatch } from 'react-redux';
 
 import './AddDatabase.scss'
+import { Helmet } from 'react-helmet';
 
 const AddDatabase = props => {
   const { i18n } = window.GLOBAL.App;
@@ -116,6 +117,9 @@ const AddDatabase = props => {
 
   return (
     <div className="edit-template add-db">
+      <Helmet>
+        <title>{`Vesta - ${i18n.DB}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Adding database']}</div>

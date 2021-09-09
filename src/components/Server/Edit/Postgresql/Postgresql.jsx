@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import './Postgresql.scss';
+import { Helmet } from 'react-helmet';
 
 const Postgresql = () => {
   const token = localStorage.getItem("token");
@@ -78,6 +79,9 @@ const Postgresql = () => {
 
   return (
     <div className="edit-template edit-pgsql">
+      <Helmet>
+        <title>{`Vesta - ${i18n.SERVER}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">

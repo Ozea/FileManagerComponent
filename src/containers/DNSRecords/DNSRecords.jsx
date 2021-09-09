@@ -16,6 +16,7 @@ import { Link, useHistory } from 'react-router-dom';
 import QueryString from 'qs';
 
 import './DNSRecords.scss';
+import { Helmet } from 'react-helmet';
 
 export default function DnsRecords(props) {
   const { i18n } = window.GLOBAL.App;
@@ -318,6 +319,9 @@ export default function DnsRecords(props) {
 
   return (
     <div className="dns-records">
+      <Helmet>
+        <title>{`Vesta - ${i18n.DNS}`}</title>
+      </Helmet>
       <Toolbar mobile={false} >
         <LeftButton name={i18n['Add DNS Record']} href={`/add/dns/?domain=${state.domain}`} showLeftMenu={true} />
         <div className="r-menu">

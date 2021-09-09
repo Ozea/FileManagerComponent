@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import './AddFirewall.scss';
+import { Helmet } from 'react-helmet';
 
 const AddFirewall = props => {
   const token = localStorage.getItem("token");
@@ -68,6 +69,9 @@ const AddFirewall = props => {
 
   return (
     <div className="edit-template add-firewall">
+      <Helmet>
+        <title>{`Vesta - ${i18n.FIREWALL}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Adding Firewall Rule']}</div>

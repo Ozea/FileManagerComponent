@@ -16,6 +16,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import './DomainNameSystems.scss';
 
 import { useDispatch, useSelector } from 'react-redux';
+import { Helmet } from 'react-helmet';
 
 const DomainNameSystems = props => {
   const { i18n } = window.GLOBAL.App;
@@ -369,6 +370,9 @@ const DomainNameSystems = props => {
 
   return (
     <div className="dns">
+      <Helmet>
+        <title>{`Vesta - ${i18n.DNS}`}</title>
+      </Helmet>
       <Toolbar mobile={false} >
         <LeftButton name={i18n['Add DNS Domain']} href="/add/dns" showLeftMenu={true} />
         <div className="r-menu">

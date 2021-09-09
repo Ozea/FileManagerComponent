@@ -15,6 +15,7 @@ import { useDispatch } from 'react-redux';
 import QS from 'qs';
 
 import './EditPackage.scss';
+import { Helmet } from 'react-helmet';
 
 const EditPackage = props => {
   const token = localStorage.getItem("token");
@@ -103,6 +104,9 @@ const EditPackage = props => {
 
   return (
     <div className="edit-template edit-package">
+      <Helmet>
+        <title>{`Vesta - ${i18n.PACKAGE}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Editing Package']}</div>

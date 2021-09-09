@@ -10,6 +10,7 @@ import Toolbar from '../../MainNav/Toolbar/Toolbar';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import QS from 'qs';
+import { Helmet } from 'react-helmet';
 
 export default function EditDNSRecord(props) {
   const token = localStorage.getItem("token");
@@ -97,6 +98,9 @@ export default function EditDNSRecord(props) {
 
   return (
     <div className="edit-template edit-dns-rec">
+      <Helmet>
+        <title>{`Vesta - ${i18n.DNS}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Editing DNS Record']}</div>
