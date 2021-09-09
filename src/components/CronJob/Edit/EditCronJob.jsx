@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import QS from 'qs';
 
 import './EditCronJob.scss';
+import { Helmet } from 'react-helmet';
 
 const EditMail = props => {
   const token = localStorage.getItem("token");
@@ -114,6 +115,9 @@ const EditMail = props => {
 
   return (
     <div className="edit-template edit-cron">
+      <Helmet>
+        <title>{`Vesta - ${i18n.CRON}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Editing Cron Job']}</div>

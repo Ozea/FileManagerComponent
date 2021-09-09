@@ -8,6 +8,7 @@ import LoginLayout from '../ControlPanel/LoginLayout/LoginLayout';
 import TextInput from '../ControlPanel/AddItemLayout/Form/TextInput/TextInput';
 
 import './Login.scss';
+import { Helmet } from 'react-helmet';
 
 export default function LoginForm() {
   const { i18n } = window.GLOBAL.App;
@@ -55,6 +56,9 @@ export default function LoginForm() {
 
   return (
     <div className="login-page">
+      <Helmet>
+        <title>{`Vesta - ${i18n.LOGIN}`}</title>
+      </Helmet>
       {loading && <Spinner />}
       <div className="login-form-wrapper">
         <LoginLayout>

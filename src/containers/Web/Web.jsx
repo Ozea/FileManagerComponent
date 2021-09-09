@@ -16,6 +16,7 @@ import Modal from '../../components/ControlPanel/Modal/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import './Web.scss';
 import { webFull } from '../../mocks/web';
+import { Helmet } from 'react-helmet';
 
 const Web = props => {
   const { i18n } = window.GLOBAL.App;
@@ -356,6 +357,9 @@ const Web = props => {
 
   return (
     <div className="web">
+      <Helmet>
+        <title>{`Vesta - ${i18n.WEB}`}</title>
+      </Helmet>
       <Toolbar mobile={false} >
         <LeftButton name="Add Web Domain" href="/add/web/" showLeftMenu={true} />
         <div className="r-menu">

@@ -15,6 +15,7 @@ import Modal from '../../components/ControlPanel/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import './InternetProtocols.scss';
+import { Helmet } from 'react-helmet';
 
 const InternetProtocols = props => {
   const { i18n } = window.GLOBAL.App;
@@ -352,6 +353,9 @@ const InternetProtocols = props => {
 
   return (
     <div className="internetProtocols">
+      <Helmet>
+        <title>{`Vesta - ${i18n.IP}`}</title>
+      </Helmet>
       <Toolbar mobile={false} >
         <LeftButton name={i18n['Add IP']} href="/add/ip/" showLeftMenu={true} />
         <div className="r-menu">

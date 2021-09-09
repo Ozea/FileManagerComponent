@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import './AddDomainNameSystem.scss';
 import AdvancedOptions from './AdvancedOptions/AdvancedOptions';
 import { addDomainNameSystem } from '../../../ControlPanelService/Dns';
+import { Helmet } from 'react-helmet';
 
 const AddDomainNameSystem = props => {
   const { i18n } = window.GLOBAL.App;
@@ -83,6 +84,9 @@ const AddDomainNameSystem = props => {
 
   return (
     <div className="edit-template add-dns">
+      <Helmet>
+        <title>{`Vesta - ${i18n.DNS}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Adding DNS Domain'] ?? 'Adding DNS Domain'}</div>

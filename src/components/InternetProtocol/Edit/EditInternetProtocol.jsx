@@ -14,6 +14,7 @@ import { useDispatch } from 'react-redux';
 import QS from 'qs';
 
 import './EditInternetProtocol.scss';
+import { Helmet } from 'react-helmet';
 
 const EditInternetProtocol = props => {
   const token = localStorage.getItem("token");
@@ -90,6 +91,9 @@ const EditInternetProtocol = props => {
 
   return (
     <div className="edit-template edit-ip">
+      <Helmet>
+        <title>{`Vesta - ${i18n.IP}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Editing IP Address']}</div>

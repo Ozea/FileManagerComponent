@@ -15,6 +15,7 @@ import Package from '../../components/Package/Package';
 import Spinner from '../../components/Spinner/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import './Packages.scss';
+import { Helmet } from 'react-helmet';
 
 const Packages = props => {
   const { i18n } = window.GLOBAL.App;
@@ -344,6 +345,9 @@ const Packages = props => {
 
   return (
     <div className="packages">
+      <Helmet>
+        <title>{`Vesta - ${i18n.PACKAGE}`}</title>
+      </Helmet>
       <Toolbar mobile={false} >
         <LeftButton name={i18n['Add Package']} href="/add/package/" showLeftMenu={true} />
         <div className="r-menu">

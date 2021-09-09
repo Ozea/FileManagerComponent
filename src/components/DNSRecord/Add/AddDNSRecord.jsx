@@ -12,6 +12,7 @@ import Spinner from '../../Spinner/Spinner';
 import { useDispatch } from 'react-redux';
 
 import './AddDNSRecord.scss'
+import { Helmet } from 'react-helmet';
 
 export default function AddDNSRecord(props) {
   const { i18n } = window.GLOBAL.App;
@@ -75,6 +76,9 @@ export default function AddDNSRecord(props) {
 
   return (
     <div className="edit-template add-dns-record">
+      <Helmet>
+        <title>{`Vesta - ${i18n.DNS}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Adding DNS Record']}</div>

@@ -11,6 +11,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import './EditHttpd.scss';
+import { Helmet } from 'react-helmet';
 
 const EditHttpd = props => {
   const token = localStorage.getItem("token");
@@ -74,6 +75,9 @@ const EditHttpd = props => {
 
   return (
     <div className="edit-template edit-httpd">
+      <Helmet>
+        <title>{`Vesta - ${i18n.SERVER}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name"><Link to={`/edit/server/${state.data.service_name}`}>{i18n['Configuring Server']} / {state.data.service_name}</Link></div>

@@ -12,6 +12,7 @@ import { useDispatch } from 'react-redux';
 import QS from 'qs';
 
 import './EditDomainNameSystem.scss';
+import { Helmet } from 'react-helmet';
 
 const EditDomainNameSystem = props => {
   const token = localStorage.getItem("token");
@@ -82,6 +83,9 @@ const EditDomainNameSystem = props => {
 
   return (
     <div className="edit-template edit-dns">
+      <Helmet>
+        <title>{`Vesta - ${i18n.DNS}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Editing DNS Domain']}</div>

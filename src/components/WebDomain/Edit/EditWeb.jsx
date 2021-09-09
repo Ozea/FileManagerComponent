@@ -17,6 +17,7 @@ import QS from 'qs';
 
 import './EditWeb.scss';
 import TextArea from '../../ControlPanel/AddItemLayout/Form/TextArea/TextArea';
+import { Helmet } from 'react-helmet';
 
 const EditWeb = props => {
   const token = localStorage.getItem("token");
@@ -123,6 +124,9 @@ const EditWeb = props => {
 
   return (
     <div className="edit-template edit-web">
+      <Helmet>
+        <title>{`Vesta - ${i18n.WEB}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Editing Domain']}</div>

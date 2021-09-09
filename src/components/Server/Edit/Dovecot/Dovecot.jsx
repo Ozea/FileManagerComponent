@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import './Dovecot.scss';
+import { Helmet } from 'react-helmet';
 
 const Dovecot = () => {
   const token = localStorage.getItem("token");
@@ -78,6 +79,9 @@ const Dovecot = () => {
 
   return (
     <div className="edit-template edit-dovecot">
+      <Helmet>
+        <title>{`Vesta - ${i18n.SERVER}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">

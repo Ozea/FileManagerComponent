@@ -13,6 +13,7 @@ import { useDispatch } from 'react-redux';
 import QS from 'qs';
 
 import './EditDatabase.scss';
+import { Helmet } from 'react-helmet';
 
 const EditDatabase = props => {
   const token = localStorage.getItem("token");
@@ -83,6 +84,9 @@ const EditDatabase = props => {
 
   return (
     <div className="edit-template edit-db">
+      <Helmet>
+        <title>{`Vesta - ${i18n.DB}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Editing Database']}</div>

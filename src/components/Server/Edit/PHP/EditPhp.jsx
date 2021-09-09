@@ -12,6 +12,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import './EditPhp.scss';
+import { Helmet } from 'react-helmet';
 
 const EditPhp = ({ serviceName = '' }) => {
   const token = localStorage.getItem("token");
@@ -89,6 +90,9 @@ const EditPhp = ({ serviceName = '' }) => {
 
   return (
     <div className="edit-template edit-php">
+      <Helmet>
+        <title>{`Vesta - ${i18n.SERVER}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name"><Link to={`/edit/server/${state.data.web_system}`}>{i18n['Configuring Server']} / {state.data.web_system}</Link></div>

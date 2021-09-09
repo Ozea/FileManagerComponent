@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import User from '../../components/User/User';
 import './Users.scss';
+import { Helmet } from 'react-helmet';
 
 const Users = props => {
   const { i18n } = window.GLOBAL.App;
@@ -366,6 +367,9 @@ const Users = props => {
 
   return (
     <div>
+      <Helmet>
+        <title>{`Vesta - ${i18n.USER}`}</title>
+      </Helmet>
       <Toolbar mobile={false} >
         <LeftButton name={i18n['Add User']} href="/add/user/" showLeftMenu={true} />
         <div className="r-menu">

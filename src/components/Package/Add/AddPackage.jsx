@@ -14,6 +14,7 @@ import Spinner from '../../Spinner/Spinner';
 import { useDispatch } from 'react-redux';
 
 import './AddPackage.scss';
+import { Helmet } from 'react-helmet';
 
 const AddPackage = props => {
   const token = localStorage.getItem("token");
@@ -123,6 +124,9 @@ const AddPackage = props => {
 
   return (
     <div className="edit-template add-package">
+      <Helmet>
+        <title>{`Vesta - ${i18n.PACKAGE}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Adding Package']}</div>

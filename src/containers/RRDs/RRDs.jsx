@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Timer from '../../components/RRD/Timer/Timer';
 import RRD from '../../components/RRD/RRD';
 import './RRDs.scss';
+import { Helmet } from 'react-helmet';
 
 const RRDs = props => {
   const { i18n } = window.GLOBAL.App;
@@ -181,6 +182,9 @@ const RRDs = props => {
 
   return (
     <div className="rrd-list">
+      <Helmet>
+        <title>{`Vesta - ${i18n.RRD}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div className="periods-wrapper">
           {printPeriods()}

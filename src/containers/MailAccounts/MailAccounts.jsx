@@ -16,6 +16,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import { Link } from 'react-router-dom';
 
 import './MailAccounts.scss';
+import { Helmet } from 'react-helmet';
 
 export default function MailAccounts(props) {
   const { i18n } = window.GLOBAL.App;
@@ -357,6 +358,9 @@ export default function MailAccounts(props) {
 
   return (
     <div className="mail-accounts">
+      <Helmet>
+        <title>{`Vesta - ${i18n.MAIL}`}</title>
+      </Helmet>
       <Toolbar mobile={false} >
         <LeftButton name={i18n['Add Mail Account']} href={`/add/mail/?domain=${props.domain}`} showLeftMenu={true} />
         <div className="r-menu">

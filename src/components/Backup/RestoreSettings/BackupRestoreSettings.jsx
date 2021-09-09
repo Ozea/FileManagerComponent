@@ -13,6 +13,7 @@ import Spinner from 'src/components/Spinner/Spinner';
 import { Link } from 'react-router-dom';
 
 import './BackupRestoreSettings.scss';
+import { Helmet } from 'react-helmet';
 
 export default function BackupRestoreSettings(props) {
   const { i18n } = window.GLOBAL.App;
@@ -235,6 +236,9 @@ export default function BackupRestoreSettings(props) {
 
   return (
     <div className="mail-accounts backups-restore-settings">
+      <Helmet>
+        <title>{`Vesta - ${i18n.BACKUP}`}</title>
+      </Helmet>
       <Toolbar mobile={false} >
         <LeftButton name={i18n['Restore All']} list="backup-details" href={`/schedule/restore/?backup=${props.backup}`} showLeftMenu={true} />
         <div className="r-menu">

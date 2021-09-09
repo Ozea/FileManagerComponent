@@ -15,6 +15,7 @@ import Database from '../../components/Database/Database';
 import { useSelector, useDispatch } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import './Databases.scss';
+import { Helmet } from 'react-helmet';
 
 const Databases = props => {
   const { i18n } = window.GLOBAL.App;
@@ -360,6 +361,9 @@ const Databases = props => {
 
   return (
     <div className="databases">
+      <Helmet>
+        <title>{`Vesta - ${i18n.DB}`}</title>
+      </Helmet>
       <Toolbar mobile={false} >
         <LeftButton name="Add Database" href="/add/db" showLeftMenu={true} />
         <div className="r-menu">

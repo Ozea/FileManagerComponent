@@ -16,6 +16,7 @@ import Spinner from '../../Spinner/Spinner';
 import { useDispatch } from 'react-redux';
 
 import './AddMailAccount.scss';
+import { Helmet } from 'react-helmet';
 
 export default function AddMailAccount(props) {
   const { i18n } = window.GLOBAL.App;
@@ -96,6 +97,9 @@ export default function AddMailAccount(props) {
 
   return (
     <div className="edit-template add-mail-account">
+      <Helmet>
+        <title>{`Vesta - ${i18n.MAIL}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Adding Mail Account']}</div>

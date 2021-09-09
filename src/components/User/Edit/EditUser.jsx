@@ -14,6 +14,7 @@ import { useDispatch } from 'react-redux';
 import QS from 'qs';
 
 import './EditUser.scss';
+import { Helmet } from 'react-helmet';
 
 const EditUser = props => {
   const token = localStorage.getItem("token");
@@ -94,6 +95,9 @@ const EditUser = props => {
 
   return (
     <div className="edit-template edit-user">
+      <Helmet>
+        <title>{`Vesta - ${i18n.USER}`}</title>
+      </Helmet>
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Editing User']}</div>

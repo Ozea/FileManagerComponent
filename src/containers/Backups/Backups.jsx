@@ -15,6 +15,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import { useSelector, useDispatch } from 'react-redux';
 import Backup from '../../components/Backup/Backup';
 import './Backups.scss';
+import { Helmet } from 'react-helmet';
 
 const Backups = props => {
   const { i18n } = window.GLOBAL.App;
@@ -326,6 +327,9 @@ const Backups = props => {
 
   return (
     <div className="backups">
+      <Helmet>
+        <title>{`Vesta - ${i18n.BACKUP}`}</title>
+      </Helmet>
       <Toolbar mobile={false} >
         <div className="l-menu">
           <button onClick={scheduleBackupButton}>
