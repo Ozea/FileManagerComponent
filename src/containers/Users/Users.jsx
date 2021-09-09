@@ -348,10 +348,11 @@ const Users = props => {
   }
 
   const modalConfirmHandler = () => {
+    modalCancelHandler();
+    setState({ loading: true });
     handleAction(modal.actionUrl)
       .then(() => {
         fetchData();
-        modalCancelHandler();
       })
       .catch(err => console.error(err));
   }
@@ -382,12 +383,17 @@ const Users = props => {
         </div>
       </Toolbar>
       <div className="users-wrapper">
-        {state.loading ? <Spinner /> : users()}
+        {state.loading
+          ? <Spinner />
+          : (<>
+            {users()}
+            <div className="total">{state.totalAmount}</div>
+          </>)}
       </div>
-      <div className="total">{state.totalAmount}</div>
       <Modal
         onSave={modalConfirmHandler}
         onCancel={modalCancelHandler}
+        loading={state.loading}
         show={modal.visible}
         text={modal.text} />
     </div>

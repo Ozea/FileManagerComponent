@@ -56,13 +56,13 @@ export const loginAs = username => dispatch => {
 }
 
 export const logout = () => (dispatch, getState) => {
-  resetAuthToken();
-
   return new Promise((resolve, reject) => {
     signOut().then((response) => {
       const { logout_response, panel, session, user, data, token } = response.data;
 
       if (logout_response === LOGOUT_RESPONSE) {
+        resetAuthToken();
+
         dispatch({
           type: LOGOUT,
           value: {
