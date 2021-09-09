@@ -18,8 +18,6 @@ export const bulkAction = (action, selectedUsers) => {
 
   selectedUsers.forEach(user => {
     formData.append("user[]", user);
-    formData.append("suspend_url", `/suspend/user/?user=${user}&token=${token}`);
-    formData.append("delete_url", `/delete/user/?user=${user}&token=${token}`);
   });
 
   return axios.post(BASE_URL + '/bulk/user/', formData);

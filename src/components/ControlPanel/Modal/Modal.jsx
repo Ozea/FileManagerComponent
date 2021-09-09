@@ -3,7 +3,7 @@ import './Modal.scss';
 
 const { i18n } = window.GLOBAL.App;
 
-const Modal = ({ show, text, onSave, onCancel, showSaveButton = true }) => (
+const Modal = ({ show, text, onSave, onCancel, showSaveButton = true, loading = false }) => (
   <div>
     <div className={`modal fade ${show ? 'show' : ''}`} id="c-panel-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" style={{ display: show ? 'block' : 'none' }}>
       <div className="modal-dialog" role="document">
