@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 
 import './AdvancedOptions.scss';
 
@@ -59,12 +60,7 @@ const AdvancedOptions = props => {
   }
 
   const getCurrentDatePlusYear = () => {
-    let date = new Date();
-    let nextYear = date.getFullYear() + 1;
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-
-    let currentDatePlusYear = `${nextYear}-${month}-${day}`;
+    let currentDatePlusYear = dayjs().add(1, 'year').format('YYYY-MM-DD');
     return currentDatePlusYear;
   }
 
