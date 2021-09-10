@@ -6,6 +6,7 @@ import TextInput from 'src/components/ControlPanel/AddItemLayout/Form/TextInput/
 import AddItemLayout from '../../ControlPanel/AddItemLayout/AddItemLayout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { addMail } from '../../../ControlPanelService/Mail';
+import { addDomainNameSystemRecord } from '../../../ControlPanelService/Dns';
 import Toolbar from '../../MainNav/Toolbar/Toolbar';
 import { useHistory } from 'react-router-dom';
 import Spinner from '../../Spinner/Spinner';
@@ -49,24 +50,27 @@ export default function AddDNSRecord(props) {
 
   const submitFormHandler = event => {
     event.preventDefault();
-    let newMailDomain = {};
+    let newDnsRecord = {};
 
     for (var [name, value] of (new FormData(event.target)).entries()) {
-      newMailDomain[name] = value;
+      newDnsRecord[name] = value;
     }
 
-    newMailDomain['v_domain'] = props.domain;
+    newDnsRecord['ok_rec'] = 'add';
+    newDnsRecord['token'] = token;
+    newDnsRecord['v_domain'] = props.domain;
 
-    if (Object.keys(newMailDomain).length !== 0 && newMailDomain.constructor === Object) {
-      addMail(newMailDomain)
+    if (Object.keys(newDnsRecord).length !== 0 && newDnsRecord.constructor === Object) {
+      setState({ loading: true });
+      addDomainNameSystemRecord(newDnsRecord)
         .then(result => {
           if (result.status === 200) {
             const { error_msg, ok_msg } = result.data;
 
             if (error_msg) {
-              setState({ ...state, errorMessage: error_msg, okMessage: '' });
+              setState({ ...state, errorMessage: error_msg, okMessage: '', loading: false });
             } else if (ok_msg) {
-              setState({ ...state, errorMessage: '', okMessage: ok_msg });
+              setState({ ...state, errorMessage: '', okMessage: ok_msg, loading: false });
             }
           }
         })
@@ -97,9 +101,6 @@ export default function AddDNSRecord(props) {
       <AddItemLayout>
         {state.loading ? <Spinner /> : (
           <form onSubmit={event => submitFormHandler(event)}>
-            <input type="hidden" name="ok_rec" value="add" />
-            <input type="hidden" name="token" value={token} />
-
             <TextInput
               title={i18n['Domain']}
               value={props.domain}
@@ -109,7 +110,7 @@ export default function AddDNSRecord(props) {
 
             <TextInput
               title={i18n['Record']}
-              name="v_domain"
+              name="v_rec"
               id="domain" />
 
             <SelectInput

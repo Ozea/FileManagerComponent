@@ -182,6 +182,7 @@ const DomainNameSystems = props => {
           ...state,
           domainNameSystems: reformatData(result.data.data),
           dnsFav: result.data.dnsFav,
+          selection: [],
           totalAmount: result.data.totalAmount,
           loading: false
         });
@@ -194,6 +195,7 @@ const DomainNameSystems = props => {
 
     for (let i in data) {
       data[i]['NAME'] = i;
+      data[i]['RECORDS'] = Number(data[i]['RECORDS']);
       data[i]['FOCUSED'] = controlPanelFocusedElement === i;
       domainNameSystems.push(data[i]);
     }
@@ -256,9 +258,17 @@ const DomainNameSystems = props => {
     let sortingColumn = sortBy(sorting);
 
     if (order === "descending") {
-      return array.sort((a, b) => (a[sortingColumn] < b[sortingColumn]) ? 1 : ((b[sortingColumn] < a[sortingColumn]) ? -1 : 0));
+      return array.sort((a, b) => {
+        const first = a[sortingColumn];
+        const second = b[sortingColumn];
+        return (first < second) ? 1 : ((second < first) ? -1 : 0);
+      });
     } else {
-      return array.sort((a, b) => (a[sortingColumn] > b[sortingColumn]) ? 1 : ((b[sortingColumn] > a[sortingColumn]) ? -1 : 0));
+      return array.sort((a, b) => {
+        const first = a[sortingColumn];
+        const second = b[sortingColumn];
+        return (first > second) ? 1 : ((second > first) ? -1 : 0)
+      });
     }
   }
 
@@ -330,6 +340,7 @@ const DomainNameSystems = props => {
     const { selection } = state;
 
     if (selection.length && action) {
+      setState({ loading: true });
       bulkAction(action, selection)
         .then(result => {
           if (result.status === 200) {

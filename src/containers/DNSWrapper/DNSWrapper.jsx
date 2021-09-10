@@ -26,8 +26,8 @@ export default function DNSWrapper(props) {
       </Helmet>
       {
         isDnsRecords
-          ? <DnsRecords {...props} changeSearchTerm={props.handleSearchTerm} />
-          : <DomainNameSystems {...props} changeSearchTerm={props.handleSearchTerm} />
+          ? <DnsRecords {...props} changeSearchTerm={props.changeSearchTerm} />
+          : <DomainNameSystems {...props} changeSearchTerm={props.changeSearchTerm} />
       }
     </>
   );

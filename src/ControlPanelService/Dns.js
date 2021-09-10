@@ -26,8 +26,6 @@ export const bulkAction = (action, domainNameSystems) => {
 
   domainNameSystems.forEach(domainNameSystem => {
     formData.append("domain[]", domainNameSystem);
-    formData.append("suspend_url", `/suspend/dns/?domain=${domainNameSystem}`);
-    formData.append("delete_url", `/delete/dns/?domain=${domainNameSystem}`);
   });
 
   return axios.post(BASE_URL + '/bulk/dns/', formData);
@@ -38,6 +36,16 @@ export const handleAction = uri => {
 }
 
 export const addDomainNameSystem = data => {
+  let formDataObject = new FormData();
+
+  for (let key in data) {
+    formDataObject.append(key, data[key]);
+  }
+
+  return axios.post(BASE_URL + addDnsApiUri, formDataObject);
+}
+
+export const addDomainNameSystemRecord = data => {
   let formDataObject = new FormData();
 
   for (let key in data) {
