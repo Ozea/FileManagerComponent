@@ -62,13 +62,25 @@ export default function WebDomain(props) {
           </Container>
           <Container className="c-2 w-45">
             <div>{i18n['Web Template']}: <span className="stat">{data.TPL}</span></div>
-            {printStat(i18n['SSL Support'], data.SSL)}
-            {printStat(i18n['Web Statistics'], data.STATS)}
+            {data.LETSENCRYPT === 'yes'
+              ? printStat(i18n['SSL Support'], i18n['Lets Encrypt'])
+              : printStat(i18n['SSL Support'], data.SSL)}
+            {printStat(i18n['Web Statistics'], data.WEB_STATS)}
           </Container>
           <Container className="c-3 w-35">
-            <div>Backend Support: <span className="stat">{data.BACKEND}</span></div>
-            <div>{i18n['Backend Template']}: <span className="stat">{data.BACKEND}</span></div>
-            {printStat(i18n['Additional FTP'], data.FTP_USER)}
+            {data.PROXY_SYSTEM !== 'no'
+              ? printStat(i18n['Proxy Support'], data.PROXY_SUPPORT)
+              : printStat(i18n['Proxy Support'], '')}
+            {data.PROXY_SYSTEM !== 'no'
+              ? printStat(i18n['Proxy Template'], data.PROXY)
+              : printStat(i18n['Proxy Template'], '')}
+            {data.BACKEND_SYSTEM !== 'no'
+              ? printStat(i18n['Backend Support'] ?? 'Backend Support', data.BACKEND_SUPPORT)
+              : printStat(i18n['Backend Support'] ?? 'Backend Support', '')}
+            {data.BACKEND_SYSTEM !== 'no'
+              ? printStat(i18n['Backend Template'] ?? 'Backend Template', data.BACKEND)
+              : printStat(i18n['Backend Template'] ?? 'Backend Template', '')}
+            {printStat(i18n['Additional FTP Account'], data.FTP)}
           </Container>
         </div>
       </Container>
@@ -88,7 +100,7 @@ export default function WebDomain(props) {
         {
           data.STATS && (
             <div>
-              <a className="link-gray" href={`http://${data.NAME}/vstats/`}>
+              <a className="link-gray" href={`http://${data.NAME}/vstats/`} target="_blank" rel="noopener noreferrer">
                 {i18n['open webstats']}
                 {data.FOCUSED ? <span className="shortcut-button">L</span> : <FontAwesomeIcon icon="list" />}
               </a>
