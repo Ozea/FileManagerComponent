@@ -393,7 +393,6 @@ const Users = props => {
       <Modal
         onSave={modalConfirmHandler}
         onCancel={modalCancelHandler}
-        loading={state.loading}
         show={modal.visible}
         text={modal.text} />
     </div>

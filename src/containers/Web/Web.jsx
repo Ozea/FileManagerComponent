@@ -14,9 +14,8 @@ import WebDomain from '../../components/WebDomain/WebDomain';
 import Spinner from '../../components/Spinner/Spinner';
 import Modal from '../../components/ControlPanel/Modal/Modal';
 import { useDispatch, useSelector } from 'react-redux';
-import './Web.scss';
-import { webFull } from '../../mocks/web';
 import { Helmet } from 'react-helmet';
+import './Web.scss';
 
 const Web = props => {
   const { i18n } = window.GLOBAL.App;
@@ -24,14 +23,16 @@ const Web = props => {
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
+  const [modal, setModal] = useState({
+    text: '',
+    visible: false,
+    actionUrl: ''
+  });
   const [state, setState] = useState({
     webDomains: [],
     webFav: [],
     loading: false,
     toggledAll: false,
-    modalText: '',
-    modalVisible: false,
-    modalActionUrl: '',
     sorting: i18n.Date,
     order: "descending",
     selection: [],
@@ -329,29 +330,30 @@ const Web = props => {
   }
 
   const displayModal = (text, url) => {
-    setState({
-      ...state,
-      modalVisible: !state.modalVisible,
-      modalText: text,
-      modalActionUrl: url
+    setModal({
+      ...modal,
+      visible: !modal.visible,
+      text,
+      actionUrl: url
     });
   }
 
   const modalConfirmHandler = () => {
-    handleAction(state.modalActionUrl)
+    setState({ loading: true });
+    modalCancelHandler();
+    handleAction(modal.actionUrl)
       .then(() => {
         fetchData();
-        modalCancelHandler();
       })
       .catch(err => console.error(err));
   }
 
   const modalCancelHandler = () => {
-    setState({
-      ...state,
-      modalVisible: false,
-      modalText: '',
-      modalActionUrl: ''
+    setModal({
+      ...modal,
+      visible: false,
+      text: '',
+      actionUrl: ''
     });
   }
 
@@ -372,14 +374,21 @@ const Web = props => {
         </div>
       </Toolbar>
       <div className="web-domains-wrapper">
-        {state.loading ? <Spinner /> : webDomains()}
+        {state.loading
+          ? <Spinner />
+          : (
+            <>
+              {webDomains()}
+              <div className="total">{state.totalAmount}</div>
+            </>
+          )
+        }
       </div>
-      <div className="total">{state.totalAmount}</div>
       <Modal
         onSave={modalConfirmHandler}
         onCancel={modalCancelHandler}
-        show={state.modalVisible}
-        text={state.modalText} />
+        show={modal.visible}
+        text={modal.text} />
     </div>
   );
 }

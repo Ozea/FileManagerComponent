@@ -90,15 +90,16 @@ const AddWebDomain = props => {
     }
 
     if (Object.keys(newWebDomain).length !== 0 && newWebDomain.constructor === Object) {
+      setState({ loading: true });
       addWeb(newWebDomain)
         .then(result => {
           if (result.status === 200) {
             const { error_msg, ok_msg } = result.data;
 
             if (error_msg) {
-              setState({ ...state, errorMessage: error_msg, okMessage: '' });
+              setState({ ...state, errorMessage: error_msg, okMessage: '', loading: false });
             } else if (ok_msg) {
-              setState({ ...state, errorMessage: '', okMessage: ok_msg });
+              setState({ ...state, errorMessage: '', okMessage: ok_msg, loading: false });
             }
           }
         })
