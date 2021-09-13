@@ -19,8 +19,6 @@ export const bulkAction = (action, webDomains) => {
 
   webDomains.forEach(webDomain => {
     formData.append("domain[]", webDomain);
-    formData.append("suspend_url", `/suspend/web/?domain=${webDomain}&token=${token}`);
-    formData.append("delete_url", `/delete/web/?domain=${webDomain}&token=${token}`);
   });
 
   return axios.post(BASE_URL + '/bulk/web/', formData);

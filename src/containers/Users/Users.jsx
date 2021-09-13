@@ -349,7 +349,7 @@ const Users = props => {
 
   const modalConfirmHandler = () => {
     modalCancelHandler();
-    setState({ loading: true });
+    setState({ ...state, loading: true });
     handleAction(modal.actionUrl)
       .then(() => {
         fetchData();

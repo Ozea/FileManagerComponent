@@ -339,7 +339,7 @@ const Web = props => {
   }
 
   const modalConfirmHandler = () => {
-    setState({ loading: true });
+    setState({ ...state, loading: true });
     modalCancelHandler();
     handleAction(modal.actionUrl)
       .then(() => {
