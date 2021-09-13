@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
-import { bulkAction, getMailAccountList, handleAction } from '../../ControlPanelService/Mail';
+import { bulkMailAccountAction, getMailAccountList, handleAction } from '../../ControlPanelService/Mail';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
@@ -145,7 +145,7 @@ export default function MailAccounts(props) {
   }
 
   const handleEdit = () => {
-    props.history.push(`/edit/mail?domain=${controlPanelFocusedElement}`);
+    props.history.push(`/edit/mail?domain=${props.domain}&account=${controlPanelFocusedElement}`);
   }
 
   const handleSuspend = () => {
@@ -153,14 +153,14 @@ export default function MailAccounts(props) {
     let currentMailData = mailAccounts.filter(mail => mail.NAME === controlPanelFocusedElement)[0];
     let suspendedStatus = currentMailData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
 
-    displayModal(currentMailData.suspend_conf, `/${suspendedStatus}/mail?domain=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentMailData.suspend_conf, `/${suspendedStatus}/mail?domain=${props.domain}&account=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const handleDelete = () => {
     const { mailAccounts } = state;
     let currentMailData = mailAccounts.filter(mail => mail.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentMailData.delete_conf, `/delete/mail/?domain=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentMailData.delete_conf, `/delete/mail/?domain=${props.domain}&account=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const fetchData = () => {
@@ -172,6 +172,7 @@ export default function MailAccounts(props) {
           ...state,
           mailAccounts: reformatData(result.data.data),
           webMail: result.data.webMail,
+          selection: [],
           mailAccountsFav: result.data.mailAccountsFav,
           totalAmount: result.data.totalAmount,
           loading: false
@@ -316,9 +317,8 @@ export default function MailAccounts(props) {
 
   const bulk = action => {
     const { selection } = state;
-
     if (selection.length && action) {
-      bulkAction(action, selection)
+      bulkMailAccountAction(action, props.domain, selection)
         .then(result => {
           if (result.status === 200) {
             fetchData();

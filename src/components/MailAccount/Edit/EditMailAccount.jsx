@@ -6,7 +6,7 @@ import TextInput from 'src/components/ControlPanel/AddItemLayout/Form/TextInput/
 import Password from 'src/components/ControlPanel/AddItemLayout/Form/Password/Password';
 import TextArea from 'src/components/ControlPanel/AddItemLayout/Form/TextArea/TextArea';
 import Checkbox from 'src/components/ControlPanel/AddItemLayout/Form/Checkbox/Checkbox';
-import { addMailAccount, getMailAccountInfo } from '../../../ControlPanelService/Mail';
+import { addMailAccount, editMailAccount, getMailAccountInfo } from '../../../ControlPanelService/Mail';
 import AddItemLayout from '../../ControlPanel/AddItemLayout/AddItemLayout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import MailInfoBlock from '../MailInfoBlock/MailInfoBlock';
@@ -26,6 +26,7 @@ export default function EditMailAccount(props) {
     data: {},
     quotaValue: '',
     loading: false,
+    password: '',
     okMessage: '',
     errorMessage: '',
   });
@@ -33,6 +34,7 @@ export default function EditMailAccount(props) {
   useEffect(() => {
     dispatch(addActiveElement(`/list/mail/`));
     dispatch(removeFocusedElement());
+    setState({ ...state, loading: true });
 
     fetchData();
   }, []);
@@ -50,15 +52,17 @@ export default function EditMailAccount(props) {
     newMailDomain['Password'] = newMailDomain['v_password'];
 
     if (Object.keys(newMailDomain).length !== 0 && newMailDomain.constructor === Object) {
-      addMailAccount(newMailDomain, props.domain)
+      setState({ ...state, loading: true });
+      editMailAccount(newMailDomain, props.domain, props.account)
         .then(result => {
           if (result.status === 200) {
             const { error_msg, ok_msg } = result.data;
 
             if (error_msg) {
-              setState({ ...state, errorMessage: error_msg, okMessage: '' });
+              setState({ ...state, errorMessage: error_msg, okMessage: '', loading: false });
             } else if (ok_msg) {
-              setState({ ...state, errorMessage: '', okMessage: ok_msg });
+              goBack();
+              setState({ ...state, errorMessage: '', okMessage: ok_msg, loading: false });
             }
           }
         })
@@ -90,6 +94,10 @@ export default function EditMailAccount(props) {
     } else {
       setState({ ...state, quotaValue: '' });
     }
+  }
+
+  const goBack = () => {
+    history.push(`/list/mail/?domain=${props.domain}`);
   }
 
   return (
@@ -133,13 +141,14 @@ export default function EditMailAccount(props) {
                   name="v_account"
                   id="account" />
 
-                <Password name="v_password" />
+                <Password name="v_password" onChange={password => setState({ ...state, password })} />
               </div>
 
               <div className="c-2">
                 <MailInfoBlock
                   webMail={state.data.webmail}
                   hostName={state.data.hostname}
+                  password={state.password}
                   domain={props.domain} />
               </div>
             </div>
@@ -199,7 +208,7 @@ export default function EditMailAccount(props) {
 
             <div className="buttons-wrapper">
               <button type="submit" className="add">{i18n.Add}</button>
-              <button type="button" className="back" onClick={() => history.push(`/list/mail/?domain=${props.domain}`)}>{i18n.Back}</button>
+              <button type="button" className="back" onClick={goBack}>{i18n.Back}</button>
             </div>
           </form>
         )}

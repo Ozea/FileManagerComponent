@@ -33,6 +33,7 @@ const Password = props => {
 
   const passwordInputHandler = value => {
     setState({ ...state, generatedPassword: value });
+    props.onChange(value);
   }
 
   return (
