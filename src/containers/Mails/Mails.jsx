@@ -184,6 +184,7 @@ const Mails = props => {
           mails: reformatData(result.data.data),
           webMail: result.data.webMail,
           mailFav: result.data.mailFav,
+          selection: [],
           totalAmount: result.data.totalAmount,
           loading: false
         });
@@ -330,6 +331,7 @@ const Mails = props => {
     const { selection } = state;
 
     if (selection.length && action) {
+      setState({ ...state, loading: true });
       bulkAction(action, selection)
         .then(result => {
           if (result.status === 200) {

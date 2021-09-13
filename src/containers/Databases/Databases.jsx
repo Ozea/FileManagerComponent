@@ -173,6 +173,7 @@ const Databases = props => {
           dbAdmin: result.data.db_admin,
           dbAdminLink: result.data.db_admin_link,
           dbFav: result.data.dbFav,
+          selection: [],
           totalAmount: result.data.totalAmount,
           loading: false
         });
@@ -321,6 +322,7 @@ const Databases = props => {
     const { selection } = state;
 
     if (selection.length && action) {
+      setState({ ...state, loading: true });
       bulkAction(action, selection)
         .then(result => {
           if (result.status === 200) {
@@ -342,6 +344,7 @@ const Databases = props => {
   }
 
   const modalConfirmHandler = () => {
+    setState({ ...state, loading: true });
     handleAction(modal.actionUrl)
       .then(() => {
         fetchData();
@@ -368,7 +371,7 @@ const Databases = props => {
         <LeftButton name="Add Database" href="/add/db" showLeftMenu={true} />
         <div className="r-menu">
           <div className="input-group input-group-sm">
-            <a href={state.dbAdminLink} className="button-extra" type="submit">{state.dbAdmin}</a>
+            <a href={state.dbAdminLink} className="button-extra" type="submit" target="_blank" rel="noopener noreferrer">{state.dbAdmin}</a>
             <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
             <Select list='dbList' bulkAction={bulk} />
             <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="dbList" />
@@ -377,9 +380,13 @@ const Databases = props => {
         </div>
       </Toolbar>
       <div className="mails-wrapper">
-        {state.loading ? <Spinner /> : databases()}
+        {state.loading
+          ? <Spinner />
+          : (<>
+            {databases()}
+            <div className="total">{state.totalAmount}</div>
+          </>)}
       </div>
-      <div className="total">{state.totalAmount}</div>
       <Modal
         onSave={modalConfirmHandler}
         onCancel={modalCancelHandler}

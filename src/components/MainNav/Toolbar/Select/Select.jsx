@@ -55,7 +55,6 @@ class Select extends Component {
   }
 
   bulkAction = () => {
-    console.log('Trigger bulk action!');
     this.props.bulkAction(this.state.selected);
   }
 

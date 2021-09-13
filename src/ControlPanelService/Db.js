@@ -19,8 +19,6 @@ export const bulkAction = (action, domainNameSystems) => {
 
   domainNameSystems.forEach(domainNameSystem => {
     formData.append("database[]", domainNameSystem);
-    formData.append("suspend_url", `/suspend/db/?database=${domainNameSystem}&token=${token}`);
-    formData.append("delete_url", `/delete/db/?database=${domainNameSystem}&token=${token}`);
   });
 
   return axios.post(BASE_URL + '/bulk/db/', formData);

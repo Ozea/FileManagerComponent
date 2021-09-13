@@ -26,7 +26,7 @@ export const bulkAction = (action, domainNameSystems) => {
   formData.append("token", token);
 
   domainNameSystems.forEach(domainNameSystem => {
-    formData.append("domain", domainNameSystem);
+    formData.append("domain[]", domainNameSystem);
   });
 
   return axios.post(BASE_URL + '/bulk/mail/', formData);
