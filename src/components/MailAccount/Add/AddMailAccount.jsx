@@ -28,6 +28,7 @@ export default function AddMailAccount(props) {
     advancedOptions: false,
     quotaValue: '',
     loading: false,
+    password: '',
     okMessage: '',
     errorMessage: '',
   });
@@ -47,6 +48,8 @@ export default function AddMailAccount(props) {
       newMailDomain[name] = value;
     }
 
+    newMailDomain['ok_acc'] = 'add';
+    newMailDomain['token'] = token;
     newMailDomain['v_domain'] = props.domain;
     newMailDomain['Password'] = newMailDomain['v_password'];
 
@@ -118,9 +121,6 @@ export default function AddMailAccount(props) {
       <AddItemLayout>
         {state.loading ? <Spinner /> : (
           <form onSubmit={event => submitFormHandler(event)}>
-            <input type="hidden" name="ok_acc" value="add" />
-            <input type="hidden" name="token" value={token} />
-
             <div className="r-1">
               <div className="c-1">
                 <TextInput
@@ -135,13 +135,14 @@ export default function AddMailAccount(props) {
                   name="v_account"
                   id="account" />
 
-                <Password name="v_password" />
+                <Password name="v_password" onChange={password => setState({ ...state, password })} />
               </div>
 
               <div className="c-2">
                 <MailInfoBlock
                   webMail={state.data.webmail}
                   hostName={state.data.hostname}
+                  password={state.password}
                   domain={props.domain} />
               </div>
             </div>
@@ -155,7 +156,7 @@ export default function AddMailAccount(props) {
               {
                 state.advancedOptions && (
                   <>
-                    <TextInputWithExtraButton title={i18n['DNS records']} optionalTitle={i18n['in megabytes']} id="quota" name="v_quota" value={state.quotaValue}>
+                    <TextInputWithExtraButton title={i18n['Quota']} optionalTitle={i18n['in megabytes']} id="quota" name="v_quota" value={state.quotaValue}>
                       <button type="button" onClick={toggleQuotaValue}>
                         <FontAwesomeIcon icon="infinity" />
                       </button>

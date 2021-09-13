@@ -386,9 +386,13 @@ const Mails = props => {
         </div>
       </Toolbar>
       <div className="mails-wrapper">
-        {state.loading ? <Spinner /> : mails()}
+        {state.loading
+          ? <Spinner />
+          : (<>
+            {mails()}
+            <div className="total">{state.totalAmount}</div>
+          </>)}
       </div>
-      <div className="total">{state.totalAmount}</div>
       <Modal
         onSave={modalConfirmHandler}
         onCancel={modalCancelHandler}

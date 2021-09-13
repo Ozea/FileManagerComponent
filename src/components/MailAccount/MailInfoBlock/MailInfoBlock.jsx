@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { mailInfoBlockSelectOptions } from 'src/ControlPanelService/Mail';
 
 import './MailInfoBlock.scss';
 
-export default function MailInfoBlock({ webMail, hostName, domain }) {
+export default function MailInfoBlock({ webMail, hostName, domain, password }) {
   const { i18n } = window.GLOBAL.App;
   const [selectedOption, setSelectedOption] = useState('');
+  const { userName } = useSelector(state => state.session);
   const [state, setState] = useState({
     imapHostName: hostName,
     smtpHostName: hostName,
@@ -53,12 +55,12 @@ export default function MailInfoBlock({ webMail, hostName, domain }) {
         <div className="details">
           <div>
             <span>{i18n['Username']}:</span>
-            <span>{`@${domain}`}</span>
+            <span>{`${userName}@${domain}`}</span>
           </div>
 
           <div>
             <span>{i18n['Password']}:</span>
-            <span>*******</span>
+            <span>{password || '******'}</span>
           </div>
 
           <div>

@@ -14,7 +14,7 @@ export default function TopPanel({ domain = '' }) {
   const { i18n } = window.GLOBAL.App;
   const dispatch = useDispatch();
   const history = useHistory();
-  const user = 'admin';
+  const userName = useSelector(state => state.session);
 
   const className = cls => {
     let className = 'nav-link';
@@ -96,7 +96,7 @@ export default function TopPanel({ domain = '' }) {
         </div>
 
         <div className="container profile-menu">
-          <div><Link to={`/edit/user?user=${user}`}>{user}</Link></div>
+          <div><Link to={`/edit/user?user=${userName}`}>{userName}</Link></div>
           <div><button onClick={signOut}>{i18n['Log out']}</button></div>
         </div>
       </div>

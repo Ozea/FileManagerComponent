@@ -26,9 +26,20 @@ export const bulkAction = (action, domainNameSystems) => {
   formData.append("token", token);
 
   domainNameSystems.forEach(domainNameSystem => {
-    formData.append("domain[]", domainNameSystem);
-    formData.append("suspend_url", `/suspend/mail/?domain=${domainNameSystem}`);
-    formData.append("delete_url", `/delete/mail/?domain=${domainNameSystem}`);
+    formData.append("domain", domainNameSystem);
+  });
+
+  return axios.post(BASE_URL + '/bulk/mail/', formData);
+};
+
+export const bulkMailAccountAction = (action, domain, accounts = []) => {
+  const formData = new FormData();
+  formData.append("action", action);
+  formData.append("token", token);
+  formData.append("domain", domain);
+
+  accounts.forEach(account => {
+    formData.append("account[]", account);
   });
 
   return axios.post(BASE_URL + '/bulk/mail/', formData);
@@ -56,6 +67,16 @@ export const addMailAccount = (data, domain) => {
   }
 
   return axios.post(`${BASE_URL}${addMailApiUri}?domain=${domain}`, formDataObject);
+}
+
+export const editMailAccount = (data, domain, account) => {
+  let formDataObject = new FormData();
+
+  for (let key in data) {
+    formDataObject.append(key, data[key]);
+  }
+
+  return axios.post(`${BASE_URL}${updateMailUri}?domain=${domain}&account=${account}`, formDataObject);
 }
 
 export const getMailInfo = domain => {
