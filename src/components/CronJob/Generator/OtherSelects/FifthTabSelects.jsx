@@ -22,21 +22,21 @@ export default function FifthTabSelects() {
 
       <div className="form-group date">
         <label htmlFor="run-command">{i18n.Date ?? 'Date'}:</label>
-        <select name="h_day">
+        <select className="form-control" name="h_day">
           {renderDate()}
         </select>
       </div>
 
       <div className="form-group hour">
         <label htmlFor="run-command">{i18n.Hour ?? 'Hour'}:</label>
-        <select name="h_hour">
+        <select className="form-control" name="h_hour">
           {renderHours()}
         </select>
       </div>
 
       <div className="form-group minute">
         <label htmlFor="run-command">{i18n.Minute ?? 'Minute'}:</label>
-        <select name="h_min">
+        <select className="form-control" name="h_min">
           {renderMinutes()}
         </select>
       </div>

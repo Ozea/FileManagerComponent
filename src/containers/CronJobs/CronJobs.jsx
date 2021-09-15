@@ -331,17 +331,21 @@ const CronJobs = props => {
     setModal({
       ...modal,
       visible: !state.modalVisible,
-      text: text,
+      text,
       actionUrl: url
     });
   }
 
   const modalConfirmHandler = () => {
+    if (!modal.actionUrl) {
+      modalCancelHandler();
+    }
+
+    setState({ ...state, loading: true });
+    modalCancelHandler();
+
     handleAction(modal.actionUrl)
-      .then(() => {
-        fetchData();
-        modalCancelHandler();
-      })
+      .then(() => fetchData())
       .catch(err => console.error(err));
   }
 
@@ -356,16 +360,14 @@ const CronJobs = props => {
 
   const handleCronNotifications = () => {
     const token = localStorage.getItem("token");
+    const url = `/api/${state.cronReports === 'yes' ? 'delete' : 'add'}/cron/reports/?token=${token}`;
 
-    if (state.cronReports === 'yes') {
-      handleAction(`/delete/cron/reports/?token=${token}`)
-        .then(() => fetchData())
-        .catch(err => console.error(err));
-    } else {
-      handleAction(`/add/cron/reports/?token=${token}`)
-        .then(() => fetchData())
-        .catch(err => console.error(err));
-    }
+    handleAction(url)
+      .then(res => {
+        displayModal(res.data.message, '');
+        fetchData();
+      })
+      .catch(err => console.error(err));
   }
 
   return (
@@ -392,8 +394,9 @@ const CronJobs = props => {
       </div>
       <div className="total">{state.totalAmount}</div>
       <Modal
-        onSave={modalConfirmHandler}
+        showCancelButton={modal.actionUrl}
         onCancel={modalCancelHandler}
+        onSave={modalConfirmHandler}
         show={modal.visible}
         text={modal.text} />
     </div>
