@@ -8,4 +8,11 @@ div.content .modal .modal-content {
   .modal-header button.close {
     color: white;
   }
+
+  .modal-footer {
+    .btn-primary {
+      background: #9FBF0C;
+      border: 1px solid #9FBF0C;
+    }
+  }
 }
