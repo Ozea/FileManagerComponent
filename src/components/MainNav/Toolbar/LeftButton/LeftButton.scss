@@ -47,7 +47,8 @@
   display: none;
 }
 
-.servers-list {
+.servers-list,
+.exclusions-list {
   .l-menu {
     &.server-icon {
       a, span.add {

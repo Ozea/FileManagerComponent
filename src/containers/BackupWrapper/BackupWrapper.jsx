@@ -27,7 +27,7 @@ export default function BackupWrapper(props) {
       {
         isBackupSettings
           ? <BackupRestoreSettings backup={parsedQueryString.backup} />
-          : <Backups {...props} changeSearchTerm={props.handleSearchTerm} />
+          : <Backups {...props} changeSearchTerm={props.changeSearchTerm} />
       }
     </>
   );

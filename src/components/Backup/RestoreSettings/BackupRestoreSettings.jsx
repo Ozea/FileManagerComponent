@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../../actions/ControlPanelContent/controlPanelContentActions';
-import * as MainNavigation from '../../../actions/MainNavigation/mainNavigationActions';
-import SearchInput from '../../../components/MainNav/Toolbar/SearchInput/SearchInput';
-import LeftButton from '../../../components/MainNav/Toolbar/LeftButton/LeftButton';
-import { getBackupDetails, bulkAction } from 'src/ControlPanelService/Backup';
-import Checkbox from '../../../components/MainNav/Toolbar/Checkbox/Checkbox';
-import Select from '../../../components/MainNav/Toolbar/Select/Select';
-import Toolbar from '../../../components/MainNav/Toolbar/Toolbar';
+import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from 'src/actions/ControlPanelContent/controlPanelContentActions';
+import * as MainNavigation from 'src/actions/MainNavigation/mainNavigationActions';
+import SearchInput from 'src/components/MainNav/Toolbar/SearchInput/SearchInput';
+import LeftButton from 'src/components/MainNav/Toolbar/LeftButton/LeftButton';
+import { getBackupDetails, restoreBackupSetting, bulkRestore } from 'src/ControlPanelService/Backup';
+import Checkbox from 'src/components/MainNav/Toolbar/Checkbox/Checkbox';
+import Select from 'src/components/MainNav/Toolbar/Select/Select';
+import Toolbar from 'src/components/MainNav/Toolbar/Toolbar';
 import RestoreSetting from '../RestoreSetting/RestoreSetting';
+import Modal from 'src/components/ControlPanel/Modal/Modal';
 import { useSelector, useDispatch } from 'react-redux';
 import Spinner from 'src/components/Spinner/Spinner';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import './BackupRestoreSettings.scss';
-import { Helmet } from 'react-helmet';
 
 export default function BackupRestoreSettings(props) {
   const { i18n } = window.GLOBAL.App;
@@ -22,6 +23,10 @@ export default function BackupRestoreSettings(props) {
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
   const [backupDetailsData, setBackupDetailsData] = useState([]);
+  const [modal, setModal] = useState({
+    text: '',
+    visible: false,
+  });
   const [state, setState] = useState({
     loading: false,
     backupDetails: [],
@@ -48,6 +53,11 @@ export default function BackupRestoreSettings(props) {
   }, [controlPanelFocusedElement, focusedElement, backupDetailsData]);
 
   const handleContentSelection = event => {
+    if (event.keyCode === 65) {
+      handleRestore(`?backup=${props.backup}`);
+      return;
+    }
+
     if (event.keyCode === 38 || event.keyCode === 40) {
       if (focusedElement) {
         dispatch(MainNavigation.removeFocusedElement());
@@ -126,8 +136,12 @@ export default function BackupRestoreSettings(props) {
     }
   }
 
-  const handleRestore = () => {
-    console.log(backupDetailsData[controlPanelFocusedElement].restoreLink);
+  const handleRestore = params => {
+    const paramsUri = params ? params : backupDetailsData[controlPanelFocusedElement].restoreLinkParams;
+
+    restoreBackupSetting(paramsUri)
+      .then(response => displayModal(response.data.message))
+      .catch(err => console.error(err));
   }
 
   const fetchData = () => {
@@ -151,7 +165,7 @@ export default function BackupRestoreSettings(props) {
         acc.push({
           type: cat,
           name: item,
-          restoreLink: `/schedule/restore/?backup=${props.backup}&type=${cat.toLowerCase()}&object=${item}&token=${token}`
+          restoreLinkParams: `?backup=${props.backup}&type=${cat.toLowerCase()}&object=${item}&token=${token}`
         });
       });
 
@@ -172,7 +186,7 @@ export default function BackupRestoreSettings(props) {
     });
 
     return result.map((item, index) => {
-      return <RestoreSetting data={item} key={index} checkItemFunc={name => checkItem(name)} />;
+      return <RestoreSetting data={item} key={index} checkItemFunc={name => checkItem(name)} restoreSetting={handleRestore} />;
     });
   }
 
@@ -223,15 +237,25 @@ export default function BackupRestoreSettings(props) {
     const { selection } = state;
 
     if (selection.length && action) {
-      bulkAction(action, selection)
+      setState({ ...state, loading: true });
+      bulkRestore(action, selection, props.backup)
         .then(result => {
           if (result.status === 200) {
-            fetchData();
+            displayModal(result.data.message);
             toggleAll(false);
           }
         })
         .catch(err => console.error(err));
     }
+  }
+
+  const displayModal = text => {
+    setState({ ...state, loading: false });
+    setModal({ ...modal, visible: true, text });
+  }
+
+  const modalCancelHandler = () => {
+    setModal({ ...modal, visible: false, text: '' });
   }
 
   return (
@@ -240,7 +264,7 @@ export default function BackupRestoreSettings(props) {
         <title>{`Vesta - ${i18n.BACKUP}`}</title>
       </Helmet>
       <Toolbar mobile={false} >
-        <LeftButton name={i18n['Restore All']} list="backup-details" href={`/schedule/restore/?backup=${props.backup}`} showLeftMenu={true} />
+        <LeftButton name={i18n['Restore All']} list="backup-details" onClick={() => handleRestore(`?backup=${props.backup}`)} showLeftMenu={true} />
         <div className="r-menu">
           <div className="input-group input-group-sm">
             <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
@@ -268,6 +292,12 @@ export default function BackupRestoreSettings(props) {
           </>
         )
       }
+
+      <Modal
+        onSave={modalCancelHandler}
+        showCancelButton={false}
+        show={modal.visible}
+        text={modal.text} />
     </div>
   );
 }

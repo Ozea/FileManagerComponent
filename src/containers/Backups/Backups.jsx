@@ -5,7 +5,6 @@ import { bulkAction, getBackupList, handleAction, scheduleBackup } from '../../C
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import { addFavorite, deleteFavorite } from '../../ControlPanelService/Favorites';
-import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
 import Select from '../../components/MainNav/Toolbar/Select/Select';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,8 +13,9 @@ import Modal from '../../components/ControlPanel/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
 import { useSelector, useDispatch } from 'react-redux';
 import Backup from '../../components/Backup/Backup';
-import './Backups.scss';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
+import './Backups.scss';
 
 const Backups = props => {
   const { i18n } = window.GLOBAL.App;
@@ -276,6 +276,7 @@ const Backups = props => {
     const { selection } = state;
 
     if (selection.length && action) {
+      setState({ ...state, loading: true });
       bulkAction(action, selection)
         .then(result => {
           if (result.status === 200) {
@@ -298,11 +299,12 @@ const Backups = props => {
   }
 
   const modalConfirmHandler = () => {
+    if (!modal.actionUrl) return;
+
+    modalCancelHandler();
+
     handleAction(modal.actionUrl)
-      .then(() => {
-        fetchData();
-        modalCancelHandler();
-      })
+      .then(() => fetchData())
       .catch(err => console.error(err));
   }
 
@@ -319,9 +321,7 @@ const Backups = props => {
     setState({ ...state, loading: true });
 
     scheduleBackup()
-      .then(result => {
-        displayModal(result.data.error_msg, '');
-      })
+      .then(result => displayModal(result.data.error_msg, ''))
       .catch(err => console.error(err));
   }
 
@@ -339,7 +339,7 @@ const Backups = props => {
         </div>
         <div className="r-menu">
           <div className="input-group input-group-sm">
-            <a href='/list/backup/exclusions/' className="button-extra" type="submit">{i18n['backup exclusions']}</a>
+            <Link to='/list/backup/exclusions' className="button-extra" type="submit">{i18n['backup exclusions']}</Link>
             <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
             <Select list='backupList' bulkAction={bulk} />
             <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
@@ -353,7 +353,6 @@ const Backups = props => {
       <Modal
         onSave={modalConfirmHandler}
         onCancel={modalCancelHandler}
-        showSaveButton={false}
         show={modal.visible}
         text={modal.text} />
     </div>

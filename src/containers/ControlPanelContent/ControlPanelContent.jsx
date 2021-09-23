@@ -5,6 +5,7 @@ import EditInternetProtocol from '../../components/InternetProtocol/Edit/EditInt
 import AddInternetProtocol from '../../components/InternetProtocol/Add/AddInternetProtocol';
 import EditServerNginx from 'src/components/Server/Edit/Nginx/EditServerNginx';
 import Postgresql from 'src/components/Server/Edit/Postgresql/Postgresql';
+import EditBackupExclusions from 'src/components/Backup/Exclusion/Edit';
 import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import InternetProtocols from '../InternetProtocols/InternetProtocols';
 import AddWebDomain from '../../components/WebDomain/Add/AddWebDomain';
@@ -30,7 +31,6 @@ import EditPhp from 'src/components/Server/Edit/PHP/EditPhp';
 import Databases from '../../containers/Databases/Databases';
 import Firewalls from '../../containers/Firewalls/Firewalls';
 import EditUser from '../../components/User/Edit/EditUser';
-import EditMail from '../../components/Mail/Edit/EditMail';
 import Bind9 from 'src/components/Server/Edit/Bind9/Bind9';
 import Mysql from 'src/components/Server/Edit/Mysql/Mysql';
 import AddDNSWrapper from '../AddDNSWrapper/AddDNSWrapper';
@@ -38,18 +38,17 @@ import BackupWrapper from '../BackupWrapper/BackupWrapper';
 import CronJobs from '../../containers/CronJobs/CronJobs';
 import Packages from '../../containers/Packages/Packages';
 import { services } from 'src/ControlPanelService/Server';
-import AddMail from '../../components/Mail/Add/AddMail';
 import AddUser from '../../components/User/Add/AddUser';
 import Updates from '../../containers/Updates/Updates';
 import Servers from '../../containers/Servers/Servers';
 import MainNav from '../../components/MainNav/MainNav';
+import BackupExclusions from '../Backups/Exclusions';
 import MailWrapper from '../MailWrapper/MailWrapper';
 import DNSWrapper from '../DNSWrapper/DNSWrapper';
 import Statistics from '../Statistics/Statistics';
 import Users from '../../containers/Users/Users';
 import RRDs from '../../containers/RRDs/RRDs';
 import Web from '../../containers/Web/Web';
-import Backups from '../Backups/Backups';
 import Search from '../Search/Search';
 import Logs from '../Logs/Logs';
 
@@ -110,7 +109,7 @@ const ControlPanelContent = props => {
         case '/list/mail/': return history.push('/add/mail/');
         case '/list/db/': return history.push('/add/db/');
         case '/list/cron/': return history.push('/add/cron/');
-        case '/list/backup/': return history.push('/add/backup/');
+        case '/list/backup/exclusions': return history.push('/edit/backup/exclusions/');
         case '/list/package/': return history.push('/add/package/');
         case '/list/ip/': return history.push('/add/ip/');
         case '/list/firewall/': return history.push('/add/firewall/');
@@ -192,7 +191,9 @@ const ControlPanelContent = props => {
           <Route path="/list/cron" component={props => <CronJobs {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/cron" component={() => <AddCronJob />} />
           <Route path="/edit/cron" component={() => <EditCronJob />} />
-          <Route path="/list/backup" component={props => <BackupWrapper {...props} changeSearchTerm={handleSearchTerm} /> } />
+          <Route exact path="/list/backup" component={props => <BackupWrapper {...props} changeSearchTerm={handleSearchTerm} /> } />
+          <Route exact path="/list/backup/exclusions" component={props => <BackupExclusions {...props} changeSearchTerm={handleSearchTerm} /> } />
+          <Route exact path="/edit/backup/exclusions" component={EditBackupExclusions} />
           <Route path="/search/" component={props => <Search {...props} changeSearchTerm={handleSearchTerm} searchTerm={searchTerm} />} />
         </Switch>
       </div>
