@@ -316,16 +316,16 @@ const Web = props => {
 
   const bulk = action => {
     if (state.selection.length && action) {
-      setState({ ...state, loading: true }, () => {
-        bulkAction(action, state.selection)
-          .then(result => {
-            if (result.status === 200) {
-              fetchData();
-              toggleAll(false);
-            }
-          })
-          .catch(err => console.error(err));
-      });
+      setState({ ...state, loading: true });
+
+      bulkAction(action, state.selection)
+        .then(result => {
+          if (result.status === 200) {
+            fetchData();
+            toggleAll(false);
+          }
+        })
+        .catch(err => console.error(err));
     }
   }
 

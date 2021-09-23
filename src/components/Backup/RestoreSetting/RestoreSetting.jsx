@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 import './RestoreSetting.scss';
 
-export default function RestoreSetting({ data, checkItemFunc = () => { } }) {
+export default function RestoreSetting({ data, checkItemFunc = () => { }, restoreSetting = () => { } }) {
   const { i18n } = window.GLOBAL.App;
 
   const displayBackupDetailName = type => {
@@ -47,10 +47,10 @@ export default function RestoreSetting({ data, checkItemFunc = () => { } }) {
       </Container>
       <div className="actions">
         <div>
-          <Link className="link-gray" to={data.restoreLink}>
+          <button className="link-restore" onClick={() => restoreSetting(data.restoreLinkParams)}>
             {i18n['restore']}
             {data.FOCUSED ? <span className="shortcut-button">R</span> : <FontAwesomeIcon icon="play" />}
-          </Link>
+          </button>
         </div>
       </div>
     </ListItem>
