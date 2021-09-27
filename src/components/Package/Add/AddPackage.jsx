@@ -84,6 +84,9 @@ const AddPackage = props => {
       newPackage[name] = value;
     }
 
+    newPackage['token'] = token;
+    newPackage['ok'] = 'Add';
+
     if (Object.keys(newPackage).length !== 0 && newPackage.constructor === Object) {
       setState({ ...state, loading: true });
 
@@ -145,9 +148,6 @@ const AddPackage = props => {
       <AddItemLayout>
         {state.loading ? <Spinner /> : (
           <form onSubmit={event => submitFormHandler(event)}>
-            <input type="hidden" name="ok" value="add" />
-            <input type="hidden" name="token" value={token} />
-
             <TextInput name="v_package" id="packageName" title={i18n['Package Name']} />
 
             <SelectInput

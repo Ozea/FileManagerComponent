@@ -38,7 +38,7 @@ const TextInputWithExtraButton = props => {
           className="form-control"
           onChange={changeValue}
           value={state.value}
-          disabled={state.value === 'unlimited'} />
+          readOnly={state.value === 'unlimited'} />
         {props.children}
       </div>
     </div>

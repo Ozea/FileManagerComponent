@@ -23,14 +23,16 @@ const Packages = props => {
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
+  const [modal, setModal] = useState({
+    text: '',
+    visible: false,
+    actionUrl: ''
+  });
   const [state, setState] = useState({
     packages: [],
     packagesFav: [],
     loading: true,
     toggledAll: false,
-    modalText: '',
-    modalVisible: false,
-    modalActionUrl: '',
     sorting: i18n.Date,
     order: "descending",
     selection: [],
@@ -316,31 +318,21 @@ const Packages = props => {
     }
   }
 
-  const displayModal = (text, url) => {
-    setState({
-      ...state,
-      modalVisible: !state.modalVisible,
-      modalText: text,
-      modalActionUrl: url
-    });
+  const displayModal = (text, actionUrl) => {
+    setModal({ ...modal, visible: !modal.visible, text, actionUrl })
   }
 
   const modalConfirmHandler = () => {
-    handleAction(state.modalActionUrl)
-      .then(() => {
-        fetchData();
-        modalCancelHandler();
-      })
+    modalCancelHandler();
+    setState({ ...state, loading: true });
+
+    handleAction(modal.actionUrl)
+      .then(() => fetchData())
       .catch(err => console.error(err));
   }
 
   const modalCancelHandler = () => {
-    setState({
-      ...state,
-      modalVisible: false,
-      modalText: '',
-      modalActionUrl: ''
-    });
+    setModal({ ...modal, visible: false, text: '', actionUrl: '' })
   }
 
   return (
@@ -360,14 +352,20 @@ const Packages = props => {
         </div>
       </Toolbar>
       <div className="packages-wrapper">
-        {state.loading ? <Spinner /> : packages()}
+        {
+          state.loading
+            ? <Spinner />
+            : (<>
+              {packages()}
+              <div className="total">{state.totalAmount}</div>
+            </>)
+        }
       </div>
-      <div className="total">{state.totalAmount}</div>
       <Modal
         onSave={modalConfirmHandler}
         onCancel={modalCancelHandler}
-        show={state.modalVisible}
-        text={state.modalText} />
+        show={modal.visible}
+        text={modal.text} />
     </div>
   );
 }

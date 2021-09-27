@@ -61,8 +61,7 @@ export const updatePackage = (data, item) => {
 
   return axios.post(BASE_URL + updatePackageUri, formDataObject, {
     params: {
-      package: item,
-      token
+      package: item
     }
   });
 }
