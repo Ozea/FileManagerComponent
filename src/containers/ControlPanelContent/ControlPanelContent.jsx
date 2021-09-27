@@ -35,6 +35,7 @@ import Bind9 from 'src/components/Server/Edit/Bind9/Bind9';
 import Mysql from 'src/components/Server/Edit/Mysql/Mysql';
 import AddDNSWrapper from '../AddDNSWrapper/AddDNSWrapper';
 import BackupWrapper from '../BackupWrapper/BackupWrapper';
+import AddBanIP from 'src/components/Firewall/Add/Banlist';
 import CronJobs from '../../containers/CronJobs/CronJobs';
 import Packages from '../../containers/Packages/Packages';
 import { services } from 'src/ControlPanelService/Server';
@@ -48,6 +49,7 @@ import DNSWrapper from '../DNSWrapper/DNSWrapper';
 import Statistics from '../Statistics/Statistics';
 import Users from '../../containers/Users/Users';
 import RRDs from '../../containers/RRDs/RRDs';
+import BanList from '../Firewalls/Banlist';
 import Web from '../../containers/Web/Web';
 import Search from '../Search/Search';
 import Logs from '../Logs/Logs';
@@ -146,7 +148,9 @@ const ControlPanelContent = props => {
           <Route path="/list/stats" component={props => <Statistics {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/log" component={props => <Logs {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/list/updates" component={props => <Updates {...props} changeSearchTerm={handleSearchTerm} />} />
-          <Route path="/list/firewall" component={props => <Firewalls {...props} changeSearchTerm={handleSearchTerm} />} />
+          <Route path="/list/firewall" exact component={props => <Firewalls {...props} changeSearchTerm={handleSearchTerm} />} />
+          <Route path="/list/firewall/banlist" exact component={props => <BanList {...props} changeSearchTerm={handleSearchTerm} />} />
+          <Route path="/add/firewall/banlist" component={AddBanIP} />
           <Route path="/add/firewall" component={() => <AddFirewall />} />
           <Route path="/edit/firewall" component={() => <EditFirewall />} />
           <Route path="/list/server" component={props => <Servers {...props} changeSearchTerm={handleSearchTerm} />} />

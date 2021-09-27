@@ -6,9 +6,15 @@ const usersUri = '/list/firewall/firewall.php';
 const addFirewallUri = '/api/add/firewall/index.php';
 const firewallInfoUri = '/api/edit/firewall/index.php';
 const updateFirewallUri = '/api/edit/firewall/index.php';
+const addBanIpsUri = '/api/add/firewall/banlist/index.php';
+const banListUri = '/list/firewall/banlist/banlist.php';
 
 export const getFirewallList = () => {
   return axios.get(BASE_URL + usersUri);
+}
+
+export const getBanList = () => {
+  return axios.get(BASE_URL + banListUri);
 }
 
 export const bulkAction = (action, firewalls) => {
@@ -18,8 +24,6 @@ export const bulkAction = (action, firewalls) => {
 
   firewalls.forEach(firewall => {
     formData.append("rule[]", firewall);
-    formData.append("suspend_url", `/suspend/firewall/?rule=${firewall}&token=${token}`);
-    formData.append("delete_url", `/delete/firewall/?rule=${firewall}&token=${token}`);
   });
 
   return axios.post(BASE_URL + '/bulk/firewall/', formData);
@@ -27,6 +31,34 @@ export const bulkAction = (action, firewalls) => {
 
 export const handleAction = uri => {
   return axios.get(BASE_URL + uri);
+}
+
+export const getBanIps = data => {
+  let formDataObject = new FormData();
+
+  for (let key in data) {
+    formDataObject.append(key, data[key]);
+  }
+
+  return axios.get(BASE_URL + addBanIpsUri, {
+    params: {
+      token
+    }
+  });
+}
+
+export const addBanIp = (data) => {
+  let formDataObject = new FormData();
+
+  for (let key in data) {
+    formDataObject.append(key, data[key]);
+  }
+
+  return axios.get(BASE_URL + addBanIpsUri, {
+    params: {
+      token
+    }
+  });
 }
 
 export const addFirewall = data => {

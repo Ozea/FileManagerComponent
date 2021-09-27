@@ -54,6 +54,7 @@ export const values = (select = {}) => {
     ],
     firewallList: [
       { value: 'suspend', name: select.suspend },
+      { value: 'unsuspend', name: select.unsuspend },
       { value: 'delete', name: select.delete }
     ],
     serverList: [
@@ -63,6 +64,9 @@ export const values = (select = {}) => {
     ],
     backupDetailList: [
       { value: 'restore', name: select.restore }
+    ],
+    banList: [
+      { value: 'delete', name: select.delete }
     ]
   }
 };
