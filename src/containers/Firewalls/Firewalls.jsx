@@ -16,6 +16,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import './Firewalls.scss';
 import { Helmet } from 'react-helmet';
+import { Link } from 'react-router-dom';
 
 const Firewalls = props => {
   const { i18n } = window.GLOBAL.App;
@@ -23,15 +24,17 @@ const Firewalls = props => {
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
+  const [modal, setModal] = useState({
+    text: '',
+    visible: false,
+    actionUrl: ''
+  });
   const [state, setState] = useState({
     firewalls: [],
     firewallFav: [],
     selection: [],
     firewallExtension: '',
     loading: false,
-    modalText: '',
-    modalVisible: false,
-    modalActionUrl: '',
     toggledAll: false,
     sorting: i18n.Action,
     order: "descending",
@@ -325,31 +328,21 @@ const Firewalls = props => {
     }
   }
 
-  const displayModal = (text, url) => {
-    setState({
-      ...state,
-      modalVisible: !state.modalVisible,
-      modalText: text,
-      modalActionUrl: url
-    });
+  const displayModal = (text, actionUrl) => {
+    setModal({ ...modal, visible: !modal.visible, text, actionUrl });
   }
 
   const modalConfirmHandler = () => {
+    modalCancelHandler();
+    setState({ ...state, loading: true });
+
     handleAction(state.modalActionUrl)
-      .then(() => {
-        fetchData();
-        modalCancelHandler();
-      })
+      .then(() => fetchData())
       .catch(err => console.error(err));
   }
 
   const modalCancelHandler = () => {
-    setState({
-      ...state,
-      modalVisible: false,
-      modalText: '',
-      modalActionUrl: ''
-    });
+    setModal({ ...modal, visible: !modal.visible, text: '', actionUrl: '' });
   }
 
   return (
@@ -361,7 +354,7 @@ const Firewalls = props => {
         <LeftButton href="/add/firewall/" name={i18n['Add Rule']} showLeftMenu={true} />
         <div className="r-menu">
           <div className="input-group input-group-sm">
-            <a href='/list/firewall/banlist/' className="button-extra" type="submit">{i18n['list fail2ban']}</a>
+            <Link to='/list/firewall/banlist/' className="button-extra" type="submit">{i18n['list fail2ban']}</Link>
             <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
             <Select list='firewallList' bulkAction={bulk} />
             <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="firewallList" />
@@ -376,8 +369,8 @@ const Firewalls = props => {
       <Modal
         onSave={modalConfirmHandler}
         onCancel={modalCancelHandler}
-        show={state.modalVisible}
-        text={state.modalText} />
+        show={modal.visible}
+        text={modal.text} />
     </div>
   );
 }

@@ -2,11 +2,10 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Container from '../ControlPanel/Container/Container';
 import ListItem from '../ControlPanel/ListItem/ListItem';
-import './Firewall.scss';
 import { Link } from 'react-router-dom';
+import './Firewall.scss';
 
-const Firewall = props => {
-  const { data } = props;
+const Firewall = ({ data, ...props }) => {
   const token = localStorage.getItem("token");
   const { i18n } = window.GLOBAL.App;
 
@@ -23,7 +22,7 @@ const Firewall = props => {
   }
 
   const handleSuspend = () => {
-    let suspendedStatus = data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend' === 'yes' ? 'unsuspend' : 'suspend';
+    let suspendedStatus = data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
     props.handleModal(data.suspend_conf, `/${suspendedStatus}/firewall/?rule=${data.NAME}&token=${token}`);
   }
 
