@@ -16,7 +16,7 @@ import QS from 'qs';
 import './EditInternetProtocol.scss';
 import { Helmet } from 'react-helmet';
 
-const EditInternetProtocol = props => {
+const EditInternetProtocol = () => {
   const token = localStorage.getItem("token");
   const { i18n } = window.GLOBAL.App;
   const history = useHistory();
@@ -62,6 +62,8 @@ const EditInternetProtocol = props => {
       updatedIP[name] = value;
     }
 
+    updatedIP['token'] = token;
+    updatedIP['save'] = 'save';
     updatedIP['v_ip'] = state.data.database;
 
     if (Object.keys(updatedIP).length !== 0 && updatedIP.constructor === Object) {
@@ -71,14 +73,7 @@ const EditInternetProtocol = props => {
         .then(result => {
           if (result.status === 200) {
             const { error_msg, ok_msg } = result.data;
-
-            if (error_msg) {
-              setState({ ...state, errorMessage: error_msg, okMessage: '', loading: false });
-            } else if (ok_msg) {
-              setState({ ...state, errorMessage: '', okMessage: ok_msg, loading: false });
-            } else {
-              setState({ ...state, loading: false });
-            }
+            setState({ ...state, errorMessage: error_msg || '', okMessage: ok_msg || '', loading: false });
           }
         })
         .catch(err => console.error(err));
@@ -111,9 +106,6 @@ const EditInternetProtocol = props => {
       <AddItemLayout date={state.data.date} time={state.data.time} status={state.data.status}>
         {state.loading ? <Spinner /> :
           <form onSubmit={event => submitFormHandler(event)} id="edit-ip">
-            <input type="hidden" name="save" value="save" />
-            <input type="hidden" name="token" value={token} />
-
             <TextInput id="type" name="v_ip" title={i18n['IP address']} value={state.data.ip} disabled />
 
             <TextInput id="type" name="v_netmask" title={i18n['Netmask']} value={state.data.netmask} disabled />
@@ -123,7 +115,7 @@ const EditInternetProtocol = props => {
             <Checkbox onChange={onChangeDedicated} name="v_shared" id="shared" title={i18n['Shared']} defaultChecked={state.dedicated} />
 
             {
-              state.dedicated && (
+              !state.dedicated && (
                 <div className="dedicated-form-group">
                   <SelectInput
                     options={state.data.users}

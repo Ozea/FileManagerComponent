@@ -162,6 +162,7 @@ const InternetProtocols = props => {
           ...state,
           internetProtocols: reformatData(result.data.data),
           ipFav: result.data.ipFav,
+          selection: [],
           totalAmount: result.data.totalAmount,
           loading: false
         });
@@ -324,31 +325,21 @@ const InternetProtocols = props => {
     }
   }
 
-  const displayModal = (text, url) => {
-    setModal({
-      ...modal,
-      visible: true,
-      text: text,
-      actionUrl: url
-    });
+  const displayModal = (text, actionUrl) => {
+    setModal({ ...modal, visible: true, text, actionUrl });
   }
 
   const modalConfirmHandler = () => {
+    modalCancelHandler();
+    setState({ ...state, loading: true });
+
     handleAction(modal.actionUrl)
-      .then(() => {
-        fetchData();
-        modalCancelHandler();
-      })
+      .then(() => fetchData())
       .catch(err => console.error(err));
   }
 
   const modalCancelHandler = () => {
-    setModal({
-      ...modal,
-      visible: false,
-      text: '',
-      actionUrl: ''
-    });
+    setModal({ ...modal, visible: false, text: '', actionUrl: '' });
   }
 
   return (
