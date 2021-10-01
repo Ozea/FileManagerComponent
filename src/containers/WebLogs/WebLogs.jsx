@@ -56,12 +56,34 @@ export default function WebLogs() {
       });
   }
 
+  const menuItems = [
+    {
+      route: `/list/web-log/?domain=${domain}&type=access`,
+      name: i18n['AccessLog']
+    },
+    {
+      route: `/list/web-log/?domain=${domain}&type=error`,
+      name: i18n['ErrorLog']
+    }
+  ];
+
+  const extraMenuItems = [
+    {
+      link: `/download/web-log/?domain=${domain ?? ''}&type=access`,
+      text: i18n['Download AccessLog']
+    },
+    {
+      link: `/download/web-log/?domain=${domain ?? ''}&type=error`,
+      text: i18n['Download ErrorLog'],
+    }
+  ];
+
   return (
     <div className="web-logs">
       <Helmet>
         <title>{`Vesta - ${i18n.WEB}`}</title>
       </Helmet>
-      <TopPanel domain={domain} />
+      <TopPanel menuItems={menuItems} extraMenuItems={extraMenuItems} />
       <div className="content">
         {
           state.loading

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { addActiveElement } from 'src/actions/MainNavigation/mainNavigationActions';
 import { logout } from 'src/actions/Session/sessionActions';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,14 +7,13 @@ import Spinner from '../Spinner/Spinner';
 
 import './TopPanel.scss';
 
-export default function TopPanel({ domain = '' }) {
+const TopPanel = ({ menuItems = [], extraMenuItems = [] }) => {
   const mainNavigation = useSelector(state => state.mainNavigation);
-  const [menuItems, setMenuItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const { i18n } = window.GLOBAL.App;
   const dispatch = useDispatch();
   const history = useHistory();
-  const userName = useSelector(state => state.session);
+  const { userName } = useSelector(state => state.session);
 
   const className = cls => {
     let className = 'nav-link';
@@ -26,34 +25,29 @@ export default function TopPanel({ domain = '' }) {
     return className;
   }
 
-  useEffect(() => {
-    const menuItems = [
-      {
-        href: `/list/web-log/?domain=${domain}&type=access`,
-        route: '/list/web-log/access',
-        name: 'AccessLog'
-      },
-      {
-        href: `/list/web-log/?domain=${domain}&type=error`,
-        route: '/list/web-log/error',
-        name: 'ErrorLog'
-      }
-    ];
-
-    setMenuItems(menuItems);
-  }, [domain]);
-
   const renderMenuItems = () => {
-    return menuItems.map(item => (
-      <div className={className(item.route)} key={item.name}>
-        <button onClick={event => handleState(item.href, event, item.route)}>{i18n[item.name]}</button>
+    if (!menuItems.length) return;
+
+    return menuItems.map(({ route, name }) => (
+      <div className={className(route)} key={name}>
+        <button onClick={event => handleState(event, route)}>{name}</button>
       </div>
     ));
   }
 
-  const handleState = (tab, event, route) => {
+  const renderExtraMenuItems = () => {
+    if (!extraMenuItems.length) return;
+
+    return extraMenuItems.map(({ link, text }, index) => (
+      <div className="nav-link" key={index}>
+        <Link to={link} target="_blank">{text}</Link>
+      </div>
+    ));
+  }
+
+  const handleState = (event, route) => {
     event.preventDefault();
-    history.push(tab);
+    history.push(route);
     dispatch(addActiveElement(route));
   }
 
@@ -78,28 +72,22 @@ export default function TopPanel({ domain = '' }) {
         <div className="container left-menu">
           <div className="logo">
             <Link to="/list/user/">
-              <img src="/images/logo.png" alt="LOGO" />
+              <div className="logo-img"></div>
             </Link>
           </div>
 
-          {
-            menuItems.length && renderMenuItems()
-          }
+          {renderMenuItems()}
 
-          <div className="nav-link">
-            <Link to={`/download/web-log/?domain=${domain ?? ''}&type=access`} target="_blank">{i18n['Download AccessLog']}</Link>
-          </div>
-
-          <div className="nav-link">
-            <Link to={`/download/web-log/?domain=${domain ?? ''}&type=error`} target="_blank">{i18n['Download ErrorLog']}</Link>
-          </div>
+          {renderExtraMenuItems()}
         </div>
 
         <div className="container profile-menu">
           <div><Link to={`/edit/user?user=${userName}`}>{userName}</Link></div>
-          <div><button onClick={signOut}>{i18n['Log out']}</button></div>
+          <div><button className="log-out" onClick={signOut}>{i18n['Log out']}</button></div>
         </div>
       </div>
     </div>
   );
 }
+
+export default TopPanel;
