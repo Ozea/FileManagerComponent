@@ -153,8 +153,8 @@ const ControlPanelContent = props => {
           <Route path="/add/firewall/banlist" component={AddBanIP} />
           <Route path="/add/firewall" component={() => <AddFirewall />} />
           <Route path="/edit/firewall" component={() => <EditFirewall />} />
-          <Route path="/list/server" component={props => <Servers {...props} changeSearchTerm={handleSearchTerm} />} />
-          <Route path="/edit/server" exact component={() => <EditServer />} />
+          <Route path="/list/server/" exact component={props => <Servers {...props} changeSearchTerm={handleSearchTerm} />} />
+          <Route path="/edit/server/" exact component={() => <EditServer />} />
           <Route path="/edit/server/nginx" exact component={() => <EditServerNginx />} />
           <Route path="/edit/server/php" exact component={() => <EditPhp serviceName="php" />} />
           <Route path="/edit/server/php-fpm" exact component={() => <EditPhp serviceName="php-fpm" />} />

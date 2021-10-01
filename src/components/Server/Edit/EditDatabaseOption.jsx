@@ -99,8 +99,8 @@ const EditDatabaseOption = ({ data, visible }) => {
         title={i18n['PostgreSQL Support'] + ' / '}
         selected={data.pgsql}
         options={[i18n['no'], i18n['yes']]}
-        name="v_mysql"
-        id="mysql"
+        name="v_pgsql"
+        id="pgsql"
         disabled />
 
       {

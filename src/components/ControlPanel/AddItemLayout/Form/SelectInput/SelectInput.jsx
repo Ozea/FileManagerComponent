@@ -22,6 +22,7 @@ const SelectInput = ({ options = [], id, name, title, optionalTitle = '', select
                 <span>{optionalTitle}</span>
               </label>
               <select className="form-control" id={id} name={name} disabled={disabled} onChange={event => onChange(event.target.value)}>
+                {disabled && <input type="hidden" name={name} value={selected || options[0]} />}
                 {renderOptions()}
               </select>
             </div>

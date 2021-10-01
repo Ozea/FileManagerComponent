@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
 import { addActiveElement, removeFocusedElement } from '../../actions/MainNavigation/mainNavigationActions';
 import { bulkAction, getServersList, handleAction } from '../../ControlPanelService/Server';
-import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import LeftButton from '../../components/MainNav/Toolbar/LeftButton/LeftButton';
 import Checkbox from '../../components/MainNav/Toolbar/Checkbox/Checkbox';
@@ -13,21 +12,23 @@ import ServerSys from '../../components/Server/ServerSys';
 import Spinner from '../../components/Spinner/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import Server from '../../components/Server/Server';
-import './Servers.scss';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
+import './Servers.scss';
 
 const Servers = props => {
   const { i18n } = window.GLOBAL.App;
-  const token = localStorage.getItem("token");
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
+  const [modal, setModal] = useState({
+    text: '',
+    visible: false,
+    actionUrl: '',
+  });
   const [state, setState] = useState({
     servers: [],
     selection: [],
-    modalText: '',
-    modalVisible: false,
-    modalActionUrl: '',
     loading: false,
     toggledAll: false,
     sorting: i18n.Action,
@@ -58,7 +59,7 @@ const Servers = props => {
   const handleContentSelection = event => {
     if (event.keyCode === 38 || event.keyCode === 40) {
       if (focusedElement) {
-        dispatch(MainNavigation.removeFocusedElement());
+        dispatch(removeFocusedElement());
       }
     }
 
@@ -74,22 +75,22 @@ const Servers = props => {
   const initFocusedElement = servers => {
     servers[0]['FOCUSED'] = servers[0]['NAME'];
     setState({ ...state, servers });
-    dispatch(addControlPanelContentFocusedElement(servers[0]['NAME']));
+    dispatch(addControlPanelContentFocusedElement(servers[0]));
   }
 
   const handleArrowDown = () => {
     let servers = [...state.servers];
 
     if (focusedElement) {
-      MainNavigation.removeFocusedElement();
+      removeFocusedElement();
     }
 
-    if (controlPanelFocusedElement === '') {
+    if (controlPanelFocusedElement.NAME === '' || controlPanelFocusedElement === '') {
       initFocusedElement(servers);
       return;
     }
 
-    let focusedElementPosition = servers.findIndex(server => server.NAME === controlPanelFocusedElement);
+    let focusedElementPosition = servers.findIndex(server => server.NAME === controlPanelFocusedElement.NAME);
 
     if (focusedElementPosition !== servers.length - 1) {
       let nextFocusedElement = servers[focusedElementPosition + 1];
@@ -97,7 +98,7 @@ const Servers = props => {
       nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
       document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
       setState({ ...state, servers });
-      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement));
     }
   }
 
@@ -105,15 +106,15 @@ const Servers = props => {
     let servers = [...state.servers];
 
     if (focusedElement) {
-      MainNavigation.removeFocusedElement();
+      removeFocusedElement();
     }
 
-    if (controlPanelFocusedElement === '') {
+    if (controlPanelFocusedElement.NAME === '' || controlPanelFocusedElement === '') {
       initFocusedElement(servers);
       return;
     }
 
-    let focusedElementPosition = servers.findIndex(server => server.NAME === controlPanelFocusedElement);
+    let focusedElementPosition = servers.findIndex(server => server.NAME === controlPanelFocusedElement.NAME);
 
     if (focusedElementPosition !== 0) {
       let nextFocusedElement = servers[focusedElementPosition - 1];
@@ -121,14 +122,14 @@ const Servers = props => {
       nextFocusedElement['FOCUSED'] = nextFocusedElement['NAME'];
       document.getElementById(nextFocusedElement['NAME']).scrollIntoView({ behavior: "smooth", block: "center" });
       setState({ ...state, servers });
-      dispatch(addControlPanelContentFocusedElement(nextFocusedElement['NAME']));
+      dispatch(addControlPanelContentFocusedElement(nextFocusedElement));
     }
   }
 
   const handleFocusedElementShortcuts = event => {
     let isSearchInputFocused = document.querySelector('input:focus') || document.querySelector('textarea:focus');
 
-    if (controlPanelFocusedElement && !isSearchInputFocused) {
+    if (controlPanelFocusedElement.NAME && !isSearchInputFocused) {
       switch (event.keyCode) {
         case 13: return handleConfigure();
         case 82: return handleRestart();
@@ -139,26 +140,19 @@ const Servers = props => {
   }
 
   const handleConfigure = () => {
-    let currentServerData = state.servers.filter(server => server.NAME === controlPanelFocusedElement)[0];
-
-    if (controlPanelFocusedElement !== state.servers[0].NAME) {
-      props.history.push(`/edit/server/${currentServerData.NAME}`);
+    if (controlPanelFocusedElement.NAME !== state.servers[0].NAME) {
+      props.history.push(`/edit/server/${controlPanelFocusedElement.NAME}`);
     } else {
-      props.history.push('/edit/server');
+      props.history.push('/edit/server/');
     }
   }
 
   const handleStop = () => {
-    if (controlPanelFocusedElement !== state.servers[0].NAME) {
-      let currentServerData = state.servers.filter(server => server.NAME === controlPanelFocusedElement)[0];
-
-      props.history.push(`/stop/service/?srv=${currentServerData.NAME}&token=${token}`);
-    }
+    onHandleAction(controlPanelFocusedElement.action_url);
   }
 
   const handleRestart = () => {
-    let currentServerData = state.servers.filter(server => server.NAME === controlPanelFocusedElement)[0];
-    props.history.push(`/restart/service?srv=${currentServerData.NAME}&token=${token}`);
+    onHandleAction(`/api/restart/service/?srv=${controlPanelFocusedElement.NAME}`);
   }
 
   const fetchData = () => {
@@ -180,10 +174,10 @@ const Servers = props => {
 
     for (let i in servers) {
       servers[i]['NAME'] = i;
-      servers[i]['FOCUSED'] = controlPanelFocusedElement === i;
+      servers[i]['FOCUSED'] = controlPanelFocusedElement.NAME === i;
+
       result.push(servers[i]);
     }
-
 
     result.splice(0, 0, Object.values(sysInfo)[0]);
     result[0]['NAME'] = result[0]['HOSTNAME'];
@@ -195,17 +189,37 @@ const Servers = props => {
     const result = [];
 
     state.servers.forEach(server => {
-      server.FOCUSED = controlPanelFocusedElement === server.NAME;
+      server.FOCUSED = controlPanelFocusedElement.NAME === server.NAME;
       result.push(server);
     });
 
     return result.map((item, index) => {
       if (item.HOSTNAME) {
-        return <ServerSys data={item} key={index} checkItem={checkItem} handleModal={displayModal} />
+        return <ServerSys data={item} key={index} checkItem={checkItem} handleAction={onHandleAction} />
       } else {
-        return <Server data={item} key={index} checkItem={checkItem} handleModal={displayModal} />
+        return <Server data={item} key={index} checkItem={checkItem} handleAction={onHandleAction} />
       }
     });
+  }
+
+  const onHandleAction = uri => {
+    dispatch(removeControlPanelContentFocusedElement());
+    if (uri) {
+      setState({ ...state, loading: true });
+
+      handleAction(uri)
+        .then(res => {
+          if (res.data.error) {
+            displayModal(res.data.error);
+          }
+
+          setState({ ...state, loading: false });
+        })
+        .catch(err => {
+          setState({ ...state, loading: false });
+          console.error(err)
+        });
+    }
   }
 
   const toggleAll = toggled => {
@@ -235,46 +249,22 @@ const Servers = props => {
     const { selection } = state;
 
     if (selection.length && action) {
+      setState({ ...state, loading: true });
       bulkAction(action, selection)
-        .then(result => {
-          if (result.status === 200) {
-            fetchData();
-            toggleAll(false);
+        .then(res => {
+          if (res.data.error) {
+            displayModal(res.data.error);
           }
+
+          fetchData();
+          toggleAll(false);
         })
         .catch(err => console.error(err));
     }
   }
 
-  const displayModal = (text, url) => {
-    setState({
-      ...state,
-      modalVisible: !state.modalVisible,
-      modalText: text,
-      modalActionUrl: url
-    });
-  }
-
-  const modalConfirmHandler = () => {
-    handleAction(state.modalActionUrl)
-      .then(() => {
-        fetchData();
-        modalCancelHandler();
-      })
-      .catch(err => console.error(err));
-  }
-
-  const modalCancelHandler = () => {
-    setState({
-      ...state,
-      modalVisible: false,
-      modalText: '',
-      modalActionUrl: ''
-    });
-  }
-
   const checkItem = name => {
-    const { selection, servers, sysInfo } = state;
+    const { selection } = state;
     let duplicate = [...selection];
     let serversDuplicate = [...state.servers];
     let checkedItem = duplicate.indexOf(name);
@@ -291,6 +281,22 @@ const Servers = props => {
     setState({ ...state, servers: serversDuplicate, selection: duplicate });
   }
 
+  const displayModal = text => {
+    setModal({ ...modal, visible: true, text });
+  }
+
+  const modalConfirmHandler = () => {
+    modalCancelHandler();
+    setState({ ...state, loading: true });
+    handleAction(modal.actionUrl)
+      .then(() => fetchData())
+      .catch(err => console.error(err));
+  }
+
+  const modalCancelHandler = () => {
+    setModal({ ...modal, visible: false, text: '' });
+  }
+
   return (
     <div className="servers-list">
       <Helmet>
@@ -300,7 +306,7 @@ const Servers = props => {
         <LeftButton href="/edit/server/" list="server" name={i18n.configure} showLeftMenu={true} />
         <div className="r-menu">
           <div className="input-group input-group-sm">
-            <a href="/list/server/?cpu" className="button-extra">{i18n['show: CPU / MEM / NET / DISK']}</a>
+            <Link to="/list/server/cpu" className="button-extra">{i18n['show: CPU / MEM / NET / DISK']}</Link>
             <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
             <Select list='serverList' bulkAction={bulk} />
             <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
@@ -312,11 +318,13 @@ const Servers = props => {
           {servers()}
         </div>
       )}
+
       <Modal
         onSave={modalConfirmHandler}
         onCancel={modalCancelHandler}
-        show={state.modalVisible}
-        text={state.modalText} />
+        showSaveButton={false}
+        show={modal.visible}
+        text={modal.text} />
     </div>
   );
 }

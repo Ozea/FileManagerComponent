@@ -67,6 +67,9 @@ const EditServer = props => {
       updatedServer[name] = value;
     }
 
+    updatedServer['save'] = 'save';
+    updatedServer['token'] = token;
+
     if (Object.keys(updatedServer).length !== 0 && updatedServer.constructor === Object) {
       setState({ ...state, loading: true });
 
@@ -74,14 +77,7 @@ const EditServer = props => {
         .then(result => {
           if (result.status === 200) {
             const { error_msg, ok_msg } = result.data;
-
-            if (error_msg) {
-              setState({ ...state, errorMessage: error_msg, okMessage: '', loading: false });
-            } else if (ok_msg) {
-              setState({ ...state, errorMessage: '', okMessage: ok_msg, loading: false });
-            } else {
-              setState({ ...state, loading: false });
-            }
+            setState({ ...state, errorMessage: error_msg || '', okMessage: ok_msg || '', loading: false });
           }
         })
         .catch(err => console.error(err));
@@ -117,9 +113,6 @@ const EditServer = props => {
       <AddItemLayout>
         {state.loading ? <Spinner /> :
           <form onSubmit={event => submitFormHandler(event)} id="edit-server">
-            <input type="hidden" name="save" value="save" />
-            <input type="hidden" name="token" value={token} />
-
             <TextInput
               value={state.data.hostname}
               title={i18n['Hostname']}

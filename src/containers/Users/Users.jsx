@@ -14,8 +14,8 @@ import Modal from '../../components/ControlPanel/Modal/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../../components/Spinner/Spinner';
 import User from '../../components/User/User';
-import './Users.scss';
 import { Helmet } from 'react-helmet';
+import './Users.scss';
 
 const Users = props => {
   const { i18n } = window.GLOBAL.App;
@@ -40,6 +40,7 @@ const Users = props => {
   });
 
   useEffect(() => {
+    console.log('Users mounted');
     dispatch(addActiveElement('/list/user/'));
     dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());

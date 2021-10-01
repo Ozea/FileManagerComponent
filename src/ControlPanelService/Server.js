@@ -9,16 +9,17 @@ export const getServersList = () => {
   return axios.get(BASE_URL + webApiUri);
 }
 
-export const bulkAction = (action, servers) => {
+export const bulkAction = (action, services) => {
+  console.log(action, services);
   const formData = new FormData();
   formData.append("action", action);
   formData.append("token", token);
 
-  servers.forEach(server => {
-    formData.append("service[]", server);
+  services.forEach(service => {
+    formData.append("service[]", service);
   });
 
-  return axios.post(BASE_URL + '/bulk/service/', formData);
+  return axios.post(BASE_URL + '/api/bulk/service/', formData);
 };
 
 export const handleAction = uri => {
@@ -40,7 +41,7 @@ export const updateService = (data, uri = '') => {
     formDataObject.append(key, data[key]);
   }
 
-  return axios.post(BASE_URL + `/api/edit/server${uri}/index.php`, formDataObject, {
+  return axios.post(BASE_URL + `/api/edit/server/${uri}/index.php`, formDataObject, {
     params: {
       token
     }
@@ -49,6 +50,10 @@ export const updateService = (data, uri = '') => {
 
 export const getServiceInfo = service => {
   return axios.get(`${BASE_URL}/api/edit/server/${service}/index.php`);
+}
+
+export const getServiceLogs = service => {
+  return axios.get(`${BASE_URL}/list/server/server.php?${service}`);
 }
 
 export const services = [

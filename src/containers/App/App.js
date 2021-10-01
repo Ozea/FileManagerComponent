@@ -13,6 +13,7 @@ import LoginForm from 'src/components/Login/LoginForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAuthToken } from 'src/utils/token';
 import { logout, setToken } from 'src/actions/Session/sessionActions';
+import ServiceInfo from 'src/containers/ServiceInfo/index';
 
 library.add(
   Icon.faBook,
@@ -86,6 +87,7 @@ const App = props => {
   return (
     <div className="App">
       <Switch>
+        <Route path="/list/server/:service" component={ServiceInfo} />
         <Route path="/list/directory/preview" exact component={Preview} />
         <Route path="/list/directory/" exact component={FileManager} />
         <Route path="/list/web-log/" exact component={WebLogs} />

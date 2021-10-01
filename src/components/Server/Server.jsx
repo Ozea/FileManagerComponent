@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom';
 const Server = props => {
   const { data } = props;
   const { i18n } = window.GLOBAL.App;
-  const token = localStorage.getItem("token");
 
   const printTime = seconds => {
     let hours = seconds / 60;
@@ -56,14 +55,14 @@ const Server = props => {
         </div>
 
         <div>
-          <a className="link-delete" href={`/stop/service/?srv=${data.NAME}&token=${token}`}>
-            {i18n.stop}
-            {data.FOCUSED ? <span className="shortcut-button">S</span> : <FontAwesomeIcon icon="stop" />}
-          </a>
+          <button className="link-delete" onClick={() => props.handleAction(data.action_url)}>
+            {data.STATE === 'running' ? i18n.stop : i18n.start}
+            {data.FOCUSED ? <span className="shortcut-button">S</span> : <FontAwesomeIcon icon={data.STATE === 'running' ? "stop" : "play"} />}
+          </button>
         </div>
 
         <div>
-          <a className="link-download restart" href={`/restart/service?srv=${data.NAME}`} >
+          <button className="link-download restart" onClick={() => props.handleAction(`/api/restart/service/?srv=${data.NAME}`)}>
             {i18n.restart}
             {
               data.FOCUSED
@@ -73,7 +72,7 @@ const Server = props => {
                   <path fill-rule="evenodd" d="M8 3a4.995 4.995 0 0 0-4.192 2.273.5.5 0 0 1-.837-.546A6 6 0 0 1 14 8a.5.5 0 0 1-1.001 0 5 5 0 0 0-5-5zM2.5 7.5A.5.5 0 0 1 3 8a5 5 0 0 0 9.192 2.727.5.5 0 1 1 .837.546A6 6 0 0 1 2 8a.5.5 0 0 1 .501-.5z" />
                 </svg>
             }
-          </a>
+          </button>
         </div>
 
       </div>
