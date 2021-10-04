@@ -56,6 +56,7 @@ const TopPanel = ({ menuItems = [], extraMenuItems = [] }) => {
 
     dispatch(logout())
       .then(() => {
+        history.push('/login/');
         setLoading(false);
       },
         error => {

@@ -38,7 +38,7 @@ const AdditionalFtp = ({ domain, data = {}, index, onDeleteAdditionalFtp, prefix
           </div>
         </div>
 
-        <Password name={`v_ftp_user[${index}][v_ftp_password]`} index={index} />
+        <Password name={`v_ftp_user[${index}][v_ftp_password]`} id={index} />
 
         <div className="form-group">
           <label htmlFor={`path${index}`}>{i18n.Path}</label>

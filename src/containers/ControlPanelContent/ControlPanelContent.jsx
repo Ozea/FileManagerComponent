@@ -60,7 +60,14 @@ const ControlPanelContent = props => {
   const history = useHistory();
   const [searchTerm, setSearchTerm] = useState('');
   const [hotkeysList, setHotkeysList] = useState(null);
+  const { user, token } = useSelector(state => state.session);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!user && !token) {
+      history.push('/login/');
+    }
+  }, []);
 
   useEffect(() => {
     dispatch(removeFocusedElement());
@@ -195,8 +202,8 @@ const ControlPanelContent = props => {
           <Route path="/list/cron" component={props => <CronJobs {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route path="/add/cron" component={() => <AddCronJob />} />
           <Route path="/edit/cron" component={() => <EditCronJob />} />
-          <Route exact path="/list/backup" component={props => <BackupWrapper {...props} changeSearchTerm={handleSearchTerm} /> } />
-          <Route exact path="/list/backup/exclusions" component={props => <BackupExclusions {...props} changeSearchTerm={handleSearchTerm} /> } />
+          <Route exact path="/list/backup" component={props => <BackupWrapper {...props} changeSearchTerm={handleSearchTerm} />} />
+          <Route exact path="/list/backup/exclusions" component={props => <BackupExclusions {...props} changeSearchTerm={handleSearchTerm} />} />
           <Route exact path="/edit/backup/exclusions" component={EditBackupExclusions} />
           <Route path="/search/" component={props => <Search {...props} changeSearchTerm={handleSearchTerm} searchTerm={searchTerm} />} />
         </Switch>

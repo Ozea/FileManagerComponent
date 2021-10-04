@@ -10,7 +10,6 @@ export const getServersList = () => {
 }
 
 export const bulkAction = (action, services) => {
-  console.log(action, services);
   const formData = new FormData();
   formData.append("action", action);
   formData.append("token", token);

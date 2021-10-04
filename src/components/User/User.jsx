@@ -4,7 +4,7 @@ import { loginAs, logout } from 'src/actions/Session/sessionActions';
 import Container from '../ControlPanel/Container/Container';
 import ListItem from '../ControlPanel/ListItem/ListItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import './User.scss';
 
@@ -14,6 +14,7 @@ const User = ({ data, toggleFav, handleModal, checkItem }) => {
   const [loading, setLoading] = useState(false);
   const session = useSelector(state => state.session);
   const token = localStorage.getItem("token");
+  const history = useHistory();
   const dispatch = useDispatch();
 
   const printNameServers = servers => {
@@ -38,6 +39,7 @@ const User = ({ data, toggleFav, handleModal, checkItem }) => {
 
     dispatch(logout())
       .then(() => {
+        history.push('/login/');
         setLoading(false);
       });
   }

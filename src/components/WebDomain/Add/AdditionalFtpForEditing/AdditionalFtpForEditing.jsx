@@ -42,7 +42,7 @@ const AdditionalFtpForEditing = ({ domain, data = {}, index, onDeleteAdditionalF
           </div>
         </div>
 
-        <Password name={`v_ftp_user[${index}][v_ftp_password]`} index={index} />
+        <Password name={`v_ftp_user[${index}][v_ftp_password]`} id={index} />
 
         <div className="form-group">
           <input type="hidden" name="v_ftp_pre_path" value={data.v_ftp_pre_path ? data.v_ftp_pre_path : '/'} />

@@ -13,7 +13,8 @@ import LoginForm from 'src/components/Login/LoginForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAuthToken } from 'src/utils/token';
 import { logout, setToken } from 'src/actions/Session/sessionActions';
-import ServiceInfo from 'src/containers/ServiceInfo/index';
+import ServiceInfo from 'src/containers/ServiceInfo';
+import ForgotPassword from 'src/components/ForgotPassword';
 
 library.add(
   Icon.faBook,
@@ -60,7 +61,7 @@ library.add(
   Icon.faPlay
 );
 
-const App = props => {
+const App = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const session = useSelector(state => state.session);
@@ -70,13 +71,11 @@ const App = props => {
 
     if (!session.session && !session.user) {
       dispatch(logout());
-      history.push('/login');
       return;
     }
 
     if (!session.token && !windowSessionToken) {
       dispatch(logout());
-      history.push('/login');
     } else if (!session.token && windowSessionToken) {
       dispatch(setToken(windowSessionToken));
     } else if (session.token && !windowSessionToken) {
@@ -87,11 +86,12 @@ const App = props => {
   return (
     <div className="App">
       <Switch>
-        <Route path="/list/server/:service" component={ServiceInfo} />
         <Route path="/list/directory/preview" exact component={Preview} />
         <Route path="/list/directory/" exact component={FileManager} />
+        <Route path="/list/server/:service" component={ServiceInfo} />
         <Route path="/list/web-log/" exact component={WebLogs} />
         <Route path="/login" exact component={LoginForm} />
+        <Route path="/reset" exact component={ForgotPassword} />
         <Route path="/" component={ControlPanelContent} />
       </Switch>
     </div>

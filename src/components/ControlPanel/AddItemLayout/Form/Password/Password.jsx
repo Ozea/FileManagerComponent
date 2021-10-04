@@ -1,7 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
 
-const Password = props => {
+const Password = ({ defaultValue, onChange = () => { }, id, name, title, showGenerationButton = true, ...props }) => {
   const { i18n } = window.GLOBAL.App;
   const [state, setState] = useState({
     hidePassword: false,
@@ -9,10 +9,10 @@ const Password = props => {
   });
 
   useEffect(() => {
-    if (props.defaultValue && !state.generatedPassword) {
-      setState({ ...state, generatedPassword: props.defaultValue });
+    if (defaultValue && !state.generatedPassword) {
+      setState({ ...state, generatedPassword: defaultValue });
     }
-  }, [props.defaultValue]);
+  }, [defaultValue]);
 
   const hidePasswordHandler = () => {
     setState({ ...state, hidePassword: !state.hidePassword });
@@ -33,25 +33,30 @@ const Password = props => {
 
   const passwordInputHandler = value => {
     setState({ ...state, generatedPassword: value });
-    props.onChange(value);
+    onChange(value);
   }
 
   return (
     <div className="form-group">
       <label htmlFor="password">
-        {i18n.Password} /
-          <button type="button" className="generate-password" onClick={() => generatePassword()}>
-          {i18n.Generate}
-        </button>
+        {title ? title : i18n.Password}
+        {
+          showGenerationButton && (
+            <>/ <button type="button" className="generate-password" onClick={() => generatePassword()}>
+              {i18n.Generate}
+            </button></>
+          )
+        }
       </label>
       <div className="password-wrapper">
         <input
           type={state.hidePassword ? 'password' : 'text'}
           className="form-control"
-          id={`password_${props.index}`}
-          name={props.name}
+          id={`password_${id}`}
+          name={name}
           value={state.generatedPassword}
-          onChange={event => passwordInputHandler(event.target.value)} />
+          onChange={event => passwordInputHandler(event.target.value)}
+          {...props} />
         <button type="button" onClick={() => hidePasswordHandler()}>
           {state.hidePassword ?
             <span className="eye-slash"><FontAwesomeIcon icon="eye-slash" /></span> :

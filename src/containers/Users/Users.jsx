@@ -40,7 +40,6 @@ const Users = props => {
   });
 
   useEffect(() => {
-    console.log('Users mounted');
     dispatch(addActiveElement('/list/user/'));
     dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
