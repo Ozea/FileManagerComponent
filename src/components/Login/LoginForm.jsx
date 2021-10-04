@@ -81,9 +81,9 @@ export default function LoginForm() {
                 title={i18n['Password']}
                 value={formValues.password}
                 optionalTitle={(
-                  <button className="forgot-password" tabIndex="-1">
+                  <Link className="forgot-password" tabIndex="-1" to="/reset">
                     {i18n['forgot password']}
-                  </button>
+                  </Link>
                 )}
                 name="password"
                 type="password"

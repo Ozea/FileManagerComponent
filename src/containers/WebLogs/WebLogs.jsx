@@ -16,11 +16,18 @@ export default function WebLogs() {
   const history = useHistory();
   const dispatch = useDispatch();
   const mainNavigation = useSelector(state => state.mainNavigation);
+  const { user, token } = useSelector(state => state.session);
   const [domain, setDomain] = useState();
   const [state, setState] = useState({
     data: "",
     loading: false
   });
+
+  useEffect(() => {
+    if (!user && !token) {
+      history.push('/login/');
+    }
+  }, []);
 
   useEffect(() => {
     let parsedQueryString = QueryString.parse(history.location.search, { ignoreQueryPrefix: true });

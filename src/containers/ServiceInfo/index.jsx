@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import { addActiveElement } from 'src/actions/MainNavigation/mainNavigationActions';
 import TopPanel from 'src/components/TopPanel/TopPanel';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { getServiceLogs } from 'src/ControlPanelService/Server';
@@ -16,11 +16,19 @@ const ServiceInfo = () => {
   const { i18n } = window.GLOBAL.App;
   const dispatch = useDispatch();
   const mainNavigation = useSelector(state => state.mainNavigation);
+  const { user, token } = useSelector(state => state.session);
+  const history = useHistory();
   const { service } = useParams();
   const [state, setState] = useState({
     data: "",
     loading: false
   });
+
+  useEffect(() => {
+    if (!user && !token) {
+      history.push('/login/');
+    }
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -33,7 +41,6 @@ const ServiceInfo = () => {
     getServiceLogs(service)
       .then(result => {
         setState({ ...state, data: result.data.service_log, loading: false });
-        console.log(result.data);
       })
       .catch(error => {
         console.error(error);

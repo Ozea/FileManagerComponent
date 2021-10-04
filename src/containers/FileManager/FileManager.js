@@ -53,6 +53,10 @@ class FileManager extends Component {
   }
 
   componentDidMount = () => {
+    if (!localStorage.getItem("token")) {
+      this.props.history.push('/login/');
+    }
+
     window.addEventListener("keydown", this.switchActiveList);
     window.addEventListener("keydown", this.toggleActiveListOnTab);
     document.addEventListener("keydown", this.hotkeysListener);

@@ -1,6 +1,7 @@
+import { LOGIN, LOGOUT, LOGGED_OUT_AS, RESET_PASSWORD } from './sessionTypes';
 import { checkAuth, signIn, signInAs, signOut } from 'src/services/session';
 import { resetAuthToken, setAuthToken } from 'src/utils/token';
-import { LOGIN, LOGOUT, LOGGED_OUT_AS } from './sessionTypes';
+import { resetPassword } from 'src/ControlPanelService/ResetPassword';
 
 const LOGOUT_RESPONSE = 'logged_out';
 const LOGOUT_AS_RESPONSE = 'logged_out_as';
@@ -9,12 +10,12 @@ export const login = (user, password) => dispatch => {
   return new Promise((resolve, reject) => {
     signIn(user, password).then((response) => {
       const { error, session, token, panel, data, user } = response.data;
-      setAuthToken(token);
+      if (token) setAuthToken(token);
 
       dispatch({
         type: LOGIN,
         value: {
-          token: data ? token : null,
+          token: data ? token : '',
           panel,
           session,
           userName: user,
@@ -29,11 +30,35 @@ export const login = (user, password) => dispatch => {
   });
 }
 
+export const reset = ({ user = '', code = '', password = '', password_confirm = '' }) => dispatch => {
+  return new Promise((resolve, reject) => {
+    resetPassword(user, code, password, password_confirm).then((response) => {
+      const { error, session, token, panel, user } = response.data;
+      if (token) setAuthToken(token);
+
+      dispatch({
+        type: RESET_PASSWORD,
+        value: {
+          token,
+          panel,
+          session,
+          userName: user,
+          user: {},
+          error
+        },
+      });
+      resolve(response.data);
+    }, (error) => {
+      reject(error);
+    });
+  });
+}
+
 export const loginAs = username => dispatch => {
   return new Promise((resolve, reject) => {
     signInAs(username).then((response) => {
       const { error, token, session, panel, data, user } = response.data;
-      setAuthToken(token);
+      if (token) setAuthToken(token);
 
       dispatch({
         type: LOGIN,
