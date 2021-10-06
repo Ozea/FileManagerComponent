@@ -283,7 +283,7 @@ class DirectoryList extends Component {
     const { isActive, path, loading } = this.props;
     return (
       <div className={isActive ? "list active" : "list"} onClick={this.toggleActiveList}>
-        <Path class={isActive ? "active-path" : "path"}
+        <Path className={isActive ? "active-path" : "path"}
           openDirectory={this.openCertainDirectory}
           changeSorting={this.changeSorting}
           sorting={this.state.sortingType}

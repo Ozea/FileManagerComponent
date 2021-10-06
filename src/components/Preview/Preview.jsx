@@ -1,26 +1,27 @@
-import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useHistory } from 'react-router';
 import Editor from './Editor/Editor';
 import Photo from './Photo/Photo';
 import Video from './Video/Video';
 
-class Preview extends Component {
+const Preview = (props) => {
+  const history = useHistory();
 
-  componentDidMount = () => {
-    document.addEventListener("keydown", this.hotkeys);
-  }
+  useEffect(() => {
+    document.addEventListener("keydown", hotkeys);
 
-  componentWillUnmount = () => {
-    document.removeEventListener("keydown", this.hotkeys);
-  }
+    return () => {
+      document.removeEventListener("keydown", hotkeys);
+    }
+  }, []);
 
-  hotkeys = (e) => {
+  const hotkeys = e => {
     if (e.keyCode === 121) {
-      this.props.onClose();
+      props.onClose();
     }
   }
 
-  onClose = (history) => {
+  const onClose = () => {
     let lastOpenedDirectory = history.location.search.substring(6, history.location.search.lastIndexOf('/'));
     history.push({
       pathname: '/list/directory',
@@ -28,31 +29,28 @@ class Preview extends Component {
     })
   }
 
-  content = () => {
-    const { location } = this.props;
-    let split = location.search.split('/');
+  const content = () => {
+    let split = history.location.search.split('/');
     let name = split[split.length - 1];
 
-    if (location.pathname !== '/list/directory/preview/') {
+    if (history.location.pathname !== '/list/directory/preview/') {
       return;
     }
 
     if (name.match('.mp4')) {
-      return <Video closeModal={this.onClose} />;
+      return <Video closeModal={onClose} />;
     } else if (name.match(/png|jpg|jpeg|gif/g)) {
-      return <Photo closeModal={this.onClose} close={this.onClose} path={location.search} activeImage={name} />;
+      return <Photo closeModal={onClose} close={onClose} path={history.location.search} activeImage={name} />;
     } else {
-      return <Editor close={this.onClose} name={name} />;
+      return <Editor close={onClose} name={name} />;
     }
   }
 
-  render() {
-    return (
-      <div>
-        {this.content()}
-      </div>
-    );
-  }
+  return (
+    <div>
+      {content()}
+    </div>
+  );
 }
 
-export default withRouter(Preview);
+export default Preview;

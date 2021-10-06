@@ -48,6 +48,10 @@ $white: #fff;
     }
 
     .btn-secondary {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
       &:hover {
         color: rgb(1, 148, 148);
         background: #7b7b7b;
@@ -123,6 +127,10 @@ $white: #fff;
     }
 
     .btn-secondary {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      
       &:hover {
         color: rgb(1, 148, 148);
         background: #333;
