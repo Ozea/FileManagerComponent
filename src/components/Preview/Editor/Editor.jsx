@@ -1,104 +1,132 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState } from 'react';
 import CodeMirror from 'react-codemirror';
 import './Editor.scss';
 import 'codemirror/lib/codemirror.css';
 import 'codemirror/mode/javascript/javascript';
-import 'codemirror/mode/xml/xml';
 import 'codemirror/mode/markdown/markdown';
-import { withRouter } from 'react-router-dom';
+import 'codemirror/mode/php/php';
+import 'codemirror/mode/css/css';
+import 'codemirror/mode/htmlmixed/htmlmixed';
 import axios from 'axios';
 import Spinner from '../../Spinner/Spinner';
+import { useHistory } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
 
-class Editor extends Component {
-  state = {
+const Editor = ({ close, name }) => {
+  const { i18n } = window.GLOBAL.App;
+  const history = useHistory();
+  const [state, setState] = useState({
     code: '',
     loading: false
+  });
+
+  useEffect(() => {
+    document.addEventListener("keydown", hotKey);
+
+    let path = `${history.location.search.substring(6, history.location.search.lastIndexOf('/'))}/${name}`;
+    setState({ ...state, loading: true });
+
+    checkFileType(path)
+      .then(res => {
+        if (res.data.result) {
+          axios.get(`${window.location.origin}/edit/file/?path=${encodePath(path)}`)
+            .then(result => {
+              if (result.data.error) {
+                return showToast(res.data.error);
+              }
+
+              setState({ ...state, code: result.data.content, loading: false });
+            })
+            .catch(err => console.error(err));
+        } else {
+          console.error('Something went wrong with file type!');
+        }
+      })
+      .catch(err => console.error(err));
+
+    return () => {
+      document.removeEventListener("keydown", hotKey);
+    }
+  }, []);
+
+  const checkFileType = path => {
+    return axios.get(`${window.location.origin}/file_manager/fm_api.php?dir=${path}&action=check_file_type`);
   }
 
-  encodePath = (path) => {
-    let splitPath = path.split('/');
-    let encodedPath = splitPath.join('%2F');
-    return encodedPath;
+  const encodePath = path => {
+    return path.split('/').join('%2F');
   }
 
-  UNSAFE_componentWillMount = () => {
-    document.addEventListener("keydown", this.hotKey);
-
-    const { history } = this.props;
-    let path = history.location.search.substring(6, history.location.search.lastIndexOf('/'));
-    this.setState({ loading: true }, () => {
-      axios.get(`${window.location.origin}/file_manager/fm_api.php?dir=${this.encodePath(path)}&item=${this.props.name}&action=open_fs_file`)
-        .then(result => {
-          if (result.data.content) {
-            this.setState({ code: result.data.content, loading: false });
-          } else {
-            toast.warning('This file is empty!', {
-              position: "top-center",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true
-            });
-          }
-        })
-    })
-  }
-
-  componentWillUnmount = () => {
-    document.removeEventListener("keydown", this.hotKey);
-  }
-
-  hotKey = (e) => {
+  const hotKey = e => {
     if (e.keyCode === 113) {
-      this.save();
+      save();
     }
   }
 
-  save = () => {
+  const save = () => {
     let formData = new FormData();
-    let path = this.props.history.location.search.substring(6, this.props.history.location.search.lastIndexOf('/'));
+    let path = history.location.search.substring(6, history.location.search.lastIndexOf('/'));
 
     formData.append('save', 'Save');
-    formData.append('contents', this.state.code);
+    formData.append('contents', state.code);
 
-    this.setState({ loading: true }, () => {
-      axios.post(`${window.location.origin}/edit/file/?path=${path}%2F${this.props.name}`, formData)
-        .then(toast.success('Saved successfully!', {
-          position: "top-center",
-          autoClose: 3000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true
-        }), this.setState({ loading: false })
-        )
-    })
+    setState({ ...state, loading: true });
+    axios.post(`${window.location.origin}/edit/file/?path=${path}%2F${name}`, formData)
+      .then(res => {
+        if (res.data.error) {
+          showToast(res.data.error);
+        } else {
+          showToast('Saved successfully!');
+        }
+        setState({ ...state, loading: false });
+      })
+      .catch(err => console.error(err));
   }
 
-  updateCode = (newCode) => {
-    this.setState({
-      code: newCode
+  const showToast = text => {
+    toast.success(text, {
+      position: "top-center",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true
     });
   }
 
-  render() {
-    let options = {
-      mode: 'javascript',
-      lineNumbers: true
-    };
-    return (
-      <div className="editor">
-        <ToastContainer />
-        <div className="panel-editor">
-          <button type="button" className="btn btn-primary" onClick={this.save}>Save</button>
-          <button type="button" className="btn btn-danger" onClick={this.props.close}>Close</button>
-        </div>
-        {this.state.loading ? <Spinner /> : <CodeMirror value={this.state.code} onChange={this.updateCode} options={options} autoFocus />}
-      </div>
-    );
+  const updateCode = newCode => {
+    setState({ ...state, code: newCode });
   }
+
+  const getModeFromFileName = () => {
+    const fileExtension = name.split('.').pop();
+
+    switch (fileExtension) {
+      case 'js': return 'javascript';
+      case 'jsx': return 'javascript';
+      case 'php': return 'php';
+      case 'css': return 'css';
+      case 'scss': return 'css';
+      case 'html': return 'htmlmixed';
+      default: return 'markdown';
+    }
+  }
+
+  let options = {
+    mode: getModeFromFileName(),
+    lineNumbers: true
+  };
+
+  return (
+    <div className="editor">
+      <ToastContainer />
+      <div className="panel-editor">
+        <button type="button" className="btn btn-primary" onClick={save}>{i18n.Save}</button>
+        <button type="button" className="btn btn-danger" onClick={close}>{i18n.Close}</button>
+      </div>
+      {state.loading ? <Spinner /> : <CodeMirror value={state.code} onChange={updateCode} options={options} autoFocus />}
+    </div>
+  );
 }
 
-export default withRouter(Editor);
+export default Editor;
