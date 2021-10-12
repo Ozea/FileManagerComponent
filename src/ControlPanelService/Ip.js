@@ -1,5 +1,4 @@
 import axios from "axios";
-import { interfaces, users } from '../mocks/internetProtocols';
 
 const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
