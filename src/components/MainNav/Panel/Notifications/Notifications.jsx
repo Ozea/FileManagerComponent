@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { getAppNotifications, deleteNotification } from '../../../../ControlPanelService/Notifications';
+import { getAppNotifications, deleteNotification } from 'src/ControlPanelService/Notifications';
+import { addNotifications } from 'src/actions/Notification/notificationActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './Notifications.scss';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Notifications = () => {
-  const [notifications, setNotifications] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { i18n } = useSelector(state => state.session);
+  const { notifications } = useSelector(state => state.notifications);
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (!notifications.length) {
+      fetchData();
+    }
+  }, [notifications]);
 
   const fetchData = () => {
+    setLoading(true);
     getAppNotifications()
       .then(res => {
         if (res.data) {
@@ -21,11 +28,14 @@ const Notifications = () => {
             result.push(res.data[notification]);
           }
 
-          setNotifications(result);
+          dispatch(addNotifications(result));
           setLoading(false);
         }
       })
-      .catch(err => console.error(err))
+      .catch(err => {
+        console.error(err);
+        setLoading(false);
+      })
   }
 
   const removeNotification = id => {
@@ -53,7 +63,7 @@ const Notifications = () => {
     } else {
       return (
         <div className="dropdown-item" style={{ cursor: 'default', marginBottom: '10' }}>
-          <span className="title">{window.GLOBAL.App.Constants.NOTIFICATIONS_EMPTY}</span>
+          <span className="title">{i18n['no notifications']}</span>
         </div>
       );
     }
