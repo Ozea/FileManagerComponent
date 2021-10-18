@@ -8,5 +8,5 @@ export const getRrdList = () => {
 }
 
 export function generateImagePath(period, type, rrd) {
-  return `/list/rrd/image.php?/rrd/${type}/${period}-${rrd}.png`;
+  return `/api/v1/list/rrd/image.php?/rrd/${type}/${period}-${rrd}.png`;
 }
