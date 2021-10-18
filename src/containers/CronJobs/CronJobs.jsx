@@ -18,7 +18,7 @@ import './CronJobs.scss';
 import { Helmet } from 'react-helmet';
 
 const CronJobs = props => {
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
   const token = localStorage.getItem("token");
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
@@ -360,7 +360,7 @@ const CronJobs = props => {
 
   const handleCronNotifications = () => {
     const token = localStorage.getItem("token");
-    const url = `/api/${state.cronReports === 'yes' ? 'delete' : 'add'}/cron/reports/?token=${token}`;
+    const url = `/api/v1/${state.cronReports === 'yes' ? 'delete' : 'add'}/cron/reports/?token=${token}`;
 
     handleAction(url)
       .then(res => {

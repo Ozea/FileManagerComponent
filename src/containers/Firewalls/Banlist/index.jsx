@@ -18,7 +18,7 @@ import { useHistory } from 'react-router';
 import './styles.scss';
 
 const BanLists = props => {
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
   const history = useHistory();
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);

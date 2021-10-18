@@ -4,10 +4,11 @@ import Container from '../ControlPanel/Container/Container';
 import ListItem from '../ControlPanel/ListItem/ListItem';
 import './Package.scss';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Package = props => {
   const { data } = props;
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
   const token = localStorage.getItem("token");
 
   const printNameServers = servers => {

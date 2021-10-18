@@ -2,8 +2,8 @@ import axios from "axios";
 
 const BASE_URL = window.location.origin;
 const token = localStorage.getItem("token");
-const webApiUri = '/list/server/server.php';
-const serverAdditionalInfoUri = '/api/edit/server/index.php';
+const webApiUri = '/api/v1/list/server/index.php';
+const serverAdditionalInfoUri = '/api/v1/edit/server/index.php';
 
 export const getServersList = () => {
   return axios.get(BASE_URL + webApiUri);
@@ -18,7 +18,7 @@ export const bulkAction = (action, services) => {
     formData.append("service[]", service);
   });
 
-  return axios.post(BASE_URL + '/api/bulk/service/', formData);
+  return axios.post(BASE_URL + '/api/v1/bulk/service/', formData);
 };
 
 export const handleAction = uri => {
@@ -40,7 +40,7 @@ export const updateService = (data, uri = '') => {
     formDataObject.append(key, data[key]);
   }
 
-  return axios.post(BASE_URL + `/api/edit/server/${uri}/index.php`, formDataObject, {
+  return axios.post(BASE_URL + `/api/v1/edit/server/${uri}/index.php`, formDataObject, {
     params: {
       token
     }
@@ -48,7 +48,7 @@ export const updateService = (data, uri = '') => {
 }
 
 export const getServiceInfo = service => {
-  return axios.get(`${BASE_URL}/api/edit/server/${service}/index.php`);
+  return axios.get(`${BASE_URL}/api/v1/edit/server/${service}/index.php`);
 }
 
 export const getServiceLogs = service => {

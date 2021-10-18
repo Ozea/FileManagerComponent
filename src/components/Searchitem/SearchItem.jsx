@@ -3,11 +3,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ListItem from '../ControlPanel/ListItem/ListItem';
 import Container from '../ControlPanel/Container/Container';
 import './SearchItem.scss';
+import { useSelector } from 'react-redux';
 
 class SearchItem extends Component {
   render() {
     const { data } = this.props;
-    const { i18n } = window.GLOBAL.App;
+    const { i18n } = useSelector(state => state.session);
 
     return (
       <ListItem date={data.DATE} suspended={data.SUSPENDED === 'yes'}>

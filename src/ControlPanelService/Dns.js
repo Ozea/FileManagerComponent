@@ -1,11 +1,11 @@
 import axios from "axios";
 
-const updateDNSUri = '/api/edit/dns/index.php';
-const addDnsApiUri = '/api/add/dns/index.php';
-const dNSInfoUri = '/api/edit/dns/index.php';
+const updateDNSUri = '/api/v1/edit/dns/index.php';
+const addDnsApiUri = '/api/v1/add/dns/index.php';
+const dNSInfoUri = '/api/v1/edit/dns/index.php';
 const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
-const dnsApiUri = '/list/dns/dns.php';
+const dnsApiUri = '/api/v1/list/dns/index.php';
 
 export const getDnsList = () => {
   return axios.get(BASE_URL + dnsApiUri);

@@ -19,7 +19,7 @@ import './DNSRecords.scss';
 import { Helmet } from 'react-helmet';
 
 export default function DnsRecords(props) {
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
   const token = localStorage.getItem('token');
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);

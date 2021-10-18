@@ -2,11 +2,11 @@ import axios from "axios";
 
 const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
-const webApiUri = '/list/ip/ip.php';
-const addIpApiUri = '/api/add/ip/index.php';
-const additionalInfoUri = '/api/add/ip/index.php';
-const ipInfoUri = '/api/edit/ip/index.php';
-const updateIpUri = '/api/edit/ip/index.php';
+const webApiUri = '/api/v1/list/ip/index.php';
+const addIpApiUri = '/api/v1/add/ip/index.php';
+const additionalInfoUri = '/api/v1/add/ip/index.php';
+const ipInfoUri = '/api/v1/edit/ip/index.php';
+const updateIpUri = '/api/v1/edit/ip/index.php';
 
 export const getIpList = () => {
   return axios.get(BASE_URL + webApiUri);

@@ -1,12 +1,11 @@
 import axios from "axios";
 
 const token = localStorage.getItem("token");
-const { i18n } = window.GLOBAL.App;
 const BASE_URL = window.location.origin;
-const webApiUri = '/list/mail/mail.php';
-const addMailApiUri = '/api/add/mail/index.php';
-const mailInfoUri = '/api/edit/mail/index.php';
-const updateMailUri = '/api/edit/mail/index.php';
+const webApiUri = '/api/v1/list/mail/index.php';
+const addMailApiUri = '/api/v1/add/mail/index.php';
+const mailInfoUri = '/api/v1/edit/mail/index.php';
+const updateMailUri = '/api/v1/edit/mail/index.php';
 
 export const getMailList = () => {
   return axios.get(BASE_URL + webApiUri);
@@ -103,7 +102,7 @@ export const updateMail = (data, domain) => {
   });
 }
 
-export const mailInfoBlockSelectOptions = [
+export const mailInfoBlockSelectOptions = i18n => [
   {
     value: i18n['Use server hostname'],
     type: 'hostname',

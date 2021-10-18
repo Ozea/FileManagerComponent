@@ -18,7 +18,7 @@ import { Helmet } from 'react-helmet';
 import './Users.scss';
 
 const Users = props => {
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
   const { token, userName } = useSelector(state => state.session);
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);

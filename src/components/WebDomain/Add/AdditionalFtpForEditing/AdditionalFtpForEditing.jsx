@@ -6,8 +6,7 @@ import Password from '../../../../components/ControlPanel/AddItemLayout/Form/Pas
 import './AdditionalFtpForEditing.scss';
 
 const AdditionalFtpForEditing = ({ domain, data = {}, index, onDeleteAdditionalFtp, prefixI18N }) => {
-  const { i18n } = window.GLOBAL.App;
-  const { user } = useSelector(state => state.session);
+  const { user, i18n } = useSelector(state => state.session);
   const [state, setState] = useState({
     username: '',
     path: ''

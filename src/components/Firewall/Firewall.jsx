@@ -4,10 +4,11 @@ import Container from '../ControlPanel/Container/Container';
 import ListItem from '../ControlPanel/ListItem/ListItem';
 import { Link } from 'react-router-dom';
 import './Firewall.scss';
+import { useSelector } from 'react-redux';
 
 const Firewall = ({ data, ...props }) => {
   const token = localStorage.getItem("token");
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
 
   const toggleFav = (starred) => {
     if (starred) {

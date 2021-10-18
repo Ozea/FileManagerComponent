@@ -12,7 +12,7 @@ import Spinner from 'src/components/Spinner/Spinner';
 import { Helmet } from 'react-helmet';
 
 export default function WebLogs() {
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
   const history = useHistory();
   const dispatch = useDispatch();
   const mainNavigation = useSelector(state => state.mainNavigation);

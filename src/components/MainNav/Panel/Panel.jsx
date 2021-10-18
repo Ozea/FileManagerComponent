@@ -9,7 +9,7 @@ import { Link, useHistory } from "react-router-dom";
 import './Panel.scss';
 
 const Panel = props => {
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
   const session = useSelector(state => state.session);
   const { activeElement, focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
@@ -95,9 +95,9 @@ const Panel = props => {
           {session.session.FIREWALL_SYSTEM && <div className={className("/list/firewall/")}>
             <button onClick={event => handleState("/list/firewall/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Firewall}</button>
           </div>}
-          {session.session.FILEMANAGER_KEY && <div className="fm">
+          <div className="fm">
             <a href="/list/directory/">{i18n['File Manager']}</a>
-          </div>}
+          </div>
           {session.session.SOFTACULOUS === "yes" && <div><a href="/list/softaculous/">{i18n.Apps}</a>
           </div>}
           <div className={className("/list/server/")}>

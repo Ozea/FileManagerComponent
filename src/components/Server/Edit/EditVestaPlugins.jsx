@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react';
 import SelectInput from 'src/components/ControlPanel/AddItemLayout/Form/SelectInput/SelectInput';
 import TextInput from 'src/components/ControlPanel/AddItemLayout/Form/TextInput/TextInput';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const EditVestaPluginsOption = ({ data, visible }) => {
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
   const [sftpOptions, setSftpOptions] = useState([]);
   const [fmOptions, setFmOptions] = useState([]);
   const [sftpDescription, setSftpDescription] = useState(false);

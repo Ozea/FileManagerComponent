@@ -8,9 +8,8 @@ import { Link, useHistory } from 'react-router-dom';
 
 import './User.scss';
 
-const { i18n } = window.GLOBAL.App;
-
 const User = ({ data, toggleFav, handleModal, checkItem }) => {
+  const { i18n } = useSelector(state => state.session);
   const [loading, setLoading] = useState(false);
   const session = useSelector(state => state.session);
   const token = localStorage.getItem("token");

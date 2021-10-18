@@ -14,22 +14,21 @@ import axios from 'axios';
 import { Helmet } from 'react-helmet';
 
 const server = window.location.origin + "/file_manager/fm_api.php?";
-const { i18n } = window.GLOBAL.App;
 
 class FileManager extends Component {
   constructor(props) {
     super(props);
     this.state = {
       leftList: {
-        path: window.GLOBAL.ROOT_DIR,
+        path: window.GLOBAL.App.ROOT_DIR,
         files: { listing: [] },
       },
       rightList: {
-        path: window.GLOBAL.ROOT_DIR,
+        path: window.GLOBAL.App.ROOT_DIR,
         files: { listing: [] },
       },
-      currentPath: window.GLOBAL.ROOT_DIR,
-      currentUser: window.GLOBAL.ROOT_DIR,
+      currentPath: window.GLOBAL.App.ROOT_DIR,
+      currentUser: window.GLOBAL.App.ROOT_DIR,
       activeWindow: "left",
       modalWindow: null,
       modalVisible: false,
@@ -448,7 +447,7 @@ class FileManager extends Component {
     return (
       <div className="window">
         <Helmet>
-          <title>{i18n['File Manager']}</title>
+          <title>{window.GLOBAL ? window.GLOBAL.App.i18n['File Manager'] : 'File Manager'}</title>
         </Helmet>
         {uploadPercent !== "0" ? <ProgressBar progress={uploadPercent} /> : null}
         <ToastContainer />

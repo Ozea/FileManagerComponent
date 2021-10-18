@@ -1,10 +1,16 @@
 import axios from "axios";
 let BASE_URL = window.location.origin;
-let getNotificationsUri = '/list/notifications/?ajax=1';
+let getNotificationsUri = '/api/v1/list/notifications/index.php';
 let deleteNotificationsUri = '/delete/notification';
+const token = localStorage.getItem("token");
 
 export const getAppNotifications = () => {
-  return axios.get(BASE_URL + getNotificationsUri);
+  return axios.get(BASE_URL + getNotificationsUri, {
+    params: {
+      ajax: 1,
+      token
+    }
+  });
 }
 
 export const deleteNotification = id => {
@@ -12,7 +18,8 @@ export const deleteNotification = id => {
     params: {
       'delete': 1,
       'notification_id': id,
-      'token': localStorage.getItem("token")
+      'ajax': 1,
+      token
     }
   });
 }
