@@ -11,8 +11,8 @@ import ControlPanelContent from '../ControlPanelContent/ControlPanelContent';
 import WebLogs from '../WebLogs/WebLogs';
 import LoginForm from 'src/components/Login/LoginForm';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAuthToken, resetAuthToken, setAuthToken } from 'src/utils/token';
-import { checkAuthHandler, checkAuthTokenHandler } from 'src/actions/Session/sessionActions';
+import { setAuthToken } from 'src/utils/token';
+import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 import ServiceInfo from 'src/containers/ServiceInfo';
 import ForgotPassword from 'src/components/ForgotPassword';
 import Spinner from 'src/components/Spinner/Spinner';
@@ -69,22 +69,14 @@ const App = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const windowSessionToken = getAuthToken();
-
     if (!Object.entries(session.i18n).length) {
       dispatch(checkAuthHandler()).then(token => {
         if (token) {
           setAuthToken(token);
         }
 
-        setLoading(false)
+        setLoading(false);
       });
-      return;
-    }
-
-    if (!session.token && windowSessionToken) {
-      setAuthToken(windowSessionToken);
-      setLoading(false);
     }
   }, [dispatch, history, session]);
 
@@ -126,6 +118,7 @@ const App = () => {
               <AuthenticatedRoute
                 path="/"
                 authenticated={session.token && session.userName}
+                loading={loading}
                 component={ControlPanelContent} />
             </Switch>
           )
