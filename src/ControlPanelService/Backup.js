@@ -2,13 +2,13 @@ import axios from "axios";
 
 const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
-const webApiUri = '/list/backup/backup.php';
+const webApiUri = '/api/v1/list/backup/index.php';
 const scheduleBackupUri = '/schedule/backup/';
-const backupDetailsUri = '/list/backup/backup.php';
-const backupExclusionsUri = '/api/list/backup/exclusions/index.php';
-const backupExclusionsInfoUri = '/api/edit/backup/exclusions/index.php';
-const backupRestoreSettingUri = '/api/schedule/restore/index.php';
-const bulkRestoreUri = '/api/bulk/restore/index.php';
+const backupDetailsUri = '/api/v1/list/backup/index.php';
+const backupExclusionsUri = '/api/v1/list/backup/exclusions/index.php';
+const backupExclusionsInfoUri = '/api/v1/edit/backup/exclusions/index.php';
+const backupRestoreSettingUri = '/api/v1/schedule/restore/index.php';
+const bulkRestoreUri = '/api/v1/bulk/restore/index.php';
 
 export const getBackupList = () => {
   return axios.get(BASE_URL + webApiUri);

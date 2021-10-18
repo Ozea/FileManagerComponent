@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import FileManager from '../FileManager/FileManager';
-import { Route, Switch, useHistory } from "react-router-dom";
+import { Route, Switch, useHistory, Redirect } from "react-router";
 import Preview from '../../components/Preview/Preview';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import * as Icon from '@fortawesome/free-solid-svg-icons';
@@ -11,10 +11,11 @@ import ControlPanelContent from '../ControlPanelContent/ControlPanelContent';
 import WebLogs from '../WebLogs/WebLogs';
 import LoginForm from 'src/components/Login/LoginForm';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAuthToken } from 'src/utils/token';
-import { logout, setToken } from 'src/actions/Session/sessionActions';
+import { getAuthToken, resetAuthToken, setAuthToken } from 'src/utils/token';
+import { checkAuthHandler, checkAuthTokenHandler } from 'src/actions/Session/sessionActions';
 import ServiceInfo from 'src/containers/ServiceInfo';
 import ForgotPassword from 'src/components/ForgotPassword';
+import Spinner from 'src/components/Spinner/Spinner';
 
 library.add(
   Icon.faBook,
@@ -65,35 +66,70 @@ const App = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const session = useSelector(state => state.session);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const windowSessionToken = getAuthToken();
 
-    if (!session.session && !session.user) {
-      dispatch(logout());
+    if (!Object.entries(session.i18n).length) {
+      dispatch(checkAuthHandler()).then(token => {
+        if (token) {
+          setAuthToken(token);
+        }
+
+        setLoading(false)
+      });
       return;
     }
 
-    if (!session.token && !windowSessionToken) {
-      dispatch(logout());
-    } else if (!session.token && windowSessionToken) {
-      dispatch(setToken(windowSessionToken));
-    } else if (session.token && !windowSessionToken) {
-      dispatch(logout());
+    if (!session.token && windowSessionToken) {
+      setAuthToken(windowSessionToken);
+      setLoading(false);
     }
   }, [dispatch, history, session]);
 
+  const AuthenticatedRoute = ({ authenticated, ...rest }) => {
+    return (
+      <Route render={props =>
+        authenticated
+          ? <rest.component {...props} />
+          : <Redirect to="/login" />} {...rest} />
+    );
+  }
+
   return (
     <div className="App">
-      <Switch>
-        <Route path="/list/directory/preview" exact component={Preview} />
-        <Route path="/list/directory/" exact component={FileManager} />
-        <Route path="/list/server/:service" component={ServiceInfo} />
-        <Route path="/list/web-log/" exact component={WebLogs} />
-        <Route path="/login" exact component={LoginForm} />
-        <Route path="/reset" exact component={ForgotPassword} />
-        <Route path="/" component={ControlPanelContent} />
-      </Switch>
+      {
+        loading
+          ? <Spinner />
+          : (
+            <Switch>
+              <Route path="/login" exact component={LoginForm} />
+              <Route path="/reset" exact component={ForgotPassword} />
+              <Route
+                path="/list/directory/"
+                exact
+                component={FileManager} />
+              <Route
+                path="/list/directory/preview/"
+                exact
+                component={Preview} />
+              <AuthenticatedRoute
+                path="/list/server/:service"
+                authenticated={session.token && session.userName}
+                component={ServiceInfo} />
+              <AuthenticatedRoute
+                path="/list/web-log/"
+                exact
+                authenticated={session.token && session.userName}
+                component={WebLogs} />
+              <AuthenticatedRoute
+                path="/"
+                authenticated={session.token && session.userName}
+                component={ControlPanelContent} />
+            </Switch>
+          )
+      }
     </div>
   );
 }

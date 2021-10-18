@@ -2,7 +2,7 @@ import axios from "axios";
 
 const deleteAutoUpdateUri = '/delete/cron/autoupdate/';
 const addAutoUpdateUri = '/add/cron/autoupdate/';
-const webApiUri = '/list/updates/updates.php';
+const webApiUri = '/api/v1/list/updates/index.php';
 const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
 

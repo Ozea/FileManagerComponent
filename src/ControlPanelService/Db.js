@@ -2,11 +2,11 @@ import axios from "axios";
 
 const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
-const webApiUri = '/list/db/db.php';
-const addDbApiUri = '/api/add/db/index.php';
-const optionalDbInfoUri = '/api/add/db/index.php';
-const dbInfoUri = '/api/edit/db/index.php';
-const updateDatabaseUri = '/api/edit/db/index.php';
+const webApiUri = '/api/v1/list/db/index.php';
+const addDbApiUri = '/api/v1/add/db/index.php';
+const optionalDbInfoUri = '/api/v1/add/db/index.php';
+const dbInfoUri = '/api/v1/edit/db/index.php';
+const updateDatabaseUri = '/api/v1/edit/db/index.php';
 
 export const getDatabaseList = () => {
   return axios.get(BASE_URL + webApiUri);

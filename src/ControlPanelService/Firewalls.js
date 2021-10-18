@@ -2,12 +2,12 @@ import axios from 'axios';
 
 const BASE_URL = window.location.origin;
 const token = localStorage.getItem("token");
-const usersUri = '/list/firewall/firewall.php';
-const addFirewallUri = '/api/add/firewall/index.php';
-const firewallInfoUri = '/api/edit/firewall/index.php';
-const updateFirewallUri = '/api/edit/firewall/index.php';
-const addBanIpsUri = '/api/add/firewall/banlist/index.php';
-const banListUri = '/list/firewall/banlist/banlist.php';
+const usersUri = '/api/v1/list/firewall/index.php';
+const addFirewallUri = '/api/v1/add/firewall/index.php';
+const firewallInfoUri = '/api/v1/edit/firewall/index.php';
+const updateFirewallUri = '/api/v1/edit/firewall/index.php';
+const addBanIpsUri = '/api/v1/add/firewall/banlist/index.php';
+const banListUri = '/api/v1/list/firewall/banlist/index.php';
 
 export const getFirewallList = () => {
   return axios.get(BASE_URL + usersUri);

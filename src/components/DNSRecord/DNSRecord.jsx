@@ -3,9 +3,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Container from '../ControlPanel/Container/Container';
 import ListItem from '../ControlPanel/ListItem/ListItem';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 export default function DnsRecord({ data, domain, handleModal, ...props }) {
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
   const token = localStorage.getItem("token");
 
   const toggleFav = (starred) => {

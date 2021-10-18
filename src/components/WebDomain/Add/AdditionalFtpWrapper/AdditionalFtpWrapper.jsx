@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import AdditionalFtp from '../AdditionalFtp/AdditionalFtp';
 import AdditionalFtpForEditing from '../AdditionalFtpForEditing/AdditionalFtpForEditing';
 
 const AdditionalFtpWrapper = props => {
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
   const [state, setState] = useState({
     additionalFtp: [1],
     editIndexing: false

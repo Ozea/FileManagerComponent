@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import './Hotkeys.scss'
 
 function style(style) {
@@ -10,7 +11,7 @@ function style(style) {
 }
 
 const Hotkeys = (props) => {
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
 
   return (
     <div className="panel panel-default" style={{ display: style(props.style) }}>

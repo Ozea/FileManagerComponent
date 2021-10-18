@@ -4,10 +4,11 @@ import Container from '../ControlPanel/Container/Container';
 import ListItem from '../ControlPanel/ListItem/ListItem';
 import './Server.scss';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Server = props => {
   const { data } = props;
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
 
   const printTime = seconds => {
     let hours = seconds / 60;
@@ -62,7 +63,7 @@ const Server = props => {
         </div>
 
         <div>
-          <button className="link-download restart" onClick={() => props.handleAction(`/api/restart/service/?srv=${data.NAME}`)}>
+          <button className="link-download restart" onClick={() => props.handleAction(`/api/v1/restart/service/?srv=${data.NAME}`)}>
             {i18n.restart}
             {
               data.FOCUSED

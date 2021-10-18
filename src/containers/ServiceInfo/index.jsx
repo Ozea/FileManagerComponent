@@ -13,7 +13,7 @@ import ReactHtmlParser from 'react-html-parser';
 import './styles.scss';
 
 const ServiceInfo = () => {
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
   const dispatch = useDispatch();
   const mainNavigation = useSelector(state => state.mainNavigation);
   const { user, token } = useSelector(state => state.session);

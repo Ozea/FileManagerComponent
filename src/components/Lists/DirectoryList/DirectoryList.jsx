@@ -70,7 +70,7 @@ class DirectoryList extends Component {
   }
 
   isHomeDirectory = () => {
-    return this.props.path === window.GLOBAL.ROOT_DIR;
+    return this.props.path === window.GLOBAL.App.ROOT_DIR;
   }
 
   toggleActiveList = () => {

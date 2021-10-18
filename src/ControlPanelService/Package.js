@@ -2,11 +2,11 @@ import axios from "axios";
 
 const BASE_URL = window.location.origin;
 const token = localStorage.getItem("token");
-const webApiUri = '/list/package/package.php';
-const additionalPackageInfoUri = '/api/add/package/index.php';
-const addPackageUri = '/api/add/package/index.php';
-const packageInfoUri = '/api/edit/package/index.php';
-const updatePackageUri = '/api/edit/package/index.php';
+const webApiUri = '/api/v1/list/package/index.php';
+const additionalPackageInfoUri = '/api/v1/add/package/index.php';
+const addPackageUri = '/api/v1/add/package/index.php';
+const packageInfoUri = '/api/v1/edit/package/index.php';
+const updatePackageUri = '/api/v1/edit/package/index.php';
 
 export const getPackageList = () => {
   return axios.get(BASE_URL + webApiUri);

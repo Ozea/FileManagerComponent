@@ -15,14 +15,14 @@ import Toolbar from '../../MainNav/Toolbar/Toolbar';
 import EditBackupOption from './EditBackupOption';
 import EditMailOption from './EditMailOption';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import './EditServer.scss';
 import { Helmet } from 'react-helmet';
 
 const EditServer = props => {
   const token = localStorage.getItem("token");
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
   const history = useHistory();
   const dispatch = useDispatch();
   const [state, setState] = useState({

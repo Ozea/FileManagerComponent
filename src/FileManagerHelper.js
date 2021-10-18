@@ -9,15 +9,15 @@ export function cacheData(currentUser, history) {
   if (localStorage.getItem("lastUser") === null || currentUser !== localStorage.getItem("lastUser")) {
     localStorage.setItem("lastUser", currentUser);
     localStorage.setItem("activeWindow", "left");
-    localStorage.setItem("leftListPath", window.GLOBAL.ROOT_DIR);
-    localStorage.setItem("rightListPath", window.GLOBAL.ROOT_DIR);
+    localStorage.setItem("leftListPath", window.GLOBAL.App.ROOT_DIR);
+    localStorage.setItem("rightListPath", window.GLOBAL.App.ROOT_DIR);
   }
 
   if (localStorage.getItem("activeWindow") === null || localStorage.getItem("leftListPath") === null || localStorage.getItem("rightListPath") === null) {
     let path = history.location.search.substring(6).split('/');
     localStorage.setItem("activeWindow", "left");
     localStorage.setItem("leftListPath", path);
-    localStorage.setItem("rightListPath", window.GLOBAL.ROOT_DIR);
+    localStorage.setItem("rightListPath", window.GLOBAL.App.ROOT_DIR);
   }
 }
 

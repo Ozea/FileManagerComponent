@@ -2,10 +2,10 @@ import axios from "axios";
 
 const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
-const webApiUri = '/list/cron/cron.php';
-const cronAddApiUri = '/api/add/cron/index.php';
-const jobInfoUri = '/api/edit/cron/index.php';
-const updateCronJobUri = '/api/edit/cron/index.php';
+const webApiUri = '/api/v1/list/cron/index.php';
+const cronAddApiUri = '/api/v1/add/cron/index.php';
+const jobInfoUri = '/api/v1/edit/cron/index.php';
+const updateCronJobUri = '/api/v1/edit/cron/index.php';
 
 export const getCronList = () => {
   return axios.get(BASE_URL + webApiUri);

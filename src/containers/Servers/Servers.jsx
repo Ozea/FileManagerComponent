@@ -17,7 +17,7 @@ import { Helmet } from 'react-helmet';
 import './Servers.scss';
 
 const Servers = props => {
-  const { i18n } = window.GLOBAL.App;
+  const { i18n } = useSelector(state => state.session);
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
@@ -152,7 +152,7 @@ const Servers = props => {
   }
 
   const handleRestart = () => {
-    onHandleAction(`/api/restart/service/?srv=${controlPanelFocusedElement.NAME}`);
+    onHandleAction(`/api/v1/restart/service/?srv=${controlPanelFocusedElement.NAME}`);
   }
 
   const fetchData = () => {

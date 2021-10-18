@@ -121,9 +121,8 @@ class Row extends Component {
 
     let date = new Date(fDate),
       months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-      appMonths = window.GLOBAL.App.i18n,
       getDay = date.getDate(),
-      getMonth = appMonths[months[date.getMonth()]];
+      getMonth = window.GLOBAL ? window.GLOBAL.App.i18n[months[date.getMonth()]] : months[date.getMonth()];
     return (<span className="date">{getMonth} {getDay}</span>);
   }
 
