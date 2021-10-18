@@ -156,36 +156,6 @@ export const checkAuthHandler = () => (dispatch, getState) => {
   });
 }
 
-export const checkAuthTokenHandler = (token) => (dispatch, getState) => {
-  return new Promise((resolve, reject) => {
-    checkAuthToken(token)
-      .then(res => {
-        const { user, data, session, panel, error, i18n, token } = res.data;
-
-        if (!token) resetAuthToken();
-
-        dispatch({
-          type: LOGIN,
-          value: {
-            userName: user,
-            user: data,
-            i18n,
-            session,
-            panel,
-            token: token || '',
-            error
-          }
-        });
-
-        resolve(token);
-      })
-      .catch(err => {
-        reject();
-        console.error(err);
-      });
-  });
-}
-
 export const removeToken = () => {
   return {
     type: LOGOUT,

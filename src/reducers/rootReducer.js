@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 import mainNavigationReducer from './MainNavigation/mainNavigationReducer';
 import controlPanelContentReducer from './ControlPanelContent/controlPanelContentReducer';
-import fileManagerReducer from './FileManager/fileManagerReducer';
+import notificationReducer from './Notification/notificationReducer';
 import sessionReducer from './Session/sessionReducer';
 
 export default combineReducers({
   mainNavigation: mainNavigationReducer,
   controlPanelContent: controlPanelContentReducer,
-  fileManager: fileManagerReducer,
+  notifications: notificationReducer,
   session: sessionReducer,
 });

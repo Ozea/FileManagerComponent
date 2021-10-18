@@ -18,8 +18,7 @@ import { Helmet } from 'react-helmet';
 import './Users.scss';
 
 const Users = props => {
-  const { i18n } = useSelector(state => state.session);
-  const { token, userName } = useSelector(state => state.session);
+  const { token, userName, i18n } = useSelector(state => state.session);
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
@@ -49,10 +48,6 @@ const Users = props => {
       dispatch(removeControlPanelContentFocusedElement());
     }
   }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [userName]);
 
   useEffect(() => {
     window.addEventListener("keydown", handleContentSelection);

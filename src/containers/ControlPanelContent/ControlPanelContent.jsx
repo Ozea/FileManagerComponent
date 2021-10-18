@@ -45,7 +45,6 @@ import Servers from '../../containers/Servers/Servers';
 import MainNav from '../../components/MainNav/MainNav';
 import BackupExclusions from '../Backups/Exclusions';
 import MailWrapper from '../MailWrapper/MailWrapper';
-import Spinner from 'src/components/Spinner/Spinner';
 import DNSWrapper from '../DNSWrapper/DNSWrapper';
 import Statistics from '../Statistics/Statistics';
 import Users from '../../containers/Users/Users';
@@ -56,23 +55,21 @@ import Search from '../Search/Search';
 import Logs from '../Logs/Logs';
 
 import './ControlPanelContent.scss';
+import Spinner from 'src/components/Spinner/Spinner';
 
 const ControlPanelContent = props => {
+  const { userName } = useSelector(state => state.session);
   const history = useHistory();
   const [searchTerm, setSearchTerm] = useState('');
   const [hotkeysList, setHotkeysList] = useState(null);
-  const session = useSelector(state => state.session);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const { userName, token } = session;
-    if (!userName || !token) {
-      history.push('/login');
+    if (userName) {
+      setLoading(false);
     }
-
-    setLoading(false);
-  }, [session]);
+  }, [userName]);
 
   useEffect(() => {
     dispatch(removeFocusedElement());
@@ -146,90 +143,92 @@ const ControlPanelContent = props => {
 
   return (
     <div>
-      {loading
-        ? <Spinner />
-        : (<>
-          <MainNav history={history} />
-          <div className="content">
-            <Switch>
-              <Redirect from="/" exact to="/list/user/" />
-              <Route path="/list/package" component={props => <Packages {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route path="/add/package" component={() => <AddPackage />} />
-              <Route path="/edit/package" component={() => <EditPackage />} />
-              <Route path="/list/ip" component={props => <InternetProtocols {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route path="/add/ip" component={() => <AddInternetProtocol />} />
-              <Route path="/edit/ip" component={() => <EditInternetProtocol />} />
-              <Route path="/list/rrd" component={props => <RRDs {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route path="/list/stats" component={props => <Statistics {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route path="/list/log" component={props => <Logs {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route path="/list/updates" component={props => <Updates {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route path="/list/firewall" exact component={props => <Firewalls {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route path="/list/firewall/banlist" exact component={props => <BanList {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route path="/add/firewall/banlist" component={AddBanIP} />
-              <Route path="/add/firewall" component={() => <AddFirewall />} />
-              <Route path="/edit/firewall" component={() => <EditFirewall />} />
-              <Route path="/list/server/" exact component={props => <Servers {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route path="/edit/server/" exact component={() => <EditServer />} />
-              <Route path="/edit/server/nginx" exact component={() => <EditServerNginx />} />
-              <Route path="/edit/server/php" exact component={() => <EditPhp serviceName="php" />} />
-              <Route path="/edit/server/php-fpm" exact component={() => <EditPhp serviceName="php-fpm" />} />
-              <Route path="/edit/server/php5-fpm" exact component={() => <EditPhp serviceName="php5-fpm" />} />
-              <Route path="/edit/server/httpd" exact component={() => <EditHttpd />} />
-              <Route path="/edit/server/dovecot" exact component={() => <Dovecot />} />
-              <Route path="/edit/server/bind9" exact component={() => <Bind9 />} />
-              <Route path="/edit/server/postgresql" exact component={() => <Postgresql />} />
-              <Route path="/edit/server/mysql" exact component={() => <Mysql serviceName="mysql" />} />
-              <Route path="/edit/server/mariadb" exact component={() => <Mysql serviceName="mariadb" />} />
-              <Route path="/edit/server/mysqld" exact component={() => <Mysql serviceName="mysqld" />} />
+      <MainNav history={history} />
+      <div className="content">
+        {
+          loading
+            ? <Spinner />
+            : (
+              <Switch>
+                <Redirect from="/" exact to="/list/user/" />
+                <Route path="/list/package" component={props => <Packages {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route path="/add/package" component={() => <AddPackage />} />
+                <Route path="/edit/package" component={() => <EditPackage />} />
+                <Route path="/list/ip" component={props => <InternetProtocols {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route path="/add/ip" component={() => <AddInternetProtocol />} />
+                <Route path="/edit/ip" component={() => <EditInternetProtocol />} />
+                <Route path="/list/rrd" component={props => <RRDs {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route path="/list/stats" component={props => <Statistics {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route path="/list/log" component={props => <Logs {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route path="/list/updates" component={props => <Updates {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route path="/list/firewall" exact component={props => <Firewalls {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route path="/list/firewall/banlist" exact component={props => <BanList {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route path="/add/firewall/banlist" component={AddBanIP} />
+                <Route path="/add/firewall" component={() => <AddFirewall />} />
+                <Route path="/edit/firewall" component={() => <EditFirewall />} />
+                <Route path="/list/server/" exact component={props => <Servers {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route path="/edit/server/" exact component={() => <EditServer />} />
+                <Route path="/edit/server/nginx" exact component={() => <EditServerNginx />} />
+                <Route path="/edit/server/php" exact component={() => <EditPhp serviceName="php" />} />
+                <Route path="/edit/server/php-fpm" exact component={() => <EditPhp serviceName="php-fpm" />} />
+                <Route path="/edit/server/php5-fpm" exact component={() => <EditPhp serviceName="php5-fpm" />} />
+                <Route path="/edit/server/httpd" exact component={() => <EditHttpd />} />
+                <Route path="/edit/server/dovecot" exact component={() => <Dovecot />} />
+                <Route path="/edit/server/bind9" exact component={() => <Bind9 />} />
+                <Route path="/edit/server/postgresql" exact component={() => <Postgresql />} />
+                <Route path="/edit/server/mysql" exact component={() => <Mysql serviceName="mysql" />} />
+                <Route path="/edit/server/mariadb" exact component={() => <Mysql serviceName="mariadb" />} />
+                <Route path="/edit/server/mysqld" exact component={() => <Mysql serviceName="mysqld" />} />
 
-              {
-                !!services.length && services.map((service, index) => {
-                  if (service === 'iptables') {
-                    return <Redirect key={index} from="/edit/server/iptables" exact to="/list/firewall" />
-                  } else {
-                    return <Route key={index} path={`/edit/server/${service}`} exact component={() => <Service serviceName={service} />} />
-                  }
-                })
-              }
+                {
+                  !!services.length && services.map((service, index) => {
+                    if (service === 'iptables') {
+                      return <Redirect key={index} from="/edit/server/iptables" exact to="/list/firewall" />
+                    } else {
+                      return <Route key={index} path={`/edit/server/${service}`} exact component={() => <Service serviceName={service} />} />
+                    }
+                  })
+                }
 
-              <Route path="/list/user" component={props => <Users {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route path="/add/user" component={() => <AddUser />} />
-              <Route path="/edit/user" component={() => <EditUser />} />
-              <Route path="/list/web" component={props => <Web {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route path="/add/web" component={() => <AddWebDomain />} />
-              <Route path="/edit/web" component={() => <EditWeb />} />
-              <Route path="/list/dns" component={props => <DNSWrapper {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route path="/add/dns" component={() => <AddDNSWrapper />} />
-              <Route path="/edit/dns" component={() => <EditDNSWrapper />} />
-              <Route path="/list/mail" component={props => <MailWrapper {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route path="/add/mail" component={() => <AddMailWrapper />} />
-              <Route path="/edit/mail" component={() => <EditMailWrapper />} />
-              <Route path="/list/db" component={props => <Databases {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route path="/add/db" component={() => <AddDatabase />} />
-              <Route path="/edit/db" component={() => <EditDatabase />} />
-              <Route path="/list/cron" component={props => <CronJobs {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route path="/add/cron" component={() => <AddCronJob />} />
-              <Route path="/edit/cron" component={() => <EditCronJob />} />
-              <Route exact path="/list/backup" component={props => <BackupWrapper {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route exact path="/list/backup/exclusions" component={props => <BackupExclusions {...props} changeSearchTerm={handleSearchTerm} />} />
-              <Route exact path="/edit/backup/exclusions" component={EditBackupExclusions} />
-              <Route path="/search/" component={props => <Search {...props} changeSearchTerm={handleSearchTerm} searchTerm={searchTerm} />} />
-            </Switch>
-          </div>
-          <div className="fixed-buttons">
-            <div className="hotkey-button">
-              <button onClick={() => hotkeysList.classList.toggle('hide')}>
-                <FontAwesomeIcon icon="ellipsis-h" />
-              </button>
-            </div>
-            <div className="scroll-to-top">
-              <button onClick={() => scrollToTop()}>
-                <FontAwesomeIcon icon="long-arrow-alt-up" />
-              </button>
-            </div>
-          </div>
-          <Hotkeys reference={(inp) => setHotkeysList(inp)} toggleHotkeys={() => hotkeysList.classList.toggle('hide')} />
-        </>)}
+                <Route path="/list/user" component={props => <Users changeSearchTerm={handleSearchTerm} loading={loading} {...props} />} />
+                <Route path="/add/user" component={() => <AddUser />} />
+                <Route path="/edit/user" component={() => <EditUser />} />
+                <Route path="/list/web" component={props => <Web {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route path="/add/web" component={() => <AddWebDomain />} />
+                <Route path="/edit/web" component={() => <EditWeb />} />
+                <Route path="/list/dns" component={props => <DNSWrapper {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route path="/add/dns" component={() => <AddDNSWrapper />} />
+                <Route path="/edit/dns" component={() => <EditDNSWrapper />} />
+                <Route path="/list/mail" component={props => <MailWrapper {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route path="/add/mail" component={() => <AddMailWrapper />} />
+                <Route path="/edit/mail" component={() => <EditMailWrapper />} />
+                <Route path="/list/db" component={props => <Databases {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route path="/add/db" component={() => <AddDatabase />} />
+                <Route path="/edit/db" component={() => <EditDatabase />} />
+                <Route path="/list/cron" component={props => <CronJobs {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route path="/add/cron" component={() => <AddCronJob />} />
+                <Route path="/edit/cron" component={() => <EditCronJob />} />
+                <Route exact path="/list/backup" component={props => <BackupWrapper {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route exact path="/list/backup/exclusions" component={props => <BackupExclusions {...props} changeSearchTerm={handleSearchTerm} />} />
+                <Route exact path="/edit/backup/exclusions" component={EditBackupExclusions} />
+                <Route path="/search/" component={props => <Search {...props} changeSearchTerm={handleSearchTerm} searchTerm={searchTerm} />} />
+              </Switch>
+            )
+        }
+      </div>
+      <div className="fixed-buttons">
+        <div className="hotkey-button">
+          <button onClick={() => hotkeysList.classList.toggle('hide')}>
+            <FontAwesomeIcon icon="ellipsis-h" />
+          </button>
+        </div>
+        <div className="scroll-to-top">
+          <button onClick={() => scrollToTop()}>
+            <FontAwesomeIcon icon="long-arrow-alt-up" />
+          </button>
+        </div>
+      </div>
+      <Hotkeys reference={(inp) => setHotkeysList(inp)} toggleHotkeys={() => hotkeysList.classList.toggle('hide')} />
     </div>
   );
 }
