@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { getAppNotifications, deleteNotification } from 'src/ControlPanelService/Notifications';
 import { addNotifications } from 'src/actions/Notification/notificationActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import './Notifications.scss';
 import { useDispatch, useSelector } from 'react-redux';
+import './Notifications.scss';
 
 const Notifications = () => {
   const { i18n } = useSelector(state => state.session);
