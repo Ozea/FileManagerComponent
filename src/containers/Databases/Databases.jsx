@@ -154,14 +154,14 @@ const Databases = props => {
     let currentDatabaseData = databases.filter(database => database.NAME === controlPanelFocusedElement)[0];
     let suspendedStatus = currentDatabaseData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
 
-    displayModal(currentDatabaseData.suspend_conf, `/${suspendedStatus}/database?domain=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentDatabaseData.suspend_conf, `/api/v1/${suspendedStatus}/database?domain=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const handleDelete = () => {
     const { databases } = state;
     let currentDatabaseData = databases.filter(database => database.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentDatabaseData.delete_conf, `/delete/database/?domain=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentDatabaseData.delete_conf, `/api/v1/delete/database/?domain=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const fetchData = () => {

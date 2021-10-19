@@ -32,11 +32,11 @@ const Mail = props => {
 
   const handleSuspend = () => {
     let suspendedStatus = data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend' === 'yes' ? 'unsuspend' : 'suspend';
-    props.handleModal(data.suspend_conf, `/${suspendedStatus}/mail?domain=${data.NAME}&token=${token}`);
+    props.handleModal(data.suspend_conf, `/api/v1/${suspendedStatus}/mail?domain=${data.NAME}&token=${token}`);
   }
 
   const handleDelete = () => {
-    props.handleModal(data.delete_conf, `/delete/mail?domain=${data.NAME}&token=${token}`);
+    props.handleModal(data.delete_conf, `/api/v1/delete/mail?domain=${data.NAME}&token=${token}`);
   }
 
   return (
@@ -68,21 +68,21 @@ const Mail = props => {
       </Container>
       <div className="actions">
         <div>
-          <Link className="link-gray" to={`/list/mail/?domain=${data.NAME}`}>
+          <Link className="link-gray" to={`/api/v1/list/mail/?domain=${data.NAME}`}>
             {data.list_accounts_button}
             {data.FOCUSED ? <span className="shortcut-button">L</span> : <FontAwesomeIcon icon="list" />}
           </Link>
         </div>
 
         <div>
-          <Link className="link-edit" to={`/add/mail/?domain=${data.NAME}`}>
+          <Link className="link-edit" to={`/api/v1/add/mail/?domain=${data.NAME}`}>
             {i18n['add account']}
             {data.FOCUSED ? <span className="shortcut-button">N</span> : <FontAwesomeIcon icon="plus" />}
           </Link>
         </div>
 
         <div>
-          <Link className="link-edit" to={`/edit/mail/?domain=${data.NAME}`}>
+          <Link className="link-edit" to={`/api/v1/edit/mail/?domain=${data.NAME}`}>
             {i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
           </Link>

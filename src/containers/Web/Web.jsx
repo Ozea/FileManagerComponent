@@ -157,14 +157,14 @@ const Web = props => {
     let currentWebDomainData = webDomains.filter(webDomain => webDomain.NAME === controlPanelFocusedElement)[0];
     let suspendedStatus = currentWebDomainData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
 
-    displayModal(currentWebDomainData.spnd_confirmation, `/${suspendedStatus}/web?domain=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentWebDomainData.spnd_confirmation, `/api/v1/${suspendedStatus}/web?domain=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const handleDelete = () => {
     const { webDomains } = state;
     let currentWebDomainData = webDomains.filter(webDomain => webDomain.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentWebDomainData.delete_confirmation, `/delete/web/?domain=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentWebDomainData.delete_confirmation, `/api/v1/web/?domain=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const fetchData = () => {

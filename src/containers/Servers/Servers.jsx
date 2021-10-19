@@ -148,7 +148,7 @@ const Servers = props => {
   }
 
   const handleStop = () => {
-    onHandleAction(controlPanelFocusedElement.action_url);
+    onHandleAction('/api/v1' + controlPanelFocusedElement.action_url);
   }
 
   const handleRestart = () => {

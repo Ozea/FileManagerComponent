@@ -19,7 +19,6 @@ export const bulkAction = (action, backups) => {
 
   backups.forEach(backup => {
     formData.append("package[]", backup);
-    formData.append("delete_url", `/delete/package/?package=${backup}&token=${token}`);
   });
 
   return axios.post(BASE_URL + '/bulk/package/', formData);

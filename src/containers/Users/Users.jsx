@@ -106,14 +106,14 @@ const Users = props => {
     let currentUserData = users.filter(user => user.NAME === controlPanelFocusedElement)[0];
     let suspendedStatus = currentUserData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
 
-    displayModal(currentUserData.spnd_conf, `/${suspendedStatus}/user?user=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentUserData.spnd_conf, `/api/v1/${suspendedStatus}/user?user=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const handleDelete = () => {
     const { users } = state;
     let currentUserData = users.filter(user => user.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentUserData.delete_conf, `/delete/user?user=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentUserData.delete_conf, `/api/v1/delete/user?user=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const handleContentSelection = event => {
@@ -210,6 +210,8 @@ const Users = props => {
   const users = () => {
     const userFav = { ...state.userFav };
     let users = [...state.users];
+
+    console.log(users);
 
     users.forEach(user => {
       user.FOCUSED = controlPanelFocusedElement === user.NAME;

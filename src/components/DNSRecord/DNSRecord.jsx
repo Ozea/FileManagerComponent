@@ -22,7 +22,7 @@ export default function DnsRecord({ data, domain, handleModal, ...props }) {
   }
 
   const handleDelete = () => {
-    handleModal(data.delete_conf, `/delete/dns/?domain=${domain}&record_id=${data.ID}&token=${token}`);
+    handleModal(data.delete_conf, `/api/v1/delete/dns/?domain=${domain}&record_id=${data.ID}&token=${token}`);
   }
 
   return (
@@ -56,7 +56,7 @@ export default function DnsRecord({ data, domain, handleModal, ...props }) {
       </Container>
       <div className="actions">
         <div>
-          <Link className="link-edit" to={`/edit/dns/?domain=${domain}&record_id=${data.ID}`}>
+          <Link className="link-edit" to={`/api/v1/edit/dns/?domain=${domain}&record_id=${data.ID}`}>
             {i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
           </Link>

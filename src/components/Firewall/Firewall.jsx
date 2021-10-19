@@ -24,11 +24,11 @@ const Firewall = ({ data, ...props }) => {
 
   const handleSuspend = () => {
     let suspendedStatus = data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
-    props.handleModal(data.suspend_conf, `/${suspendedStatus}/firewall/?rule=${data.NAME}&token=${token}`);
+    props.handleModal(data.suspend_conf, `/api/v1/${suspendedStatus}/firewall/?rule=${data.NAME}&token=${token}`);
   }
 
   const handleDelete = () => {
-    props.handleModal(data.delete_conf, `/delete/firewall/?rule=${data.NAME}&token=${token}`);
+    props.handleModal(data.delete_conf, `/api/v1/delete/firewall/?rule=${data.NAME}&token=${token}`);
   }
 
   return (
@@ -63,7 +63,7 @@ const Firewall = ({ data, ...props }) => {
       </Container>
       <div className="actions">
         <div>
-          <Link className="link-edit" to={`/edit/firewall/?rule=${data.NAME}`}>
+          <Link className="link-edit" to={`/api/v1/edit/firewall/?rule=${data.NAME}`}>
             {i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
           </Link>

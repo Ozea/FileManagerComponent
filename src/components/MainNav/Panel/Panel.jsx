@@ -71,7 +71,9 @@ const Panel = props => {
         <div className="container left-menu">
           <div className="logo">
             <Link to="/list/user/" onClick={() => dispatch(addActiveElement('/list/user/'))}>
-              <div className="logo-img"></div>
+              <div>
+                <img src="/images/white_logo.png" alt="Logo" />
+              </div>
             </Link>
           </div>
           <div className={className("/list/package/")}>
