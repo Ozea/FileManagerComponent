@@ -56,7 +56,7 @@ const Server = props => {
         </div>
 
         <div>
-          <button className="link-delete" onClick={() => props.handleAction(data.action_url)}>
+          <button className="link-delete" onClick={() => props.handleAction('/api/v1' + data.action_url)}>
             {data.STATE === 'running' ? i18n.stop : i18n.start}
             {data.FOCUSED ? <span className="shortcut-button">S</span> : <FontAwesomeIcon icon={data.STATE === 'running' ? "stop" : "play"} />}
           </button>

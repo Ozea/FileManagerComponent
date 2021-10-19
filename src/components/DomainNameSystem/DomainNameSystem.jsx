@@ -25,11 +25,11 @@ const DomainNameSystem = props => {
 
   const handleSuspend = () => {
     let suspendedStatus = data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend' === 'yes' ? 'unsuspend' : 'suspend';
-    props.handleModal(data.suspend_conf, `/${suspendedStatus}/dns?domain=${data.NAME}&token=${token}`);
+    props.handleModal(data.suspend_conf, `/api/v1/${suspendedStatus}/dns?domain=${data.NAME}&token=${token}`);
   }
 
   const handleDelete = () => {
-    props.handleModal(data.delete_conf, `/delete/dns?domain=${data.NAME}&token=${token}`);
+    props.handleModal(data.delete_conf, `/api/v1/delete/dns?domain=${data.NAME}&token=${token}`);
   }
 
   return (
@@ -62,21 +62,21 @@ const DomainNameSystem = props => {
       </Container>
       <div className="actions">
         <div>
-          <Link className="link-gray" to={`/list/dns/?domain=${data.NAME}`}>
+          <Link className="link-gray" to={`/api/v1/list/dns/?domain=${data.NAME}`}>
             {data.RECORDS_I18N}
             {data.FOCUSED ? <span className="shortcut-button">L</span> : <FontAwesomeIcon icon="list" />}
           </Link>
         </div>
 
         <div>
-          <Link className="link-edit" to={`/add/dns/?domain=${data.NAME}`}>
+          <Link className="link-edit" to={`/api/v1/add/dns/?domain=${data.NAME}`}>
             {i18n['add record']}
             {data.FOCUSED ? <span className="shortcut-button">N</span> : <FontAwesomeIcon icon="plus" />}
           </Link>
         </div>
 
         <div>
-          <Link className="link-edit" to={`/edit/dns/?domain=${data.NAME}`}>
+          <Link className="link-edit" to={`/api/v1/edit/dns/?domain=${data.NAME}`}>
             {i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
           </Link>

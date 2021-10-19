@@ -25,7 +25,7 @@ const Backup = props => {
   }
 
   const handleDelete = () => {
-    props.handleModal(data.delete_conf, `/delete/backup/?backup=${data.NAME}&token=${token}`);
+    props.handleModal(data.delete_conf, `/api/v1/delete/backup/?backup=${data.NAME}&token=${token}`);
   }
 
   return (

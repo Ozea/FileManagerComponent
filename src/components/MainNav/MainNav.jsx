@@ -6,8 +6,10 @@ import MobileTopNav from '../MainNav/Mobile/MobileTopNav';
 import Menu from '../MainNav/Stat-menu/Menu';
 import Panel from '../MainNav/Panel/Panel';
 import './MainNav.scss';
+import { useHistory } from 'react-router';
 
-const MainNav = props => {
+const MainNav = () => {
+  const history = useHistory();
   const [state, setState] = useState({
     menuHeight: 135,
     showTopNav: false
@@ -50,7 +52,7 @@ const MainNav = props => {
       dispatch(addFocusedElement(newFocusedMenuTab));
     } else if (event.keyCode === 13) {
       if (!controlPanelFocusedElement && focusedElement) {
-        props.history.push({ pathname: focusedElement });
+        history.push({ pathname: focusedElement });
         dispatch(addActiveElement(focusedElement));
         dispatch(removeFocusedElement());
       }
@@ -74,7 +76,7 @@ const MainNav = props => {
   }, [activeElement]);
 
   useEffect(() => {
-    dispatch(addActiveElement(props.history.location.pathname));
+    dispatch(addActiveElement(history.location.pathname));
   }, []);
 
   const handleLeftArrowKey = (array, indexInArray) => {

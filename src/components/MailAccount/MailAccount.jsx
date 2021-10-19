@@ -31,11 +31,11 @@ export default function MailAccount(props) {
 
   const handleSuspend = () => {
     let suspendedStatus = data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend' === 'yes' ? 'unsuspend' : 'suspend';
-    props.handleModal(data.suspend_conf, `/${suspendedStatus}/mail?domain=${domain}&account=${data.NAME}&token=${token}`);
+    props.handleModal(data.suspend_conf, `/api/v1/${suspendedStatus}/mail?domain=${domain}&account=${data.NAME}&token=${token}`);
   }
 
   const handleDelete = () => {
-    props.handleModal(data.delete_conf, `/delete/mail?domain=${domain}&account=${data.NAME}&token=${token}`);
+    props.handleModal(data.delete_conf, `/api/v1/delete/mail?domain=${domain}&account=${data.NAME}&token=${token}`);
   }
 
   return (
@@ -67,7 +67,7 @@ export default function MailAccount(props) {
       <div className="actions">
 
         <div>
-          <Link className="link-edit" to={`/edit/mail/?domain=${domain}&account=${data.NAME}`}>
+          <Link className="link-edit" to={`/api/v1/edit/mail/?domain=${domain}&account=${data.NAME}`}>
             {i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
           </Link>

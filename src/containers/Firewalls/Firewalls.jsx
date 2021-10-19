@@ -154,14 +154,14 @@ const Firewalls = props => {
     let currentFirewallData = firewalls.filter(firewall => firewall.NAME === controlPanelFocusedElement)[0];
     let suspendedStatus = currentFirewallData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
 
-    displayModal(currentFirewallData.suspend_conf, `/${suspendedStatus}/firewall?rule=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentFirewallData.suspend_conf, `/api/v1/${suspendedStatus}/firewall?rule=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const handleDelete = () => {
     const { firewalls } = state;
     let currentFirewallData = firewalls.filter(firewall => firewall.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentFirewallData.delete_conf, `/delete/firewall/?rule=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentFirewallData.delete_conf, `/api/v1/delete/firewall/?rule=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const fetchData = () => {

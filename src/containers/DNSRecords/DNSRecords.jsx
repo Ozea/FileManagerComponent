@@ -151,7 +151,7 @@ export default function DnsRecords(props) {
     const { databases } = state;
     let currentDatabaseData = databases.filter(database => database.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentDatabaseData.delete_conf, `/delete/database/?domain=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentDatabaseData.delete_conf, `/api/v1/delete/database/?domain=${controlPanelFocusedElement}&token=${token}`);
   }
 
   const fetchData = () => {

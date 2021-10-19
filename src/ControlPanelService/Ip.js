@@ -19,7 +19,6 @@ export const bulkAction = (action, internetProtocols) => {
 
   internetProtocols.forEach(internetProtocol => {
     formData.append("ip[]", internetProtocol);
-    formData.append("delete_url", `/delete/ip/?ip=${internetProtocol}&token=${token}`);
   });
 
   return axios.post(BASE_URL + '/bulk/ip/', formData);
