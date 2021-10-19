@@ -71,12 +71,12 @@ $textColor: #555;
 }
 
 .list-item.starred {
-  border-left: 2px solid $secondary;
+  border-left: 2px solid $primary;
 
   .l-col div.star {
     div > svg {
       opacity: 1;
-      color: $secondary;
+      color: $primary;
     }
   }
 }
@@ -120,7 +120,13 @@ $textColor: #555;
 }
 
 .list-item.focused {
-  border-left: 2px solid #5edad0;
+  border-left: 2px solid $secondaryLight;
+
+  .l-col div.star {
+    div > svg {
+      color: $secondaryLight;
+    }
+  }
 
   .actions {
     opacity: 1;
@@ -135,7 +141,7 @@ $textColor: #555;
         width: 25px;
         height: 25px;
         margin-left: 15px;
-        background: #69a298;
+        background: $secondaryLight;
         color: white;
         display: flex;
         justify-content: center;

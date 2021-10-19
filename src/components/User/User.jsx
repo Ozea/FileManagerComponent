@@ -9,6 +9,7 @@ import { Link, useHistory } from 'react-router-dom';
 import './User.scss';
 
 const User = ({ data, toggleFav, handleModal, checkItem }) => {
+  console.log(data.STARRED);
   const { i18n } = useSelector(state => state.session);
   const [loading, setLoading] = useState(false);
   const session = useSelector(state => state.session);
@@ -134,7 +135,7 @@ const User = ({ data, toggleFav, handleModal, checkItem }) => {
       <div className="actions">
         {printLoginActionButton(data.NAME)}
         <div>
-          <Link to={`/api/v1/edit/user?user=${data.NAME}&token=${token}`}>{i18n.edit}
+          <Link to={`/edit/user?user=${data.NAME}&token=${token}`}>{i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
           </Link>
         </div>

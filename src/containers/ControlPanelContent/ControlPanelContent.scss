@@ -1,3 +1,7 @@
+$primary: #2c54ac;
+$primaryLight: #2955a7;
+$primaryActive: #2c5cb4;
+
 .content {
   padding: 0 13%;
   padding-bottom: 1%;
@@ -49,14 +53,17 @@
     align-items: center;
   
     &:hover {
-      background: #55c9c0;
+      background: $primaryLight;
     }
   
     &:active {
-      background: #51beb5;
+      background: $primaryActive;
     }
   
     button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
       background: none;
       border: none;
       width: 100%;
@@ -75,7 +82,7 @@
     background: none;
 
     &:hover {
-      background: #55c9c0;
+      background: $primary;
 
       button svg {
         color: white;

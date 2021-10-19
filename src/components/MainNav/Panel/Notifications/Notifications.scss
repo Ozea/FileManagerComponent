@@ -2,6 +2,9 @@ $primary: #2c54ac;
 $primaryLight: #2955a7;
 $secondary: #fcac04;
 $secondaryLight: #f8b014;
+$notifications: #e49d45;
+$notificationsLight: #de9234;
+$notificationsActive: #6f4e2b;
 
 .top-panel .profile-menu {
   div {
@@ -36,14 +39,17 @@ $secondaryLight: #f8b014;
     border-color: unset;
     box-shadow: unset;
   }
-  
+
   .dropdown-menu {
     display: none;
     height: auto;
     max-height: 75vh;
     overflow: auto;
     cursor: default;
-    background: #454545;
+    background: #222e44;
+    border: 1px solid #fcac04;
+    border-width: 1px 0 0 0;
+    box-shadow: rgb(34, 46, 68) 0px 0px 10px -1px;
 
     > div {
       cursor: default;
@@ -99,10 +105,10 @@ $secondaryLight: #f8b014;
 
       a {
         display: contents;
-        color: $primary;
+        color: $notifications;
 
         &:hover {
-          color: $primaryLight;
+          color: $notificationsLight;
         }
       }
     }

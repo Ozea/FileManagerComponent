@@ -111,20 +111,20 @@ $textColor: #555;
     }
 
     .l-active {
-      border-bottom: 3px solid $secondaryActive;
+      border-bottom: 3px solid $primary;
 
       h3 {
-        color: $secondary;
+        color: $primary;
         font-size: 18px;
         margin-bottom: 25px;
       }
     }
 
     .stat.focus {
-      border-bottom: 3px solid $primary !important;
+      border-bottom: 3px solid $secondaryLight !important;
       
       a, h3 {
-        color: $primary !important;
+        color: $secondaryLight !important;
       }
     }
   }

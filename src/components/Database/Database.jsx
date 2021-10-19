@@ -61,7 +61,7 @@ const Database = props => {
       </Container>
       <div className="actions">
         <div>
-          <Link className="link-edit" to={`/api/v1/edit/db/?database=${data.NAME}`}>
+          <Link className="link-edit" to={`/edit/db/?database=${data.NAME}`}>
             {i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
           </Link>

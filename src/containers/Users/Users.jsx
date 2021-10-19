@@ -211,8 +211,6 @@ const Users = props => {
     const userFav = { ...state.userFav };
     let users = [...state.users];
 
-    console.log(users);
-
     users.forEach(user => {
       user.FOCUSED = controlPanelFocusedElement === user.NAME;
 
@@ -222,6 +220,9 @@ const Users = props => {
         user.STARRED = 0;
       }
     });
+
+    console.log(users);
+    console.log(userFav);
 
     let sortedResult = sortArray(users);
 

@@ -57,7 +57,7 @@ const InternetProtocol = props => {
       </Container>
       <div className="actions">
         <div>
-          <Link className="link-edit" to={`/api/v1/edit/ip/?ip=${data.NAME}`}>
+          <Link className="link-edit" to={`/edit/ip/?ip=${data.NAME}`}>
             {i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
           </Link>

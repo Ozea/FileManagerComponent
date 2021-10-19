@@ -4,15 +4,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useSelector } from 'react-redux';
 import './ListItem.scss';
 
-const ListItem = ({ starred, ...props }) => {
+const ListItem = (props) => {
   const { i18n } = useSelector(state => state.session);
   const [state, setState] = useState({ starred: false });
 
   useEffect(() => {
-    if (starred) {
-      setState({ ...state, starred: starred === 1 });
+    if (props.hasOwnProperty('starred')) {
+      setState({ ...state, starred: Boolean(props.starred) });
     }
-  }, [starred]);
+  }, [props.starred]);
 
   const printDate = date => {
     if (date) {
@@ -31,8 +31,8 @@ const ListItem = ({ starred, ...props }) => {
   }
 
   const starItem = () => {
-    setState({ ...state, starred: state.starred });
-    props.toggleFav(!starred);
+    setState({ ...state, starred: !state.starred });
+    props.toggleFav(!state.starred);
   }
 
   const className = () => {
