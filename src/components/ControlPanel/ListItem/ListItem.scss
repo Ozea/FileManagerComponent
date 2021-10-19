@@ -1,3 +1,11 @@
+$whiteBackground: #ececec;
+$primary: #2c54ac;
+$primaryLight: #2c5cb4;
+$secondary: #fcac04;
+$secondaryLight: #f8b014;
+$secondaryActive: #fdb51c;
+$textColor: #555;
+
 .list-item {
   display: flex;
   justify-content: flex-start;
@@ -63,12 +71,12 @@
 }
 
 .list-item.starred {
-  border-left: 2px solid #ff6701;
+  border-left: 2px solid $secondary;
 
   .l-col div.star {
     div > svg {
       opacity: 1;
-      color: #ff6701;
+      color: $secondary;
     }
   }
 }

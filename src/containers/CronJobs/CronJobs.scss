@@ -1,15 +1,24 @@
+$whiteBackground: #ececec;
+$primary: #2c54ac;
+$primaryLight: #2955a7;
+$primaryActive: #2c5cb4;
+$secondary: #fcac04;
+$secondaryLight: #f8b014;
+$secondaryActive: #fdb51c;
+$textColor: #555;
+
 .r-menu {
   > div {
     > button {
       font-size: 13px;
       background: white;
       border-color: white;
-      color: gray;
+      color: $textColor;
 
       &:hover {
         background: white;
         border-color: white;
-        color: gray;
+        color: $textColor;
       }
     }
   }
@@ -24,7 +33,7 @@
   .actions {
     > div:nth-child(1) a:hover,
     > div:nth-child(1) button:hover {
-      background: #9fbf0c;
+      background: $primaryLight;
     }
 
     > div:nth-child(2) a:hover,

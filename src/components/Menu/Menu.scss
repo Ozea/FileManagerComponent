@@ -1,21 +1,31 @@
+$whiteBackground: #ececec;
+$primary: #2c54ac;
+$primaryLight: #2955a7;
+$primaryActive: #2c5cb4;
+$secondary: #fcac04;
+$secondaryLight: #f8b014;
+$secondaryActive: #fdb51c;
+$textColor: #555;
+
 .menu {
   display: flex;
   background: #f8f9fa;
   height: 40px;
 
   .logo {
+    width: 7rem;
     padding-left: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
 
     img {
-      width: 80%;
+      width: 82%;
     }
   }
 
   .btn-group {
-    padding: 0;
+    padding: 0 0 0 10px;
     margin: 0;
     font-size: 17px;
     border-radius: 0;
@@ -34,11 +44,11 @@
       margin-left: 2px;
       color: white;
       border-radius: 4px;
-      background: #AACC0D;
+      background: $primary;
     
       &:hover {
         color: white;
-        background: rgb(184, 221, 17);
+        background: $primaryLight;
       }
     }
   
@@ -54,7 +64,7 @@
       text-align: center;
   
       &:hover {
-        color: rgb(1, 148, 148);
+        color: $primaryLight;
       }
   
       &:focus {
@@ -92,7 +102,7 @@
     .small {
       &:hover {
         .file, .folder-close, .download, .copy {
-          color: #aacc0d;
+          color: $primary;
         }
 
         .italic, .user, .paste {
@@ -104,7 +114,7 @@
         }
 
         .book {
-          color: rgb(216, 186, 77);
+          color: $secondary;
         }
       }
     }

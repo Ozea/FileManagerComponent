@@ -1,3 +1,11 @@
+$whiteBackground: #ececec;
+$primary: #2c54ac;
+$primaryLight: #2c5cb4;
+$secondary: #fcac04;
+$secondaryLight: #f8b014;
+$secondaryActive: #fdb51c;
+$textColor: #555;
+
 .backups-restore-settings {
   .list-item {
     .r-col {
@@ -18,12 +26,12 @@
           display: flex;
           justify-content: center;
           align-items: center;
-          color: #777;
+          color: $textColor;
           padding: 10px 15px;
           text-decoration: none;
     
           &:hover {
-            background: rgb(145, 145, 145);
+            background: $whiteBackground;
             color: white;
     
             svg {
@@ -33,7 +41,7 @@
         }
     
         svg {
-          color: #777;
+          color: $textColor;
         }
       }
 
@@ -43,7 +51,7 @@
         }
 
         &:hover {
-          background-color: #9fbf0c;
+          background-color: $primaryLight;
         }
       }
     }

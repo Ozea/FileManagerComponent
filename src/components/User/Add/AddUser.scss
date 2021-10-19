@@ -1,13 +1,21 @@
+
+$whiteBackground: #ececec;
+$primary: #2c54ac;
+$primaryLight: #2955a7;
+$primaryActive: #2c5cb4;
+$secondary: #fcac04;
+$secondaryLight: #f8b014;
+$secondaryActive: #fdb51c;
 $textColor: #555;
 
 .password-wrapper {
   display: flex;
 
   button {
-    color: #2C9491;
+    color: $primary;
 
     &:hover {
-      color: #ff6701;
+      color: $secondaryLight;
     }
   }
 
@@ -21,15 +29,15 @@ $textColor: #555;
 }
 
 button.generate-password {
-  color:#2C9491;
+  color:$primary;
   font-weight: bold;
 
   &:hover {
-    color: #ff6701;
+    color: $secondaryLight;
   }
 
   &:active {
-    color: #F7D616;
+    color: $secondaryActive;
   }
 }
 

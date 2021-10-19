@@ -45,6 +45,7 @@ import Servers from '../../containers/Servers/Servers';
 import MainNav from '../../components/MainNav/MainNav';
 import BackupExclusions from '../Backups/Exclusions';
 import MailWrapper from '../MailWrapper/MailWrapper';
+import Spinner from 'src/components/Spinner/Spinner';
 import DNSWrapper from '../DNSWrapper/DNSWrapper';
 import Statistics from '../Statistics/Statistics';
 import Users from '../../containers/Users/Users';
@@ -55,7 +56,6 @@ import Search from '../Search/Search';
 import Logs from '../Logs/Logs';
 
 import './ControlPanelContent.scss';
-import Spinner from 'src/components/Spinner/Spinner';
 
 const ControlPanelContent = props => {
   const { userName } = useSelector(state => state.session);
@@ -68,6 +68,8 @@ const ControlPanelContent = props => {
   useEffect(() => {
     if (userName) {
       setLoading(false);
+    } else {
+      history.push('/login');
     }
   }, [userName]);
 
@@ -143,7 +145,7 @@ const ControlPanelContent = props => {
 
   return (
     <div>
-      <MainNav history={history} />
+      <MainNav />
       <div className="content">
         {
           loading
@@ -213,8 +215,7 @@ const ControlPanelContent = props => {
                 <Route exact path="/edit/backup/exclusions" component={EditBackupExclusions} />
                 <Route path="/search/" component={props => <Search {...props} changeSearchTerm={handleSearchTerm} searchTerm={searchTerm} />} />
               </Switch>
-            )
-        }
+            )}
       </div>
       <div className="fixed-buttons">
         <div className="hotkey-button">

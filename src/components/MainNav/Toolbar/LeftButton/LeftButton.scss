@@ -1,3 +1,12 @@
+$whiteBackground: #ececec;
+$primary: #2c54ac;
+$primaryLight: #2955a7;
+$primaryActive: #2c5cb4;
+$secondary: #fcac04;
+$secondaryLight: #f8b014;
+$secondaryActive: #fdb51c;
+$textColor: #555;
+
 .l-menu {
   transform: translate(35px, 50%);
 
@@ -5,7 +14,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #aacb0c;
+    background: $primary;
     border-radius: 100%;
     color: white;
     width: 45px;
@@ -15,7 +24,7 @@
     text-decoration: none;
 
     &:hover {
-      background: #c1e411;
+      background: $primaryLight;
 
       span.add {
         display: block;
@@ -26,7 +35,7 @@
       width: max-content;
       display: none;
       padding: 4px 10px 4px 25px;
-      background: #aacb0c;
+      background: $primary;
       border-radius: 15px;
       color: white;
       font-size: 15px;
@@ -52,7 +61,7 @@
   .l-menu {
     &.server-icon {
       a, span.add {
-        background: #55c9c0;
+        background: $primary;
       }
     }
 

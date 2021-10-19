@@ -1,10 +1,18 @@
+$whiteBackground: #ececec;
+$primary: #2c54ac;
+$primaryLight: #2955a7;
+$primaryActive: #2c5cb4;
+$secondary: #fcac04;
+$secondaryLight: #f8b014;
+$secondaryActive: #fdb51c;
 $textColor: #555;
-$addButtonBackground: #9FBF0C;
-$addButtonBackgroundHover: #C0E60F;
-$optionalButtonHover: #9FBF0C;
-$optionalButtonActive: #c0e60f;
-$deleteButtonColorHover: #FF3438;
-$deleteButtonColorActive: #FF5F5F;
+
+$addButtonBackground: $primary;
+$addButtonBackgroundHover: $primaryLight;
+$optionalButtonHover: $primary;
+$optionalButtonActive: $primaryLight;
+$deleteButtonColorHover: #fa4d50;
+$deleteButtonColorActive: #f03d40;
 $backButtonBackground: #DFDEDD;
 $backButtonBackgroundHover: #999;
 $transition: all 200ms cubic-bezier(0.4, 0.1, 0.5, 0.85);
@@ -84,15 +92,15 @@ $successColor: $addButtonBackground;
   form {
     button,
     a {
-      color:#2C9491;
+      color:$primary;
       font-weight: bold;
     
       &:hover {
-        color: #ff6701;
+        color: $secondaryLight;
       }
     
       &:active {
-        color: #F7D616;
+        color: $secondaryActive;
       }
     }
 
@@ -139,14 +147,14 @@ $successColor: $addButtonBackground;
       &:focus,
       &:active {
         outline: none;
-        border-color: #55C9C0;
+        border-color: $primaryActive;
         box-shadow: unset;
       }
     }
 
     textarea {
       &:focus {
-        background: #D7F9FF;;
+        background: #D7F9FF;
       }
     }
 
@@ -172,7 +180,7 @@ $successColor: $addButtonBackground;
       &:focus,
       &:active {
         box-shadow: unset;
-        border-color: #55C9C0;
+        border-color: $primaryActive;
         background: #D7F9FF;
       }
     }
@@ -225,7 +233,7 @@ $successColor: $addButtonBackground;
         background: $addButtonBackground;
 
         &:hover {
-          color: #555;
+          color: white;
           background: $addButtonBackgroundHover;
         }
       }
@@ -258,7 +266,7 @@ $successColor: $addButtonBackground;
     }
 
     .status {
-      color: #9FBF0C;
+      color: $primary;
       font-size: 11px;
       letter-spacing: 1px;
       text-transform: uppercase;

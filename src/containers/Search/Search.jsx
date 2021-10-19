@@ -84,7 +84,7 @@ const Search = props => {
 
   const sortArray = array => {
     const { order, sorting } = state;
-    let sortBy = sortBy(sorting);
+    let sortBy = sortByHandler(sorting);
 
     if (order === "descending") {
       return array.sort((a, b) => (a[sortBy] < b[sortBy]) ? 1 : ((b[sortBy] < a[sortBy]) ? -1 : 0));
@@ -93,7 +93,7 @@ const Search = props => {
     }
   }
 
-  const sortBy = sorting => {
+  const sortByHandler = sorting => {
     const { Date, Name, Starred } = i18n;
 
     switch (sorting) {

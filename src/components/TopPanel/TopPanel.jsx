@@ -73,7 +73,9 @@ const TopPanel = ({ menuItems = [], extraMenuItems = [] }) => {
         <div className="container left-menu">
           <div className="logo">
             <Link to="/list/user/">
-              <div className="logo-img"></div>
+              <div className="logo-img">
+                <img src="/images/white_logo.png" alt="Logo" />
+              </div>
             </Link>
           </div>
 

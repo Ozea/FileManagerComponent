@@ -7,17 +7,28 @@ import Menu from '../MainNav/Stat-menu/Menu';
 import Panel from '../MainNav/Panel/Panel';
 import './MainNav.scss';
 import { useHistory } from 'react-router';
+import Spinner from '../Spinner/Spinner';
 
 const MainNav = () => {
   const history = useHistory();
+  const [loading, setLoading] = useState(true);
   const [state, setState] = useState({
     menuHeight: 135,
     showTopNav: false
   });
 
+  const { userName, user } = useSelector(state => state.session);
   const { activeElement, focusedElement, menuTabs } = useSelector(state => state.mainNavigation);
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!userName || !Object.entries(user).length) {
+      return history.push('/login');
+    }
+
+    setLoading(false);
+  }, [userName, user, history]);
 
   const controlFocusedTabWithCallback = useCallback(event => {
     let isSearchInputFocused = document.querySelector('input:focus') || document.querySelector('textarea:focus') || document.querySelector('textarea:focus');
@@ -151,8 +162,14 @@ const MainNav = () => {
 
   return (
     <div className="main-nav">
-      <Panel showTopNav={showTopNav} visibleNav={state.showTopNav} />
-      {topNavigation()}
+      {
+        loading
+          ? <Spinner />
+          : (<>
+            <Panel showTopNav={showTopNav} visibleNav={state.showTopNav} />
+            {topNavigation()}
+          </>)
+      }
     </div>
   );
 }

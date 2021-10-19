@@ -120,7 +120,7 @@ export default function ForgotPassword() {
           <form onSubmit={submitHandler}>
             <div className="c1">
               <Link to="/">
-                <img src={`${window.location.origin}/images/vesta_logo.png`} alt="Logo" />
+                <img src="/images/logo.png" alt="Logo" />
               </Link>
             </div>
             <div className="c2">
