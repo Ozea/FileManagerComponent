@@ -87,13 +87,13 @@ export default function WebDomain(props) {
       </Container>
       <div className="actions">
         <div>
-          <Link className="link-edit" to={`/api/v1/edit/web?domain=${data.NAME}`}>
+          <Link className="link-edit" to={`/edit/web?domain=${data.NAME}`}>
             {i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
           </Link>
         </div>
         <div>
-          <a className="link-gray" href={`/api/v1/list/web-log?domain=${data.NAME}&type=access`}>
+          <a className="link-gray" href={`/list/web-log?domain=${data.NAME}&type=access`}>
             {i18n['view logs']}
             {data.FOCUSED ? <span className="shortcut-button">L</span> : <FontAwesomeIcon icon="list" />}
           </a>

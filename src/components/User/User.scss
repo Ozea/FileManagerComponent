@@ -29,7 +29,7 @@ $textColor: #555;
 
     &:hover {
       background: #b4b4b478;
-      color: $secondaryLight;
+      color: $primaryLight;
     }
   }
 }
@@ -200,5 +200,5 @@ span.stat.email{
 }
 
 .list-item.focused .r-col .name {
-  color: $secondary;
+  color: $secondaryLight;
 }
