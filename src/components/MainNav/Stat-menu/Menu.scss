@@ -1,3 +1,12 @@
+$whiteBackground: #ececec;
+$primary: #2c54ac;
+$primaryLight: #2955a7;
+$primaryActive: #2c5cb4;
+$secondary: #fcac04;
+$secondaryLight: #f8b014;
+$secondaryActive: #fdb51c;
+$textColor: #555;
+
 .menu-wrapper {
   position: fixed;
   width: 100%;
@@ -71,10 +80,10 @@
 
       &:hover {
         cursor: pointer;
-        border-bottom: 3px solid #ff6701;
+        border-bottom: 3px solid $secondaryLight;
       
         h3 {
-          color: #ff6701;
+          color: $secondary;
         }
 
         .stats {
@@ -83,10 +92,10 @@
       }
 
       &:active {
-        border-color: #f72b44;
+        border-color: $secondaryActive;
 
         h3 {
-          color: #f72b44;
+          color: $secondary;
         }
       }
 
@@ -102,20 +111,20 @@
     }
 
     .l-active {
-      border-bottom: 3px solid #ff6701;
+      border-bottom: 3px solid $secondaryActive;
 
       h3 {
-        color: #ff6701;
+        color: $secondary;
         font-size: 18px;
         margin-bottom: 25px;
       }
     }
 
     .stat.focus {
-      border-bottom: 3px solid #5edad0 !important;
+      border-bottom: 3px solid $primary !important;
       
       a, h3 {
-        color: #36B3A9 !important;
+        color: $primary !important;
       }
     }
   }
@@ -203,7 +212,7 @@
         }
 
         .stat.l-active {
-          background: #ff67010d;
+          background: #fdac020d;
         }
       }
     }

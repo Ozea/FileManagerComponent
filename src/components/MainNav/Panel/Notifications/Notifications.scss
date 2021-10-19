@@ -1,3 +1,8 @@
+$primary: #2c54ac;
+$primaryLight: #2955a7;
+$secondary: #fcac04;
+$secondaryLight: #f8b014;
+
 .top-panel .profile-menu {
   div {
     width: auto;
@@ -65,18 +70,18 @@
         width: 100%;
         padding: 10px 0 0 10px;
         text-align: left;
-        color: #C4DA5E;
+        color: $secondary;
       }
 
       span.delete-notification {
         width: 10px;
         height: 10px;
-        background: #C4DA5E;
+        background: $secondary;
         border-radius: 50%;
         cursor: pointer;
 
         &:hover {
-          border: 2px solid #C4DA5E;
+          border: 2px solid $secondaryLight;
           background: transparent;
         }
       }
@@ -94,10 +99,10 @@
 
       a {
         display: contents;
-        color: #5ABDB5;
+        color: $primary;
 
         &:hover {
-          color: #2CA99B;
+          color: $primaryLight;
         }
       }
     }

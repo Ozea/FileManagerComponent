@@ -1,3 +1,11 @@
+$whiteBackground: #ececec;
+$primary: #2c54ac;
+$primaryLight: #2c5cb4;
+$secondary: #fcac04;
+$secondaryLight: #f8b014;
+$secondaryActive: #fdb51c;
+$textColor: #555;
+
 .top-panel.small-device {
   display: none;
 }
@@ -22,13 +30,10 @@
     width: 80%;
     height: 100%;
 
-    .logo .logo-img {
-      background-image: url("/images/sprite.png?1446554103");
-      background-position: -117px -57px;
-      background-repeat: no-repeat;
-      height: 22px;
-      width: 70px;
-      margin-left: -2px;
+    .logo div {
+      img {
+        width: 82%;
+      }
 
       &:hover {
         background-color: transparent;
@@ -65,7 +70,7 @@
       background: white;
       
       a, button {
-        color: #f79b44;
+        color: $secondary;
         font-weight: bold;
 
         &:hover {
@@ -73,13 +78,13 @@
         }
 
         &:active {
-          background: #ff6701;
+          background: $secondaryActive;
           color: white;
         }
       }
 
       &:hover {
-        background: #f79b44;
+        background: $secondaryLight;
       }
     }
   }
@@ -93,7 +98,7 @@
       height: 100%;
 
       &:hover {
-        background: #f79b44;
+        background: $secondaryLight;
       }
     }
 
@@ -113,7 +118,7 @@
 
     .top-link.focus {
       a, button {
-        color: #5edad0;
+        color: $primary;
         text-decoration: underline;
       }
     }
@@ -129,7 +134,7 @@
 
     div.bell {
       width: auto;
-      color: #C0E60E;
+      color: $secondary;
 
       svg {
         border-radius: 30px;
@@ -142,7 +147,7 @@
         }
 
         &:hover {
-          background: #c0e6198a;
+          background: $secondaryLight;
         }
       }
     }
@@ -152,11 +157,11 @@
       font-weight: 700;
     
       &:hover {
-        color: #ffd62e;
+        color: $secondaryLight;
       }
 
       &:active {
-        color: #f79b44;
+        color: $secondaryActive;
       }
     }
 
@@ -167,11 +172,11 @@
       font-weight: 100;
 
       &:hover {
-        color: #C0E60E;
+        color: $primaryLight;
       }
 
       &:active {
-        color: #ffd62e;
+        color: $secondaryActive;
       }
     }
   }

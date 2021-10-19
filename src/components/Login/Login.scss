@@ -1,3 +1,11 @@
+$whiteBackground: #ececec;
+$primary: #2c54ac;
+$primaryLight: #2c5cb4;
+$secondary: #fcac04;
+$secondaryLight: #f8b014;
+$secondaryActive: #fdb51c;
+$textColor: #555;
+
 .login-page {
   display: flex;
   justify-content: center;
@@ -45,11 +53,15 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        width: 30%;
+        width: 35%;
+
+        img {
+          width: 110%;
+        }
       }
 
       .c2 {
-        width: 70%;
+        width: 65%;
         margin-left: 3.5rem;
 
         .forgot-password {
@@ -60,8 +72,8 @@
         }
 
         button[type="submit"] {
-          background-color: #9FBF0C;
-          border: 1px solid #9FBF0C;
+          background-color: $primary;
+          border: 1px solid $primary;
           padding: 1px 16px 3px;
           font-size: 13px;;
           width: 100px;
@@ -70,9 +82,8 @@
           border-radius: 3px;
 
           &:hover {
-            border: 1px solid #C0E60F;
-            background-color: #C0E60F;
-            color: #555;
+            border: 1px solid $primaryLight;
+            background-color: $primaryLight;
           }
 
           .disabled {
