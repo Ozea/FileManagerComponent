@@ -77,25 +77,25 @@ const Panel = props => {
             </Link>
           </div>
           <div className={className("/list/package/")}>
-            <button onClick={event => handleState("/list/package/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Packages}</button>
+            <Link to="/list/package/" onClick={event => handleState("/list/package/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Packages}</Link>
           </div>
           <div className={className("/list/ip/")}>
-            <button onClick={event => handleState("/list/ip/", event)} onKeyPress={event => event.preventDefault()}>{i18n.IP}</button>
+            <Link to="/list/ip/" onClick={event => handleState("/list/ip/", event)} onKeyPress={event => event.preventDefault()}>{i18n.IP}</Link>
           </div>
           <div className={className("/list/rrd/")}>
-            <button onClick={event => handleState("/list/rrd/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Graphs}</button>
+            <Link to="/list/rrd/" onClick={event => handleState("/list/rrd/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Graphs}</Link>
           </div>
           <div className={className("/list/stats/")}>
-            <button onClick={event => handleState("/list/stats/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Statistics}</button>
+            <Link to="/list/stats/" onClick={event => handleState("/list/stats/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Statistics}</Link>
           </div>
           <div className={className("/list/log/")}>
-            <button onClick={event => handleState("/list/log/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Log}</button>
+            <Link to="/list/log/" onClick={event => handleState("/list/log/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Log}</Link>
           </div>
           <div className={className("/list/updates/")}>
-            <button onClick={event => handleState("/list/updates/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Updates}</button>
+            <Link to="/list/updates/" onClick={event => handleState("/list/updates/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Updates}</Link>
           </div>
           {session.session.FIREWALL_SYSTEM && <div className={className("/list/firewall/")}>
-            <button onClick={event => handleState("/list/firewall/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Firewall}</button>
+            <Link to="/list/firewall/" onClick={event => handleState("/list/firewall/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Firewall}</Link>
           </div>}
           {session.session.FILEMANAGER_KEY === "yes" && <div className="fm">
             <a href="/list/directory/">{i18n['File Manager']}</a>
@@ -103,7 +103,7 @@ const Panel = props => {
           {session.session.SOFTACULOUS === "yes" && <div><a href="/list/softaculous/">{i18n.Apps}</a>
           </div>}
           <div className={className("/list/server/")}>
-            <button onClick={event => handleState("/list/server/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Server}</button></div>
+            <Link to="/list/server/" onClick={event => handleState("/list/server/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Server}</Link></div>
         </div>
         <div className="container profile-menu">
           <Notifications />
