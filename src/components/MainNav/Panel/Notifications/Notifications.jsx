@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getAppNotifications, deleteNotification } from 'src/ControlPanelService/Notifications';
 import { addNotifications } from 'src/actions/Notification/notificationActions';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Bell from './Bell';
+import BellUnread from './BellUnread';
 import { useDispatch, useSelector } from 'react-redux';
 import './Notifications.scss';
 
@@ -50,14 +51,14 @@ const Notifications = () => {
     if (notifications.length) {
       return notifications.map(item => {
         return (
-          <React.Fragment>
+          <>
             <div className="dropdown-item">
               <span className="title"><b>{item.TOPIC}</b></span>
               <span className="delete-notification" onClick={() => removeNotification(item.ID)}></span>
             </div>
             <div dangerouslySetInnerHTML={{ __html: item.NOTICE }}></div>
             <div className="dropdown-divider"></div>
-          </React.Fragment>
+          </>
         );
       });
     } else {
@@ -73,7 +74,11 @@ const Notifications = () => {
     <div className="btn-group">
       <button type="button" className="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <div className="bell">
-          <FontAwesomeIcon icon="bell" />
+          {
+            notifications.length
+              ? <BellUnread />
+              : <Bell />
+          }
         </div>
       </button>
       <div className="dropdown-menu">

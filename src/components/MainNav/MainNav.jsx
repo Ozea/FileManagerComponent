@@ -62,7 +62,7 @@ const MainNav = () => {
       let newFocusedMenuTab = handleRightArrowKey(menuTabs, currentActiveTabPositionInArray);
       dispatch(addFocusedElement(newFocusedMenuTab));
     } else if (event.keyCode === 13) {
-      if (!controlPanelFocusedElement && focusedElement) {
+      if (!controlPanelFocusedElement && focusedElement && focusedElement !== activeElement) {
         history.push({ pathname: focusedElement });
         dispatch(addActiveElement(focusedElement));
         dispatch(removeFocusedElement());
