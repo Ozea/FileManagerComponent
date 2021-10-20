@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import DirectoryList from '../../components/Lists/DirectoryList/DirectoryList';
 import ProgressBar from '../../components/ProgressBar/ProgressBar';
-import HotkeysButton from '../../components/Hotkeys/HotkeysButton';
 import { toast, ToastContainer } from 'react-toastify';
 import Hotkeys from '../../components/Hotkeys/Hotkeys';
 import Modal from '../../components/Modal/Modal';
@@ -9,9 +8,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { withRouter } from 'react-router-dom';
 import Menu from '../../components/Menu/Menu';
 import * as FM from '../../FileManagerHelper';
-import '../App/App.scss';
 import axios from 'axios';
 import { Helmet } from 'react-helmet';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import 'src/containers/App/App.scss';
 
 const server = window.location.origin + "/file_manager/fm_api.php?";
 
@@ -463,8 +463,14 @@ class FileManager extends Component {
           name={itemName} />
         <div className="lists-container">
           {DirectoryLists}
-          <Hotkeys style={hotkeysPanel} close={this.hotkeys} />
-          <HotkeysButton open={this.hotkeys} />
+          <div className="fixed-buttons fm">
+            <div className="hotkey-button">
+              <button onClick={() => this.hotkeysList.classList.toggle('hide')}>
+                <FontAwesomeIcon icon="ellipsis-h" />
+              </button>
+            </div>
+          </div>
+          <Hotkeys reference={(inp) => this.hotkeysList = inp} toggleHotkeys={() => this.hotkeysList.classList.toggle('hide')} />
         </div>
         {modalVisible && modalWindow}
       </div>

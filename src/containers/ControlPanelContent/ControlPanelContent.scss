@@ -1,6 +1,6 @@
 $primary: #2c54ac;
-$primaryLight: #2955a7;
-$primaryActive: #2c5cb4;
+$primaryLight: #2e5bb1;
+$primaryActive: #224fa0;
 
 .content {
   padding: 0 13%;
@@ -82,7 +82,7 @@ $primaryActive: #2c5cb4;
     background: none;
 
     &:hover {
-      background: $primary;
+      background: $primaryLight;
 
       button svg {
         color: white;
@@ -90,7 +90,7 @@ $primaryActive: #2c5cb4;
     }
 
     &:active {
-      background: #51beb5;
+      background: $primaryActive;
     }
 
     button {
