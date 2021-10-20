@@ -9,7 +9,6 @@ import { Link, useHistory } from 'react-router-dom';
 import './User.scss';
 
 const User = ({ data, toggleFav, handleModal, checkItem }) => {
-  console.log(data.STARRED);
   const { i18n } = useSelector(state => state.session);
   const [loading, setLoading] = useState(false);
   const session = useSelector(state => state.session);

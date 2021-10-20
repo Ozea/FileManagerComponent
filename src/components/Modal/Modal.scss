@@ -1,4 +1,12 @@
 $black: #000;
+$whiteBackground: #ececec;
+$primary: #2c54ac;
+$primaryLight: #2e5bb1;
+$primaryActive: #224fa0;
+$secondary: #fcac04;
+$secondaryLight: #f8b014;
+$secondaryActive: #fdb51c;
+$textColor: #555;
 
 .modal {
   display: block;
@@ -42,7 +50,7 @@ $black: #000;
       word-break: break-word;
 
       h3 {
-        color: #EBE697;
+        color: $secondaryLight;
       }
 
       .replace {
@@ -52,7 +60,7 @@ $black: #000;
       }
 
       .quot {
-        color: rgb(182, 120, 28);
+        color: $secondaryActive;
       }
     }
 
@@ -82,25 +90,25 @@ $black: #000;
       }
 
       button.btn-danger:hover {
-        background: #00cccb;
-        border-color: #00cccb;
+        background: $primary;
+        border-color: $primary;
       }
 
       button + button {
         padding: 6px 30px;
-        background: #CACE33;
-        border-color: #CACE33;
+        background: $secondary;
+        border-color: $secondary;
 
         &:hover {
-          background: #00cccb;
-          border-color: #00cccb;
+          background: $primary;
+          border-color: $primary;
           color: white;
         }
       }
     }
     
     .header .quot {
-      color: rgb(182, 120, 28);
+      color: $secondaryActive;
     }
 
     .close {

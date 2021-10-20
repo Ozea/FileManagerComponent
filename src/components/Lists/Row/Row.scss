@@ -1,3 +1,12 @@
+$whiteBackground: #ececec;
+$primary: #2c54ac;
+$primaryLight: #2e5bb1;
+$primaryActive: #224fa0;
+$secondary: #fcac04;
+$secondaryLight: #f8b014;
+$secondaryActive: #fdb51c;
+$textColor: #555;
+
 .list .list-container ul li svg {
   width: 25px;
   vertical-align: top;
@@ -126,7 +135,7 @@
 }
 
 .list .list-container ul li .fOwner {
-  color: #81A64F;
+  color: $secondary;
   font-style: italic;
   width: 50px;
   font-size: 12px;
@@ -134,7 +143,7 @@
 }
 
 .value {
-  color: #44a8b3;
+  color: $primary;
 }
 
 .unit {

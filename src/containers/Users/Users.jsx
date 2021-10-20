@@ -221,9 +221,6 @@ const Users = props => {
       }
     });
 
-    console.log(users);
-    console.log(userFav);
-
     let sortedResult = sortArray(users);
 
     return sortedResult.map((item, index) => {

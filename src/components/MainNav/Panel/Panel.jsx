@@ -97,9 +97,9 @@ const Panel = props => {
           {session.session.FIREWALL_SYSTEM && <div className={className("/list/firewall/")}>
             <button onClick={event => handleState("/list/firewall/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Firewall}</button>
           </div>}
-          <div className="fm">
+          {session.session.FILEMANAGER_KEY === "yes" && <div className="fm">
             <a href="/list/directory/">{i18n['File Manager']}</a>
-          </div>
+          </div>}
           {session.session.SOFTACULOUS === "yes" && <div><a href="/list/softaculous/">{i18n.Apps}</a>
           </div>}
           <div className={className("/list/server/")}>

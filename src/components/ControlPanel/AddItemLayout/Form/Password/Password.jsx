@@ -43,7 +43,7 @@ const Password = ({ defaultValue, onChange = () => { }, id, name, title, showGen
         {title ? title : i18n.Password}
         {
           showGenerationButton && (
-            <>/ <button type="button" className="generate-password" onClick={() => generatePassword()}>
+            <> / <button type="button" className="generate-password" onClick={() => generatePassword()}>
               {i18n.Generate}
             </button></>
           )

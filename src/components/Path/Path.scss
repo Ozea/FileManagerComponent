@@ -1,4 +1,11 @@
 $white: #fff;
+$primary: #2c54ac;
+$primaryLight: #2e5bb1;
+$primaryActive: #224fa0;
+$secondary: #fcac04;
+$secondaryLight: #f8b014;
+$secondaryActive: #fdb51c;
+$textColor: #555;
 
 .path {
   display: flex;
@@ -53,12 +60,20 @@ $white: #fff;
       align-items: center;
 
       &:hover {
-        color: rgb(1, 148, 148);
+        color: $secondaryLight;
         background: #7b7b7b;
         border-color: #7b7b7b;
 
         span {
-          color: rgb(1, 148, 148);
+          color: $secondaryLight;
+        }
+      }
+
+      &:active {
+        color: $secondaryActive;
+
+        span {
+          color: $secondaryActive;
         }
       }
     }
@@ -69,7 +84,11 @@ $white: #fff;
     cursor: pointer;
   
     &:hover {
-      color: goldenrod;
+      color: $secondaryLight;
+    }
+
+    &:active {
+      color: $secondaryActive;
     }
   }
 }
@@ -132,12 +151,12 @@ $white: #fff;
       align-items: center;
       
       &:hover {
-        color: rgb(1, 148, 148);
+        color: $secondaryLight;
         background: #333;
         border-color: #333;
 
         span {
-          color: rgb(1, 148, 148);
+          color: $secondaryActive;
         }
       }
     }
@@ -148,7 +167,11 @@ $white: #fff;
     cursor: pointer;
   
     &:hover {
-      color: goldenrod;
+      color: $secondaryLight;
+    }
+
+    &:active {
+      color: $secondaryActive;
     }
   }
 }

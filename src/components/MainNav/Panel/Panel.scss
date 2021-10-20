@@ -1,6 +1,6 @@
 $whiteBackground: #ececec;
 $primary: #2c54ac;
-$primaryLight: #2c5cb4;
+$primaryLight: #2e5bb1;
 $secondary: #fcac04;
 $secondaryLight: #f8b014;
 $secondaryActive: #fdb51c;
@@ -96,6 +96,8 @@ $textColor: #555;
     div {
       width: 7rem;
       height: 100%;
+      transform: translateX(-5px);
+      padding-right: 5px;
 
       &:hover {
         background: $secondaryLight;
@@ -172,7 +174,7 @@ $textColor: #555;
       font-weight: 100;
 
       &:hover {
-        color: $primaryLight;
+        color: $secondaryLight;
       }
 
       &:active {
