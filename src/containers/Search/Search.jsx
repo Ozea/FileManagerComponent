@@ -52,7 +52,7 @@ const Search = props => {
         setState({
           ...state,
           searchResults: result.data.data,
-          totalAmount: result.data.totalAmount,
+          totalAmount: result.data.total_amount,
           loading: false
         });
       })

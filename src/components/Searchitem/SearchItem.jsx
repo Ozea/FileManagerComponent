@@ -2,10 +2,11 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ListItem from '../ControlPanel/ListItem/ListItem';
 import Container from '../ControlPanel/Container/Container';
-import './SearchItem.scss';
 import { useSelector } from 'react-redux';
+import './SearchItem.scss';
+import { Link } from 'react-router-dom';
 
-const SearchItem = ({ data }) => {
+const SearchItem = ({ data, handleModal }) => {
   const { i18n } = useSelector(state => state.session);
 
   return (
@@ -25,11 +26,11 @@ const SearchItem = ({ data }) => {
         </div>
       </Container>
       <div className="actions">
-        <div><a className="link-edit" href={data.edit_link}>{i18n.edit} <FontAwesomeIcon icon="pen" /></a></div>
+        <div><Link className="link-edit" to={data.edit_link}>{i18n.edit} <FontAwesomeIcon icon="pen" /></Link></div>
         <div>
           <button
             className="link-gray"
-            onClick={() => this.props.handleModal(data.spnd_confirmation, '/api/v1' + data.spnd_link)}>
+            onClick={() => handleModal(data.spnd_confirmation, '/api/v1' + data.spnd_link)}>
             {data.spnd_action}
             <FontAwesomeIcon icon={data.SUSPENDED === 'yes' ? 'unlock' : 'lock'} />
           </button>

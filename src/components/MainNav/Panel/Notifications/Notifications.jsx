@@ -7,14 +7,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import './Notifications.scss';
 
 const Notifications = () => {
-  const { i18n, userName } = useSelector(state => state.session);
+  const { i18n } = useSelector(state => state.session);
   const { notifications } = useSelector(state => state.notifications);
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchData();
-  }, [userName]);
+  }, []);
 
   const fetchData = () => {
     setLoading(true);

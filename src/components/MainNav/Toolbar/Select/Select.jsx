@@ -44,8 +44,6 @@ const Select = props => {
     const { list } = props;
     let activeList = state[list];
 
-    console.log(activeList, props);
-
     if (list === 'statisticsList') {
       return props.users.map((item, index) => { return <option key={index} value={item}>{item}</option> });
     } else {

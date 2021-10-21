@@ -38,9 +38,13 @@ const TopPanel = ({ menuItems = [], extraMenuItems = [] }) => {
   const renderExtraMenuItems = () => {
     if (!extraMenuItems.length) return;
 
-    return extraMenuItems.map(({ link, text }, index) => (
+    return extraMenuItems.map(({ link, text, type }, index) => (
       <div className="nav-link" key={index}>
-        <Link to={link} target="_blank">{text}</Link>
+        {
+          type === 'download'
+            ? <a href={`/api/v1${link}`} target="_blank" rel="noopener noreferrer">{text}</a>
+            : <Link to={link} target="_blank">{text}</Link>
+        }
       </div>
     ));
   }
