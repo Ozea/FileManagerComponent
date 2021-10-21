@@ -33,11 +33,11 @@ export default function WebDomain(props) {
 
   const handleSuspend = () => {
     let suspendedStatus = data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
-    props.handleModal(data.spnd_confirmation, `/${suspendedStatus}/web/index.php?domain=${data.NAME}`);
+    props.handleModal(data.spnd_confirmation, `/api/v1/${suspendedStatus}/web/index.php?domain=${data.NAME}`);
   }
 
   const handleDelete = () => {
-    props.handleModal(data.delete_confirmation, `/delete/web/index.php?domain=${data.NAME}`);
+    props.handleModal(data.delete_confirmation, `/api/v1/delete/web/index.php?domain=${data.NAME}`);
   }
 
   return (

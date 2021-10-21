@@ -8,7 +8,7 @@ import './AdditionalFtpForEditing.scss';
 const AdditionalFtpForEditing = ({ domain, data = {}, index, onDeleteAdditionalFtp, prefixI18N }) => {
   const { userName, i18n } = useSelector(state => state.session);
   const [state, setState] = useState({
-    username: '',
+    username: data.v_ftp_user || '',
     path: ''
   });
 
@@ -34,6 +34,7 @@ const AdditionalFtpForEditing = ({ domain, data = {}, index, onDeleteAdditionalF
               defaultValue={state.username}
               onChange={event => setState({ ...state, username: event.target.value })}
               type="text"
+              disabled={data.v_ftp_user}
               className="form-control"
               id={`ftp_user_${index}`}
               name={`v_ftp_user[${index}][v_ftp_user]`} />

@@ -49,6 +49,7 @@ const EditWeb = props => {
 
       getDomainInfo(domain)
         .then(response => {
+          console.log(response.data);
           setState({
             ...state,
             domain,
@@ -265,8 +266,7 @@ const EditWeb = props => {
               title={i18n['Additional FTP Account']} />
 
             {
-              state.additionalFtp
-              && (
+              !!state.data.ftp_user && (
                 <AdditionalFtpWrapper prefixI18N={state.data.prefixI18N} ftps={state.data.ftp_users} unCheckAdditionalFtpBox={() => onChangeAdditionalFtp(false)} />
               )
             }
