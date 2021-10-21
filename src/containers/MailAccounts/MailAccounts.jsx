@@ -173,6 +173,7 @@ export default function MailAccounts(props) {
           mailAccounts: reformatData(result.data.data),
           webMail: result.data.webMail,
           selection: [],
+          toggledAll: false,
           mailAccountsFav: result.data.mailAccountsFav,
           totalAmount: result.data.totalAmount,
           loading: false

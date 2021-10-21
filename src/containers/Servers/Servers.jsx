@@ -163,6 +163,7 @@ const Servers = props => {
         setState({
           ...state,
           selection: [],
+          toggledAll: false,
           servers: reformatData(result.data.data, result.data.sys),
           loading: false
         });

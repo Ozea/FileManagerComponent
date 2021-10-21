@@ -167,6 +167,7 @@ export default function DnsRecords(props) {
           dnsRecordFav: result.data.dnsRecordsFav,
           totalAmount: result.data.totalAmount,
           domain: parsedQueryString.domain,
+          toggledAll: false,
           selection: [],
           loading: false
         });

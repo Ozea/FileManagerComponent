@@ -174,6 +174,7 @@ const Databases = props => {
           dbAdminLink: result.data.db_admin_link,
           dbFav: result.data.dbFav,
           selection: [],
+          toggledAll: false,
           totalAmount: result.data.totalAmount,
           loading: false
         });

@@ -154,6 +154,7 @@ export default function BackupRestoreSettings(props) {
           ...state,
           totalAmount: result.data.totalAmount,
           selection: [],
+          toggledAll: false,
           loading: false
         });
       })

@@ -69,6 +69,7 @@ const Users = props => {
           users: reformatData(result.data.data),
           userFav: result.data.userFav,
           totalAmount: result.data.totalAmount,
+          toggledAll: false,
           selection: [],
           loading: false
         });

@@ -172,6 +172,7 @@ const CronJobs = props => {
           cronReports: result.data.cron_reports,
           cronFav: result.data.cron_fav,
           selection: [],
+          toggledAll: false,
           totalAmount: result.data.totalAmount,
           loading: false
         });
