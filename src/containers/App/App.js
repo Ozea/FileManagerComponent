@@ -82,10 +82,10 @@ const App = () => {
 
   const AuthenticatedRoute = ({ authenticated, ...rest }) => {
     return (
-      <Route render={props =>
+      <Route {...rest} render={props =>
         authenticated
           ? <rest.component {...props} />
-          : <Redirect to="/login" />} {...rest} />
+          : <Redirect to="/login" />} />
     );
   }
 
@@ -108,16 +108,16 @@ const App = () => {
                 component={Preview} />
               <AuthenticatedRoute
                 path="/list/server/:service"
-                authenticated={session.token && session.userName}
+                authenticated={session.userName}
                 component={ServiceInfo} />
               <AuthenticatedRoute
                 path="/list/web-log/"
                 exact
-                authenticated={session.token && session.userName}
+                authenticated={session.userName}
                 component={WebLogs} />
               <AuthenticatedRoute
                 path="/"
-                authenticated={session.token && session.userName}
+                authenticated={session.userName}
                 loading={loading}
                 component={ControlPanelContent} />
             </Switch>

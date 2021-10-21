@@ -119,18 +119,30 @@ const EditServer = props => {
               name="v_hostname"
               id="hostname" />
 
-            <SelectInput
-              options={state.data.timezones ? Object.values(state.data.timezones) : []}
-              selected={state.data.timezone}
-              title={i18n['Time Zone']}
-              name="v_timezone"
-              id="timezone" />
+            {
+              state.data.timezones && (
+                <div className="form-group select-group">
+                  <label className="label-wrapper" htmlFor="timezone">
+                    {i18n['Time Zone']}
+                  </label>
+                  <select className="form-control" id="timezone" name="v_timezone">
+                    {
+                      Object.keys(state.data.timezones).map(key => {
+                        const value = state.data.timezones[key];
+
+                        return <option key={key} value={key} selected={state.data.timezone === key}>{value}</option>;
+                      })
+                    }
+                  </select>
+                </div>
+              )
+            }
 
             <SelectInput
               options={state.data.languages}
               selected={state.data.language}
               title={i18n['Default Language']}
-              name="language"
+              name="v_language"
               id="language" />
 
             <div className="modules">

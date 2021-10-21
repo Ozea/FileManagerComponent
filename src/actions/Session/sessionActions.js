@@ -1,7 +1,7 @@
 import { LOGIN, LOGOUT, LOGGED_OUT_AS, CHECK_AUTH, RESET_PASSWORD } from './sessionTypes';
-import { checkAuthToken, checkAuth, signIn, signInAs, signOut } from 'src/services/session';
-import { getAuthToken, resetAuthToken, setAuthToken } from 'src/utils/token';
+import { checkAuth, signIn, signInAs, signOut } from 'src/services/session';
 import { resetPassword } from 'src/ControlPanelService/ResetPassword';
+import { resetAuthToken, setAuthToken } from 'src/utils/token';
 
 const LOGOUT_RESPONSE = 'logged_out';
 const LOGOUT_AS_RESPONSE = 'logged_out_as';
@@ -58,22 +58,23 @@ export const reset = ({ user = '', code = '', password = '', password_confirm = 
 export const loginAs = username => dispatch => {
   return new Promise((resolve, reject) => {
     signInAs(username).then((response) => {
-      const { error, token, session, panel, data, user } = response.data;
+      const { error, token, session, panel, data, user, i18n } = response.data;
       if (token) setAuthToken(token);
 
       dispatch({
         type: LOGIN,
         value: {
-          token,
-          panel,
-          session,
           userName: user,
           user: data,
-          error,
-        },
+          i18n,
+          session,
+          panel,
+          token,
+          error
+        }
       });
 
-      resolve(response.data);
+      resolve(token);
     }, (error) => {
       console.error(error);
       reject();
@@ -84,7 +85,7 @@ export const loginAs = username => dispatch => {
 export const logout = () => (dispatch, getState) => {
   return new Promise((resolve, reject) => {
     signOut().then((response) => {
-      const { logout_response, panel, session, user, data, token, i18n } = response.data;
+      const { logout_response, error, userName, user, i18n, session, panel } = response.data;
 
       if (logout_response === LOGOUT_RESPONSE) {
         resetAuthToken();
@@ -92,13 +93,13 @@ export const logout = () => (dispatch, getState) => {
         dispatch({
           type: LOGOUT,
           value: {
-            userName: user,
+            userName: '',
             user: {},
             token: '',
-            panel,
-            session,
-            i18n: i18n || [],
-            error: ''
+            panel: {},
+            session: {},
+            i18n: [],
+            error,
           },
         });
 
@@ -107,13 +108,13 @@ export const logout = () => (dispatch, getState) => {
         dispatch({
           type: LOGGED_OUT_AS,
           value: {
-            userName: user,
-            user: data,
+            userName,
+            user,
             session,
             panel,
-            token,
-            i18n: i18n || [],
-            error: ''
+            token: '',
+            i18n,
+            error,
           },
         });
 
