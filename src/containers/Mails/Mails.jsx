@@ -185,6 +185,7 @@ const Mails = props => {
           webMail: result.data.webMail,
           mailFav: result.data.mailFav,
           selection: [],
+          toggledAll: false,
           totalAmount: result.data.totalAmount,
           loading: false
         });

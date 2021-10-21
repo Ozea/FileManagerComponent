@@ -176,6 +176,7 @@ const Firewalls = props => {
           selection: [],
           firewallExtension: result.data.firewallExtension,
           totalAmount: result.data.totalAmount,
+          toggledAll: false,
           loading: false
         });
       })

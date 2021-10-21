@@ -162,6 +162,7 @@ const Packages = props => {
           packagesFav: result.data.packagesFav,
           totalAmount: result.data.totalAmount,
           selection: [],
+          toggledAll: false,
           loading: false
         });
       })

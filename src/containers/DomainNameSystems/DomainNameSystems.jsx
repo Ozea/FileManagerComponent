@@ -183,6 +183,7 @@ const DomainNameSystems = props => {
           domainNameSystems: reformatData(result.data.data),
           dnsFav: result.data.dnsFav,
           selection: [],
+          toggledAll: false,
           totalAmount: result.data.totalAmount,
           loading: false
         });

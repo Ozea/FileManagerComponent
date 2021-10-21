@@ -165,6 +165,7 @@ const Backups = props => {
           backupFav: result.data.backup_fav,
           totalAmount: result.data.totalAmount,
           selection: [],
+          toggledAll: false,
           loading: false
         });
       })

@@ -163,6 +163,7 @@ const InternetProtocols = props => {
           ipFav: result.data.ipFav,
           selection: [],
           totalAmount: result.data.totalAmount,
+          toggledAll: false,
           loading: false
         });
       })
