@@ -57,6 +57,7 @@ const EditWeb = props => {
             sslSupport: response.data.ssl === 'yes',
             letsEncrypt: response.data.letsencrypt === 'yes',
             data: response.data,
+            additionalFtp: !!response.data.ftp_user,
             statAuth: response.data.stats_user,
             errorMessage: response.data['error_msg'],
             okMessage: response.data['ok_msg'],
@@ -262,11 +263,10 @@ const EditWeb = props => {
               name="v_ftp"
               id="add-ftp"
               checked={state.additionalFtp}
-              defaultChecked={!!state.data.ftp_user}
               title={i18n['Additional FTP Account']} />
 
             {
-              !!state.data.ftp_user && (
+              state.additionalFtp && (
                 <AdditionalFtpWrapper prefixI18N={state.data.prefixI18N} ftps={state.data.ftp_users} unCheckAdditionalFtpBox={() => onChangeAdditionalFtp(false)} />
               )
             }

@@ -47,6 +47,7 @@ const AdditionalFtpWrapper = props => {
     let additionalFtpsDuplicate = [...state.additionalFtp];
 
     additionalFtpsDuplicate.splice(index - 1, 1);
+    if (!additionalFtpsDuplicate.length) props.unCheckAdditionalFtpBox();
 
     setState({ ...state, additionalFtp: additionalFtpsDuplicate });
   }
