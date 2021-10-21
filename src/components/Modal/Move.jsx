@@ -9,7 +9,7 @@ const Move = (props) => {
       <div className="modal-header">
         {props.items > 0 ?
           <h3 className="modal-title">{i18n['Move files']} <span className="quot">({props.items})</span> {i18n['into']}:</h3> :
-          <h3 className="modal-title rename">{i18n['FM_MOVE']} <span className="quot">&quot;{props.fName}&quot;</span> {i18n['into']}:</h3>}
+          <h3 className="modal-title rename">{i18n['Move']} <span className="quot">&quot;{props.fName}&quot;</span> {i18n['into']}:</h3>}
       </div>
       <div className="modal-body">
         <input type="text" autoFocus defaultValue={props.path} onChange={props.onChange} ref={props.reference}></input>

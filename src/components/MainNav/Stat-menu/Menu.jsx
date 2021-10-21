@@ -37,7 +37,7 @@ const Menu = props => {
   }, [user]);
 
   const handleState = (tab, event) => {
-    if (activeElement === tab) {
+    if (window.location.pathname === tab) {
       return event.preventDefault();
     }
 

@@ -134,8 +134,8 @@ class Permissions extends Component {
         </form>
         <input type="text" className={inputClasses} defaultValue={this.encode()} ref={(ref) => this.inputRef = ref} onChange={this.handleInputChange} maxLength="3" />
         <div className="modal-footer">
-          <button type="button" className="btn btn-danger mr-auto" onClick={close}>{i18n['FM_CANCEL']}</button>
-          <button type="button" className="btn btn-primary" onClick={save} disabled={inputInvalid}>{i18n['FM_OK']}</button>
+          <button type="button" className="btn btn-danger mr-auto" onClick={close}>{i18n['Cancel']}</button>
+          <button type="button" className="btn btn-primary" onClick={save} disabled={inputInvalid}>{i18n['OK']}</button>
         </div>
       </div>
     );
