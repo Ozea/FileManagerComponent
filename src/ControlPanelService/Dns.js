@@ -68,7 +68,7 @@ export const getDNSInfo = domain => {
   });
 }
 
-export const updateDNS = (data, domain) => {
+export const updateDNS = (data, domain, recordId) => {
   let formDataObject = new FormData();
 
   for (let key in data) {
@@ -78,6 +78,7 @@ export const updateDNS = (data, domain) => {
   return axios.post(BASE_URL + updateDNSUri, formDataObject, {
     params: {
       domain,
+      record_id: recordId,
       token: getAuthToken()
     }
   });

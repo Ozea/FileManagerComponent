@@ -72,13 +72,13 @@ export default function EditDNSRecord(props) {
     }
 
     updatedRecord['v_domain'] = state.data.domain;
-    updatedRecord['v_rec'] = state.data.record;
+    updatedRecord['v_record_id'] = props.record_id;
     updatedRecord['v_type'] = state.data.type;
 
     if (Object.keys(updatedRecord).length !== 0 && updatedRecord.constructor === Object) {
       setState({ ...state, loading: true });
 
-      updateDNS(updatedRecord, state.data.domain)
+      updateDNS(updatedRecord, props.domain, props.record_id)
         .then(result => {
           if (result.status === 200) {
             const { error_msg, ok_msg } = result.data;
@@ -131,7 +131,7 @@ export default function EditDNSRecord(props) {
             <TextInput
               value={state.data.rec}
               title={i18n['Record']}
-              name="v_rec"
+              name="v_record_id"
               id="domain"
               disabled />
 
