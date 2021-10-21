@@ -30,7 +30,7 @@ const EditWeb = props => {
     webStat: '',
     sslSupport: false,
     letsEncrypt: false,
-    additionalFtp: true,
+    additionalFtp: false,
     statAuth: false,
     loading: false,
     errorMessage: '',
