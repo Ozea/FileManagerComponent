@@ -164,6 +164,7 @@ const Backups = props => {
           backups: reformatData(result.data.data),
           backupFav: result.data.backup_fav,
           totalAmount: result.data.totalAmount,
+          selection: [],
           loading: false
         });
       })

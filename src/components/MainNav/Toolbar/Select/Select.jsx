@@ -44,6 +44,8 @@ const Select = props => {
     const { list } = props;
     let activeList = state[list];
 
+    console.log(activeList, props);
+
     if (list === 'statisticsList') {
       return props.users.map((item, index) => { return <option key={index} value={item}>{item}</option> });
     } else {
@@ -52,11 +54,12 @@ const Select = props => {
   }
 
   const handleSelect = event => {
-    setState({ selected: event.target.value });
+    setState({ ...state, selected: event.target.value });
   }
 
   const bulkAction = () => {
     props.bulkAction(state.selected);
+    setState({ ...state, selected: '' });
   }
 
   return (

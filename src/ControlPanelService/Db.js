@@ -1,7 +1,6 @@
 import axios from "axios";
 import { getAuthToken } from "src/utils/token";
 
-const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
 const webApiUri = '/api/v1/list/db/index.php';
 const addDbApiUri = '/api/v1/add/db/index.php';
@@ -16,13 +15,13 @@ export const getDatabaseList = () => {
 export const bulkAction = (action, domainNameSystems) => {
   const formData = new FormData();
   formData.append("action", action);
-  formData.append("token", token);
+  formData.append("token", getAuthToken());
 
   domainNameSystems.forEach(domainNameSystem => {
     formData.append("database[]", domainNameSystem);
   });
 
-  return axios.post(BASE_URL + '/bulk/db/', formData);
+  return axios.post(BASE_URL + '/api/v1/bulk/db/', formData);
 };
 
 export const handleAction = uri => {
@@ -90,7 +89,7 @@ export const getDatabaseInfo = database => {
   return axios.get(BASE_URL + dbInfoUri, {
     params: {
       database,
-      token
+      token: getAuthToken()
     }
   });
 }
@@ -105,7 +104,7 @@ export const updateDatabase = (data, database) => {
   return axios.post(BASE_URL + updateDatabaseUri, formDataObject, {
     params: {
       database,
-      token
+      token: getAuthToken()
     }
   });
 }

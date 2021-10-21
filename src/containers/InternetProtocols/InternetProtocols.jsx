@@ -19,7 +19,6 @@ import { Helmet } from 'react-helmet';
 
 const InternetProtocols = props => {
   const { i18n } = useSelector(state => state.session);
-  const token = localStorage.getItem("token");
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();

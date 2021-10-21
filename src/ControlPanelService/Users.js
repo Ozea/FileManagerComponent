@@ -24,7 +24,7 @@ export const bulkAction = (action, selectedUsers) => {
     formData.append("user[]", user);
   });
 
-  return axios.post(BASE_URL + '/bulk/user/', formData);
+  return axios.post(BASE_URL + '/api/v1/bulk/user/', formData);
 };
 
 export const handleAction = uri => {

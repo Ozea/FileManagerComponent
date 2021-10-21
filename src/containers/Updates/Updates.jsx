@@ -124,6 +124,7 @@ const Updates = props => {
       .then(result => {
         setState({
           ...state,
+          selection: [],
           updates: reformatData(result.data.data),
           autoUpdate: result.data.totalAmount,
           loading: false

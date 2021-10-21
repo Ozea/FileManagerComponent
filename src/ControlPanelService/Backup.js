@@ -1,7 +1,6 @@
 import axios from "axios";
 import { getAuthToken } from "src/utils/token";
 
-const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
 const webApiUri = '/api/v1/list/backup/index.php';
 const scheduleBackupUri = '/schedule/backup/';
@@ -18,7 +17,7 @@ export const getBackupList = () => {
 export const bulkAction = (action, backups) => {
   const formData = new FormData();
   formData.append("action", action);
-  formData.append("token", token);
+  formData.append("token", getAuthToken());
 
   backups.forEach(backup => {
     formData.append("backup[]", backup);
@@ -49,7 +48,7 @@ export const restoreBackupSetting = params => {
 
 export const bulkRestore = (action, selection, backup) => {
   const formData = new FormData();
-  formData.append("token", token);
+  formData.append("token", getAuthToken());
   formData.append("action", action);
   formData.append("backup", backup);
 
@@ -77,7 +76,7 @@ export const updateBackupExclusions = data => {
 
   return axios.post(BASE_URL + backupExclusionsInfoUri, formDataObject, {
     params: {
-      token
+      token: getAuthToken()
     }
   });
 }

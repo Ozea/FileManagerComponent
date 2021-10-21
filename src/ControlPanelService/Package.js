@@ -2,7 +2,6 @@ import axios from "axios";
 import { getAuthToken } from "src/utils/token";
 
 const BASE_URL = window.location.origin;
-const token = localStorage.getItem("token");
 const webApiUri = '/api/v1/list/package/index.php';
 const additionalPackageInfoUri = '/api/v1/add/package/index.php';
 const addPackageUri = '/api/v1/add/package/index.php';
@@ -16,13 +15,13 @@ export const getPackageList = () => {
 export const bulkAction = (action, backups) => {
   const formData = new FormData();
   formData.append("action", action);
-  formData.append("token", token);
+  formData.append("token", getAuthToken());
 
   backups.forEach(backup => {
     formData.append("package[]", backup);
   });
 
-  return axios.post(BASE_URL + '/bulk/package/', formData);
+  return axios.post(BASE_URL + '/api/v1/bulk/package/', formData);
 };
 
 export const handleAction = uri => {
@@ -51,7 +50,7 @@ export const getPackageInfo = item => {
   return axios.get(BASE_URL + packageInfoUri, {
     params: {
       package: item,
-      token
+      token: getAuthToken()
     }
   });
 }
