@@ -27,7 +27,8 @@ export const checkAuth = () => {
 export const signInAs = (username) => {
   return axios.get(`${BASE_URL}/api/v1/login/index.php`, {
     params: {
-      loginas: username
+      loginas: username,
+      token: getAuthToken()
     }
   });
 };

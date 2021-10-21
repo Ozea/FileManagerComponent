@@ -52,7 +52,7 @@ export const getServiceInfo = service => {
 }
 
 export const getServiceLogs = service => {
-  return axios.get(`${BASE_URL}/list/server/index.php?${service}`);
+  return axios.get(`${BASE_URL}${webApiUri}?${service}`);
 }
 
 export const services = [

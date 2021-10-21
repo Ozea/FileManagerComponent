@@ -1,19 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { loginAs, logout } from 'src/actions/Session/sessionActions';
 import Container from '../ControlPanel/Container/Container';
 import ListItem from '../ControlPanel/ListItem/ListItem';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import './User.scss';
 
 const User = ({ data, toggleFav, handleModal, checkItem }) => {
   const { i18n } = useSelector(state => state.session);
-  const [loading, setLoading] = useState(false);
   const session = useSelector(state => state.session);
   const token = localStorage.getItem("token");
-  const history = useHistory();
   const dispatch = useDispatch();
 
   const printNameServers = servers => {
@@ -25,22 +23,11 @@ const User = ({ data, toggleFav, handleModal, checkItem }) => {
   }
 
   const signInAs = username => {
-    setLoading(true);
-
-    dispatch(loginAs(username))
-      .then(() => {
-        setLoading(false);
-      });
+    dispatch(loginAs(username));
   }
 
   const signOut = () => {
-    setLoading(true);
-
-    dispatch(logout())
-      .then(() => {
-        history.push('/login/');
-        setLoading(false);
-      });
+    dispatch(logout());
   }
 
   const printLoginActionButton = user => {

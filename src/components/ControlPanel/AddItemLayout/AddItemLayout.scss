@@ -33,7 +33,7 @@ $successColor: $addButtonBackground;
   
     div.error,
     div.success {
-      width: fit-content;
+      width: fit-content !important;
   
       span {
         font-weight: bold;

@@ -97,10 +97,10 @@ const Panel = props => {
           {session.session.FIREWALL_SYSTEM && <div className={className("/list/firewall/")}>
             <Link to="/list/firewall/" onClick={event => handleState("/list/firewall/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Firewall}</Link>
           </div>}
-          {session.session.FILEMANAGER_KEY === "yes" && <div className="fm">
+          {session.session.FILEMANAGER_KEY && <div className="fm">
             <a href="/list/directory/">{i18n['File Manager']}</a>
           </div>}
-          {session.session.SOFTACULOUS === "yes" && <div><a href="/list/softaculous/">{i18n.Apps}</a>
+          {session.session.SOFTACULOUS === "yes" && <div><a href="/softaculous/">{i18n.Apps ?? 'Apps'}</a>
           </div>}
           <div className={className("/list/server/")}>
             <Link to="/list/server/" onClick={event => handleState("/list/server/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Server}</Link></div>
