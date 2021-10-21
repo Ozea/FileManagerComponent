@@ -2,7 +2,6 @@ import axios from "axios";
 import { getAuthToken } from "src/utils/token";
 
 const BASE_URL = window.location.origin;
-const token = localStorage.getItem("token");
 const webApiUri = '/api/v1/list/server/index.php';
 const serverAdditionalInfoUri = '/api/v1/edit/server/index.php';
 
@@ -13,7 +12,7 @@ export const getServersList = () => {
 export const bulkAction = (action, services) => {
   const formData = new FormData();
   formData.append("action", action);
-  formData.append("token", token);
+  formData.append("token", getAuthToken());
 
   services.forEach(service => {
     formData.append("service[]", service);
@@ -33,7 +32,7 @@ export const handleAction = uri => {
 export const getServerAdditionalInfo = () => {
   return axios.get(BASE_URL + serverAdditionalInfoUri, {
     params: {
-      token
+      token: getAuthToken()
     }
   });
 }
@@ -47,7 +46,7 @@ export const updateService = (data, uri = '') => {
 
   return axios.post(BASE_URL + `/api/v1/edit/server/${uri}/index.php`, formDataObject, {
     params: {
-      token
+      token: getAuthToken()
     }
   });
 }

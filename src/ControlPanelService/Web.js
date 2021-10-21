@@ -1,7 +1,6 @@
 import axios from "axios";
 import { getAuthToken } from "src/utils/token";
 
-const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
 const addWebUri = '/api/v1/add/web/index.php';
 const webApiUri = '/api/v1/list/web/index.php';
@@ -16,13 +15,13 @@ export const getWebList = () => {
 export const bulkAction = (action, webDomains) => {
   const formData = new FormData();
   formData.append("action", action);
-  formData.append("token", token);
+  formData.append("token", getAuthToken());
 
   webDomains.forEach(webDomain => {
     formData.append("domain[]", webDomain);
   });
 
-  return axios.post(BASE_URL + '/bulk/web/', formData);
+  return axios.post(BASE_URL + '/api/v1/bulk/web/', formData);
 };
 
 export const handleAction = uri => {
@@ -51,7 +50,7 @@ export const getDomainInfo = domain => {
   return axios.get(BASE_URL + domainInfoUri, {
     params: {
       domain,
-      token
+      token: getAuthToken()
     }
   });
 }
@@ -66,7 +65,7 @@ export const updateWebDomain = (data, domain) => {
   return axios.post(BASE_URL + updateDomainUri, formDataObject, {
     params: {
       domain,
-      token
+      token: getAuthToken()
     }
   });
 }

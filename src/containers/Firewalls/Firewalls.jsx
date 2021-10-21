@@ -173,6 +173,7 @@ const Firewalls = props => {
           ...state,
           firewalls: reformatData(result.data.data),
           firewallFav: result.data.firewallFav,
+          selection: [],
           firewallExtension: result.data.firewallExtension,
           totalAmount: result.data.totalAmount,
           loading: false

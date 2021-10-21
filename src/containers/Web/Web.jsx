@@ -177,6 +177,7 @@ const Web = props => {
           webDomains: reformatData(result.data.data),
           webFav: result.data.webFav,
           totalAmount: result.data.totalAmount,
+          selection: [],
           loading: false
         });
       })

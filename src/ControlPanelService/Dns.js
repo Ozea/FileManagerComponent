@@ -4,7 +4,6 @@ import { getAuthToken } from "src/utils/token";
 const updateDNSUri = '/api/v1/edit/dns/index.php';
 const addDnsApiUri = '/api/v1/add/dns/index.php';
 const dNSInfoUri = '/api/v1/edit/dns/index.php';
-const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
 const dnsApiUri = '/api/v1/list/dns/index.php';
 
@@ -23,13 +22,13 @@ export const getDNSRecordInfo = (domain, recordId) => {
 export const bulkAction = (action, domainNameSystems) => {
   const formData = new FormData();
   formData.append("action", action);
-  formData.append("token", token);
+  formData.append("token", getAuthToken());
 
   domainNameSystems.forEach(domainNameSystem => {
     formData.append("domain[]", domainNameSystem);
   });
 
-  return axios.post(BASE_URL + '/bulk/dns/', formData);
+  return axios.post(BASE_URL + '/api/v1/bulk/dns/', formData);
 };
 
 export const handleAction = uri => {
@@ -64,7 +63,7 @@ export const getDNSInfo = domain => {
   return axios.get(BASE_URL + dNSInfoUri, {
     params: {
       domain,
-      token
+      token: getAuthToken()
     }
   });
 }
@@ -79,7 +78,7 @@ export const updateDNS = (data, domain) => {
   return axios.post(BASE_URL + updateDNSUri, formDataObject, {
     params: {
       domain,
-      token
+      token: getAuthToken()
     }
   });
 }

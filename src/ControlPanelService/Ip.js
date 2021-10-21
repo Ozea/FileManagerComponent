@@ -1,7 +1,6 @@
 import axios from "axios";
 import { getAuthToken } from "src/utils/token";
 
-const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
 const webApiUri = '/api/v1/list/ip/index.php';
 const addIpApiUri = '/api/v1/add/ip/index.php';
@@ -16,13 +15,13 @@ export const getIpList = () => {
 export const bulkAction = (action, internetProtocols) => {
   const formData = new FormData();
   formData.append("action", action);
-  formData.append("token", token);
+  formData.append("token", getAuthToken());
 
   internetProtocols.forEach(internetProtocol => {
     formData.append("ip[]", internetProtocol);
   });
 
-  return axios.post(BASE_URL + '/bulk/ip/', formData);
+  return axios.post(BASE_URL + '/api/v1/bulk/ip/', formData);
 };
 
 export const handleAction = uri => {
@@ -51,7 +50,7 @@ export const getInternetProtocolInfo = ip => {
   return axios.get(BASE_URL + ipInfoUri, {
     params: {
       ip,
-      token
+      token: getAuthToken()
     }
   });
 }
@@ -66,7 +65,7 @@ export const updateInternetProtocol = (data, ip) => {
   return axios.post(BASE_URL + updateIpUri, formDataObject, {
     params: {
       ip,
-      token
+      token: getAuthToken()
     }
   });
 }

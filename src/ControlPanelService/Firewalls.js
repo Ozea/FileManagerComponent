@@ -2,7 +2,6 @@ import axios from 'axios';
 import { getAuthToken } from 'src/utils/token';
 
 const BASE_URL = window.location.origin;
-const token = localStorage.getItem("token");
 const usersUri = '/api/v1/list/firewall/index.php';
 const addFirewallUri = '/api/v1/add/firewall/index.php';
 const firewallInfoUri = '/api/v1/edit/firewall/index.php';
@@ -21,13 +20,13 @@ export const getBanList = () => {
 export const bulkAction = (action, firewalls) => {
   const formData = new FormData();
   formData.append("action", action);
-  formData.append("token", token);
+  formData.append("token", getAuthToken());
 
   firewalls.forEach(firewall => {
     formData.append("rule[]", firewall);
   });
 
-  return axios.post(BASE_URL + '/bulk/firewall/', formData);
+  return axios.post(BASE_URL + '/api/v1/bulk/firewall/', formData);
 };
 
 export const handleAction = uri => {
@@ -47,7 +46,7 @@ export const getBanIps = data => {
 
   return axios.get(BASE_URL + addBanIpsUri, {
     params: {
-      token
+      token: getAuthToken()
     }
   });
 }
@@ -61,7 +60,7 @@ export const addBanIp = (data) => {
 
   return axios.get(BASE_URL + addBanIpsUri, {
     params: {
-      token
+      token: getAuthToken()
     }
   });
 }
@@ -80,7 +79,7 @@ export const getFirewallInfo = rule => {
   return axios.get(BASE_URL + firewallInfoUri, {
     params: {
       rule,
-      token
+      token: getAuthToken()
     }
   });
 }
@@ -95,7 +94,7 @@ export const updateFirewall = (data, rule) => {
   return axios.post(BASE_URL + updateFirewallUri, formDataObject, {
     params: {
       rule,
-      token
+      token: getAuthToken()
     }
   });
 }

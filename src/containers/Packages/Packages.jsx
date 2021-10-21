@@ -161,6 +161,7 @@ const Packages = props => {
           packages: reformatData(result.data.data),
           packagesFav: result.data.packagesFav,
           totalAmount: result.data.totalAmount,
+          selection: [],
           loading: false
         });
       })

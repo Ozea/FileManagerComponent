@@ -162,6 +162,7 @@ const Servers = props => {
       .then(result => {
         setState({
           ...state,
+          selection: [],
           servers: reformatData(result.data.data, result.data.sys),
           loading: false
         });

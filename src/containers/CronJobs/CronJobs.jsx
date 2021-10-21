@@ -171,6 +171,7 @@ const CronJobs = props => {
           cronJobs: reformatData(result.data.data),
           cronReports: result.data.cron_reports,
           cronFav: result.data.cron_fav,
+          selection: [],
           totalAmount: result.data.totalAmount,
           loading: false
         });

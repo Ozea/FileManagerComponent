@@ -153,6 +153,7 @@ export default function BackupRestoreSettings(props) {
         setState({
           ...state,
           totalAmount: result.data.totalAmount,
+          selection: [],
           loading: false
         });
       })

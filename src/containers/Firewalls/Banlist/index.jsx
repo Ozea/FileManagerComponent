@@ -156,6 +156,7 @@ const BanLists = props => {
           ...state,
           banIps: reformatData(result.data.data),
           totalAmount: result.data.total_amount,
+          selection: [],
           loading: false
         });
       })
