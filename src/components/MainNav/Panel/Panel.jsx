@@ -44,7 +44,7 @@ const Panel = props => {
   }
 
   const handleState = (tab, event) => {
-    if (window.location.pathname === tab) {
+    if (`${window.location.pathname}${window.location.search}` === tab) {
       return event.preventDefault();
     }
 
