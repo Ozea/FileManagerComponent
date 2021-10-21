@@ -1,10 +1,13 @@
 $whiteBackground: #ececec;
 $primary: #2c54ac;
-$primaryLight: #2e5bb1;
-$primaryActive: #224fa0;
+$primaryLight: #d7dcef;
+$primaryActive: #1e5cb2;
 $secondary: #fcac04;
 $secondaryLight: #f8b014;
+$danger: #b00e5b;
 $secondaryActive: #fdb51c;
+$hoverButtonText: #2c54ac;
+$activeButtonText: #fff;
 $textColor: #555;
 
 .App {
@@ -47,17 +50,17 @@ $textColor: #555;
   div {
     a.link-download:hover, button.link-download:hover,
     a.link-edit:hover, button.link-edit:hover {
-      background: $primaryLight !important;
+      background: $primary !important;
     }
     
     a.link-list:hover,
     button.link-list:hover {
-      background: $primaryLight !important;
+      background: $primary !important;
     }
-    
+
     a.link-delete:hover,
     button.link-delete:hover {
-      background: #ff3438 !important;
+      background: $danger !important;
     }
 
     a.link-gray:hover,
@@ -112,10 +115,12 @@ button {
     align-items: center;
   
     &:hover {
+      color: $hoverButtonText;
       background: $primaryLight;
     }
   
     &:active {
+      color: $activeButtonText;
       background: $primaryActive;
     }
   
@@ -141,22 +146,28 @@ button {
     background: $primary;
 
     &:hover {
+      color: $hoverButtonText;
       background: $primaryLight;
 
       button svg {
-        color: white;
+        color: $hoverButtonText;
       }
     }
 
     &:active {
+      color: $activeButtonText;
       background: $primaryActive;
+
+      button svg {
+        color: $activeButtonText;
+      }
     }
 
     button {
       padding: 0;
 
       svg {
-        color: white;
+        color: $activeButtonText;
       }
     }
   }

@@ -1,10 +1,12 @@
 $whiteBackground: #ececec;
 $primary: #2c54ac;
-$primaryLight: #2e5bb1;
-$primaryActive: #224fa0;
+$primaryLight: #d7dcef;
+$primaryActive: #1e5cb2;
 $secondary: #fcac04;
 $secondaryLight: #f8b014;
 $secondaryActive: #fdb51c;
+$hoverButtonText: #2c54ac;
+$activeButtonText: #fff;
 $textColor: #555;
 
 .list .list-container ul li svg {
@@ -135,7 +137,7 @@ $textColor: #555;
 }
 
 .list .list-container ul li .fOwner {
-  color: $secondary;
+  color: #896417;
   font-style: italic;
   width: 50px;
   font-size: 12px;

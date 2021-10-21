@@ -1,23 +1,22 @@
 $whiteBackground: #ececec;
 $primary: #2c54ac;
-$primaryLight: #2e5bb1;
-$primaryActive: #224fa0;
+$primaryLight: #d7dcef;
+$primaryActive: #1e5cb2;
 $secondary: #fcac04;
 $secondaryLight: #f8b014;
 $secondaryActive: #fdb51c;
+$hoverButtonText: #2c54ac;
+$activeButtonText: #fff;
 $textColor: #555;
 
-$addButtonBackground: $primary;
-$addButtonBackgroundHover: $primaryLight;
 $optionalButtonHover: $primary;
 $optionalButtonActive: $primaryLight;
-$deleteButtonColorHover: #fa4d50;
-$deleteButtonColorActive: #f03d40;
+$deleteButtonColorHover: #b00e5b;
+$deleteButtonColorActive: #b11661;
 $backButtonBackground: #DFDEDD;
 $backButtonBackgroundHover: #999;
 $transition: all 200ms cubic-bezier(0.4, 0.1, 0.5, 0.85);
 $errorColor: #BE5ABF;
-$successColor: $addButtonBackground;
 
 .content .edit-template {
   padding-bottom: 2rem;
@@ -55,10 +54,10 @@ $successColor: $addButtonBackground;
       }
   
       span.ok-message {
-        color: $successColor;
+        color: $primary;
   
         svg {
-          color: $successColor;
+          color: $primary;
         }
       }
     }
@@ -229,12 +228,17 @@ $successColor: $addButtonBackground;
       }
 
       .add {
-        color: white;
-        background: $addButtonBackground;
+        color: $activeButtonText;
+        background: $primary;
 
         &:hover {
-          color: white;
-          background: $addButtonBackgroundHover;
+          color: $hoverButtonText;
+          background: $primaryLight;
+        }
+        
+        &:active {
+          color: $activeButtonText;
+          background: $primaryActive;
         }
       }
 

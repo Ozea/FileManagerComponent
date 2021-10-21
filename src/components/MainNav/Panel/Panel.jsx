@@ -44,8 +44,10 @@ const Panel = props => {
   }
 
   const handleState = (tab, event) => {
-    event.preventDefault();
-    history.push(tab);
+    if (window.location.pathname === tab) {
+      return event.preventDefault();
+    }
+
     dispatch(addActiveElement(tab));
   }
 
