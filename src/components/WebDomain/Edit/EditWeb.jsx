@@ -56,6 +56,7 @@ const EditWeb = props => {
             sslSupport: response.data.ssl === 'yes',
             letsEncrypt: response.data.letsencrypt === 'yes',
             data: response.data,
+            statAuth: response.data.stats_user,
             errorMessage: response.data['error_msg'],
             okMessage: response.data['ok_msg'],
             loading: false
@@ -233,8 +234,7 @@ const EditWeb = props => {
               id="stats" />
 
             {
-              state.webStat !== 'none'
-              && (
+              state.webStat !== 'none' && (
                 <div className="web-stat-additional">
                   <Checkbox
                     onChange={onChangeStatisticsAuth}
@@ -244,8 +244,7 @@ const EditWeb = props => {
                     title={i18n['Statistics Authorization']} />
 
                   {
-                    state.statAuth
-                    && (
+                    state.statAuth && (
                       <>
                         <TextInput id="domain" name="v_stats_user" title={i18n['Username']} value={state.data.stats_user} />
 
