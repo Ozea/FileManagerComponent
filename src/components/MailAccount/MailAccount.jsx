@@ -31,11 +31,11 @@ export default function MailAccount(props) {
 
   const handleSuspend = () => {
     let suspendedStatus = data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend' === 'yes' ? 'unsuspend' : 'suspend';
-    props.handleModal(data.suspend_conf, `/api/v1/${suspendedStatus}/mail?domain=${domain}&account=${data.NAME}&token=${token}`);
+    props.handleModal(data.suspend_conf, `/api/v1/${suspendedStatus}/mail/index.php?domain=${domain}&account=${data.NAME}`);
   }
 
   const handleDelete = () => {
-    props.handleModal(data.delete_conf, `/api/v1/delete/mail?domain=${domain}&account=${data.NAME}&token=${token}`);
+    props.handleModal(data.delete_conf, `/api/v1/delete/mail/index.php?domain=${domain}&account=${data.NAME}`);
   }
 
   return (

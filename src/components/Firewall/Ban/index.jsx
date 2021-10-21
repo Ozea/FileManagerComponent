@@ -13,7 +13,7 @@ const Ban = ({ data, ...props }) => {
   }
 
   const handleDelete = () => {
-    props.handleModal(data.delete_conf, `/api/v1/delete/firewall/banlist/?ip=${data.NAME}&chain=${data.CHAIN}&token=${token}`);
+    props.handleModal(data.delete_conf, `/api/v1/delete/firewall/banlist/?ip=${data.NAME}&chain=${data.CHAIN}`);
   }
 
   return (

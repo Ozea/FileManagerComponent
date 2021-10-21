@@ -153,14 +153,14 @@ export default function MailAccounts(props) {
     let currentMailData = mailAccounts.filter(mail => mail.NAME === controlPanelFocusedElement)[0];
     let suspendedStatus = currentMailData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
 
-    displayModal(currentMailData.suspend_conf, `/api/v1/${suspendedStatus}/mail?domain=${props.domain}&account=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentMailData.suspend_conf, `/api/v1/${suspendedStatus}/mail/index.php?domain=${props.domain}&account=${controlPanelFocusedElement}`);
   }
 
   const handleDelete = () => {
     const { mailAccounts } = state;
     let currentMailData = mailAccounts.filter(mail => mail.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentMailData.delete_conf, `/api/v1/delete/mail/?domain=${props.domain}&account=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentMailData.delete_conf, `/api/v1/delete/mail/index.php?domain=${props.domain}&account=${controlPanelFocusedElement}`);
   }
 
   const fetchData = () => {

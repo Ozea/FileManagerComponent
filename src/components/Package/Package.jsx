@@ -32,7 +32,7 @@ const Package = props => {
   }
 
   const handleDelete = () => {
-    props.handleModal(data.delete_conf, `/api/v1/delete/package?package=${data.NAME}&token=${token}`);
+    props.handleModal(data.delete_conf, `/api/v1/delete/package?package=${data.NAME}`);
   }
 
   return (

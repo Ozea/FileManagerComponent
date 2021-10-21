@@ -24,11 +24,11 @@ const Database = props => {
 
   const handleSuspend = () => {
     let suspendedStatus = data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend' === 'yes' ? 'unsuspend' : 'suspend';
-    props.handleModal(data.suspend_conf, `/api/v1/${suspendedStatus}/db/?database=${data.NAME}&token=${token}`);
+    props.handleModal(data.suspend_conf, `/api/v1/${suspendedStatus}/db/index.php?database=${data.NAME}`);
   }
 
   const handleDelete = () => {
-    props.handleModal(data.delete_conf, `/api/v1/delete/db/?database=${data.NAME}&token=${token}`);
+    props.handleModal(data.delete_conf, `/api/v1/delete/db/index.php?database=${data.NAME}`);
   }
 
   return (

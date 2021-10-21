@@ -150,7 +150,7 @@ const Packages = props => {
     const { packages } = state;
     let currentPackageData = packages.filter(pack => pack.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentPackageData.delete_conf, `/api/v1/delete/package/?package=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentPackageData.delete_conf, `/api/v1/delete/package/?package=${controlPanelFocusedElement}`);
   }
 
   const fetchData = () => {

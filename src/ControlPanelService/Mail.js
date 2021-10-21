@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getAuthToken } from "src/utils/token";
 
 const token = localStorage.getItem("token");
 const BASE_URL = window.location.origin;
@@ -45,7 +46,11 @@ export const bulkMailAccountAction = (action, domain, accounts = []) => {
 };
 
 export const handleAction = uri => {
-  return axios.get(BASE_URL + uri);
+  return axios.get(BASE_URL + uri, {
+    params: {
+      token: getAuthToken()
+    }
+  });
 }
 
 export const addMail = data => {

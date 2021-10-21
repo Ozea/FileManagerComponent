@@ -146,14 +146,14 @@ const Backups = props => {
   }
 
   const download = () => {
-    props.history.push(`/download/backup?backup=${controlPanelFocusedElement}&token=${token}`);
+    props.history.push(`/download/backup?backup=${controlPanelFocusedElement}`);
   }
 
   const handleDelete = () => {
     const { backups } = state;
     let currentBackupData = backups.filter(backup => backup.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentBackupData.delete_conf, `/delete/cron/?job=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentBackupData.delete_conf, `/api/v1/delete/cron/?job=${controlPanelFocusedElement}`);
   }
 
   const fetchData = () => {

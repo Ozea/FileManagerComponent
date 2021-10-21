@@ -24,11 +24,11 @@ const Firewall = ({ data, ...props }) => {
 
   const handleSuspend = () => {
     let suspendedStatus = data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
-    props.handleModal(data.suspend_conf, `/api/v1/${suspendedStatus}/firewall/?rule=${data.NAME}&token=${token}`);
+    props.handleModal(data.suspend_conf, `/api/v1/${suspendedStatus}/firewall/index.php?rule=${data.NAME}`);
   }
 
   const handleDelete = () => {
-    props.handleModal(data.delete_conf, `/api/v1/delete/firewall/?rule=${data.NAME}&token=${token}`);
+    props.handleModal(data.delete_conf, `/api/v1/delete/firewall/index.php?rule=${data.NAME}`);
   }
 
   return (
