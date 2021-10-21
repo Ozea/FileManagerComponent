@@ -22,7 +22,7 @@ export default function DnsRecord({ data, domain, handleModal, ...props }) {
   }
 
   const handleDelete = () => {
-    handleModal(data.delete_conf, `/api/v1/delete/dns/?domain=${domain}&record_id=${data.ID}&token=${token}`);
+    handleModal(data.delete_conf, `/api/v1/delete/dns/?domain=${domain}&record_id=${data.ID}`);
   }
 
   return (

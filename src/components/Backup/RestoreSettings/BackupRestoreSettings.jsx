@@ -165,7 +165,7 @@ export default function BackupRestoreSettings(props) {
         acc.push({
           type: cat,
           name: item,
-          restoreLinkParams: `?backup=${props.backup}&type=${cat.toLowerCase()}&object=${item}&token=${token}`
+          restoreLinkParams: `?backup=${props.backup}&type=${cat.toLowerCase()}&object=${item}`
         });
       });
 

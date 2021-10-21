@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getAuthToken } from "src/utils/token";
 
 const updateDNSUri = '/api/v1/edit/dns/index.php';
 const addDnsApiUri = '/api/v1/add/dns/index.php';
@@ -32,7 +33,11 @@ export const bulkAction = (action, domainNameSystems) => {
 };
 
 export const handleAction = uri => {
-  return axios.get(BASE_URL + uri);
+  return axios.get(BASE_URL + uri, {
+    params: {
+      token: getAuthToken()
+    }
+  });
 }
 
 export const addDomainNameSystem = data => {

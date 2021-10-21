@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getAuthToken } from "src/utils/token";
 
 const deleteAutoUpdateUri = '/delete/cron/autoupdate/';
 const addAutoUpdateUri = '/add/cron/autoupdate/';
@@ -23,7 +24,11 @@ export const bulkAction = (action, updates) => {
 };
 
 export const handleAction = uri => {
-  return axios.get(`${BASE_URL}${uri}?token=${token}`);
+  return axios.get(BASE_URL + uri, {
+    params: {
+      token: getAuthToken()
+    }
+  });
 }
 
 export const enableAutoUpdate = () => {

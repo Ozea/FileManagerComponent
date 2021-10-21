@@ -65,11 +65,11 @@ const User = ({ data, toggleFav, handleModal, checkItem }) => {
 
   const handleSuspend = () => {
     let suspendedStatus = data.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
-    handleModal(data.spnd_conf, `/api/v1/${suspendedStatus}/user?user=${data.NAME}&token=${token}`);
+    handleModal(data.spnd_conf, `/api/v1/${suspendedStatus}/user/index.php?user=${data.NAME}`);
   }
 
   const handleDelete = () => {
-    handleModal(data.delete_conf, `/api/v1/delete/user/?user=${data.NAME}&token=${token}`);
+    handleModal(data.delete_conf, `/api/v1/delete/user/index.php?user=${data.NAME}`);
   }
 
   return (
@@ -121,7 +121,7 @@ const User = ({ data, toggleFav, handleModal, checkItem }) => {
       <div className="actions">
         {printLoginActionButton(data.NAME)}
         <div>
-          <Link to={`/edit/user?user=${data.NAME}&token=${token}`}>{i18n.edit}
+          <Link to={`/edit/user?user=${data.NAME}`}>{i18n.edit}
             {data.FOCUSED ? <span className="shortcut-button html-unicode">&#8617;</span> : <FontAwesomeIcon icon="pen" />}
           </Link>
         </div>

@@ -150,7 +150,7 @@ const InternetProtocols = props => {
     const { internetProtocols } = state;
     let currentInternetProtocolData = internetProtocols.filter(pack => pack.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentInternetProtocolData.delete_conf, `/api/v1/delete/ip/?ip=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentInternetProtocolData.delete_conf, `/api/v1/delete/ip/?ip=${controlPanelFocusedElement}`);
   }
 
   const fetchData = () => {

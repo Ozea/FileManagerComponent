@@ -163,14 +163,14 @@ const DomainNameSystems = props => {
     let currentDomainNameSystemData = domainNameSystems.filter(domainNameSystem => domainNameSystem.NAME === controlPanelFocusedElement)[0];
     let suspendedStatus = currentDomainNameSystemData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
 
-    displayModal(currentDomainNameSystemData.suspend_conf, `/${suspendedStatus}/dns?domain=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentDomainNameSystemData.suspend_conf, `/api/v1/${suspendedStatus}/dns/index.php?domain=${controlPanelFocusedElement}`);
   }
 
   const handleDelete = () => {
     const { domainNameSystems } = state;
     let currentDomainNameSystemData = domainNameSystems.filter(domainNameSystem => domainNameSystem.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentDomainNameSystemData.delete_conf, `/delete/dns/?domain=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentDomainNameSystemData.delete_conf, `/api/v1/delete/dns/index.php?domain=${controlPanelFocusedElement}`);
   }
 
   const fetchData = () => {

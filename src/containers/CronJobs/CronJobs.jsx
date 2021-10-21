@@ -153,14 +153,14 @@ const CronJobs = props => {
     let currentCronJobData = cronJobs.filter(cronJob => cronJob.NAME === controlPanelFocusedElement)[0];
     let suspendedStatus = currentCronJobData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
 
-    displayModal(currentCronJobData.suspend_conf, `/api/v1/${suspendedStatus}/cron?job=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentCronJobData.suspend_conf, `/api/v1/${suspendedStatus}/cron/index.php?job=${controlPanelFocusedElement}`);
   }
 
   const handleDelete = () => {
     const { cronJobs } = state;
     let currentCronJobData = cronJobs.filter(cronJob => cronJob.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentCronJobData.delete_conf, `/api/v1/delete/cron/?job=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentCronJobData.delete_conf, `/api/v1/delete/cron/index.php?job=${controlPanelFocusedElement}`);
   }
 
   const fetchData = () => {

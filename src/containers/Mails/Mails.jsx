@@ -164,14 +164,14 @@ const Mails = props => {
     let currentMailData = mails.filter(mail => mail.NAME === controlPanelFocusedElement)[0];
     let suspendedStatus = currentMailData.SUSPENDED === 'yes' ? 'unsuspend' : 'suspend';
 
-    displayModal(currentMailData.suspend_conf, `/api/v1/${suspendedStatus}/mail?domain=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentMailData.suspend_conf, `/api/v1/${suspendedStatus}/mail/index.php?domain=${controlPanelFocusedElement}`);
   }
 
   const handleDelete = () => {
     const { mails } = state;
     let currentMailData = mails.filter(mail => mail.NAME === controlPanelFocusedElement)[0];
 
-    displayModal(currentMailData.delete_conf, `/api/v1/delete/mail/?domain=${controlPanelFocusedElement}&token=${token}`);
+    displayModal(currentMailData.delete_conf, `/api/v1/delete/mail/index.php?domain=${controlPanelFocusedElement}`);
   }
 
   const fetchData = () => {

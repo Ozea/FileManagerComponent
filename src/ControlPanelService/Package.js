@@ -1,4 +1,5 @@
 import axios from "axios";
+import { getAuthToken } from "src/utils/token";
 
 const BASE_URL = window.location.origin;
 const token = localStorage.getItem("token");
@@ -25,7 +26,11 @@ export const bulkAction = (action, backups) => {
 };
 
 export const handleAction = uri => {
-  return axios.get(BASE_URL + uri);
+  return axios.get(BASE_URL + uri, {
+    params: {
+      token: getAuthToken()
+    }
+  });
 }
 
 export const addPackage = data => {

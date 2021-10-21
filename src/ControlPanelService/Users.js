@@ -28,7 +28,11 @@ export const bulkAction = (action, selectedUsers) => {
 };
 
 export const handleAction = uri => {
-  return axios.get(BASE_URL + uri);
+  return axios.get(BASE_URL + uri, {
+    params: {
+      token: getAuthToken()
+    }
+  });
 }
 
 export const addUser = data => {
