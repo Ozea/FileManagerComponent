@@ -264,11 +264,12 @@ const EditWeb = props => {
               checked={state.additionalFtp}
               title={i18n['Additional FTP Account']} />
 
-            {
-              state.additionalFtp && (
-                <AdditionalFtpWrapper prefixI18N={state.data.prefixI18N} ftps={state.data.ftp_users} unCheckAdditionalFtpBox={() => onChangeAdditionalFtp(false)} />
-              )
-            }
+            <AdditionalFtpWrapper
+              checked={state.additionalFtp}
+              prefixI18N={state.data.prefixI18N}
+              ftps={state.data.ftp_users}
+              ftpUserPrePath={state.data.ftp_user_prepath}
+              unCheckAdditionalFtpBox={() => onChangeAdditionalFtp(false)} />
 
             <div className="buttons-wrapper">
               <button type="submit" className="add">{i18n.Save}</button>
