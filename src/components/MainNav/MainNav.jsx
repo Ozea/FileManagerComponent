@@ -67,9 +67,6 @@ const MainNav = () => {
       dispatch(addFocusedElement(newFocusedMenuTab));
     } else if (event.keyCode === 13) {
       if (!controlPanelFocusedElement && focusedElement && (focusedElement !== activeElement)) {
-        if (focusedElement === '/list/directory/' || focusedElement === '/softaculous/') {
-          window.location.reload();
-        }
         history.push({ pathname: focusedElement });
         dispatch(addActiveElement(focusedElement));
         dispatch(removeFocusedElement());

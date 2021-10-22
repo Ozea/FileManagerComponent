@@ -27,7 +27,7 @@ const style = ({ menuHeight, mobile }) => {
 
 const Menu = props => {
   const { activeElement, focusedElement } = useSelector(state => state.mainNavigation);
-  const { user, i18n } = useSelector(state => state.session);
+  const { user, i18n, session: { look } } = useSelector(state => state.session);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -48,6 +48,20 @@ const Menu = props => {
     return `stat ${activeName === activeElement && 'l-active'} ${activeName === focusedElement && 'focus'}`;
   }
 
+  const sizeFormatter = (bytes, decimals) => {
+    if (!bytes) return null;
+
+    if (bytes === "0") {
+      return <span className="value">0 <span className="unit">b</span></span>;
+    }
+
+    let k = 1024,
+      dm = decimals <= 0 ? 0 : decimals || 2,
+      sizes = ['b', 'kb', 'Mb', 'GB'],
+      i = Math.floor(Math.log(bytes) / Math.log(k));
+    return (<span className="value">{parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} <span className="unit">{sizes[i]}</span></span>);
+  }
+
   return (
     <div className="menu-wrapper">
       <div className={className(props.menuHeight)} style={{ height: style(props) }}>
@@ -55,8 +69,17 @@ const Menu = props => {
           <Link to="/list/user/" onClick={event => handleState("/list/user/", event)} onKeyPress={event => event.preventDefault()}>
             <h3>{i18n.USER}</h3>
             <div className="stats">
-              <div><span>{i18n.users}:</span> <span>{user.U_USERS}</span></div>
-              <div><span>{i18n.spnd}:</span> <span>{user.SUSPENDED_USERS}</span></div>
+              {
+                look
+                  ? (<>
+                    <div><span>{i18n.Disk}:</span> <span>{sizeFormatter(user.U_DISK)}</span></div>
+                    <div><span>{i18n.Bandwidth}:</span> <span>{sizeFormatter(user.U_BANDWIDTH)}</span></div>
+                  </>)
+                  : (<>
+                    <div><span>{i18n.users}:</span> <span>{user.U_USERS}</span></div>
+                    <div><span>{i18n.spnd}:</span> <span>{user.SUSPENDED_USERS}</span></div>
+                  </>)
+              }
             </div>
           </Link>
         </div>

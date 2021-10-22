@@ -58,7 +58,7 @@ import Logs from '../Logs/Logs';
 import './ControlPanelContent.scss';
 
 const ControlPanelContent = props => {
-  const { userName } = useSelector(state => state.session);
+  const { userName, session: { look } } = useSelector(state => state.session);
   const history = useHistory();
   const [searchTerm, setSearchTerm] = useState('');
   const [hotkeysList, setHotkeysList] = useState(null);
@@ -70,6 +70,17 @@ const ControlPanelContent = props => {
       setLoading(false);
     } else {
       history.push('/login');
+    }
+
+    if (look) {
+      const commonUserRoutes = ['package', 'ip', 'rrd', 'updates', 'firewall', 'server'];
+      const splitPath = history.location.pathname.split('/')[2];
+
+      if (history.location.pathname === '/add/user/') return history.push('/');
+
+      if (commonUserRoutes.includes(splitPath)) {
+        return history.push('/');
+      }
     }
   }, [userName]);
 

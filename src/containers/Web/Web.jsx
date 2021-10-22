@@ -365,7 +365,7 @@ const Web = props => {
         <title>{`Vesta - ${i18n.WEB}`}</title>
       </Helmet>
       <Toolbar mobile={false} >
-        <LeftButton name="Add Web Domain" href="/add/web/" showLeftMenu={true} />
+        <LeftButton name={i18n['Add Web Domain']} href="/add/web/" showLeftMenu={true} />
         <div className="r-menu">
           <div className="input-group input-group-sm">
             <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
