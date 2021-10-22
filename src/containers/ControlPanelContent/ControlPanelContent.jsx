@@ -82,7 +82,7 @@ const ControlPanelContent = props => {
         return history.push('/');
       }
     }
-  }, [userName]);
+  }, [userName, look]);
 
   useEffect(() => {
     dispatch(removeFocusedElement());
