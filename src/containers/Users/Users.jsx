@@ -18,7 +18,7 @@ import { Helmet } from 'react-helmet';
 import './Users.scss';
 
 const Users = props => {
-  const { token, userName, i18n } = useSelector(state => state.session);
+  const { userName, i18n, session: { look } } = useSelector(state => state.session);
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
@@ -369,7 +369,10 @@ const Users = props => {
         <title>{`Vesta - ${i18n.USER}`}</title>
       </Helmet>
       <Toolbar mobile={false} >
-        <LeftButton name={i18n['Add User']} href="/add/user/" showLeftMenu={true} />
+        <LeftButton
+          name={look ? i18n['Add Web Domain'] : i18n['Add User']}
+          href={look ? "/add/web/" : "/add/user/"}
+          showLeftMenu={true} />
         <div className="r-menu">
           <div className="input-group input-group-sm">
             <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />

@@ -14,11 +14,12 @@ const MainNav = () => {
   const [loading, setLoading] = useState(true);
   const [state, setState] = useState({
     menuHeight: 135,
+    tabs: [],
     showTopNav: false
   });
 
-  const { userName, user } = useSelector(state => state.session);
-  const { activeElement, focusedElement, menuTabs } = useSelector(state => state.mainNavigation);
+  const { userName, user, session: { look } } = useSelector(state => state.session);
+  const { activeElement, focusedElement, adminMenuTabs, userMenuTabs } = useSelector(state => state.mainNavigation);
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const dispatch = useDispatch();
 
@@ -26,6 +27,9 @@ const MainNav = () => {
     if (!userName || !Object.entries(user).length) {
       return history.push('/login');
     }
+
+    const tabs = look ? userMenuTabs : adminMenuTabs;
+    setState({ ...state, tabs });
 
     setLoading(false);
   }, [userName, user, history]);
@@ -45,9 +49,9 @@ const MainNav = () => {
 
       if (!focusedElement) {
         dispatch(addFocusedElement(activeElement));
-        currentActiveTabPositionInArray = menuTabs.indexOf(activeElement);
+        currentActiveTabPositionInArray = state.tabs.indexOf(activeElement);
       } else {
-        currentActiveTabPositionInArray = menuTabs.indexOf(focusedElement);
+        currentActiveTabPositionInArray = state.tabs.indexOf(focusedElement);
       }
     }
 
@@ -56,13 +60,13 @@ const MainNav = () => {
     }
 
     if (event.keyCode === 37) {
-      let newFocusedMenuTab = handleLeftArrowKey(menuTabs, currentActiveTabPositionInArray);
+      let newFocusedMenuTab = handleLeftArrowKey(state.tabs, currentActiveTabPositionInArray);
       dispatch(addFocusedElement(newFocusedMenuTab));
     } else if (event.keyCode === 39) {
-      let newFocusedMenuTab = handleRightArrowKey(menuTabs, currentActiveTabPositionInArray);
+      let newFocusedMenuTab = handleRightArrowKey(state.tabs, currentActiveTabPositionInArray);
       dispatch(addFocusedElement(newFocusedMenuTab));
     } else if (event.keyCode === 13) {
-      if (!controlPanelFocusedElement && focusedElement && focusedElement !== activeElement) {
+      if (!controlPanelFocusedElement && focusedElement && (focusedElement !== activeElement)) {
         history.push({ pathname: focusedElement });
         dispatch(addActiveElement(focusedElement));
         dispatch(removeFocusedElement());

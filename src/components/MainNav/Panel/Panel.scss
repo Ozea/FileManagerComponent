@@ -187,6 +187,35 @@ $textColor: #555;
   }
 }
 
+.top-panel.long-profile {
+  .left-menu {
+    width: 75%;
+  }
+
+  .profile-menu {
+    width: 25%;
+
+    > div + div {
+      width: max-content;
+    }
+
+    .long-username {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: auto;
+
+      > span:nth-child(1) {
+        margin-right: 5px;
+      }
+
+      > span:nth-child(3) {
+        margin-left: 5px;
+      }
+    }
+  }
+}
+
 @media screen and (max-width: 1350px) {
   .top-panel {
     padding: 0 10%;

@@ -12,23 +12,23 @@ import axios from 'axios';
 import { Helmet } from 'react-helmet';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import 'src/containers/App/App.scss';
+import { connect } from 'react-redux';
 
 const server = window.location.origin + "/file_manager/fm_api.php?";
-
 class FileManager extends Component {
   constructor(props) {
     super(props);
     this.state = {
       leftList: {
-        path: window.GLOBAL.App.ROOT_DIR,
+        path: this.props.session.user.HOME,
         files: { listing: [] },
       },
       rightList: {
-        path: window.GLOBAL.App.ROOT_DIR,
+        path: this.props.session.user.HOME,
         files: { listing: [] },
       },
-      currentPath: window.GLOBAL.App.ROOT_DIR,
-      currentUser: window.GLOBAL.App.ROOT_DIR,
+      currentPath: this.props.session.user.HOME,
+      currentUser: this.props.session.user.HOME,
       activeWindow: "left",
       modalWindow: null,
       modalVisible: false,
@@ -39,20 +39,19 @@ class FileManager extends Component {
       itemsSelected: [],
       modalInputValue: "",
       uploadPercent: "0",
-      hotkeysPanel: "inactive",
       loading: false
     }
   }
 
   UNSAFE_componentWillMount = () => {
-    FM.cacheData(this.state.currentUser, this.props.history);
+    FM.cacheData(this.state.currentUser, this.props.history, this.props.session.user.HOME);
     let currentPath = FM.activeWindowPath();
     this.setState({ currentPath });
     this.changeDirectoryOnLoading();
   }
 
   componentDidMount = () => {
-    if (!localStorage.getItem("token")) {
+    if (!localStorage.getItem("token") || !this.props.session.userName) {
       this.props.history.push('/login/');
     }
 
@@ -421,7 +420,7 @@ class FileManager extends Component {
   }
 
   render() {
-    const { activeWindow, modalWindow, modalVisible, itemsSelected, itemName, loading, uploadPercent, hotkeysPanel, itemType } = this.state;
+    const { activeWindow, modalWindow, modalVisible, itemsSelected, itemName, loading, uploadPercent, itemType } = this.state;
     const DirectoryLists = ['left', 'right'].map((side) =>
       <DirectoryList
         changePathAfterToggle={this.changePathAfterToggle}
@@ -436,6 +435,7 @@ class FileManager extends Component {
         addToPath={this.addToPath}
         cursor={this.state.cursor}
         passData={this.passData}
+        rootDir={this.props.session.user.HOME}
         ref={el => this[`${side}List`] = el}
         download={this.download}
         moveBack={this.moveBack}
@@ -447,7 +447,7 @@ class FileManager extends Component {
     return (
       <div className="window">
         <Helmet>
-          <title>{window.GLOBAL ? window.GLOBAL.App.i18n['File Manager'] : 'File Manager'}</title>
+          <title>{this.props.session.i18n['File Manager']}</title>
         </Helmet>
         {uploadPercent !== "0" ? <ProgressBar progress={uploadPercent} /> : null}
         <ToastContainer />
@@ -478,4 +478,10 @@ class FileManager extends Component {
   }
 }
 
-export default withRouter(FileManager);
+function mapStateToProps(state) {
+  return {
+    session: state.session
+  }
+}
+
+export default connect(mapStateToProps)(withRouter(FileManager));
