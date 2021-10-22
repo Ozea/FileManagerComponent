@@ -90,8 +90,8 @@ const ControlPanelContent = props => {
     window.addEventListener("keyup", addNewObject);
 
     return () => {
-      window.addEventListener("keyup", switchPanelTab);
-      window.addEventListener("keyup", addNewObject);
+      window.removeEventListener("keyup", switchPanelTab);
+      window.removeEventListener("keyup", addNewObject);
     }
   }, []);
 
@@ -102,20 +102,17 @@ const ControlPanelContent = props => {
       return;
     }
 
+    console.log(event);
     switch (event.keyCode) {
-      case 49: history.push('/list/user/'); return dispatchActiveElement('/list/user/');
-      case 50: history.push('/list/web/'); return dispatchActiveElement('/list/web/');
-      case 51: history.push('/list/dns/'); return dispatchActiveElement('/list/dns/');
-      case 52: history.push('/list/mail/'); return dispatchActiveElement('/list/mail/');
-      case 53: history.push('/list/db/'); return dispatchActiveElement('/list/db/');
-      case 54: history.push('/list/cron/'); return dispatchActiveElement('/list/cron/');
-      case 55: history.push('/list/backup/'); return dispatchActiveElement('/list/backup/');
+      case 49: return history.push('/list/user/');
+      case 50: return history.push('/list/web/');
+      case 51: return history.push('/list/dns/');
+      case 52: return history.push('/list/mail/');
+      case 53: return history.push('/list/db/');
+      case 54: return history.push('/list/cron/');
+      case 55: return history.push('/list/backup/');
       default: break;
     }
-  }
-
-  const dispatchActiveElement = tab => {
-    dispatch(addActiveElement(tab));
   }
 
   const addNewObject = event => {
@@ -127,7 +124,7 @@ const ControlPanelContent = props => {
 
     if (event.keyCode === 65) {
       switch (history.location.pathname) {
-        case '/list/user/': return history.push('/add/user/');
+        case '/list/user/': return look ? history.push('/add/web/') : history.push('/add/user/');
         case '/list/web/': return history.push('/add/web/');
         case '/list/dns/': return history.push('/add/dns/');
         case '/list/mail/': return history.push('/add/mail/');
