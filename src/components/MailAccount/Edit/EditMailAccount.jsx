@@ -194,10 +194,6 @@ export default function EditMailAccount(props) {
               </div>
             </div>
 
-            {/* <div className="r-2">
-              
-            </div> */}
-
             <div className="buttons-wrapper">
               <button type="submit" className="add">{i18n.Add}</button>
               <button type="button" className="back" onClick={goBack}>{i18n.Back}</button>
