@@ -102,7 +102,6 @@ const ControlPanelContent = props => {
       return;
     }
 
-    console.log(event);
     switch (event.keyCode) {
       case 49: return history.push('/list/user/');
       case 50: return history.push('/list/web/');
