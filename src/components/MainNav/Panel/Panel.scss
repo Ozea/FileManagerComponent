@@ -93,7 +93,7 @@ $textColor: #555;
   }
 
   .left-menu {
-    width: 80%;
+    width: 70%;
     padding-left: 0;
 
     div {
@@ -129,7 +129,9 @@ $textColor: #555;
   }
 
   .profile-menu {
-    width: 20%;
+    width: 30%;
+    justify-content: space-between;
+    align-items: center;
 
     div {
       width: 4rem;
@@ -189,11 +191,11 @@ $textColor: #555;
 
 .top-panel.long-profile {
   .left-menu {
-    width: 75%;
+    width: 70%;
   }
 
   .profile-menu {
-    width: 25%;
+    width: 30%;
 
     > div + div {
       width: max-content;
