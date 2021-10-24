@@ -346,10 +346,10 @@ const Databases = props => {
 
   const modalConfirmHandler = () => {
     setState({ ...state, loading: true });
+    modalCancelHandler();
     handleAction(modal.actionUrl)
       .then(() => {
         fetchData();
-        modalCancelHandler();
       })
       .catch(err => console.error(err));
   }
