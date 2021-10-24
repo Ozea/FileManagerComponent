@@ -131,7 +131,6 @@ export default function MailAccounts(props) {
   }
 
   const handleFocusedElementShortcuts = event => {
-    event.preventDefault();
     let isSearchInputFocused = document.querySelector('input:focus') || document.querySelector('textarea:focus');
 
     if (controlPanelFocusedElement && !isSearchInputFocused) {
@@ -171,7 +170,7 @@ export default function MailAccounts(props) {
         setState({
           ...state,
           mailAccounts: reformatData(result.data.data),
-          webMail: result.data.webMail,
+          webMail: result.data.webmail,
           selection: [],
           toggledAll: false,
           mailAccountsFav: result.data.mailAccountsFav,
