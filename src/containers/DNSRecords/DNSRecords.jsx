@@ -281,7 +281,7 @@ export default function DnsRecords(props) {
     const { selection } = state;
 
     if (selection.length && action) {
-      bulkAction(action, selection)
+      bulkAction(action, selection, state.domain)
         .then(result => {
           if (result.status === 200) {
             fetchData();

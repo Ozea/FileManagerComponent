@@ -19,14 +19,17 @@ export const getDNSRecordInfo = (domain, recordId) => {
   return axios.get(`${BASE_URL}${updateDNSUri}?domain=${domain}&record_id=${recordId}`);
 }
 
-export const bulkAction = (action, domainNameSystems) => {
+export const bulkAction = (action, records, domain) => {
   const formData = new FormData();
   formData.append("action", action);
   formData.append("token", getAuthToken());
+  formData.append("domain", domain);
 
-  domainNameSystems.forEach(domainNameSystem => {
-    formData.append("domain[]", domainNameSystem);
+  records.forEach(record => {
+    formData.append("record[]", record);
   });
+
+  console.log(records);
 
   return axios.post(BASE_URL + '/api/v1/bulk/dns/', formData);
 };
