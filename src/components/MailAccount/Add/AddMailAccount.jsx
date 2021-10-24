@@ -26,6 +26,7 @@ export default function AddMailAccount(props) {
   const [state, setState] = useState({
     data: {},
     advancedOptions: false,
+    autoreplyChecked: false,
     quotaValue: '',
     loading: false,
     password: '',
@@ -173,13 +174,26 @@ export default function AddMailAccount(props) {
                       optionalTitle={`${i18n['one or more email addresses']}`}
                       defaultValue={state.data.forward}
                       title={i18n['Forward to']}
-                      name="v_fwd"
-                      id="fwd" />
+                      name="v_fwd_only"
+                      id="fwd_only" />
 
                     <Checkbox
                       title={i18n['Do not store forwarded mail']}
-                      name="v_fwd_only"
-                      id="fwd_only" />
+                      checked={state.autoreplyChecked}
+                      onChange={checked => setState({ ...state, autoreplyChecked: checked })}
+                      name="v_autoreply"
+                      id="autoreply" />
+
+                    {
+                      state.autoreplyChecked && (
+                        <div style={{ transform: 'translateX(3rem)' }}>
+                          <TextArea
+                            title={i18n['Message']}
+                            name="v_autoreply_message"
+                            id="autoreply_message" />
+                        </div>
+                      )
+                    }
                   </>
                 )
               }

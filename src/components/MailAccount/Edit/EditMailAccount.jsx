@@ -61,7 +61,6 @@ export default function EditMailAccount(props) {
             if (error_msg) {
               setState({ ...state, errorMessage: error_msg, okMessage: '', loading: false });
             } else if (ok_msg) {
-              goBack();
               setState({ ...state, errorMessage: '', okMessage: ok_msg, loading: false });
             }
           }
@@ -135,13 +134,58 @@ export default function EditMailAccount(props) {
                   id="domain"
                   disabled />
 
-                <TextInput
-                  title={i18n['Account']}
-                  value={props.account}
-                  name="v_account"
-                  id="account" />
-
                 <Password name="v_password" onChange={password => setState({ ...state, password })} />
+
+                <TextInputWithExtraButton title={i18n['Quota']} optionalTitle={i18n['in megabytes']} id="quota" name="v_quota" value={state.data.quota}>
+                  <button type="button" onClick={toggleQuotaValue}>
+                    <FontAwesomeIcon icon="infinity" />
+                  </button>
+                </TextInputWithExtraButton>
+
+                <TextArea
+                  optionalTitle={`${i18n['use local-part']}`}
+                  defaultValue={state.data.aliases}
+                  title={i18n['Aliases']}
+                  name="v_aliases"
+                  id="aliases" />
+
+                <TextArea
+                  optionalTitle={`${i18n['one or more email addresses']}`}
+                  defaultValue={state.data.fwd}
+                  title={i18n['Forward to']}
+                  name="v_fwd"
+                  id="fwd" />
+
+                <Checkbox
+                  title={i18n['Do not store forwarded mail']}
+                  defaultChecked={state.data.fwd_only === 'yes'}
+                  name="v_fwd_only"
+                  id="fwd_only" />
+
+                <Checkbox
+                  title={i18n['Autoreply']}
+                  checked={autoreplyChecked}
+                  onChange={checked => setAutoreplyChecked(checked)}
+                  name="v_autoreply"
+                  id="autoreply" />
+
+                {
+                  autoreplyChecked && (
+                    <div style={{ transform: 'translateX(3rem)' }}>
+                      <TextArea
+                        defaultValue={state.data.autoreply_message}
+                        title={i18n['Message']}
+                        name="v_autoreply_message"
+                        id="autoreply_message" />
+                    </div>
+                  )
+                }
+
+                <TextInput
+                  title={i18n['Send login credentials to email address']}
+                  value={state.data.send_email}
+                  name="v_credentials"
+                  id="credentials" />
               </div>
 
               <div className="c-2">
@@ -153,58 +197,9 @@ export default function EditMailAccount(props) {
               </div>
             </div>
 
-            <div className="r-2">
-              <TextInputWithExtraButton title={i18n['Quota']} optionalTitle={i18n['in megabytes']} id="quota" name="v_quota" value={state.data.quota}>
-                <button type="button" onClick={toggleQuotaValue}>
-                  <FontAwesomeIcon icon="infinity" />
-                </button>
-              </TextInputWithExtraButton>
-
-              <TextArea
-                optionalTitle={`${i18n['use local-part']}`}
-                defaultValue={state.data.aliases}
-                title={i18n['Aliases']}
-                name="v_aliases"
-                id="aliases" />
-
-              <TextArea
-                optionalTitle={`${i18n['one or more email addresses']}`}
-                defaultValue={state.data.fwd}
-                title={i18n['Forward to']}
-                name="v_fwd"
-                id="fwd" />
-
-              <Checkbox
-                title={i18n['Do not store forwarded mail']}
-                defaultChecked={state.data.fwd_only === 'yes'}
-                name="v_fwd_only"
-                id="fwd_only" />
-
-              <Checkbox
-                title={i18n['Autoreply']}
-                checked={autoreplyChecked}
-                onChange={checked => setAutoreplyChecked(checked)}
-                name="v_fwd_only"
-                id="fwd_only" />
-
-              {
-                autoreplyChecked && (
-                  <div style={{ transform: 'translateX(3rem)' }}>
-                    <TextArea
-                      defaultValue={state.data.autoreply_message}
-                      title={i18n['Message']}
-                      name="v_autoreply_message"
-                      id="autoreply_message" />
-                  </div>
-                )
-              }
-
-              <TextInput
-                title={i18n['Send login credentials to email address']}
-                value={state.data.send_email}
-                name="v_credentials"
-                id="credentials" />
-            </div>
+            {/* <div className="r-2">
+              
+            </div> */}
 
             <div className="buttons-wrapper">
               <button type="submit" className="add">{i18n.Add}</button>
