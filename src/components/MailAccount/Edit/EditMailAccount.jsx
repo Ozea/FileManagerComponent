@@ -87,12 +87,9 @@ export default function EditMailAccount(props) {
       .catch(err => console.error(err));
   }
 
-  const toggleQuotaValue = () => {
-    if (state.quotaValue !== 'unlimited') {
-      setState({ ...state, quotaValue: 'unlimited' });
-    } else {
-      setState({ ...state, quotaValue: '' });
-    }
+  const toggleQuota = () => {
+    const value = state.data.quota === 'unlimited' ? '1000' : 'unlimited';
+    setState({ ...state, data: { ...state.data, quota: value } });
   }
 
   const goBack = () => {
@@ -137,7 +134,7 @@ export default function EditMailAccount(props) {
                 <Password name="v_password" onChange={password => setState({ ...state, password })} />
 
                 <TextInputWithExtraButton title={i18n['Quota']} optionalTitle={i18n['in megabytes']} id="quota" name="v_quota" value={state.data.quota}>
-                  <button type="button" onClick={toggleQuotaValue}>
+                  <button type="button" onClick={toggleQuota}>
                     <FontAwesomeIcon icon="infinity" />
                   </button>
                 </TextInputWithExtraButton>
