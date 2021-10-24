@@ -68,7 +68,7 @@ const Panel = props => {
     <div className="panel-wrapper">
       {loading && <Spinner />}
 
-      <div className={`top-panel ${user ? 'long-profile' : ''}`}>
+      <div className={`top-panel ${look ? 'long-profile' : ''}`}>
         <div className="container left-menu">
           <div className="logo">
             <Link to="/list/user/" onClick={() => dispatch(addActiveElement('/list/user/'))}>
