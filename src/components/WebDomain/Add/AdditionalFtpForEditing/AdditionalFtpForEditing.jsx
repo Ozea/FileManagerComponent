@@ -6,9 +6,9 @@ import Password from '../../../../components/ControlPanel/AddItemLayout/Form/Pas
 import './AdditionalFtpForEditing.scss';
 
 const AdditionalFtpForEditing = ({ domain, data = {}, onDeleteAdditionalFtp, prefixI18N, prePath, checked, ...props }) => {
-  const { i18n } = useSelector(state => state.session);
+  const { i18n, userName } = useSelector(state => state.session);
   const [state, setState] = useState({
-    username: data.v_ftp_user,
+    username: data.v_ftp_user || '',
     path: ''
   });
 
@@ -59,7 +59,7 @@ const AdditionalFtpForEditing = ({ domain, data = {}, onDeleteAdditionalFtp, pre
                   className="form-control"
                   id={`ftp_user_${data.id}`}
                   name={`v_ftp_user[${data.id}][v_ftp_user]`} />
-                <span>{state.username}</span>
+                <span>{data.v_ftp_user ? data.v_ftp_user : `${userName}_${state.username}`}</span>
               </div>
             </div>
 
