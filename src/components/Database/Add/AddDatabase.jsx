@@ -91,8 +91,8 @@ const AddDatabase = props => {
       newDatabase[name] = value;
     }
 
-    newDatabase['v_database'] = `${state.user}_${state.databaseInputValue}`;
-    newDatabase['v_dbuser'] = `${state.user}_${state.databaseUserInputValue}`;
+    newDatabase['v_database'] = state.databaseInputValue;
+    newDatabase['v_dbuser'] = state.databaseUserInputValue;
 
     if (Object.keys(newDatabase).length !== 0 && newDatabase.constructor === Object) {
       setState({ ...state, loading: true });
