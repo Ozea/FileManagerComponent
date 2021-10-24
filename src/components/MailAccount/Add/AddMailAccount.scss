@@ -21,6 +21,20 @@
             }
           }
         }
+
+        .form-group:nth-child(3) {
+          > div {
+            display: flex;
+
+            input {
+              width: 100%;
+            }
+
+            input + button {
+              padding-left: 10px;
+            }
+          }
+        }
       }
 
       .c-2 {
