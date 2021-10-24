@@ -102,7 +102,7 @@ const Panel = props => {
               <Link to="/list/firewall/" onClick={event => handleState("/list/firewall/", event)} onKeyPress={event => event.preventDefault()}>{i18n.Firewall}</Link>
             </div>}
           </>)}
-          {session.session.FILEMANAGER_KEY && <div className={className("/list/directory/", "fm")}>
+          {session.session.FILEMANAGER_KEY && <div className={className("/list/directory/")}>
             <Link to="/list/directory/">{i18n['File Manager']}</Link>
           </div>}
           {session.session.SOFTACULOUS === "yes" && <div className={className("/softaculous/")}><a href="/softaculous/">{i18n.Apps ?? 'Apps'}</a>
