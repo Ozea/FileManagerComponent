@@ -17,6 +17,7 @@ $primary: #2c54ac;
     div.list-item {
       .r-col {
         .stat.email {
+            width: max-content;
             text-transform: none;
         }
       }
