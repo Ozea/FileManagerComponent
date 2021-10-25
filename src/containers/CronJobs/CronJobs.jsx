@@ -319,6 +319,11 @@ const CronJobs = props => {
 
   const bulk = action => {
     const { selection } = state;
+    const notifications = state.cronReports === 'yes' ? 'delete-cron-reports' : 'add-cron-reports';
+
+    if (action === notifications) {
+      return handleCronNotifications();
+    }
 
     if (selection.length && action) {
       setLoading(true);
@@ -394,7 +399,7 @@ const CronJobs = props => {
               {state.cronReports === 'yes' ? i18n['turn off notifications'] : i18n['turn on notifications']}
             </button>
             <Checkbox toggleAll={toggleAll} toggled={state.toggledAll} />
-            <Select list='cronList' bulkAction={bulk} />
+            <Select list='cronList' bulkAction={bulk} cronReports={state.cronReports === 'yes'} />
             <DropdownFilter changeSorting={changeSorting} sorting={state.sorting} order={state.order} list="cronList" />
             <SearchInput handleSearchTerm={term => props.changeSearchTerm(term)} />
           </div>
