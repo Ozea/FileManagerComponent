@@ -18,12 +18,13 @@ import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 
 const EditDatabase = props => {
   const token = localStorage.getItem("token");
-  const { i18n } = useSelector(state => state.session);
+  const { i18n, userName } = useSelector(state => state.session);
   const history = useHistory();
   const dispatch = useDispatch();
   const [state, setState] = useState({
     data: {},
     loading: false,
+    databaseUserInputValue: '',
     errorMessage: '',
     okMessage: ''
   });
@@ -43,6 +44,7 @@ const EditDatabase = props => {
           setState({
             ...state,
             data: response.data,
+            databaseUserInputValue: response.data.dbuser.split('_').splice(1).join('_'),
             errorMessage: response.data['error_msg'],
             okMessage: response.data['ok_msg'],
             loading: false
@@ -61,6 +63,7 @@ const EditDatabase = props => {
     }
 
     updatedDatabase['v_database'] = state.data.database;
+    updatedDatabase['v_dbuser'] = `${userName}_${state.databaseUserInputValue}`;
 
     if (Object.keys(updatedDatabase).length !== 0 && updatedDatabase.constructor === Object) {
       setState({ ...state, loading: true });
@@ -81,6 +84,10 @@ const EditDatabase = props => {
         })
         .catch(err => console.error(err));
     }
+  }
+
+  const databaseUserInputHandler = value => {
+    setState({ ...state, databaseUserInputValue: value });
   }
 
   return (
@@ -110,7 +117,21 @@ const EditDatabase = props => {
 
             <TextInputWithTextOnTheRight id="database" name="v_database" title={i18n['Database']} defaultValue={state.data.database} disabled />
 
-            <TextInputWithTextOnTheRight id="username" name="v_dbuser" title={i18n['User']} defaultValue={state.data.dbuser} />
+            <div className="form-group">
+              <div className="label-wrapper">
+                <label htmlFor="user">{i18n.User}</label>
+              </div>
+              <div className="input-wrapper">
+                <input
+                  type="text"
+                  className="form-control"
+                  id="user"
+                  value={state.databaseUserInputValue}
+                  onChange={event => databaseUserInputHandler(event.target.value)}
+                  name="v_dbuser" />
+                <span className="italic"><i>{`${userName}_${state.databaseUserInputValue}`}</i></span>
+              </div>
+            </div>
 
             <Password name="v_password" defaultValue={state.data.password} />
 
