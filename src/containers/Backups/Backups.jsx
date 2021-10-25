@@ -146,7 +146,7 @@ const Backups = props => {
   }
 
   const download = () => {
-    props.history.push(`/download/backup?backup=${controlPanelFocusedElement}`);
+    window.open(`/api/v1/download/backup?backup=${controlPanelFocusedElement}`);
   }
 
   const handleDelete = () => {
@@ -306,7 +306,7 @@ const Backups = props => {
   }
 
   const modalConfirmHandler = () => {
-    if (!modal.actionUrl) return;
+    if (!modal.actionUrl) return modalCancelHandler();
 
     modalCancelHandler();
     setLoading(true);
@@ -331,7 +331,7 @@ const Backups = props => {
   const scheduleBackupButton = () => {
     setLoading(true);
     scheduleBackup()
-      .then(result => displayModal(result.data.error_msg, ''))
+      .then(result => displayModal(result.data.message, ''))
       .catch(err => console.error(err));
   }
 
