@@ -52,7 +52,7 @@ $textColor: #555;
         display: flex;
         justify-content: center;
         align-items: center;
-        padding: 0 10px;
+        padding: 0 10px !important;
         width: 100%;
         height: 100%;
         text-decoration: none;
@@ -99,10 +99,9 @@ $textColor: #555;
     justify-content: space-between;
 
     div {
-      width: max-content;
+      flex: 1 1 auto;
       height: 100%;
       transform: translateX(-5px);
-      padding: 0 10px;
 
       &:hover {
         background: $secondaryLight;
@@ -118,7 +117,7 @@ $textColor: #555;
           padding: 0;
 
           img {
-            width: 100%;
+            width: 75%;
           }
         }
       }

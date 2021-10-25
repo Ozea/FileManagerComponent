@@ -17,13 +17,14 @@ import { Link } from 'react-router-dom';
 
 import './MailAccounts.scss';
 import { Helmet } from 'react-helmet';
+import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 
 export default function MailAccounts(props) {
   const { i18n } = useSelector(state => state.session);
-  const token = localStorage.getItem("token");
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState({
     text: '',
     visible: false,
@@ -32,7 +33,6 @@ export default function MailAccounts(props) {
   const [state, setState] = useState({
     mailAccounts: [],
     mailAccountsFav: [],
-    loading: false,
     domain: props.domain,
     toggledAll: false,
     sorting: i18n.Date,
@@ -43,7 +43,7 @@ export default function MailAccounts(props) {
 
   useEffect(() => {
     dispatch(removeControlPanelContentFocusedElement());
-    fetchData();
+    fetchData().then(() => setLoading(false));
 
     return () => {
       dispatch(removeControlPanelContentFocusedElement());
@@ -163,22 +163,23 @@ export default function MailAccounts(props) {
   }
 
   const fetchData = () => {
-    setState({ ...state, loading: true });
-
-    getMailAccountList(props.domain)
-      .then(result => {
-        setState({
-          ...state,
-          mailAccounts: reformatData(result.data.data),
-          webMail: result.data.webmail,
-          selection: [],
-          toggledAll: false,
-          mailAccountsFav: result.data.mailAccountsFav,
-          totalAmount: result.data.totalAmount,
-          loading: false
-        });
-      })
-      .catch(err => console.error(err));
+    setLoading(true);
+    return new Promise((resolve, reject) => {
+      getMailAccountList(props.domain)
+        .then(result => {
+          setState({
+            ...state,
+            mailAccounts: reformatData(result.data.data),
+            webMail: result.data.webmail,
+            selection: [],
+            toggledAll: false,
+            mailAccountsFav: result.data.mailAccountsFav,
+            totalAmount: result.data.totalAmount
+          });
+          resolve();
+        })
+        .catch(err => console.error(err));
+    });
   }
 
   const reformatData = data => {
@@ -318,11 +319,14 @@ export default function MailAccounts(props) {
   const bulk = action => {
     const { selection } = state;
     if (selection.length && action) {
+      setLoading(true);
       bulkMailAccountAction(action, props.domain, selection)
         .then(result => {
           if (result.status === 200) {
-            fetchData();
-            toggleAll(false);
+            fetchData().then(() => {
+              refreshCounters();
+              toggleAll(false);
+            });
           }
         })
         .catch(err => console.error(err));
@@ -339,12 +343,15 @@ export default function MailAccounts(props) {
   }
 
   const modalConfirmHandler = () => {
+    modalCancelHandler();
+    setLoading(true);
     handleAction(modal.actionUrl)
-      .then(() => {
-        fetchData();
-        modalCancelHandler();
-      })
-      .catch(err => console.error(err));
+      .then(() => { fetchData().then(() => refreshCounters()) })
+      .catch(err => { setLoading(false); console.error(err); });
+  }
+
+  const refreshCounters = () => {
+    dispatch(checkAuthHandler()).then(() => setLoading(false));
   }
 
   const modalCancelHandler = () => {
@@ -373,7 +380,7 @@ export default function MailAccounts(props) {
           </div>
         </div>
       </Toolbar>
-      {state.loading
+      {loading
         ? <Spinner />
         : (
           <>

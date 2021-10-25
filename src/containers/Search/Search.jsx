@@ -52,7 +52,7 @@ const Search = props => {
         setState({
           ...state,
           searchResults: result.data.data,
-          totalAmount: result.data.total_amount,
+          totalAmount: result.data.total,
           loading: false
         });
       })
@@ -141,9 +141,13 @@ const Search = props => {
         </div>
       </Toolbar>
       <div className="statistics-wrapper">
-        {state.loading ? <Spinner /> : searchResults()}
+        {state.loading
+          ? <Spinner />
+          : (<>
+            {searchResults()}
+            <div className="total">{state.totalAmount}</div>
+          </>)}
       </div>
-      <div className="total">{state.totalAmount}</div>
       <Modal
         onSave={modalConfirmHandler}
         onCancel={modalCancelHandler}

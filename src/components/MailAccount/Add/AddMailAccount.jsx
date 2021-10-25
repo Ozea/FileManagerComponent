@@ -17,6 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import './AddMailAccount.scss';
 import { Helmet } from 'react-helmet';
+import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 
 export default function AddMailAccount(props) {
   const { i18n } = useSelector(state => state.session);
@@ -58,12 +59,14 @@ export default function AddMailAccount(props) {
       addMailAccount(newMailDomain, props.domain)
         .then(result => {
           if (result.status === 200) {
-            const { error_msg, ok_msg } = result.data;
+            const { error_msg: errorMessage, ok_msg: okMessage } = result.data;
 
-            if (error_msg) {
-              setState({ ...state, errorMessage: error_msg, okMessage: '' });
-            } else if (ok_msg) {
-              setState({ ...state, errorMessage: '', okMessage: ok_msg });
+            if (errorMessage) {
+              setState({ ...state, errorMessage, okMessage, loading: false });
+            } else {
+              dispatch(checkAuthHandler()).then(() => {
+                setState({ ...state, okMessage, errorMessage: '', loading: false });
+              });
             }
           }
         })

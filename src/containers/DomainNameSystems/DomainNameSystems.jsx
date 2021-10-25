@@ -17,13 +17,14 @@ import './DomainNameSystems.scss';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet';
+import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 
 const DomainNameSystems = props => {
   const { i18n } = useSelector(state => state.session);
-  const token = localStorage.getItem("token");
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState({
     text: '',
     visible: false,
@@ -32,7 +33,6 @@ const DomainNameSystems = props => {
   const [state, setState] = useState({
     domainNameSystems: [],
     dnsFav: [],
-    loading: false,
     toggledAll: false,
     sorting: i18n.Date,
     order: "descending",
@@ -44,7 +44,7 @@ const DomainNameSystems = props => {
     dispatch(addActiveElement('/list/dns/'));
     dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
-    fetchData();
+    fetchData().then(() => setLoading(false));
 
     return () => {
       dispatch(removeControlPanelContentFocusedElement());
@@ -174,21 +174,22 @@ const DomainNameSystems = props => {
   }
 
   const fetchData = () => {
-    setState({ ...state, loading: true });
-
-    getDnsList()
-      .then(result => {
-        setState({
-          ...state,
-          domainNameSystems: reformatData(result.data.data),
-          dnsFav: result.data.dnsFav,
-          selection: [],
-          toggledAll: false,
-          totalAmount: result.data.totalAmount,
-          loading: false
-        });
-      })
-      .catch(err => console.error(err));
+    setLoading(true);
+    return new Promise((resolve, reject) => {
+      getDnsList()
+        .then(result => {
+          setState({
+            ...state,
+            domainNameSystems: reformatData(result.data.data),
+            dnsFav: result.data.dnsFav,
+            selection: [],
+            toggledAll: false,
+            totalAmount: result.data.totalAmount
+          });
+          resolve();
+        })
+        .catch(err => console.error(err));
+    });
   }
 
   const reformatData = data => {
@@ -341,12 +342,14 @@ const DomainNameSystems = props => {
     const { selection } = state;
 
     if (selection.length && action) {
-      setState({ loading: true });
+      setLoading(true);
       bulkAction(action, selection)
         .then(result => {
           if (result.status === 200) {
-            fetchData();
-            toggleAll(false);
+            fetchData().then(() => {
+              refreshCounters();
+              toggleAll(false);
+            });
           }
         })
         .catch(err => console.error(err));
@@ -363,12 +366,15 @@ const DomainNameSystems = props => {
   }
 
   const modalConfirmHandler = () => {
+    modalCancelHandler();
+    setLoading(true);
     handleAction(modal.actionUrl)
-      .then(() => {
-        fetchData();
-        modalCancelHandler();
-      })
-      .catch(err => console.error(err));
+      .then(() => { fetchData().then(() => refreshCounters()) })
+      .catch(err => { setLoading(false); console.error(err); });;
+  }
+
+  const refreshCounters = () => {
+    dispatch(checkAuthHandler()).then(() => setLoading(false));
   }
 
   const modalCancelHandler = () => {
@@ -397,7 +403,7 @@ const DomainNameSystems = props => {
         </div>
       </Toolbar>
       <div className="dns-wrapper">
-        {state.loading ? <Spinner /> : dns()}
+        {loading ? <Spinner /> : dns()}
       </div>
       <div className="total">{state.totalAmount}</div>
       <Modal
