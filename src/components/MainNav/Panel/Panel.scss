@@ -115,9 +115,11 @@ $textColor: #555;
       a {
         div {
           padding: 0;
+          width: 7rem;
+          flex: none;
 
           img {
-            width: 75%;
+            width: 90%;
           }
         }
       }
