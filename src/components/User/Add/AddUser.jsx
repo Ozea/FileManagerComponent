@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import './AddUser.scss';
 import { Helmet } from 'react-helmet';
+import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 
 const AddUser = props => {
   const { i18n } = useSelector(state => state.session);
@@ -71,19 +72,23 @@ const AddUser = props => {
     }
 
     if (Object.keys(newUser).length !== 0 && newUser.constructor === Object) {
+      setState({ ...state, loading: true });
       addUser(newUser)
         .then(result => {
-          if (result.status === 200) {
-            const { error_msg, ok_msg } = result.data;
+          const { error_msg: errorMessage, ok_msg: okMessage } = result.data;
 
-            if (error_msg) {
-              setState({ ...state, errorMessage: error_msg, okMessage: '' });
-            } else if (ok_msg) {
-              setState({ ...state, errorMessage: '', okMessage: ok_msg });
-            }
+          if (errorMessage) {
+            setState({ ...state, errorMessage, okMessage, loading: false });
+          } else {
+            dispatch(checkAuthHandler()).then(() => {
+              setState({ ...state, okMessage, errorMessage: '', loading: false });
+            });
           }
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+          setState({ ...state, loading: false });
+          console.error(err);
+        });
     }
   }
 

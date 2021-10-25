@@ -135,6 +135,8 @@ export const checkAuthHandler = () => (dispatch, getState) => {
       .then(res => {
         const { user, data, session, panel, error, i18n, token } = res.data;
 
+        if (token) setAuthToken(token);
+
         dispatch({
           type: CHECK_AUTH,
           value: {

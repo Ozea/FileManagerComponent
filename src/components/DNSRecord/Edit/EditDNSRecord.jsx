@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import QS from 'qs';
 import { Helmet } from 'react-helmet';
+import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 
 export default function EditDNSRecord(props) {
   const token = localStorage.getItem("token");
@@ -81,14 +82,14 @@ export default function EditDNSRecord(props) {
       updateDNS(updatedRecord, props.domain, props.record_id)
         .then(result => {
           if (result.status === 200) {
-            const { error_msg, ok_msg } = result.data;
+            const { error_msg: errorMessage, ok_msg: okMessage } = result.data;
 
-            if (error_msg) {
-              setState({ ...state, errorMessage: error_msg, okMessage: '', loading: false });
-            } else if (ok_msg) {
-              setState({ ...state, errorMessage: '', okMessage: ok_msg, loading: false });
+            if (errorMessage) {
+              setState({ ...state, errorMessage, okMessage, loading: false });
             } else {
-              setState({ ...state, loading: false });
+              dispatch(checkAuthHandler()).then(() => {
+                setState({ ...state, okMessage, errorMessage: '', loading: false });
+              });
             }
           }
         })

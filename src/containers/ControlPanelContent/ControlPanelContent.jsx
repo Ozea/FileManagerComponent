@@ -199,7 +199,7 @@ const ControlPanelContent = props => {
                   })
                 }
 
-                <Route path="/list/user" component={props => <Users changeSearchTerm={handleSearchTerm} loading={loading} {...props} />} />
+                <Route path="/list/user" component={props => <Users changeSearchTerm={handleSearchTerm} {...props} />} />
                 <Route path="/add/user" component={() => <AddUser />} />
                 <Route path="/edit/user" component={() => <EditUser />} />
                 <Route path="/list/web" component={props => <Web {...props} changeSearchTerm={handleSearchTerm} />} />

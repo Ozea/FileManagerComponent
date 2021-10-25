@@ -16,12 +16,14 @@ import Spinner from '../../components/Spinner/Spinner';
 import User from '../../components/User/User';
 import { Helmet } from 'react-helmet';
 import './Users.scss';
+import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 
 const Users = props => {
   const { userName, i18n, session: { look } } = useSelector(state => state.session);
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState({
     text: '',
     visible: false,
@@ -30,7 +32,6 @@ const Users = props => {
   const [state, setState] = useState({
     users: [],
     userFav: [],
-    loading: false,
     toggledAll: false,
     sorting: i18n.Date,
     order: "descending",
@@ -42,7 +43,7 @@ const Users = props => {
     dispatch(addActiveElement('/list/user/'));
     dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
-    fetchData();
+    fetchData().then(() => setLoading(false));
 
     return () => {
       dispatch(removeControlPanelContentFocusedElement());
@@ -60,21 +61,22 @@ const Users = props => {
   }, [controlPanelFocusedElement, focusedElement, state.users]);
 
   const fetchData = () => {
-    setState({ ...state, loading: true });
-
-    getUsersList()
-      .then(result => {
-        setState({
-          ...state,
-          users: reformatData(result.data.data),
-          userFav: result.data.userFav,
-          totalAmount: result.data.totalAmount,
-          toggledAll: false,
-          selection: [],
-          loading: false
-        });
-      })
-      .catch(err => console.error(err));
+    setLoading(true);
+    return new Promise((resolve, reject) => {
+      getUsersList()
+        .then(result => {
+          setState({
+            ...state,
+            users: reformatData(result.data.data),
+            userFav: result.data.userFav,
+            totalAmount: result.data.totalAmount,
+            toggledAll: false,
+            selection: []
+          });
+          resolve();
+        })
+        .catch(err => console.error(err));
+    });
   }
 
   const handleFocusedElementShortcuts = event => {
@@ -322,13 +324,14 @@ const Users = props => {
 
   const bulk = action => {
     if (state.selection.length && action) {
-      setState({ ...state, loading: true });
-
+      setLoading(true);
       bulkAction(action, state.selection)
         .then(result => {
           if (result.status === 200) {
-            fetchData();
-            toggleAll(false);
+            fetchData().then(() => {
+              refreshCounters();
+              toggleAll(false);
+            });
           }
         })
         .catch(err => console.error(err));
@@ -346,12 +349,14 @@ const Users = props => {
 
   const modalConfirmHandler = () => {
     modalCancelHandler();
-    setState({ ...state, loading: true });
+    setLoading(true);
     handleAction(modal.actionUrl)
-      .then(() => {
-        fetchData();
-      })
-      .catch(err => console.error(err));
+      .then(() => { fetchData().then(() => refreshCounters()) })
+      .catch(err => { setLoading(false); console.error(err); });
+  }
+
+  const refreshCounters = () => {
+    dispatch(checkAuthHandler()).then(() => setLoading(false));
   }
 
   const modalCancelHandler = () => {
@@ -383,7 +388,7 @@ const Users = props => {
         </div>
       </Toolbar>
       <div className="users-wrapper">
-        {state.loading
+        {loading
           ? <Spinner />
           : (<>
             {users()}

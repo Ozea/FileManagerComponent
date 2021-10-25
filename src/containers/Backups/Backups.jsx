@@ -16,13 +16,14 @@ import Backup from '../../components/Backup/Backup';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import './Backups.scss';
+import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 
 const Backups = props => {
   const { i18n } = useSelector(state => state.session);
-  const token = localStorage.getItem("token");
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState({
     text: '',
     visible: false,
@@ -31,7 +32,6 @@ const Backups = props => {
   const [state, setState] = useState({
     backups: [],
     backupFav: [],
-    loading: true,
     toggledAll: false,
     selection: [],
     totalAmount: ''
@@ -41,7 +41,7 @@ const Backups = props => {
     dispatch(addActiveElement('/list/backup/'));
     dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
-    fetchData();
+    fetchData().then(() => setLoading(false));
 
     return () => {
       dispatch(removeControlPanelContentFocusedElement());
@@ -157,19 +157,22 @@ const Backups = props => {
   }
 
   const fetchData = () => {
-    getBackupList()
-      .then(result => {
-        setState({
-          ...state,
-          backups: reformatData(result.data.data),
-          backupFav: result.data.backup_fav,
-          totalAmount: result.data.totalAmount,
-          selection: [],
-          toggledAll: false,
-          loading: false
-        });
-      })
-      .catch(err => console.error(err));
+    setLoading(true);
+    return new Promise((resolve, reject) => {
+      getBackupList()
+        .then(result => {
+          setState({
+            ...state,
+            backups: reformatData(result.data.data),
+            backupFav: result.data.backup_fav,
+            totalAmount: result.data.totalAmount,
+            selection: [],
+            toggledAll: false
+          });
+          resolve();
+        })
+        .catch(err => console.error(err));
+    });
   }
 
   const reformatData = data => {
@@ -278,12 +281,14 @@ const Backups = props => {
     const { selection } = state;
 
     if (selection.length && action) {
-      setState({ ...state, loading: true });
+      setLoading(true);
       bulkAction(action, selection)
         .then(result => {
           if (result.status === 200) {
-            fetchData();
-            toggleAll(false);
+            fetchData().then(() => {
+              refreshCounters();
+              toggleAll(false);
+            });
           }
         })
         .catch(err => console.error(err));
@@ -291,7 +296,7 @@ const Backups = props => {
   }
 
   const displayModal = (text, url) => {
-    setState({ ...state, loading: false });
+    setLoading(false);
     setModal({
       ...modal,
       visible: true,
@@ -304,10 +309,14 @@ const Backups = props => {
     if (!modal.actionUrl) return;
 
     modalCancelHandler();
-
+    setLoading(true);
     handleAction(modal.actionUrl)
-      .then(() => fetchData())
-      .catch(err => console.error(err));
+      .then(() => { fetchData().then(() => refreshCounters()) })
+      .catch(err => { setLoading(false); console.error(err); });
+  }
+
+  const refreshCounters = () => {
+    dispatch(checkAuthHandler()).then(() => setLoading(false));
   }
 
   const modalCancelHandler = () => {
@@ -320,8 +329,7 @@ const Backups = props => {
   }
 
   const scheduleBackupButton = () => {
-    setState({ ...state, loading: true });
-
+    setLoading(true);
     scheduleBackup()
       .then(result => displayModal(result.data.error_msg, ''))
       .catch(err => console.error(err));
@@ -349,9 +357,13 @@ const Backups = props => {
         </div>
       </Toolbar>
       <div className="backups-wrapper">
-        {state.loading ? <Spinner /> : backups()}
+        {loading
+          ? <Spinner />
+          : (<>
+            {backups()}
+            <div className="total">{state.totalAmount}</div>
+          </>)}
       </div>
-      <div className="total">{state.totalAmount}</div>
       <Modal
         onSave={modalConfirmHandler}
         onCancel={modalCancelHandler}

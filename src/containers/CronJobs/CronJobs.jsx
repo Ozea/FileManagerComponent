@@ -16,13 +16,14 @@ import Spinner from '../../components/Spinner/Spinner';
 import { useSelector, useDispatch } from 'react-redux';
 import './CronJobs.scss';
 import { Helmet } from 'react-helmet';
+import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 
 const CronJobs = props => {
   const { i18n } = useSelector(state => state.session);
-  const token = localStorage.getItem("token");
   const { controlPanelFocusedElement } = useSelector(state => state.controlPanelContent);
   const { focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const [modal, setModal] = useState({
     text: '',
     visible: false,
@@ -31,7 +32,6 @@ const CronJobs = props => {
   const [state, setState] = useState({
     cronJobs: [],
     cronFav: [],
-    loading: true,
     toggledAll: false,
     cronReports: '',
     sorting: i18n.Date,
@@ -44,7 +44,7 @@ const CronJobs = props => {
     dispatch(addActiveElement('/list/cron/'));
     dispatch(removeFocusedElement());
     dispatch(removeControlPanelContentFocusedElement());
-    fetchData();
+    fetchData().then(() => setLoading(false));
 
     return () => {
       dispatch(removeControlPanelContentFocusedElement());
@@ -164,20 +164,23 @@ const CronJobs = props => {
   }
 
   const fetchData = () => {
-    getCronList()
-      .then(result => {
-        setState({
-          ...state,
-          cronJobs: reformatData(result.data.data),
-          cronReports: result.data.cron_reports,
-          cronFav: result.data.cron_fav,
-          selection: [],
-          toggledAll: false,
-          totalAmount: result.data.totalAmount,
-          loading: false
-        });
-      })
-      .catch(err => console.error(err));
+    setLoading(true);
+    return new Promise((resolve, reject) => {
+      getCronList()
+        .then(result => {
+          setState({
+            ...state,
+            cronJobs: reformatData(result.data.data),
+            cronReports: result.data.cron_reports,
+            cronFav: result.data.cron_fav,
+            selection: [],
+            toggledAll: false,
+            totalAmount: result.data.totalAmount
+          });
+          resolve();
+        })
+        .catch(err => console.error(err));
+    });
   }
 
   const reformatData = data => {
@@ -318,11 +321,14 @@ const CronJobs = props => {
     const { selection } = state;
 
     if (selection.length && action) {
+      setLoading(true);
       bulkAction(action, selection)
         .then(result => {
           if (result.status === 200) {
-            fetchData();
-            toggleAll(false);
+            fetchData().then(() => {
+              refreshCounters();
+              toggleAll(false);
+            });
           }
         })
         .catch(err => console.error(err));
@@ -343,12 +349,15 @@ const CronJobs = props => {
       modalCancelHandler();
     }
 
-    setState({ ...state, loading: true });
     modalCancelHandler();
-
+    setLoading(true);
     handleAction(modal.actionUrl)
-      .then(() => fetchData())
-      .catch(err => console.error(err));
+      .then(() => { fetchData().then(() => refreshCounters()) })
+      .catch(err => { setLoading(false); console.error(err); });
+  }
+
+  const refreshCounters = () => {
+    dispatch(checkAuthHandler()).then(() => setLoading(false));
   }
 
   const modalCancelHandler = () => {
@@ -392,9 +401,13 @@ const CronJobs = props => {
         </div>
       </Toolbar>
       <div className="cron-wrapper">
-        {state.loading ? <Spinner /> : cronJobs()}
+        {loading
+          ? <Spinner />
+          : (<>
+            {cronJobs()}
+            <div className="total">{state.totalAmount}</div>
+          </>)}
       </div>
-      <div className="total">{state.totalAmount}</div>
       <Modal
         showCancelButton={modal.actionUrl}
         onCancel={modalCancelHandler}

@@ -13,6 +13,7 @@ import './AddDomainNameSystem.scss';
 import AdvancedOptions from './AdvancedOptions/AdvancedOptions';
 import { addDomainNameSystem } from '../../../ControlPanelService/Dns';
 import { Helmet } from 'react-helmet';
+import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 
 const AddDomainNameSystem = props => {
   const { i18n } = useSelector(state => state.session);
@@ -57,14 +58,14 @@ const AddDomainNameSystem = props => {
       addDomainNameSystem(domainNameSystem)
         .then(result => {
           if (result.status === 200) {
-            const { error_msg, ok_msg } = result.data;
+            const { error_msg: errorMessage, ok_msg: okMessage } = result.data;
 
-            if (error_msg) {
-              setState({ ...state, errorMessage: error_msg, okMessage: '', loading: false });
-            } else if (ok_msg) {
-              setState({ ...state, errorMessage: '', okMessage: ok_msg, loading: false });
+            if (errorMessage) {
+              setState({ ...state, errorMessage, okMessage, loading: false });
             } else {
-              setState({ ...state, loading: false });
+              dispatch(checkAuthHandler()).then(() => {
+                setState({ ...state, okMessage, errorMessage: '', loading: false });
+              });
             }
           }
         })
