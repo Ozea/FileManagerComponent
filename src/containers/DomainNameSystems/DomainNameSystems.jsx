@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { addControlPanelContentFocusedElement, removeControlPanelContentFocusedElement } from '../../actions/ControlPanelContent/controlPanelContentActions';
 import { addActiveElement, removeFocusedElement } from '../../actions/MainNavigation/mainNavigationActions';
 import DropdownFilter from '../../components/MainNav/Toolbar/DropdownFilter/DropdownFilter';
-import { bulkAction, getDnsList, handleAction } from '../../ControlPanelService/Dns';
+import { bulkDomainAction, getDnsList, handleAction } from '../../ControlPanelService/Dns';
 import * as MainNavigation from '../../actions/MainNavigation/mainNavigationActions';
 import SearchInput from '../../components/MainNav/Toolbar/SearchInput/SearchInput';
 import DomainNameSystem from '../../components/DomainNameSystem/DomainNameSystem';
@@ -343,7 +343,7 @@ const DomainNameSystems = props => {
 
     if (selection.length && action) {
       setLoading(true);
-      bulkAction(action, selection)
+      bulkDomainAction(action, selection)
         .then(result => {
           if (result.status === 200) {
             fetchData().then(() => {
