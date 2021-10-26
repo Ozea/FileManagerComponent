@@ -333,11 +333,20 @@ const InternetProtocols = props => {
   }
 
   const modalConfirmHandler = () => {
+    if (!modal.actionUrl) {
+      return modalCancelHandler();
+    }
+
     modalCancelHandler();
-    setLoading(true);
     handleAction(modal.actionUrl)
-      .then(() => { fetchData().then(() => refreshMenuCounters()) })
-      .catch(err => { setLoading(false); console.error(err); });
+      .then(res => {
+        if (res.data.error) {
+          return displayModal(res.data.error, '');
+        }
+        setLoading(true);
+        fetchData().then(() => refreshMenuCounters())
+      })
+      .catch(err => { setLoading(false);; console.error(err); });
   }
 
   const refreshMenuCounters = () => {
