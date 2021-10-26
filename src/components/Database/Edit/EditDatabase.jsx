@@ -15,6 +15,7 @@ import QS from 'qs';
 import './EditDatabase.scss';
 import { Helmet } from 'react-helmet';
 import { checkAuthHandler } from 'src/actions/Session/sessionActions';
+import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 
 const EditDatabase = props => {
   const token = localStorage.getItem("token");
@@ -76,7 +77,7 @@ const EditDatabase = props => {
             if (errorMessage) {
               setState({ ...state, errorMessage, okMessage, loading: false });
             } else {
-              dispatch(checkAuthHandler()).then(() => {
+              dispatch(refreshCounters()).then(() => {
                 setState({ ...state, okMessage, errorMessage: '', loading: false });
               });
             }

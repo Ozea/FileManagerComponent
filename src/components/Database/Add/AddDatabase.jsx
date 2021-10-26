@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 
 import { addActiveElement, removeFocusedElement } from "../../../actions/MainNavigation/mainNavigationActions";
 import { dbCharsets, addDatabase, getDbOptionalInfo } from '../../../ControlPanelService/Db';
@@ -10,11 +10,11 @@ import { useHistory } from 'react-router-dom';
 import Spinner from '../../Spinner/Spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { checkAuthHandler } from 'src/actions/Session/sessionActions';
+import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 import HtmlParser from 'react-html-parser';
 import './AddDatabase.scss'
 
-const AddDatabase = props => {
+const AddDatabase = memo(props => {
   const { i18n } = useSelector(state => state.session);
   const token = localStorage.getItem("token");
   const dispatch = useDispatch();
@@ -96,18 +96,16 @@ const AddDatabase = props => {
     newDatabase['v_dbuser'] = state.databaseUserInputValue;
 
     if (Object.keys(newDatabase).length !== 0 && newDatabase.constructor === Object) {
-      setState({ ...state, loading: true });
-
       addDatabase(newDatabase)
         .then(result => {
           if (result.status === 200) {
             const { error_msg: errorMessage, ok_msg: okMessage } = result.data;
 
             if (errorMessage) {
-              setState({ ...state, errorMessage, okMessage: '', loading: false });
+              setState({ ...state, errorMessage, okMessage: '' });
             } else {
-              dispatch(checkAuthHandler()).then(() => {
-                setState({ ...state, okMessage, errorMessage: '', loading: false });
+              dispatch(refreshCounters()).then(() => {
+                setState({ ...state, okMessage, errorMessage: '' });
               });
             }
           }
@@ -142,7 +140,7 @@ const AddDatabase = props => {
             <input type="hidden" name="ok" value="add" />
             <input type="hidden" name="token" value={token} />
 
-            <span className="prefix" dangerouslySetInnerHTML={{ __html: state.prefixI18N }}></span>
+            <span className="prefix">{state.prefixI18N}</span>
 
             <div className="form-group database">
               <label htmlFor="database">{i18n.Database}</label>
@@ -216,6 +214,6 @@ const AddDatabase = props => {
       </AddItemLayout>
     </div>
   );
-}
+});
 
 export default AddDatabase;

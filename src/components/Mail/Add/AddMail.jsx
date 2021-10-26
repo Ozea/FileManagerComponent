@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import './AddMail.scss'
 import { Helmet } from 'react-helmet';
 import { checkAuthHandler } from 'src/actions/Session/sessionActions';
+import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 
 const AddMail = props => {
   const { i18n } = useSelector(state => state.session);
@@ -49,7 +50,7 @@ const AddMail = props => {
             if (errorMessage) {
               setState({ ...state, errorMessage, okMessage, loading: false });
             } else {
-              dispatch(checkAuthHandler()).then(() => {
+              dispatch(refreshCounters()).then(() => {
                 setState({ ...state, okMessage, errorMessage: '', loading: false });
               });
             }

@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import './AddWebDomain.scss';
 import { Helmet } from 'react-helmet';
 import { checkAuthHandler } from 'src/actions/Session/sessionActions';
+import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 
 const AddWebDomain = props => {
   const { i18n } = useSelector(state => state.session);
@@ -100,7 +101,7 @@ const AddWebDomain = props => {
             if (errorMessage) {
               setState({ ...state, errorMessage, okMessage, loading: false });
             } else {
-              dispatch(checkAuthHandler()).then(() => {
+              dispatch(refreshCounters()).then(() => {
                 setState({ ...state, okMessage, errorMessage: '', loading: false });
               });
             }

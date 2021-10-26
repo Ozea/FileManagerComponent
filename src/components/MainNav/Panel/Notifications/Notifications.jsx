@@ -13,8 +13,10 @@ const Notifications = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetchData();
-  }, []);
+    if (!notifications) {
+      fetchData();
+    }
+  }, [notifications]);
 
   const fetchData = () => {
     setLoading(true);
@@ -32,7 +34,7 @@ const Notifications = () => {
       .catch(err => {
         console.error(err);
         setLoading(false);
-      })
+      });
   }
 
   const removeNotification = id => {
@@ -44,7 +46,7 @@ const Notifications = () => {
   }
 
   const renderOptions = () => {
-    if (notifications.length) {
+    if (notifications && notifications.length) {
       return notifications.map(item => {
         return (
           <>
@@ -71,7 +73,7 @@ const Notifications = () => {
       <button type="button" className="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <div className="bell">
           {
-            notifications.length
+            notifications && notifications.length
               ? <BellUnread />
               : <Bell />
           }

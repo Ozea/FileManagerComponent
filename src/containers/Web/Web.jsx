@@ -16,7 +16,7 @@ import Modal from '../../components/ControlPanel/Modal/Modal';
 import { useDispatch, useSelector } from 'react-redux';
 import { Helmet } from 'react-helmet';
 import './Web.scss';
-import { checkAuthHandler } from 'src/actions/Session/sessionActions';
+import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 
 const Web = props => {
   const { i18n } = useSelector(state => state.session);
@@ -323,7 +323,7 @@ const Web = props => {
       bulkAction(action, state.selection)
         .then(result => {
           fetchData().then(() => {
-            refreshCounters();
+            refreshMenuCounters();
             toggleAll(false);
           });
         })
@@ -344,12 +344,12 @@ const Web = props => {
     modalCancelHandler();
     setLoading(true);
     handleAction(modal.actionUrl)
-      .then(() => { fetchData().then(() => refreshCounters()) })
+      .then(() => { fetchData().then(() => refreshMenuCounters()) })
       .catch(err => { setLoading(false); console.error(err); });
   }
 
-  const refreshCounters = () => {
-    dispatch(checkAuthHandler()).then(() => setLoading(false));
+  const refreshMenuCounters = () => {
+    dispatch(refreshCounters()).then(() => setLoading(false));
   }
 
   const modalCancelHandler = () => {

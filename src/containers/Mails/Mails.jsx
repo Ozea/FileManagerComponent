@@ -17,7 +17,7 @@ import './Mails.scss';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { Helmet } from 'react-helmet';
-import { checkAuthHandler } from 'src/actions/Session/sessionActions';
+import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 
 const Mails = props => {
   const { i18n } = useSelector(state => state.session);
@@ -338,7 +338,7 @@ const Mails = props => {
         .then(result => {
           if (result.status === 200) {
             fetchData().then(() => {
-              refreshCounters();
+              refreshMenuCounters();
               toggleAll(false);
             });
           }
@@ -360,12 +360,12 @@ const Mails = props => {
     modalCancelHandler();
     setLoading(true);
     handleAction(modal.actionUrl)
-      .then(() => { fetchData().then(() => refreshCounters()) })
+      .then(() => { fetchData().then(() => refreshMenuCounters()) })
       .catch(err => { setLoading(false); console.error(err); });
   }
 
-  const refreshCounters = () => {
-    dispatch(checkAuthHandler()).then(() => setLoading(false));
+  const refreshMenuCounters = () => {
+    dispatch(refreshCounters()).then(() => setLoading(false));
   }
 
   const modalCancelHandler = () => {

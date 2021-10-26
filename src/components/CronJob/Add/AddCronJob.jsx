@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import './AddCronJob.scss';
 import { Helmet } from 'react-helmet';
 import { checkAuthHandler } from 'src/actions/Session/sessionActions';
+import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 
 const AddCronJob = props => {
   const { i18n } = useSelector(state => state.session);
@@ -56,7 +57,7 @@ const AddCronJob = props => {
             if (errorMessage) {
               setState({ ...state, errorMessage, okMessage, loading: false });
             } else {
-              dispatch(checkAuthHandler()).then(() => {
+              dispatch(refreshCounters()).then(() => {
                 setState({ ...state, okMessage, errorMessage: '', loading: false });
               });
             }
