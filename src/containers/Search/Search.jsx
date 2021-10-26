@@ -15,12 +15,12 @@ const Search = props => {
   const { i18n } = useSelector(state => state.session);
   const history = useHistory();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
   const [state, setState] = useState({
     searchResults: [],
     totalAmount: '',
     sorting: i18n.Date,
     order: "descending",
-    loading: false,
     total: 0
   });
   const [modal, setModal] = useState({
@@ -36,29 +36,31 @@ const Search = props => {
       let searchTerm = search.split('=')[1];
 
       if (searchTerm !== '') {
-        fetchData(searchTerm);
+        fetchData(searchTerm).then(() => setLoading(false));
       } else {
         return history.push({ pathname: '/list/user/', search: '' });
       }
     } else if (props.searchTerm !== '') {
-      fetchData(props.searchTerm);
+      fetchData(props.searchTerm).then(() => setLoading(false));
     } else {
       return history.push({ pathname: '/list/user/', search: '' });
     }
   }, []);
 
   const fetchData = searchTerm => {
-    setState({ ...state, loading: true });
-    getSearchResultsList(searchTerm)
-      .then(result => {
-        setState({
-          ...state,
-          searchResults: result.data.data,
-          totalAmount: result.data.total,
-          loading: false
-        });
-      })
-      .catch(err => console.error(err));
+    setLoading(true);
+    return new Promise((resolve, reject) => {
+      getSearchResultsList(searchTerm)
+        .then(result => {
+          setState({
+            ...state,
+            searchResults: result.data.data,
+            totalAmount: result.data.total
+          });
+          resolve();
+        })
+        .catch(err => console.error(err));
+    });
   }
 
   const searchResults = () => {
@@ -115,18 +117,24 @@ const Search = props => {
   }
 
   const modalConfirmHandler = () => {
+    if (!modal.actionUrl) {
+      return modalCancelHandler();
+    }
+
     modalCancelHandler();
-    setState({ ...state, loading: true });
     handleAction(modal.actionUrl)
-      .then(() => {
-        let searchTerm = history.location.search.split('=')[1];
-        fetchData(searchTerm).then(() => refreshMenuCounters())
+      .then(res => {
+        if (res.data.error) {
+          return displayModal(res.data.error, '');
+        }
+        setLoading(true);
+        fetchData().then(() => refreshMenuCounters())
       })
-      .catch(err => { setState({ ...state, loading: false }); console.error(err); });
+      .catch(err => { setLoading(false); console.error(err); });
   }
 
   const refreshMenuCounters = () => {
-    dispatch(refreshCounters()).then(() => setState({ ...state, loading: false }));
+    dispatch(refreshCounters()).then(() => setLoading(false));
   }
 
   const modalCancelHandler = () => {
@@ -148,7 +156,7 @@ const Search = props => {
         </div>
       </Toolbar>
       <div className="statistics-wrapper">
-        {state.loading
+        {loading
           ? <Spinner />
           : (<>
             {searchResults()}
