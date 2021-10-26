@@ -20,6 +20,7 @@ import TextArea from '../../ControlPanel/AddItemLayout/Form/TextArea/TextArea';
 import { Helmet } from 'react-helmet';
 import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
+import HtmlParser from 'react-html-parser';
 
 const EditWeb = props => {
   const token = localStorage.getItem("token");
@@ -136,7 +137,7 @@ const EditWeb = props => {
         <div className="search-toolbar-name">{i18n['Editing Domain']}</div>
         <div className="error"><span className="error-message">{state.data.errorMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} {state.errorMessage}</span></div>
         <div className="success">
-          <span className="ok-message">{state.okMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} <span dangerouslySetInnerHTML={{ __html: state.okMessage }}></span> </span>
+          <span className="ok-message">{state.okMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} <span>{HtmlParser(state.okMessage)}</span> </span>
         </div>
       </Toolbar>
       <AddItemLayout date={state.data.date} time={state.data.time} status={state.data.status}>

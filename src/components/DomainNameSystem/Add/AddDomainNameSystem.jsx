@@ -15,6 +15,7 @@ import { addDomainNameSystem } from '../../../ControlPanelService/Dns';
 import { Helmet } from 'react-helmet';
 import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
+import HtmlParser from 'react-html-parser';
 
 const AddDomainNameSystem = props => {
   const { i18n } = useSelector(state => state.session);
@@ -100,7 +101,7 @@ const AddDomainNameSystem = props => {
         <div className="success">
           <span className="ok-message">
             {state.okMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''}
-            <span dangerouslySetInnerHTML={{ __html: state.okMessage }}></span>
+            <span>{HtmlParser(state.okMessage)}</span>
           </span>
         </div>
       </Toolbar>

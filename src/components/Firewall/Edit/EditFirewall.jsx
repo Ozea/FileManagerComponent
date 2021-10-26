@@ -15,6 +15,7 @@ import './EditFirewall.scss';
 import { Helmet } from 'react-helmet';
 import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
+import HtmlParser from 'react-html-parser';
 
 const EditFirewall = props => {
   const token = localStorage.getItem("token");
@@ -96,7 +97,7 @@ const EditFirewall = props => {
         </div>
         <div className="success">
           <span className="ok-message">
-            {state.okMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} <span dangerouslySetInnerHTML={{ __html: state.okMessage }}></span>
+            {state.okMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} <span>{HtmlParser(state.okMessage)}</span>
           </span>
         </div>
       </Toolbar>

@@ -17,6 +17,7 @@ import './EditInternetProtocol.scss';
 import { Helmet } from 'react-helmet';
 import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
+import HtmlParser from 'react-html-parser';
 
 const EditInternetProtocol = () => {
   const token = localStorage.getItem("token");
@@ -108,7 +109,7 @@ const EditInternetProtocol = () => {
         </div>
         <div className="success">
           <span className="ok-message">
-            {state.okMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} <span dangerouslySetInnerHTML={{ __html: state.okMessage }}></span>
+            {state.okMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} <span>{HtmlParser(state.okMessage)}</span>
           </span>
         </div>
       </Toolbar>

@@ -140,7 +140,7 @@ const AddDatabase = memo(props => {
             <input type="hidden" name="ok" value="add" />
             <input type="hidden" name="token" value={token} />
 
-            <span className="prefix">{state.prefixI18N}</span>
+            <span className="prefix">{HtmlParser(state.prefixI18N)}</span>
 
             <div className="form-group database">
               <label htmlFor="database">{i18n.Database}</label>

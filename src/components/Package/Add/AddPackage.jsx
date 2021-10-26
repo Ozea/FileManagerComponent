@@ -17,6 +17,7 @@ import './AddPackage.scss';
 import { Helmet } from 'react-helmet';
 import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
+import HtmlParser from 'react-html-parser';
 
 const AddPackage = props => {
   const token = localStorage.getItem("token");
@@ -143,7 +144,7 @@ const AddPackage = props => {
         <div className="success">
           <span className="ok-message">
             {state.okMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''}
-            <span dangerouslySetInnerHTML={{ __html: state.okMessage }}></span>
+            <span>{HtmlParser(state.okMessage)}</span>
           </span>
         </div>
       </Toolbar>
