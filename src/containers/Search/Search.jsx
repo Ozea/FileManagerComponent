@@ -7,12 +7,14 @@ import Toolbar from '../../components/MainNav/Toolbar/Toolbar';
 import Modal from '../../components/ControlPanel/Modal/Modal';
 import Spinner from '../../components/Spinner/Spinner';
 import './Search.scss';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 
 const Search = props => {
   const { i18n } = useSelector(state => state.session);
   const history = useHistory();
+  const dispatch = useDispatch();
   const [state, setState] = useState({
     searchResults: [],
     totalAmount: '',
@@ -99,7 +101,6 @@ const Search = props => {
     switch (sorting) {
       case Date: return 'DATE';
       case Name: return 'RESULT';
-      case Starred: return 'STARRED';
       default: break;
     }
   }
@@ -114,12 +115,18 @@ const Search = props => {
   }
 
   const modalConfirmHandler = () => {
-    handleAction(state.modalActionUrl)
+    modalCancelHandler();
+    setState({ ...state, loading: true });
+    handleAction(modal.actionUrl)
       .then(() => {
-        fetchData();
-        modalCancelHandler();
+        let searchTerm = history.location.search.split('=')[1];
+        fetchData(searchTerm).then(() => refreshMenuCounters())
       })
-      .catch(err => console.error(err));
+      .catch(err => { setState({ ...state, loading: false }); console.error(err); });
+  }
+
+  const refreshMenuCounters = () => {
+    dispatch(refreshCounters()).then(() => setState({ ...state, loading: false }));
   }
 
   const modalCancelHandler = () => {
