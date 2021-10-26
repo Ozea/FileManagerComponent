@@ -66,10 +66,10 @@ const ControlPanelContent = props => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (userName) {
-      setLoading(false);
+    if (!userName) {
+      return history.push('/login');
     } else {
-      history.push('/login');
+      setLoading(false);
     }
 
     if (look) {

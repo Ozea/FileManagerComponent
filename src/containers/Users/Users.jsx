@@ -16,7 +16,7 @@ import Spinner from '../../components/Spinner/Spinner';
 import User from '../../components/User/User';
 import { Helmet } from 'react-helmet';
 import './Users.scss';
-import { checkAuthHandler } from 'src/actions/Session/sessionActions';
+import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 
 const Users = props => {
   const { userName, i18n, session: { look } } = useSelector(state => state.session);
@@ -329,7 +329,7 @@ const Users = props => {
         .then(result => {
           if (result.status === 200) {
             fetchData().then(() => {
-              refreshCounters();
+              refreshMenuCounters();
               toggleAll(false);
             });
           }
@@ -351,12 +351,12 @@ const Users = props => {
     modalCancelHandler();
     setLoading(true);
     handleAction(modal.actionUrl)
-      .then(() => { fetchData().then(() => refreshCounters()) })
+      .then(() => { fetchData().then(() => refreshMenuCounters()) })
       .catch(err => { setLoading(false); console.error(err); });
   }
 
-  const refreshCounters = () => {
-    dispatch(checkAuthHandler()).then(() => setLoading(false));
+  const refreshMenuCounters = () => {
+    dispatch(refreshCounters()).then(() => setLoading(false));
   }
 
   const modalCancelHandler = () => {

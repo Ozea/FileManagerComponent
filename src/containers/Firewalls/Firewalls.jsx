@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import './Firewalls.scss';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { checkAuthHandler } from 'src/actions/Session/sessionActions';
+import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 
 const Firewalls = props => {
   const { i18n } = useSelector(state => state.session);
@@ -325,7 +325,7 @@ const Firewalls = props => {
         .then(result => {
           if (result.status === 200) {
             fetchData().then(() => {
-              refreshCounters();
+              refreshMenuCounters();
               toggleAll(false);
             });
           }
@@ -342,12 +342,12 @@ const Firewalls = props => {
     modalCancelHandler();
     setLoading(true);
     handleAction(modal.actionUrl)
-      .then(() => { fetchData().then(() => refreshCounters()) })
+      .then(() => { fetchData().then(() => refreshMenuCounters()) })
       .catch(err => { setLoading(false); console.error(err); });
   }
 
-  const refreshCounters = () => {
-    dispatch(checkAuthHandler()).then(() => setLoading(false));
+  const refreshMenuCounters = () => {
+    dispatch(refreshCounters()).then(() => setLoading(false));
   }
 
   const modalCancelHandler = () => {

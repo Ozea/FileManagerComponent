@@ -152,10 +152,24 @@ $errorColor: #BE5ABF;
       }
     }
 
-    textarea {
-      &:focus {
-        background: #D7F9FF;
-      }
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active  {
+      background-color: $primaryLight;
+      border-color: $primaryActive;
+      filter: none;
+      box-shadow: none;
+    }
+
+    input:autofill,
+    input:autofill:hover,
+    input:autofill:focus,
+    input:autofill:active  {
+      background-color: $primaryLight;
+      border-color: $primaryActive;
+      filter: none;
+      box-shadow: none;
     }
 
     button {
@@ -181,7 +195,7 @@ $errorColor: #BE5ABF;
       &:active {
         box-shadow: unset;
         border-color: $primaryActive;
-        background: #D7F9FF;
+        background: #d7dcef9e;
       }
     }
     

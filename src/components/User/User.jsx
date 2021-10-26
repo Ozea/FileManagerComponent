@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import './User.scss';
 
 const User = ({ data, toggleFav, handleModal, checkItem }) => {
-  const { i18n } = useSelector(state => state.session);
+  const { i18n, userName } = useSelector(state => state.session);
   const session = useSelector(state => state.session);
   const dispatch = useDispatch();
 
