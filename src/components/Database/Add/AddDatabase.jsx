@@ -96,16 +96,17 @@ const AddDatabase = memo(props => {
     newDatabase['v_dbuser'] = state.databaseUserInputValue;
 
     if (Object.keys(newDatabase).length !== 0 && newDatabase.constructor === Object) {
+      setState({ ...state, loading: true });
       addDatabase(newDatabase)
         .then(result => {
           if (result.status === 200) {
             const { error_msg: errorMessage, ok_msg: okMessage } = result.data;
 
             if (errorMessage) {
-              setState({ ...state, errorMessage, okMessage: '' });
+              setState({ ...state, errorMessage, okMessage: '', loading: false });
             } else {
               dispatch(refreshCounters()).then(() => {
-                setState({ ...state, okMessage, errorMessage: '' });
+                setState({ ...state, okMessage, errorMessage: '', loading: false });
               });
             }
           }

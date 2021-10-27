@@ -12,7 +12,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import './AddFirewall.scss';
 import { Helmet } from 'react-helmet';
-import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 import HtmlParser from 'react-html-parser';
 
@@ -51,7 +50,6 @@ const AddFirewall = props => {
 
     if (Object.keys(newFirewall).length !== 0 && newFirewall.constructor === Object) {
       setState({ ...state, loading: true });
-
       addFirewall(newFirewall)
         .then(result => {
           if (result.status === 200) {

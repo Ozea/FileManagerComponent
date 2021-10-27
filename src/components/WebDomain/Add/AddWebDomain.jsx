@@ -13,7 +13,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import './AddWebDomain.scss';
 import { Helmet } from 'react-helmet';
-import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 import HtmlParser from 'react-html-parser';
 
@@ -40,7 +39,6 @@ const AddWebDomain = props => {
     dispatch(removeFocusedElement());
 
     setState({ ...state, loading: true });
-
     Promise.all([getWebStats(), getIpList()])
       .then(result => {
         const [webStats, internetProtocols] = result;
