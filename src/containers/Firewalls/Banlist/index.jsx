@@ -256,15 +256,16 @@ const BanLists = props => {
     }
 
     modalCancelHandler();
+    setLoading(true);
     handleAction(modal.actionUrl)
       .then(res => {
         if (res.data.error) {
+          setLoading(false);
           return displayModal(res.data.error, '');
         }
-        setLoading(true);
         fetchData().then(() => refreshMenuCounters())
       })
-      .catch(err => { setLoading(false);; console.error(err); });
+      .catch(err => { setLoading(false); console.error(err); });
   }
 
   const refreshMenuCounters = () => {

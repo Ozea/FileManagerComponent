@@ -14,7 +14,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import './AddInternetProtocol.scss';
 import { Helmet } from 'react-helmet';
-import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 import HtmlParser from 'react-html-parser';
 
@@ -52,7 +51,6 @@ const AddInternetProtocol = props => {
 
     if (Object.keys(newIp).length !== 0 && newIp.constructor === Object) {
       setState({ ...state, loading: true });
-
       addInternetProtocol(newIp)
         .then(result => {
           if (result.status === 200) {

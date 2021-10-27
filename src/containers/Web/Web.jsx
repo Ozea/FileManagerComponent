@@ -334,7 +334,7 @@ const Web = props => {
   const displayModal = (text, url) => {
     setModal({
       ...modal,
-      visible: !modal.visible,
+      visible: true,
       text,
       actionUrl: url
     });
@@ -346,12 +346,13 @@ const Web = props => {
     }
 
     modalCancelHandler();
+    setLoading(true);
     handleAction(modal.actionUrl)
       .then(res => {
         if (res.data.error) {
+          setLoading(false);
           return displayModal(res.data.error, '');
         }
-        setLoading(true);
         fetchData().then(() => refreshMenuCounters())
       })
       .catch(err => { setLoading(false); console.error(err); });

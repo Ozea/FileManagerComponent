@@ -5,7 +5,6 @@ import SelectInput from 'src/components/ControlPanel/AddItemLayout/Form/SelectIn
 import TextInput from 'src/components/ControlPanel/AddItemLayout/Form/TextInput/TextInput';
 import AddItemLayout from '../../ControlPanel/AddItemLayout/AddItemLayout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { addMail } from '../../../ControlPanelService/Mail';
 import { addDomainNameSystemRecord } from '../../../ControlPanelService/Dns';
 import Toolbar from '../../MainNav/Toolbar/Toolbar';
 import { useHistory } from 'react-router-dom';
@@ -14,7 +13,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import './AddDNSRecord.scss'
 import { Helmet } from 'react-helmet';
-import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 import HtmlParser from 'react-html-parser';
 
@@ -64,7 +62,7 @@ export default function AddDNSRecord(props) {
     newDnsRecord['v_domain'] = props.domain;
 
     if (Object.keys(newDnsRecord).length !== 0 && newDnsRecord.constructor === Object) {
-      setState({ loading: true });
+      setState({ ...state, loading: true });
       addDomainNameSystemRecord(newDnsRecord)
         .then(result => {
           if (result.status === 200) {

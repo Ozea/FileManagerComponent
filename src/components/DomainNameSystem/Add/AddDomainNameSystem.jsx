@@ -13,7 +13,6 @@ import './AddDomainNameSystem.scss';
 import AdvancedOptions from './AdvancedOptions/AdvancedOptions';
 import { addDomainNameSystem } from '../../../ControlPanelService/Dns';
 import { Helmet } from 'react-helmet';
-import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 import HtmlParser from 'react-html-parser';
 
@@ -36,7 +35,6 @@ const AddDomainNameSystem = props => {
     dispatch(removeFocusedElement());
 
     setState({ ...state, loading: true });
-
     getUserNS()
       .then(result => {
         if (result.data.length) {
@@ -56,7 +54,6 @@ const AddDomainNameSystem = props => {
 
     if (Object.keys(domainNameSystem).length !== 0 && domainNameSystem.constructor === Object) {
       setState({ ...state, loading: true });
-
       addDomainNameSystem(domainNameSystem)
         .then(result => {
           if (result.status === 200) {

@@ -43,6 +43,7 @@ const AddMail = props => {
     }
 
     if (Object.keys(newMailDomain).length !== 0 && newMailDomain.constructor === Object) {
+      setState({ ...state, loading: true });
       addMail(newMailDomain)
         .then(result => {
           if (result.status === 200) {

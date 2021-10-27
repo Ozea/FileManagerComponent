@@ -15,7 +15,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import './AddPackage.scss';
 import { Helmet } from 'react-helmet';
-import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 import HtmlParser from 'react-html-parser';
 
@@ -92,7 +91,6 @@ const AddPackage = props => {
 
     if (Object.keys(newPackage).length !== 0 && newPackage.constructor === Object) {
       setState({ ...state, loading: true });
-
       addPackage(newPackage)
         .then(result => {
           if (result.status === 200) {

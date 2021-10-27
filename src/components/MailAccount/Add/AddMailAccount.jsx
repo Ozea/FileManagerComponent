@@ -17,7 +17,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import './AddMailAccount.scss';
 import { Helmet } from 'react-helmet';
-import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 import HtmlParser from 'react-html-parser';
 
@@ -58,6 +57,7 @@ export default function AddMailAccount(props) {
     newMailDomain['Password'] = newMailDomain['v_password'];
 
     if (Object.keys(newMailDomain).length !== 0 && newMailDomain.constructor === Object) {
+      setState({ ...state, loading: true });
       addMailAccount(newMailDomain, props.domain)
         .then(result => {
           if (result.status === 200) {
