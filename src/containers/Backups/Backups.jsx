@@ -339,7 +339,13 @@ const Backups = props => {
   const scheduleBackupButton = () => {
     setLoading(true);
     scheduleBackup()
-      .then(result => displayModal(result.data.message, ''))
+      .then(result => {
+        if (result.data.error) {
+          displayModal(result.data.error, '');
+        } else {
+          displayModal(result.data.ok, '');
+        }
+      })
       .catch(err => console.error(err));
   }
 
