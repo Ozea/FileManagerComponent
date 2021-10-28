@@ -13,7 +13,6 @@ import QS from 'qs';
 
 import './EditFirewall.scss';
 import { Helmet } from 'react-helmet';
-import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 import HtmlParser from 'react-html-parser';
 
@@ -64,7 +63,7 @@ const EditFirewall = props => {
     if (Object.keys(updatedDomain).length !== 0 && updatedDomain.constructor === Object) {
       setState({ ...state, loading: true });
 
-      updateFirewall(updatedDomain, state.data.domain)
+      updateFirewall(updatedDomain, state.data.rule)
         .then(result => {
           if (result.status === 200) {
             const { error_msg: errorMessage, ok_msg: okMessage } = result.data;
