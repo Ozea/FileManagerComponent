@@ -13,7 +13,6 @@ import QS from 'qs';
 
 import './EditFirewall.scss';
 import { Helmet } from 'react-helmet';
-import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 import HtmlParser from 'react-html-parser';
 
 const EditFirewall = props => {
@@ -36,21 +35,25 @@ const EditFirewall = props => {
     dispatch(removeFocusedElement());
 
     if (rule) {
-      setState({ ...state, loading: true });
-
-      getFirewallInfo(rule)
-        .then(response => {
-          setState({
-            ...state,
-            data: response.data,
-            errorMessage: response.data['error_msg'],
-            okMessage: response.data['ok_msg'],
-            loading: false
-          });
-        })
-        .catch(err => console.error(err));
+      fetchData(rule);
     }
   }, []);
+
+  const fetchData = rule => {
+    setState({ ...state, loading: true });
+
+    getFirewallInfo(rule)
+      .then(response => {
+        setState({
+          ...state,
+          data: response.data,
+          errorMessage: response.data['error_msg'],
+          okMessage: response.data['ok_msg'],
+          loading: false
+        });
+      })
+      .catch(err => console.error(err));
+  }
 
   const submitFormHandler = event => {
     event.preventDefault();
@@ -71,12 +74,11 @@ const EditFirewall = props => {
             if (errorMessage) {
               setState({ ...state, errorMessage, okMessage, loading: false });
             } else {
-              dispatch(refreshCounters()).then(() => {
-                setState({ ...state, okMessage, errorMessage: '', loading: false });
-              });
+              setState({ ...state, okMessage, errorMessage: '', loading: false });
             }
           }
         })
+        .then(() => fetchData(state.data.rule))
         .catch(err => console.error(err));
     }
   }
