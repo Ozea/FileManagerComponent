@@ -166,6 +166,17 @@ const AddWebDomain = props => {
               </select>
             </div>
 
+            <div class="form-group">
+              <label htmlFor="aliases">{i18n.Aliases}</label>
+              <textarea
+                class="form-control"
+                id="aliases"
+                rows="3"
+                name="v_aliases"
+                defaultValue={state.aliases}
+              ></textarea>
+            </div>
+
             {
               panel[userName]['DNS_DOMAINS'] !== '0' && (
                 <Checkbox

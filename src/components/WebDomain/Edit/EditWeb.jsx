@@ -26,6 +26,8 @@ const EditWeb = props => {
   const { i18n } = useSelector(state => state.session);
   const history = useHistory();
   const dispatch = useDispatch();
+  const [errorMessage, setErrorMessage] = useState('');
+  const [okMessage, setOkMessage] = useState('');
   const [state, setState] = useState({
     data: {},
     domain: '',
@@ -35,9 +37,7 @@ const EditWeb = props => {
     additionalFtp: false,
     proxySupport: false,
     statAuth: false,
-    loading: false,
-    errorMessage: '',
-    okMessage: ''
+    loading: false
   });
 
   useEffect(() => {
@@ -88,13 +88,15 @@ const EditWeb = props => {
       updateWebDomain(updatedDomain, state.domain)
         .then(result => {
           if (result.status === 200) {
-            const { error_msg: errorMessage, ok_msg: okMessage } = result.data;
+            const { error_msg, ok_msg } = result.data;
 
-            if (errorMessage) {
-              setState({ ...state, errorMessage, okMessage });
+            if (error_msg) {
+              setErrorMessage(error_msg);
+              setOkMessage('');
             } else {
               dispatch(refreshCounters()).then(() => {
-                setState({ ...state, okMessage, errorMessage: '' });
+                setErrorMessage('');
+                setOkMessage(ok_msg);
               });
             }
           }
@@ -142,9 +144,9 @@ const EditWeb = props => {
       <Toolbar mobile={false}>
         <div></div>
         <div className="search-toolbar-name">{i18n['Editing Domain']}</div>
-        <div className="error"><span className="error-message">{state.data.errorMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} {state.errorMessage}</span></div>
+        <div className="error"><span className="error-message">{errorMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} {errorMessage}</span></div>
         <div className="success">
-          <span className="ok-message">{state.okMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} <span>{HtmlParser(state.okMessage)}</span> </span>
+          <span className="ok-message">{okMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} <span>{HtmlParser(okMessage)}</span> </span>
         </div>
       </Toolbar>
       <AddItemLayout date={state.data.date} time={state.data.time} status={state.data.status}>
