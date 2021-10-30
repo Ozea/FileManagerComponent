@@ -49,27 +49,28 @@ const EditWeb = props => {
 
     if (domain) {
       setState({ ...state, loading: true });
-
-      getDomainInfo(domain)
-        .then(response => {
-          setState({
-            ...state,
-            domain,
-            webStat: response.data.v_stats ? response.data.v_stats : 'none',
-            sslSupport: response.data.ssl === 'yes',
-            letsEncrypt: response.data.letsencrypt === 'yes',
-            proxySupport: !!response.data.proxy,
-            data: response.data,
-            additionalFtp: !!response.data.ftp_user,
-            statAuth: response.data.stats_user,
-            errorMessage: response.data['error_msg'],
-            okMessage: response.data['ok_msg'],
-            loading: false
-          });
-        })
-        .catch(err => console.error(err));
+      fetchData(domain);
     }
   }, []);
+
+  const fetchData = domain => {
+    getDomainInfo(domain)
+      .then(response => {
+        setState({
+          ...state,
+          domain,
+          webStat: response.data.v_stats ? response.data.v_stats : 'none',
+          sslSupport: response.data.ssl === 'yes',
+          letsEncrypt: response.data.letsencrypt === 'yes',
+          proxySupport: !!response.data.proxy,
+          data: response.data,
+          additionalFtp: !!response.data.ftp_user,
+          statAuth: response.data.stats_user,
+          loading: false
+        });
+      })
+      .catch(err => console.error(err));
+  }
 
   const submitFormHandler = event => {
     event.preventDefault();
@@ -90,14 +91,15 @@ const EditWeb = props => {
             const { error_msg: errorMessage, ok_msg: okMessage } = result.data;
 
             if (errorMessage) {
-              setState({ ...state, errorMessage, okMessage, loading: false });
+              setState({ ...state, errorMessage, okMessage });
             } else {
               dispatch(refreshCounters()).then(() => {
-                setState({ ...state, okMessage, errorMessage: '', loading: false });
+                setState({ ...state, okMessage, errorMessage: '' });
               });
             }
           }
         })
+        .then(() => fetchData(state.domain))
         .catch(err => console.error(err));
     }
   }
