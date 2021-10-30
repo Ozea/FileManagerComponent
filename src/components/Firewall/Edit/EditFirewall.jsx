@@ -35,20 +35,17 @@ const EditFirewall = props => {
     dispatch(removeFocusedElement());
 
     if (rule) {
+      setState({ ...state, loading: true });
       fetchData(rule);
     }
   }, []);
 
   const fetchData = rule => {
-    setState({ ...state, loading: true });
-
     getFirewallInfo(rule)
       .then(response => {
         setState({
           ...state,
           data: response.data,
-          errorMessage: response.data['error_msg'],
-          okMessage: response.data['ok_msg'],
           loading: false
         });
       })
@@ -72,9 +69,9 @@ const EditFirewall = props => {
             const { error_msg: errorMessage, ok_msg: okMessage } = result.data;
 
             if (errorMessage) {
-              setState({ ...state, errorMessage, okMessage, loading: false });
+              setState({ ...state, errorMessage, okMessage });
             } else {
-              setState({ ...state, okMessage, errorMessage: '', loading: false });
+              setState({ ...state, okMessage, errorMessage: '' });
             }
           }
         })
