@@ -20,11 +20,11 @@ const EditFirewall = props => {
   const { i18n } = useSelector(state => state.session);
   const history = useHistory();
   const dispatch = useDispatch();
+  const [errorMessage, setErrorMessage] = useState('');
+  const [okMessage, setOkMessage] = useState('');
   const [state, setState] = useState({
     data: {},
-    loading: false,
-    errorMessage: '',
-    okMessage: ''
+    loading: false
   });
 
   useEffect(() => {
@@ -49,7 +49,10 @@ const EditFirewall = props => {
           loading: false
         });
       })
-      .catch(err => console.error(err));
+      .catch(err => {
+        setState({ ...state, loading: false });
+        console.error(err);
+      });
   }
 
   const submitFormHandler = event => {
@@ -66,13 +69,10 @@ const EditFirewall = props => {
       updateFirewall(updatedDomain, state.data.rule)
         .then(result => {
           if (result.status === 200) {
-            const { error_msg: errorMessage, ok_msg: okMessage } = result.data;
+            const { error_msg, ok_msg } = result.data;
 
-            if (errorMessage) {
-              setState({ ...state, errorMessage, okMessage });
-            } else {
-              setState({ ...state, okMessage, errorMessage: '' });
-            }
+            setErrorMessage(error_msg || '');
+            setOkMessage(ok_msg || '');
           }
         })
         .then(() => fetchData(state.data.rule))
@@ -90,12 +90,12 @@ const EditFirewall = props => {
         <div className="search-toolbar-name">{i18n['Editing Firewall Rule']}</div>
         <div className="error">
           <span className="error-message">
-            {state.data.errorMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} {state.errorMessage}
+            {errorMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} {errorMessage}
           </span>
         </div>
         <div className="success">
           <span className="ok-message">
-            {state.okMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} <span>{HtmlParser(state.okMessage)}</span>
+            {okMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} <span>{HtmlParser(okMessage)}</span>
           </span>
         </div>
       </Toolbar>

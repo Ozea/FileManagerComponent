@@ -14,7 +14,6 @@ const AdvancedOptions = ({ prefixI18N, prePath, ...props }) => {
     additionalFtp: false,
     statisticsAuthCheckbox: false,
     statisticsAuth: false,
-    aliases: ''
   });
 
   useEffect(() => {
@@ -40,24 +39,8 @@ const AdvancedOptions = ({ prefixI18N, prePath, ...props }) => {
     }
   }
 
-  const onChangeAliases = value => {
-    setState({ ...state, aliases: value });
-  }
-
   return (
     <div style={{ transform: 'translateX(3rem)' }}>
-      <div class="form-group">
-        <label htmlFor="aliases">{i18n.Aliases}</label>
-        <textarea
-          class="form-control"
-          id="aliases"
-          rows="3"
-          name="v_aliases"
-          onChange={event => onChangeAliases(event.target.value)}
-          value={state.aliases}
-        ></textarea>
-      </div>
-
       <div className="form-group">
         <div className="checkbox-wrapper">
           <input

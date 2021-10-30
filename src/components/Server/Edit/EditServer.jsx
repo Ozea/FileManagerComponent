@@ -26,6 +26,8 @@ const EditServer = props => {
   const { i18n } = useSelector(state => state.session);
   const history = useHistory();
   const dispatch = useDispatch();
+  const [errorMessage, setErrorMessage] = useState('');
+  const [okMessage, setOkMessage] = useState('');
   const [state, setState] = useState({
     data: {},
     loading: false,
@@ -45,20 +47,23 @@ const EditServer = props => {
     dispatch(removeFocusedElement());
 
     setState({ ...state, loading: true });
+    fetchData();
+  }, []);
 
+  const fetchData = () => {
     getServerAdditionalInfo()
       .then(response => {
         setState({
           ...state,
           data: response.data,
-          errorMessage: response.data['error_msg'],
-          okMessage: response.data['ok_msg'],
           loading: false
         });
       })
-      .catch(err => console.error(err));
-
-  }, []);
+      .catch(err => {
+        setState({ ...state, loading: false });
+        console.error(err);
+      });
+  }
 
   const submitFormHandler = event => {
     event.preventDefault();
@@ -78,9 +83,17 @@ const EditServer = props => {
         .then(result => {
           if (result.status === 200) {
             const { error_msg, ok_msg } = result.data;
-            setState({ ...state, errorMessage: error_msg || '', okMessage: ok_msg || '', loading: false });
+
+            if (error_msg) {
+              setErrorMessage(error_msg);
+              setOkMessage('');
+            } else {
+              setErrorMessage('');
+              setOkMessage(ok_msg);
+            }
           }
         })
+        .then(() => fetchData())
         .catch(err => console.error(err));
     }
   }
@@ -102,12 +115,12 @@ const EditServer = props => {
         <div className="search-toolbar-name">{i18n['Configuring Server']}</div>
         <div className="error">
           <span className="error-message">
-            {state.data.errorMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} {state.errorMessage}
+            {errorMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} {errorMessage}
           </span>
         </div>
         <div className="success">
           <span className="ok-message">
-            {state.okMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} <span>{HtmlParser(state.okMessage)}</span>
+            {okMessage ? <FontAwesomeIcon icon="long-arrow-alt-right" /> : ''} <span>{HtmlParser(okMessage)}</span>
           </span>
         </div>
       </Toolbar>
