@@ -105,7 +105,7 @@ const Panel = props => {
           {session.session.FILEMANAGER_KEY && <div className={className("/list/directory/")}>
             <Link to="/list/directory/">{i18n['File Manager']}</Link>
           </div>}
-          {session.session.SOFTACULOUS === "yes" && <div className={className("/softaculous/")}><a href="/softaculous/">{i18n.Apps ?? 'Apps'}</a>
+          {session.session.SOFTACULOUS === "yes" && <div className={className("/softaculous/")}><Link to="/softaculous/" target="_blank">{i18n.Apps ?? 'Apps'}</Link>
           </div>}
           {userName === 'admin' && (
             <div className={className("/list/server/")}>
