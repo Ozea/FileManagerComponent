@@ -33,6 +33,7 @@ const EditWeb = props => {
     sslSupport: false,
     letsEncrypt: false,
     additionalFtp: false,
+    proxySupport: false,
     statAuth: false,
     loading: false,
     errorMessage: '',
@@ -57,6 +58,7 @@ const EditWeb = props => {
             webStat: response.data.v_stats ? response.data.v_stats : 'none',
             sslSupport: response.data.ssl === 'yes',
             letsEncrypt: response.data.letsencrypt === 'yes',
+            proxySupport: !!response.data.proxy,
             data: response.data,
             additionalFtp: !!response.data.ftp_user,
             statAuth: response.data.stats_user,
@@ -114,6 +116,10 @@ const EditWeb = props => {
     setState({ ...state, sslSupport: checked });
   }
 
+  const onChangeProxySupport = checked => {
+    setState({ ...state, proxySupport: checked });
+  }
+
   const onChangeWebStats = webStat => {
     setState({ ...state, webStat });
   }
@@ -158,7 +164,7 @@ const EditWeb = props => {
               id="proxy-aliases"
               name="v_aliases"
               title={i18n['Aliases']}
-              value={state.data.aliases} />
+              defaultValue={state.data.aliases} />
 
             <SelectInput
               options={state.data.templates}
@@ -169,8 +175,7 @@ const EditWeb = props => {
               title={i18n['Web Template']} />
 
             {
-              state.data.web_backend
-              && (
+              state.data.WEB_BACKEND && (
                 <SelectInput
                   options={state.data.backend_templates}
                   selected={state.data.backend_template || 'default'}
@@ -182,34 +187,45 @@ const EditWeb = props => {
             }
 
             {
-              state.data.proxy_system
-              && (
-                <SelectInput
-                  options={state.data.proxy_templates}
-                  selected={state.data.proxy_template || 'default'}
-                  optionalTitle={state.data.proxy_system}
-                  name="v_proxy_template"
-                  id="proxy_template"
-                  title={i18n['Proxy Template']} />
+              state.data.proxy_system && (
+                <>
+                  <Checkbox
+                    onChange={onChangeProxySupport}
+                    name="v_proxy"
+                    id="proxy"
+                    title={i18n['Proxy Support'] ?? 'Proxy Support'}
+                    defaultChecked={state.proxySupport} />
+
+                  {
+                    state.proxySupport && (<div style={{ transform: 'translateX(3rem)' }}>
+                      <SelectInput
+                        options={state.data.proxy_templates}
+                        selected={state.data.proxy_template || 'default'}
+                        optionalTitle={state.data.proxy_system}
+                        name="v_proxy_template"
+                        id="proxy_template"
+                        title={i18n['Proxy Template']} />
+
+                      <TextArea
+                        id="proxy-extensions"
+                        name="v_proxy_ext"
+                        title={i18n['Proxy Extensions']}
+                        defaultValue={state.data.proxy_ext} />
+                    </div>)
+                  }
+                </>
               )
             }
 
-            <TextArea
-              id="proxy-extensions"
-              name="v_proxy_ext"
-              title={i18n['Proxy Extensions']}
-              defaultValue={state.data.proxy_ext} />
-
             <Checkbox
               onChange={onChangeSslSupport}
-              name="v_shared"
+              name="v_ssl"
               id="ssl-support"
               title={i18n['SSL Support'] ?? 'SSL Support'}
               defaultChecked={state.sslSupport} />
 
             {
-              state.sslSupport
-              && (
+              state.sslSupport && (
                 <SslSupport
                   sslSubject={state.data.ssl_subject}
                   sslAliases={state.data.ssl_aliases}
@@ -219,8 +235,8 @@ const EditWeb = props => {
                   sslPubKey={state.data.ssl_pub_key}
                   sslIssuer={state.data.ssl_issuer}
                   sslCertificate={state.data.ssl_crt}
-                  sslKey={state.data.key}
-                  sslCertificateAuthority={state.data.ca}
+                  sslKey={state.data.ssl_key}
+                  sslCertificateAuthority={state.data.ssl_ca}
                   domain={state.domain}
                   sslHome={state.data.ssl_home}
                   letsEncrypt={state.letsEncrypt}
