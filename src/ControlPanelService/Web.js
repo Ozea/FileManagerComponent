@@ -42,6 +42,14 @@ export const addWeb = data => {
   return axios.post(BASE_URL + addWebUri, formDataObject);
 }
 
+export const getWebDomainInfo = domain => {
+  return axios.get(BASE_URL + addWebUri, {
+    params: {
+      token: getAuthToken()
+    }
+  });
+}
+
 export const getWebStats = () => {
   return axios.get(BASE_URL + webStatsUri);
 }

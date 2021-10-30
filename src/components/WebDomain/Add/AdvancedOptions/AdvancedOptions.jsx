@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import Password from '../../../../components/ControlPanel/AddItemLayout/Form/Password/Password';
 import AdditionalFtpWrapper from '../AdditionalFtpWrapper/AdditionalFtpWrapper';
+import Checkbox from 'src/components/ControlPanel/AddItemLayout/Form/Checkbox/Checkbox';
 import SslSupport from '../SslSupport/SslSupport';
 
 import './AdvancedOptions.scss';
 
-const AdvancedOptions = props => {
+const AdvancedOptions = ({ prefixI18N, prePath, ...props }) => {
   const { i18n } = useSelector(state => state.session);
   const [state, setState] = useState({
     sslSupport: false,
@@ -27,12 +28,6 @@ const AdvancedOptions = props => {
     }
   }
 
-  const renderAdditionalFtp = () => {
-    if (state.additionalFtp) {
-      return <AdditionalFtpWrapper prefixI18N={props.prefixI18N} domain={props.domain} unCheckAdditionalFtpBox={() => setState({ ...state, additionalFtp: false })} />;
-    }
-  }
-
   const renderWebStats = () => {
     return props.webStats.map(stat => <option value={stat}>{stat}</option>);
   }
@@ -50,7 +45,7 @@ const AdvancedOptions = props => {
   }
 
   return (
-    <div>
+    <div style={{ transform: 'translateX(3rem)' }}>
       <div class="form-group">
         <label htmlFor="aliases">{i18n.Aliases}</label>
         <textarea
@@ -105,19 +100,19 @@ const AdvancedOptions = props => {
         <Password name='v_stats_password' />
       </div>
 
-      <div className="form-group">
-        <div className="checkbox-wrapper">
-          <input
-            type="checkbox"
-            name="v_ftp"
-            id="additional-ftp"
-            checked={state.additionalFtp}
-            onChange={() => setState({ ...state, additionalFtp: !state.additionalFtp })} />
-          <label htmlFor="additional-ftp">{i18n['Additional FTP Account']}</label>
-        </div>
-      </div>
+      <Checkbox
+        onChange={checked => setState({ ...state, additionalFtp: checked })}
+        name="v_ftp"
+        id="add-ftp"
+        checked={state.additionalFtp}
+        title={i18n['Additional FTP Account']} />
 
-      {renderAdditionalFtp()}
+      <AdditionalFtpWrapper
+        checked={state.additionalFtp}
+        prefixI18N={prefixI18N}
+        ftps={[{ id: 1, deleted: false, is_new: 1 }]}
+        ftpUserPrePath={prePath}
+        unCheckAdditionalFtpBox={() => setState({ ...state, additionalFtp: false })} />
     </div>
   );
 }
