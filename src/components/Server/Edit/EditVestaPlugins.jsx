@@ -45,7 +45,7 @@ const EditVestaPluginsOption = ({ data, visible }) => {
             <span>{i18n['Licence Key']}:</span>
             <TextInput
               title={i18n['License Key']}
-              value={data.license_key}
+              value={data.licence_key}
               name="v_sftp_licence"
               id="sftp_licence" />
           </div>
@@ -163,10 +163,10 @@ const EditVestaPluginsOption = ({ data, visible }) => {
         disabled />
 
       <div className="form-group select-group">
-        <label className="label-wrapper" htmlFor="backup_manager">
+        <label className="label-wrapper" htmlFor="sftp">
           {i18n['SFTP Chroot']}
         </label>
-        <select className="form-control" id="backup_manager" name="v_backup_manager" onChange={event => setSftpValue(event.target.value)}>
+        <select className="form-control" id="sftp" name="v_sftp" onChange={event => setSftpValue(event.target.value)}>
           {
             session['SFTPJAIL_KEY']
               ? <option value="cancel">{i18n['Disable and Cancel Licence']}</option>
