@@ -82,6 +82,10 @@ const EditWeb = props => {
 
     updatedDomain['v_domain'] = state.domain;
 
+    if (updatedDomain['v_ssl'] === 'on') {
+      updatedDomain['v_ssl'] = 'yes';
+    }
+
     if (Object.keys(updatedDomain).length !== 0 && updatedDomain.constructor === Object) {
       setState({ ...state, loading: true });
 
