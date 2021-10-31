@@ -37,9 +37,7 @@ const EditServer = props => {
     backupOption: false,
     sslOption: false,
     pluginsOption: false,
-    dbOption: false,
-    errorMessage: '',
-    okMessage: ''
+    dbOption: false
   });
 
   useEffect(() => {

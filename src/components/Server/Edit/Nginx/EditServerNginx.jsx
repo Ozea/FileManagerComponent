@@ -22,13 +22,12 @@ const EditServerNginx = props => {
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState('');
   const [okMessage, setOkMessage] = useState('');
+  const [restart, setRestart] = useState(true);
   const [state, setState] = useState({
     data: {},
     loading: false,
     basicOptions: true,
-    advancedOptions: false,
-    errorMessage: '',
-    okMessage: ''
+    advancedOptions: false
   });
 
   useEffect(() => {
@@ -65,6 +64,9 @@ const EditServerNginx = props => {
     if (Object.keys(updatedService).length !== 0 && updatedService.constructor === Object) {
       setState({ ...state, loading: true });
 
+      updatedService['v_config'] = state.data.config;
+      updatedService['v_restart'] = restart ? 'yes' : 'no';
+
       updateService(updatedService, '/nginx')
         .then(result => {
           if (result.status === 200) {
@@ -90,6 +92,14 @@ const EditServerNginx = props => {
       advancedOptions: !state.advancedOptions,
       basicOptions: !state.basicOptions
     });
+  }
+
+  const onUpdateConfig = ({ id, value }) => {
+    if (!value) return;
+
+    var regexp = new RegExp(`(${id})(.+)(${state.data[id]})`, 'gm');
+    const updatedConfig = state.data.config.replace(regexp, `$1$2${value}`);
+    setState({ ...state, data: { ...state.data, config: updatedConfig, [id]: value } });
   }
 
   return (
@@ -134,60 +144,70 @@ const EditServerNginx = props => {
                     id="worker_processes"
                     title="worker_processes"
                     name="v_worker_processes"
+                    onChange={event => onUpdateConfig(event.target)}
                     value={state.data.worker_processes} />
 
                   <TextInput
                     id="worker_connections"
                     title="worker_connections"
                     name="v_worker_connections"
+                    onChange={event => onUpdateConfig(event.target)}
                     value={state.data.worker_connections} />
 
                   <TextInput
                     id="client_max_body_size"
                     title="client_max_body_size"
                     name="v_client_max_body_size"
+                    onChange={event => onUpdateConfig(event.target)}
                     value={state.data.client_max_body_size} />
 
                   <TextInput
                     id="send_timeout"
                     title="send_timeout"
                     name="v_send_timeout"
+                    onChange={event => onUpdateConfig(event.target)}
                     value={state.data.send_timeout} />
 
                   <TextInput
                     id="proxy_connect_timeout"
                     title="proxy_connect_timeout"
                     name="v_proxy_connect_timeout"
+                    onChange={event => onUpdateConfig(event.target)}
                     value={state.data.proxy_connect_timeout} />
 
                   <TextInput
                     id="proxy_send_timeout"
                     title="proxy_send_timeout"
                     name="v_proxy_send_timeout"
+                    onChange={event => onUpdateConfig(event.target)}
                     value={state.data.proxy_send_timeout} />
 
                   <TextInput
                     id="proxy_read_timeout"
                     title="proxy_read_timeout"
                     name="v_proxy_read_timeout"
+                    onChange={event => onUpdateConfig(event.target)}
                     value={state.data.proxy_read_timeout} />
 
                   <TextInput
                     id="gzip"
                     title="gzip"
                     name="v_gzip"
+                    onChange={event => onUpdateConfig(event.target)}
                     value={state.data.gzip} />
 
                   <TextInput
                     id="gzip_comp_level"
                     title="gzip_comp_level"
                     name="v_gzip_comp_level"
+                    onChange={event => onUpdateConfig(event.target)}
                     value={state.data.gzip_comp_level} />
 
                   <TextInput
                     id="charset"
                     title="charset"
                     name="v_charset"
+                    onChange={event => onUpdateConfig(event.target)}
                     value={state.data.charset} />
                 </>
               )
@@ -211,6 +231,7 @@ const EditServerNginx = props => {
                   <TextArea
                     defaultValue={state.data.config}
                     title={state.data.config_path}
+                    onChange={e => setState({ ...state, data: { ...state.data, config: e.target.value } })}
                     name="v_config"
                     id="v_config"
                     rows="25" />
@@ -220,6 +241,7 @@ const EditServerNginx = props => {
                   <Checkbox
                     title={i18n['restart']}
                     defaultChecked={true}
+                    onChange={checked => setRestart(checked)}
                     name="v_restart"
                     id="restart" />
                 </>
