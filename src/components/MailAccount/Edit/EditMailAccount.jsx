@@ -193,6 +193,7 @@ export default function EditMailAccount(props) {
                 <MailInfoBlock
                   webMail={state.data.webmail}
                   hostName={state.data.hostname}
+                  userName={props.account}
                   password={state.password}
                   domain={props.domain} />
               </div>
