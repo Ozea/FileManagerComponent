@@ -20,11 +20,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import './EditServer.scss';
 import { Helmet } from 'react-helmet';
 import HtmlParser from 'react-html-parser';
-import { checkAuthHandler } from 'src/actions/Session/sessionActions';
+import { refreshUserSession } from 'src/actions/Session/sessionActions';
 
 const EditServer = props => {
   const token = localStorage.getItem("token");
   const { i18n } = useSelector(state => state.session);
+  const { session } = useSelector(state => state.userSession);
   const history = useHistory();
   const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState('');
@@ -75,6 +76,10 @@ const EditServer = props => {
     updatedServer['save'] = 'save';
     updatedServer['token'] = token;
 
+    if (updatedServer['v_softaculous'] === 'no' && !session['SOFTACULOUS']) {
+      delete updatedServer['v_softaculous'];
+    }
+
     if (Object.keys(updatedServer).length !== 0 && updatedServer.constructor === Object) {
       setState({ ...state, loading: true });
 
@@ -92,7 +97,7 @@ const EditServer = props => {
             }
           }
         })
-        .then(() => dispatch(checkAuthHandler()).then(() => fetchData()))
+        .then(() => dispatch(refreshUserSession()).then(() => fetchData()))
         .catch(err => console.error(err));
     }
   }

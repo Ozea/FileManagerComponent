@@ -5,7 +5,8 @@ import TextInput from 'src/components/ControlPanel/AddItemLayout/Form/TextInput/
 import { useSelector } from 'react-redux';
 
 const EditVestaPluginsOption = ({ data, visible }) => {
-  const { i18n, session } = useSelector(state => state.session);
+  const { i18n } = useSelector(state => state.session);
+  const { session } = useSelector(state => state.userSession);
   const [sftpValue, setSftpValue] = useState(data.lead || session['SFTPJAIL_KEY'] ? 'yes' : 'no');
   const [fmValue, setFmValue] = useState(data.fm_lead || session['FILEMANAGER_KEY'] ? 'yes' : 'no');
   const [softaculousValue, setSoftaculousValue] = useState(session['SOFTACULOUS'] === 'yes' ? 'yes' : 'no');

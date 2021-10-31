@@ -19,7 +19,8 @@ import { refreshCounters } from 'src/actions/MenuCounters/menuCounterActions';
 import HtmlParser from 'react-html-parser';
 
 const AddWebDomain = props => {
-  const { i18n, panel, userName, session } = useSelector(state => state.session);
+  const { i18n, panel, userName } = useSelector(state => state.session);
+  const { session } = useSelector(state => state.userSession);
   const dispatch = useDispatch();
   const token = localStorage.getItem("token");
   const history = useHistory();
