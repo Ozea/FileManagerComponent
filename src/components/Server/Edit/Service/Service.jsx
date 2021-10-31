@@ -72,7 +72,7 @@ const Service = ({ serviceName = '' }) => {
             setOkMessage(ok_msg || '');
           }
         })
-        .then(() => fetchData())
+        .then(() => fetchData(serviceName))
         .catch(err => console.error(err));
     }
   }
