@@ -110,8 +110,8 @@ const EditFirewall = props => {
                 {i18n['Action']}
               </label>
               <select className="form-control" id="action" name="v_action">
-                <option selected={state.data.action === 'DROP'} value="DROP">{i18n['DROP']}</option>
-                <option selected={state.data.action === 'ACCEPT'} value="ACCEPT">{i18n['ACCEPT']}</option>
+                <option selected={state.data.action === 'DROP'} value="DROP">DROP</option>
+                <option selected={state.data.action === 'ACCEPT'} value="ACCEPT">ACCEPT</option>
               </select>
             </div>
 

@@ -132,21 +132,27 @@ const EditVestaPluginsOption = ({ data, visible }) => {
         id="version"
         disabled />
 
-      <SelectInput
-        title={i18n['FileSystem Disk Quota']}
-        selected={data.disk_quota}
-        options={data.yes_no_options}
-        name="v_quota"
-        id="quota" />
+      <div className="form-group select-group">
+        <label className="label-wrapper" htmlFor="quota">
+          {i18n['FileSystem Disk Quota']}
+        </label>
+        <select className="form-control" id="quota" name="v_quota">
+          <option value="no">{i18n['no']}</option>
+          <option value="yes" selected={data.disk_quota === 'yes'}>{i18n['yes']}</option>
+        </select>
+      </div>
 
       <br />
 
-      <SelectInput
-        title={i18n['Firewall']}
-        selected={data.firewall_system === 'iptables' ? i18n['yes'] : ''}
-        options={data.yes_no_options}
-        name="v_firewall"
-        id="firewall" />
+      <div className="form-group select-group">
+        <label className="label-wrapper" htmlFor="firewall">
+          {i18n['Firewall']}
+        </label>
+        <select className="form-control" id="firewall" name="v_firewall">
+          <option value="no">{i18n['no']}</option>
+          <option value="yes" selected={data.firewall_system === 'iptables'}>{i18n['yes']}</option>
+        </select>
+      </div>
 
       <SelectInput
         title={i18n['Reseller Role']}
