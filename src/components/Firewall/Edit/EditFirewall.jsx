@@ -105,19 +105,26 @@ const EditFirewall = props => {
             <input type="hidden" name="save" value="save" />
             <input type="hidden" name="token" value={token} />
 
-            <SelectInput
-              options={state.data.actions}
-              selected={state.data.action}
-              title={i18n['Action']}
-              name="v_action"
-              id="action" />
+            <div className="form-group select-group">
+              <label className="label-wrapper" htmlFor="action">
+                {i18n['Action']}
+              </label>
+              <select className="form-control" id="action" name="v_action">
+                <option selected={state.data.action === 'DROP'} value="DROP">{i18n['DROP']}</option>
+                <option selected={state.data.action === 'ACCEPT'} value="ACCEPT">{i18n['ACCEPT']}</option>
+              </select>
+            </div>
 
-            <SelectInput
-              options={state.data.protocols}
-              selected={state.data.protocol}
-              title={i18n['Protocol']}
-              name="v_protocol"
-              id="protocol" />
+            <div className="form-group select-group">
+              <label className="label-wrapper" htmlFor="protocol">
+                {i18n['Protocol']}
+              </label>
+              <select className="form-control" id="protocol" name="v_protocol">
+                <option selected={state.data.protocol === 'TCP'} value="TCP">{i18n['TCP']}</option>
+                <option selected={state.data.protocol === 'UDP'} value="UDP">{i18n['UDP']}</option>
+                <option selected={state.data.protocol === 'ICMP'} value="ICMP">{i18n['ICMP']}</option>
+              </select>
+            </div>
 
             <TextInput
               optionalTitle={i18n['ranges are acceptable']}
