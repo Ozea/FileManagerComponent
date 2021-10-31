@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import './EditServer.scss';
 import { Helmet } from 'react-helmet';
 import HtmlParser from 'react-html-parser';
+import { checkAuthHandler } from 'src/actions/Session/sessionActions';
 
 const EditServer = props => {
   const token = localStorage.getItem("token");
@@ -91,7 +92,7 @@ const EditServer = props => {
             }
           }
         })
-        .then(() => fetchData())
+        .then(() => dispatch(checkAuthHandler()).then(() => fetchData()))
         .catch(err => console.error(err));
     }
   }
