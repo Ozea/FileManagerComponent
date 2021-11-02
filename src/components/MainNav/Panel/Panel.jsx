@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 import './Panel.scss';
 
 const Panel = props => {
-  const { i18n, userName } = useSelector(state => state.session);
+  const { i18n, userName, panel } = useSelector(state => state.session);
   const { session } = useSelector(state => state.userSession);
   const { activeElement, focusedElement } = useSelector(state => state.mainNavigation);
   const dispatch = useDispatch();
@@ -113,7 +113,7 @@ const Panel = props => {
           )}
         </div>
         <div className="container profile-menu">
-          <Notifications />
+          {panel[userName]['NOTIFICATIONS'] === 'yes' && <Notifications />}
           <div>
             <Link to={`/edit/user?user=${userName}`}>
               {session.look
