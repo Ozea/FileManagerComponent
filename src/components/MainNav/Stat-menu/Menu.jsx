@@ -74,8 +74,14 @@ const Menu = props => {
               {
                 session.look
                   ? (<>
-                    <div><span>{i18n.Disk}:</span> <span>{sizeFormatter(user.U_DISK)}</span></div>
-                    <div><span>{i18n.Bandwidth}:</span> <span>{sizeFormatter(user.U_BANDWIDTH)}</span></div>
+                    <div>
+                      <span>{i18n.Disk}:</span>
+                      <span><span className="value">{user.U_DISK} <span className="unit">{panel[session.look]['U_DISK_MEASURE']}</span></span></span>
+                    </div>
+                    <div>
+                      <span>{i18n.Bandwidth}:</span>
+                      <span><span className="value">{user.U_BANDWIDTH} <span className="unit">{panel[session.look]['U_BANDWIDTH_MEASURE']}</span></span></span>
+                    </div>
                   </>)
                   : (<>
                     <div><span>{i18n.users}:</span> <span>{user.U_USERS}</span></div>

@@ -86,16 +86,16 @@ const User = ({ data, toggleFav, handleModal, checkItem }) => {
         <div>{data.FNAME} {data.LNAME}</div>
         <div className="stats">
           <Container className="c-1">
-            <div className="bandwidth">{i18n.Bandwidth} <span><span className="stat">{data.U_BANDWIDTH}</span> {i18n.mb}</span></div>
-            <div className="disk">{i18n.Disk}: <span><span className="stat">{data.U_DISK}</span> {i18n.mb}</span></div>
+            <div className="bandwidth">{i18n.Bandwidth} <span><span className="stat">{data.U_BANDWIDTH}</span> {data.U_BANDWIDTH_MEASURE}</span></div>
+            <div className="disk">{i18n.Disk}: <span><span className="stat">{data.U_DISK}</span> {data.U_DISK_MEASURE}</span></div>
             <div className="sub-disk-stats">
               <div>
-                <div><span>{i18n.Web}:</span> <span><b>{data.U_DISK_WEB}</b> {i18n.mb}</span></div>
-                <div><span>{i18n.Mail}:</span> <span><b>{data.U_DISK_MAIL}</b> {i18n.mb}</span></div>
+                <div><span>{i18n.Web}:</span> <span><b>{data.U_DISK_WEB}</b> {data.U_DISK_WEB_MEASURE}</span></div>
+                <div><span>{i18n.Mail}:</span> <span><b>{data.U_DISK_MAIL}</b> {data.U_DISK_MAIL_MEASURE}</span></div>
               </div>
               <div>
-                <div><span>{i18n.Databases}:</span> <span><b>{data.U_DATABASES}</b> {i18n.mb}</span></div>
-                <div><span>{i18n['User Directories']}:</span> <span><b>{data.U_DISK_DIRS}</b> {i18n.mb}</span></div>
+                <div><span>{i18n.Databases}:</span> <span><b>{data.U_DATABASES}</b> {data.U_DATABASES_MEASURE}</span></div>
+                <div><span>{i18n['User Directories']}:</span> <span><b>{data.U_DISK_DIRS}</b> {data.U_DISK_DIRS_MEASURE}</span></div>
               </div>
             </div>
           </Container>
