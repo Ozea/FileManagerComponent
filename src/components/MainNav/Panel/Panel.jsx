@@ -114,7 +114,7 @@ const Panel = props => {
         </div>
         <div className="container profile-menu">
           {panel[userName]['NOTIFICATIONS'] === 'yes' && <Notifications />}
-          <div>
+          <div className="edit-user">
             <Link to={`/edit/user?user=${userName}`}>
               {session.look
                 ? <div className="long-username">
@@ -126,7 +126,7 @@ const Panel = props => {
               }
             </Link>
           </div>
-          <div><button onClick={signOut}>{i18n['Log out']}</button></div>
+          <div className="logout-button"><button onClick={signOut}>{i18n['Log out']}</button></div>
         </div>
       </div>
 
