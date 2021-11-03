@@ -74,7 +74,7 @@ const AdditionalFtpForEditing = ({ domain, data = {}, onDeleteAdditionalFtp, pre
               <input
                 type="text"
                 value={state.path}
-                onChange={event => setState({ ...state, path: event.target.value.indexOf('/') !== 0 ? '/' : event.target.value })}
+                onChange={event => setState({ ...state, path: event.target.value.indexOf('/') !== 0 ? `/${event.target.value}` : event.target.value })}
                 className="form-control"
                 id={`path${data.id}`}
                 name={`v_ftp_user[${data.id}][v_ftp_path]`} />
