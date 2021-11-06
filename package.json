@@ -35,13 +35,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build && npm run delete-remote-js && npm run delete-remote-css && npm run delete-remote-html && npm run move-local-js && npm run move-local-css && npm run move-local-html && clear",
-    "delete-remote-js": "ssh root@r5.vestacp.com 'rm -rf /usr/local/vesta/web/static/js' ",
-    "delete-remote-css": "ssh root@r5.vestacp.com 'rm -rf /usr/local/vesta/web/static/css'",
-    "delete-remote-html": "ssh root@r5.vestacp.com 'rm -rf /usr/local/vesta/web/static/index.html'",
-    "move-local-js": "scp -r build/static/js root@r5.vestacp.com:/usr/local/vesta/web/static",
-    "move-local-css": "scp -r build/static/css root@r5.vestacp.com:/usr/local/vesta/web/static",
-    "move-local-html": "scp -r build/index.html root@r5.vestacp.com:/usr/local/vesta/web/static",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

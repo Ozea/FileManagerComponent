@@ -72,7 +72,7 @@ const Menu = props => {
             <h3>{i18n.USER}</h3>
             <div className="stats">
               {
-                session.look
+                session.look && panel[session.look]
                   ? (<>
                     <div>
                       <span>{i18n.Disk}:</span>
