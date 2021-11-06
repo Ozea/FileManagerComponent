@@ -1,16 +1,14 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { loginAs, logout } from 'src/actions/Session/sessionActions';
 import Container from '../ControlPanel/Container/Container';
 import ListItem from '../ControlPanel/ListItem/ListItem';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import './User.scss';
 
-const User = ({ data, toggleFav, handleModal, checkItem }) => {
+const User = ({ data, toggleFav, handleModal, checkItem, logOut, logInAs }) => {
   const { i18n, userName } = useSelector(state => state.session);
-  const dispatch = useDispatch();
 
   const printNameServers = servers => {
     let serversArray = servers.split(',');
@@ -20,20 +18,12 @@ const User = ({ data, toggleFav, handleModal, checkItem }) => {
     );
   }
 
-  const signInAs = username => {
-    dispatch(loginAs(username));
-  }
-
-  const signOut = () => {
-    dispatch(logout());
-  }
-
   const printLoginActionButton = user => {
     let currentUser = userName;
     if (currentUser === user) {
       return (
         <div>
-          <button onClick={signOut}>{i18n['Log out']}
+          <button onClick={logOut}>{i18n['Log out']}
             {data.FOCUSED ? <span className="shortcut-button">L</span> : <FontAwesomeIcon icon="user-lock" />}
           </button>
         </div>
@@ -41,7 +31,7 @@ const User = ({ data, toggleFav, handleModal, checkItem }) => {
     } else {
       return (
         <div>
-          <button onClick={() => signInAs(user)}>{i18n['login as']} {user}
+          <button onClick={() => logInAs(user)}>{i18n['login as']} {user}
             {data.FOCUSED ? <span className="shortcut-button">L</span> : <FontAwesomeIcon icon="user-lock" />}
           </button>
         </div>
