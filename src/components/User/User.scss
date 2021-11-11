@@ -75,6 +75,16 @@ span.stat.email{
         justify-content: space-between;
         margin-bottom: 25px;
         border-bottom: 1px dotted gray;
+        position: relative;
+
+        .percent {
+          position: absolute;
+          left: 0px;
+          bottom: -1px;
+          height: 2px;
+          background: $primary;
+          width: 0%;
+        }
       }
 
       .sub-disk-stats {
