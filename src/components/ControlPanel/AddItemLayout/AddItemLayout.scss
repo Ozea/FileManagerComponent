@@ -156,7 +156,7 @@ $errorColor: #BE5ABF;
     input:-webkit-autofill:hover,
     input:-webkit-autofill:focus,
     input:-webkit-autofill:active  {
-      background-color: $primaryLight;
+      background: $primaryLight;
       border-color: $primaryActive;
       filter: none;
       box-shadow: none;
@@ -166,7 +166,7 @@ $errorColor: #BE5ABF;
     input:autofill:hover,
     input:autofill:focus,
     input:autofill:active  {
-      background-color: $primaryLight;
+      background: $primaryLight;
       border-color: $primaryActive;
       filter: none;
       box-shadow: none;
