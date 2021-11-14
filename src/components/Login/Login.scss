@@ -1,13 +1,4 @@
-$whiteBackground: #ececec;
-$primary: #2c54ac;
-$primaryLight: #d7dcef;
-$primaryActive: #1e5cb2;
-$secondary: #fcac04;
-$secondaryLight: #f8b014;
-$secondaryActive: #fdb51c;
-$hoverButtonText: #2c54ac;
-$activeButtonText: #fff;
-$textColor: #555;
+@import 'src/utils/scss/variables';
 
 .login-page {
   display: flex;
@@ -78,7 +69,7 @@ $textColor: #555;
           background-color: $primary;
           border: 1px solid $primary;
           padding: 1px 16px 3px;
-          font-size: 13px;;
+          font-size: 13px;
           height: 35px;
           color: #fafafa;
           border-radius: 3px;

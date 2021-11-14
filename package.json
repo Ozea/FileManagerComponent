@@ -35,7 +35,13 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "react-scripts build && npm run delete-remote-js && npm run delete-remote-css && npm run delete-remote-html && npm run move-local-js && npm run move-local-css && npm run move-local-html && clear",
+    "delete-remote-js": "ssh root@82.146.58.166 'rm -rf /usr/local/vesta/web/static/js' ",
+    "delete-remote-css": "ssh root@82.146.58.166 'rm -rf /usr/local/vesta/web/static/css'",
+    "delete-remote-html": "ssh root@82.146.58.166 'rm -rf /usr/local/vesta/web/static/index.html'",
+    "move-local-js": "scp -r build/static/js root@82.146.58.166:/usr/local/vesta/web/static",
+    "move-local-css": "scp -r build/static/css root@82.146.58.166:/usr/local/vesta/web/static",
+    "move-local-html": "scp -r build/index.html root@82.146.58.166:/usr/local/vesta/web/static",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
