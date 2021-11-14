@@ -1,4 +1,5 @@
 @import 'src/utils/scss/variables';
+@import 'src/utils/scss/breakpoints';
 
 .login-page {
   display: flex;
@@ -94,6 +95,44 @@
         div.error-message {
           margin-top: 1rem;
           color: #BE5ABF;
+        }
+      }
+    }
+  }
+
+  @media (max-width: $tabletMax) {
+    .login-form-wrapper {
+      margin: 2rem;
+
+      .login-layout {
+        form {
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+
+          .c1 {
+            width: 100%;
+            margin-bottom: 1.5rem;
+
+            a {
+              text-align: center;
+
+              img {
+                width: 75%;
+              }
+            }
+          }
+
+          .c2 {
+            margin: 0;
+            width: 100%;
+          }
+
+          .buttons-wrapper {
+            .add {
+              margin-bottom: 10px;
+            }
+          }
         }
       }
     }
