@@ -166,3 +166,58 @@ button {
     }
   }
 }
+
+@media (max-width: 1066px) {
+  .content {
+    margin-top: -71px !important;
+  }
+
+  .content > div {
+    .l-col {
+      margin-top: 1rem;
+      padding-left: 5px;
+    }
+
+    .r-col {
+      margin-top: 1rem;
+      .stats {
+        flex-wrap: wrap;
+
+        > div {
+          margin: 1rem 0 !important;
+          padding: 0 !important;
+          width: 100% !important;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .content {
+    padding-top: 76px !important;
+    margin-top: 0 !important;
+  }
+
+  .content > div {
+    margin-top: 46px;
+
+    .l-col {
+      padding-left: 5px;
+    }
+
+    .r-col {
+      padding-left: 3.5rem;
+    }
+  }
+}
+
+@media (max-width: 725px) {
+  .content {
+    padding-top: 136px !important;
+
+    .r-col {
+      padding-left: 3.5rem;
+    }
+  }
+}

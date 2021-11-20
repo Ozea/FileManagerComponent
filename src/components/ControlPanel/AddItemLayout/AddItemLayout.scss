@@ -284,3 +284,15 @@ $errorColor: #BE5ABF;
     }
   }
 }
+
+@media screen and (max-width: 1066px) {
+  .form-group {
+    input[type=text],
+    input[type=password],
+    input[type=email],
+    textarea,
+    select {
+      width: 75%;
+    }
+  }
+}

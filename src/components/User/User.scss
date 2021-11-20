@@ -201,8 +201,28 @@ span.stat.email{
   svg {
     margin-left: 12px;
   }
+
+  @media (max-width: 1066px) {
+    opacity: 1;
+  }
+
+  @media (max-width: 850px) {
+    > div {
+      width: max-content;
+
+      a, button {
+        width: 100%;
+      }
+    }
+  }
 }
 
 .list-item.focused .r-col .name {
   color: $secondaryLight;
+}
+
+@media (max-width: 1066px) {
+  div.star div > svg {
+    opacity: 1 !important;
+  }
 }

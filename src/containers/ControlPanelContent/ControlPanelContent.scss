@@ -19,9 +19,15 @@
   }
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1066px) {
   .content {
-    padding: 5%;
+    padding: 5% 10%;
+  }
+}
+
+@media (max-width: 900px) {
+  .content {
+    margin-top: 40px;
   }
 }
 
@@ -102,5 +108,11 @@
         color: #c3c3c3;
       }
     }
+  }
+}
+
+@media screen and (max-width: 1066px) {
+  .fixed-buttons > div:first-child {
+    display: none;
   }
 }

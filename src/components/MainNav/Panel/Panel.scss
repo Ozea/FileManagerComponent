@@ -255,12 +255,11 @@
 
   .top-panel.small-device {
     display: flex;
-    padding: 0;
+    justify-content: space-between;
+    padding: 0 10%;
 
     > .container {
-      justify-content: center;
       align-items: center;
-      flex: 1 1 auto;
       width: auto;
     }
 
@@ -277,16 +276,6 @@
         width: 20px;
         background: white;
       }
-    }
-  }
-
-  @keyframes toggleNav {
-    from {
-      transform: translateY(-20px);
-    }
-
-    to {
-      transform: translateY(50px);
     }
   }
 }
