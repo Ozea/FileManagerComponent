@@ -16,8 +16,15 @@
 
   .r-menu {
     display: flex;
-    justify-content: center;
     align-items: center;
+    overflow-x: scroll;
+
+    > div {
+      display: flex;
+      flex-wrap: unset;
+      width: 100%;
+      align-items: center;
+    }
 
     a.button-extra,
     button.button-extra {
@@ -143,6 +150,30 @@
 @media (max-width: 1350px) {
   .toolbar {
     padding: 3px 10% 1px;
+  }
+}
+
+@media (max-width: 900px) {
+  .toolbar {
+    .r-menu {
+      // overflow: scroll;
+
+      > div {
+        margin-left: 3rem;
+        // overflow: scroll;
+        position: relative;
+        display: flex;
+        flex-wrap: unset;
+        width: 100%;
+        align-items: center;
+      }
+    }
+  }
+}
+
+@media (max-width: 450px) {
+  .toolbar {
+    padding: 3px 1% 1px;
   }
 }
 

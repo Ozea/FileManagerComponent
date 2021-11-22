@@ -71,6 +71,25 @@ html {
   }
 }
 
+@media screen and (max-width: 700px) {
+  .actions {
+    background: unset !important;
+    flex-wrap: wrap;
+    justify-content: flex-end !important;
+
+    div {
+      height: 30px !important;
+
+      a,button {
+        background: #dfdedd !important;
+        padding: 0px 10px !important;
+        height: 100% !important;
+        font-size: 10px !important;
+      }
+    }
+  }
+}
+
 button:active, a:active, .period:active {
   color: $primaryActive;
 }
@@ -167,19 +186,31 @@ button {
   }
 }
 
+@media (min-width: 1067px) {
+  .App div.content {
+    padding-top: 0 !important;
+    margin-top: -20px !important;
+  }
+}
+
 @media (max-width: 1066px) {
-  .content {
-    margin-top: -71px !important;
+  .App div.content {
+    padding-top: 0 !important;
+    margin-top: -20px !important;
   }
 
   .content > div {
     .l-col {
-      margin-top: 1rem;
+      margin-top: 2rem;
       padding-left: 5px;
     }
 
     .r-col {
       margin-top: 1rem;
+      .name {
+        margin-top: 2rem;
+      }
+
       .stats {
         flex-wrap: wrap;
 
@@ -194,28 +225,24 @@ button {
 }
 
 @media (max-width: 900px) {
-  .content {
-    padding-top: 76px !important;
+  .App div.content {
+    padding-top: 77px !important;
     margin-top: 0 !important;
   }
 
   .content > div {
-    margin-top: 46px;
-
     .l-col {
       padding-left: 5px;
     }
 
     .r-col {
-      padding-left: 3.5rem;
+      padding-left: 2rem;
     }
   }
 }
 
 @media (max-width: 725px) {
   .content {
-    padding-top: 136px !important;
-
     .r-col {
       padding-left: 3.5rem;
     }

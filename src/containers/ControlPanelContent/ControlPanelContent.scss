@@ -116,3 +116,9 @@
     display: none;
   }
 }
+
+@media screen and (max-width: 450px) {
+  .content {
+    padding: 5% 1%;
+  }
+}

@@ -30,6 +30,12 @@
       }
     }
 
+    @media screen and (max-width: 900px) {
+      span.add {
+        display: none !important;
+      }
+    }
+
     &:active {
       background: $primary;
 
@@ -62,6 +68,10 @@
       width: 31px;
       height: 21px;
     }
+  }
+
+  @media screen and (max-width: 900px) {
+    transform: unset;
   }
 }
 

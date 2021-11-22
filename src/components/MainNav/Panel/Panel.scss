@@ -17,7 +17,7 @@
   height: 34px;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10%;
+  padding: 0 13%;
   z-index: 2;
 
   .container {
@@ -248,6 +248,12 @@
   }
 }
 
+@media screen and (max-width: 1200px) {
+  .top-panel {
+    padding: 0 10%;
+  }
+}
+
 @media (max-width: 1065px) {
   .top-panel {
     display: none;
@@ -281,6 +287,10 @@
 }
 
 @media (max-width: $phoneMax) {
+  .top-panel.small-device {
+    padding: 0;
+  }
+
   .top-panel .left-menu div.logo {
     width: unset;
 
