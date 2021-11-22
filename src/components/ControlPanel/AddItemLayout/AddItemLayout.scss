@@ -1,13 +1,4 @@
-$whiteBackground: #ececec;
-$primary: #2c54ac;
-$primaryLight: #d7dcef;
-$primaryActive: #1e5cb2;
-$secondary: #fcac04;
-$secondaryLight: #f8b014;
-$secondaryActive: #fdb51c;
-$hoverButtonText: #2c54ac;
-$activeButtonText: #fff;
-$textColor: #555;
+@import 'src/utils/scss/variables';
 
 $optionalButtonHover: $primary;
 $optionalButtonActive: $primaryLight;
@@ -64,6 +55,7 @@ $errorColor: #BE5ABF;
     }
   
     .search-toolbar-name {
+      width: auto !important;
       padding: 10px 0;
       margin-left: 0;
     }
@@ -131,6 +123,18 @@ $errorColor: #BE5ABF;
       textarea,
       select {
         width: 50%;
+      }
+    }
+
+    @media screen and (max-width: 900px) {
+      .form-group {
+        input[type=text],
+        input[type=password],
+        input[type=email],
+        textarea,
+        select {
+          width: 100%;
+        }
       }
     }
 
@@ -290,6 +294,18 @@ $errorColor: #BE5ABF;
       letter-spacing: 1px;
       text-transform: uppercase;
       font-weight: bold;
+    }
+  }
+}
+
+@media screen and (max-width: 1066px) {
+  .form-group {
+    input[type=text],
+    input[type=password],
+    input[type=email],
+    textarea,
+    select {
+      width: 75%;
     }
   }
 }
