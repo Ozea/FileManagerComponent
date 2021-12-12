@@ -25,5 +25,12 @@
       padding-top: 5rem !important;
       margin-top: 0px !important;
     }
+
+    table {
+      td,th {
+        padding: 5px 10px;
+        border: 1px solid black;
+      }
+    }
   }
 }

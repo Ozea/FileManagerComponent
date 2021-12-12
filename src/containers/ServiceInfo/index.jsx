@@ -114,7 +114,7 @@ const ServiceInfo = () => {
           state.loading
             ? <Spinner />
             : (<pre>
-              {state.data.length && state.data.map(line => (<>{ReactHtmlParser(line)}<br /></>))}
+              {state.data && ReactHtmlParser(state.data)}
             </pre>)
         }
       </div>
