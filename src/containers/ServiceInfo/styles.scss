@@ -1,7 +1,29 @@
-.service-info {
+.App .service-info {
+  @media screen and (max-width: 1066px) {
+    .top-panel {
+      display: flex;
+    }
+  }
+
+  @media screen and (min-width: 1200px) {
+    .top-panel {
+      padding: 0 13%;
+    }
+  }
+
   .content {
     font-size: 14px;
     color: #555;
     padding-top: 4rem;
+
+    @media screen and (min-width: 1067px) {
+      padding-top: 5rem !important;
+      margin-top: 0px !important;
+    }
+
+    @media screen and (max-width: 1066px) {
+      padding-top: 5rem !important;
+      margin-top: 0px !important;
+    }
   }
 }
