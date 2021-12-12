@@ -62,11 +62,21 @@ const Menu = props => {
                   ? (<>
                     <div>
                       <span>{i18n.Disk}:</span>
-                      <span><span className="value">{user.U_DISK} <span className="unit">{panel[session.look]['U_DISK_MEASURE']}</span></span></span>
+                      <span>
+                        <span className="value">
+                          {panel[session.look]['U_DISK']}
+                          <span className="unit">{panel[session.look]['U_DISK_MEASURE']}</span>
+                        </span>
+                      </span>
                     </div>
                     <div>
                       <span>{i18n.Bandwidth}:</span>
-                      <span><span className="value">{user.U_BANDWIDTH} <span className="unit">{panel[session.look]['U_BANDWIDTH_MEASURE']}</span></span></span>
+                      <span>
+                        <span className="value">
+                          {panel[session.look]['U_BANDWIDTH']}
+                          <span className="unit">{panel[session.look]['U_BANDWIDTH_MEASURE']}</span>
+                        </span>
+                      </span>
                     </div>
                   </>)
                   : (<>
