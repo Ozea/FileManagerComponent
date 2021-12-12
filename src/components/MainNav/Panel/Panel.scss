@@ -91,7 +91,8 @@
     padding: 0;
     justify-content: space-between;
 
-    div {
+    div.top-link,
+    div.nav-link {
       flex: 1 1 auto;
       height: 100%;
       transform: translateX(-5px);
