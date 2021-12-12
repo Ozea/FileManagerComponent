@@ -63,10 +63,12 @@ export default function EditMailAccount(props) {
             if (error_msg) {
               setErrorMessage(error_msg);
               setOkMessage('');
+              setState({ ...state, loading: false });
             } else {
               dispatch(refreshCounters()).then(() => {
                 setErrorMessage('');
                 setOkMessage(ok_msg);
+                setState({ ...state, loading: false });
               });
             }
           }
