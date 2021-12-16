@@ -4,8 +4,7 @@ const INITIAL_STATE = {
   token: '',
   error: '',
   i18n: {},
-  userName: '',
-  panel: {}
+  userName: ''
 };
 
 const sessionReducer = (state = INITIAL_STATE, action) => {

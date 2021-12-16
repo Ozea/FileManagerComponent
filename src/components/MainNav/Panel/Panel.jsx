@@ -64,6 +64,14 @@ const Panel = props => {
         });
   }
 
+  const renderNotifications = () => {
+    if (panel[userName]) {
+      if (panel[userName]['NOTIFICATIONS'] === 'yes') {
+        return <Notifications />;
+      }
+    }
+  }
+
   return (
     <div className="panel-wrapper">
       {loading && <Spinner />}
@@ -114,7 +122,7 @@ const Panel = props => {
           )}
         </div>
         <div className="container profile-menu">
-          {panel[userName]['NOTIFICATIONS'] === 'yes' && <Notifications />}
+          {renderNotifications()}
           <div className="edit-user">
             <Link to={`/edit/user?user=${userName}`}>
               {session.look
@@ -147,7 +155,7 @@ const Panel = props => {
           <span className="bar"></span>
         </div>
         <div className="container profile-menu">
-          {panel[userName]['NOTIFICATIONS'] === 'yes' && <Notifications />}
+          {renderNotifications()}
           <div><Link to={`/edit/user?user=${userName}`}>{userName}</Link></div>
           <div><button onClick={signOut}>{i18n['Log out']}</button></div>
         </div>
