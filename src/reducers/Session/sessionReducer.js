@@ -16,7 +16,6 @@ const sessionReducer = (state = INITIAL_STATE, action) => {
         token: action.value.token,
         userName: action.value.userName,
         i18n: action.value.i18n || {},
-        panel: action.value.panel,
         error: action.value.error
       };
 
@@ -26,7 +25,6 @@ const sessionReducer = (state = INITIAL_STATE, action) => {
         token: action.value.token,
         userName: action.value.userName,
         i18n: action.value.i18n || {},
-        panel: action.value.panel,
         error: action.value.error
       };
 
@@ -36,7 +34,6 @@ const sessionReducer = (state = INITIAL_STATE, action) => {
         token: action.value.token,
         userName: action.value.userName,
         i18n: action.value.i18n || {},
-        panel: action.value.panel,
         error: action.value.error
       };
 
@@ -45,7 +42,6 @@ const sessionReducer = (state = INITIAL_STATE, action) => {
       token: action.value.token,
       userName: action.value.userName,
       i18n: action.value.i18n || {},
-      panel: action.value.panel,
       error: action.value.error
     };
 
