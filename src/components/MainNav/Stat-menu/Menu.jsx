@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 import './Menu.scss';
+import Spinner from 'src/components/Spinner/Spinner';
 
 const className = height => {
   if (height === 35) {
@@ -50,6 +51,8 @@ const Menu = props => {
   const statClassName = activeName => {
     return `stat ${activeName === activeElement && 'l-active'} ${activeName === focusedElement && 'focus'}`;
   }
+
+  if (!panel[userName]) return <Spinner />;
 
   return (
     <div className="menu-wrapper">
