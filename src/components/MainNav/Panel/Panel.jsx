@@ -72,6 +72,32 @@ const Panel = props => {
     }
   }
 
+  const renderSmallNavigation = () => {
+    if (document.documentElement.clientWidth < 900) {
+      return (<div className="top-panel small-device">
+        <div className="container left-menu">
+          <div className="logo">
+            <Link to="/list/user/" onClick={() => dispatch(addActiveElement('/list/user/'))}>
+              <div>
+                <img src="/images/white_logo.png" alt="Logo" />
+              </div>
+            </Link>
+          </div>
+        </div>
+        <div className="container hamburger" onClick={toggleNavigation}>
+          <span className="bar"></span>
+          <span className="bar"></span>
+          <span className="bar"></span>
+        </div>
+        <div className="container profile-menu">
+          {renderNotifications()}
+          <div><Link to={`/edit/user?user=${userName}`}>{userName}</Link></div>
+          <div><button onClick={signOut}>{i18n['Log out']}</button></div>
+        </div>
+      </div>);
+    }
+  }
+
   return (
     <div className="panel-wrapper">
       {loading && <Spinner />}
@@ -139,27 +165,7 @@ const Panel = props => {
         </div>
       </div>
 
-      <div className="top-panel small-device">
-        <div className="container left-menu">
-          <div className="logo">
-            <Link to="/list/user/" onClick={() => dispatch(addActiveElement('/list/user/'))}>
-              <div>
-                <img src="/images/white_logo.png" alt="Logo" />
-              </div>
-            </Link>
-          </div>
-        </div>
-        <div className="container hamburger" onClick={toggleNavigation}>
-          <span className="bar"></span>
-          <span className="bar"></span>
-          <span className="bar"></span>
-        </div>
-        <div className="container profile-menu">
-          {renderNotifications()}
-          <div><Link to={`/edit/user?user=${userName}`}>{userName}</Link></div>
-          <div><button onClick={signOut}>{i18n['Log out']}</button></div>
-        </div>
-      </div>
+      {renderSmallNavigation()}
     </div>
   );
 }
