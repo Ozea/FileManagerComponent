@@ -231,7 +231,7 @@ class DirectoryList extends Component {
   sortData = (a, b) => {
     switch (this.state.sortingType) {
       case "Type": return this.sortByType(a, b);
-      case "Size": if (a.type !== "d" && b.type !== "d") { return this.sortBySize(a, b) }; break;
+      case "Size": return this.sortBySize(a, b);
       case "Date": return this.sortByDate(a, b);
       case "Name": return this.sortByName(a, b);
       default: return this.sortByType(a, b);
@@ -244,7 +244,10 @@ class DirectoryList extends Component {
     const data = { ...this.props.data };
 
     if (data.listing.length !== 0) {
-      let sortedData = data.listing.sort((a, b) => this.sortData(a, b));
+      const sortedData = [
+        ...data.listing.filter(item => item.type === 'd').sort((a, b) => a.name.localeCompare(b.name)),
+        ...data.listing.filter(item => item.type === 'f').sort((a, b) => this.sortData(a, b))
+      ]
       return (
         sortedData.map((item, key) =>
           (item.name !== "" && sortedData.length !== 0) ?
