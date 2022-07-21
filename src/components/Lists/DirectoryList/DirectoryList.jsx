@@ -241,43 +241,60 @@ class DirectoryList extends Component {
   rows = () => {
     const { isActive, modalVisible, path, download } = this.props;
     const { cursor } = this.state;
-    const data = { ...this.props.data };
+    let firstItem, listing = [];
+    this.props.data.listing.forEach(item => {
+      if (item.name === '' && item.type === 'd') {
+        firstItem = item
+      } else {
+        listing.push(item)
+      }
+    })
 
-    if (data.listing.length !== 0) {
-      const sortedData = [
-        ...data.listing.filter(item => item.type === 'd').sort((a, b) => a.name.localeCompare(b.name)),
-        ...data.listing.filter(item => item.type === 'f').sort((a, b) => this.sortData(a, b))
-      ]
+    if (listing.length) {
+      if (this.state.sortingType !== 'Type') {
+        listing = [
+          ...listing.filter(item => item.type === 'd').sort((a, b) => this.sortByName(a, b)),
+          ...listing.filter(item => item.type === 'f').sort((a, b) => this.sortData(a, b))
+        ]
+      } else {
+        listing = listing.sort((a, b) => this.sortData(a, b))
+      }
+
       return (
-        sortedData.map((item, key) =>
-          (item.name !== "" && sortedData.length !== 0) ?
-            (<Row key={key}
-              selectOnClick={(cursor, name, permissions, type) => {
-                this.setState({ cursor });
-                this.props.passData(cursor, name, permissions, type);
-              }}
-              selectMultiple={() => this.addToSelection(item.name)}
-              selected={this.isSelected(item.name)}
-              openDirectory={this.openDirectory}
-              modalVisible={modalVisible}
-              activeRow={key === cursor}
-              isActiveList={isActive}
-              download={download}
-              cursor={key}
-              data={item}
-              path={path} />) :
-            (<Row key={key}
-              selectOnClick={(cursor, name, permissions, type) => {
-                this.setState({ cursor });
-                this.props.passData(cursor, name, permissions, type);
-              }}
-              openDirectory={this.moveBack}
-              modalVisible={modalVisible}
-              activeRow={key === cursor}
-              isActiveList={isActive}
-              cursor={key}
-              data={item}
-              path={path} />))
+        <>
+          <Row
+            selectOnClick={(cursor, name, permissions, type) => {
+              this.setState({ cursor });
+              this.props.passData(cursor, name, permissions, type);
+            }}
+            openDirectory={this.moveBack}
+            modalVisible={modalVisible}
+            activeRow={0 === cursor}
+            isActiveList={isActive}
+            cursor={0}
+            data={firstItem}
+            path={path} />
+          {
+            listing.map((item, key) => (
+              <Row
+                key={key + 1}
+                selectOnClick={(cursor, name, permissions, type) => {
+                  this.setState({ cursor });
+                  this.props.passData(cursor, name, permissions, type);
+                }}
+                selectMultiple={() => this.addToSelection(item.name)}
+                selected={this.isSelected(item.name)}
+                openDirectory={this.openDirectory}
+                modalVisible={modalVisible}
+                activeRow={key + 1 === cursor}
+                isActiveList={isActive}
+                download={download}
+                cursor={key + 1}
+                data={item}
+                path={path} />
+            ))
+          }
+        </>
       );
     }
   }
