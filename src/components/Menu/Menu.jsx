@@ -1,4 +1,4 @@
-import React, { createRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './Menu.scss';
 import { useSelector } from 'react-redux';
@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 const Menu = (props) => {
   const { i18n } = useSelector(state => state.session);
-  const inputFile = createRef();
+  const inputFile = useRef();
 
   useEffect(() => {
     document.addEventListener("keydown", hotKeys);
@@ -118,26 +118,40 @@ const Menu = (props) => {
   }
 
   const hotKeys = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
     let isSearchInputFocused = document.querySelector('input:focus') || document.querySelector('textarea:focus');
 
     if (props.modalVisible || isSearchInputFocused) return;
 
-    if (e.shiftKey && e.keyCode === 117) {
+    if (e.shiftKey && e.keyCode === 118) {
       rename();
+      return
     }
 
     switch (e.keyCode) {
-      case 46: return deleteFile();
-      case 65: return archive();
-      case 68: return download();
-      case 77: return move();
+      // u
+      case 85: return inputFile.current.click();
+      // n
       case 78: return newFile();
-      case 85: return inputFile.click();
-      case 113: return rename();
-      case 115: return permissions();
-      case 116: return copy();
+      // F6
       case 118: return newDirectory();
+      // d
+      case 68: return download();
+      // F2
+      case 113: return rename();
+      // m
+      case 77: return move();
+      // F4
+      case 115: return copy();
+      // a
+      case 65: return archive();
+      // F8
       case 119: return deleteFile();
+      // Del
+      case 46: return deleteFile();
+      // F3
+      case 114: return permissions();
       default: break;
     }
   }
