@@ -4,19 +4,21 @@ import { useSelector } from 'react-redux';
 const AddFile = (props) => {
   const [value, setValue] = useState(null)
   const { i18n } = useSelector(state => state.session);
-  const hasError = value !== null && !value.length
+  const [hasError, setHasError] = useState(value !== null && !value.length)
 
   const onChange = (e) => {
     setValue(e.target.value)
   }
 
   const save = () => {
-    if (!value) return
+    if (!value) {
+      setHasError(true)
+      return;
+    }
     props.save()
   }
 
   const cancel = () => {
-    if (!value) return
     props.close()
   }
 
