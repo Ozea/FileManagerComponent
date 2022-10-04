@@ -21,6 +21,7 @@ const AddUser = props => {
   const { session } = useSelector(state => state.userSession);
   const history = useHistory();
   const dispatch = useDispatch();
+  const [formValues, setFormValues] = useState({})
   const [state, setState] = useState({
     vEmail: '',
     vNotify: '',
@@ -129,6 +130,15 @@ const AddUser = props => {
     }
   }
 
+  const onChange = event => {
+    const { name, value } = event.target
+    setFormValues(prevValues => ({ ...prevValues, [name]: value }))
+  }
+
+  const onChangePassword = value => {
+    setFormValues(prevValues => ({ ...prevValues, 'v_password': value }))
+  }
+
   return (
     <div className="edit-template add-user">
       <Helmet>
@@ -147,10 +157,10 @@ const AddUser = props => {
           <form onSubmit={event => submitFormHandler(event)} id="add-user">
             <div className="form-group">
               <label htmlFor="username">{i18n.Username}</label>
-              <input type="text" className="form-control" id="username" name="v_username" />
+              <input type="text" className="form-control" id="username" name="v_username" onChange={onChange} value={formValues.v_username} />
             </div>
 
-            <Password name='v_password' />
+            <Password name='v_password' onChange={onChangePassword} />
 
             <div className="form-group">
               <label htmlFor="email">
@@ -189,12 +199,12 @@ const AddUser = props => {
 
             <div className="form-group">
               <label htmlFor="firstName">{i18n['First Name']}</label>
-              <input type="text" className="form-control" id="firstName" name="v_fname" />
+              <input type="text" className="form-control" id="firstName" name="v_fname" onChange={onChange} value={formValues.v_fname} />
             </div>
 
             <div className="form-group">
               <label htmlFor="lastName">{i18n['Last Name']}</label>
-              <input type="text" className="form-control" id="lastName" name="v_lname" />
+              <input type="text" className="form-control" id="lastName" name="v_lname" onChange={onChange} value={formValues.v_lname} />
             </div>
 
             <div className="form-group">
